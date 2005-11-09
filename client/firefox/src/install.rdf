@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+	<Description about="urn:mozilla:install-manifest">
+		<em:id>{818f085f-a8e5-4576-bcc5-16d92bdff65d}</em:id>
+		<em:version>0.2</em:version>
+		<em:type>2</em:type>
+
+		<em:targetApplication>
+			<Description>
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>1.5</em:minVersion>
+				<em:maxVersion>1.5</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+
+		<!-- Front End MetaData -->
+		<em:name>TeamFound</em:name>
+		<em:description>TeamFound Toolbar - Share your Search-Results</em:description>
+		<em:creator>Jan Kechel</em:creator>
+		<em:homepageURL>http://teamfound.berlios.de/</em:homepageURL>
+	</Description>      
+</RDF>

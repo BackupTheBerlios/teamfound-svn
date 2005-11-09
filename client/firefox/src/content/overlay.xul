@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<overlay id="teamfound-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+	<script src="overlay.js"/>
+
+	<menupopup id="menu_ToolsPopup">
+		<menuitem id="tf-hello" label="TeamFound" 
+		oncommand="TeamFound.onMenuItemCommand(event);"/>
+	</menupopup>
+
+	<toolbox id="navigator-toolbox">
+		<toolbar id="tf-toolbar" accessKey="T" class="chromeclass-toolbar"
+		toolbarname="TeamFound Toolbar" hidden="false" persist="hidden">
+
+			<toolbarbutton id="tf-buttonAddPage" tooltiptext="Fuege aktuelle Seite dem Index hinzu." label="Seite Hinzufuegen" oncommand="TeamFound.onMenuItemCommand(event);" />
+
+			<toolbaritem id="tf-tbi1" persist="width">
+				<menulist id="tf-ml1" editable="true" flex="1"
+			          minwidth="100" width="250"
+				  onkeypress="if(event.which == 13) { TeamFound.onMenuItemCommand(event); }">
+
+					<menupopup id="tf-mp1" />
+				</menulist>
+			</toolbaritem>
+
+			<splitter id="tf-sp1" state="open" collapse="none"
+			          resizebefore="closest" resizeafter="farthest"
+				  tooltiptext="Groesse des Suchfeldes anpassen" />
+
+			<toolbarbutton id="tf-buttonSearch" tooltiptext="Suche starten" label="Suchen" oncommand="TeamFound.onMenuItemCommand(event);" />
+		</toolbar>
+	</toolbox>
+</overlay>

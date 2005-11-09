@@ -1,0 +1,2 @@
+content teamfound content/
+overlay chrome://browser/content/browser.xul chrome://teamfound/content/overlay.xul
