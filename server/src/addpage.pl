@@ -23,7 +23,7 @@ use CGI;
 
 my $cgi = new CGI;
 
-my $url = $cgi->param('addpage');
+my $url = $cgi->param('url');
 
 print "Content-type: text/html\n\n";
 print "Getting: $url<br>";
