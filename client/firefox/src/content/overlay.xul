@@ -1,4 +1,22 @@
 <?xml version="1.0"?>
+<!--
+ 	TeamFound, sharing your search results
+ 	Copyright (C) 2005 Jan Kechel
+ 
+ 	This program is free software; you can redistribute it and/or
+ 	modify it under the terms of the GNU General Public License
+ 	as published by the Free Software Foundation; either version 2
+ 	of the License, or (at your option) any later version.
+ 
+ 	This program is distributed in the hope that it will be useful,
+ 	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ 	GNU General Public License for more details.
+ 
+ 	You should have received a copy of the GNU General Public License
+ 	along with this program; if not, write to the Free Software
+ 	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+-->
 
 <overlay id="teamfound-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
@@ -6,19 +24,19 @@
 
 	<menupopup id="menu_ToolsPopup">
 		<menuitem id="tf-hello" label="TeamFound" 
-		oncommand="TeamFound.onMenuItemCommand(event);"/>
+		oncommand="TeamFound.onInfo(event);"/>
 	</menupopup>
 
 	<toolbox id="navigator-toolbox">
 		<toolbar id="tf-toolbar" accessKey="T" class="chromeclass-toolbar"
 		toolbarname="TeamFound Toolbar" hidden="false" persist="hidden">
 
-			<toolbarbutton id="tf-buttonAddPage" tooltiptext="Fuege aktuelle Seite dem Index hinzu." label="Seite Hinzufuegen" oncommand="TeamFound.onMenuItemCommand(event);" />
+			<toolbarbutton id="tf-buttonAddPage" tooltiptext="Fuege aktuelle Seite dem Index hinzu." label="Seite Hinzufuegen" oncommand="TeamFound.onAddPage(event);" />
 
 			<toolbaritem id="tf-tbi1" persist="width">
 				<menulist id="tf-ml1" editable="true" flex="1"
 			          minwidth="100" width="250"
-				  onkeypress="if(event.which == 13) { TeamFound.onMenuItemCommand(event); }">
+				  onkeypress="if(event.which == 13) { TeamFound.onSearch(event); }">
 
 					<menupopup id="tf-mp1" />
 				</menulist>
@@ -28,7 +46,7 @@
 			          resizebefore="closest" resizeafter="farthest"
 				  tooltiptext="Groesse des Suchfeldes anpassen" />
 
-			<toolbarbutton id="tf-buttonSearch" tooltiptext="Suche starten" label="Suchen" oncommand="TeamFound.onMenuItemCommand(event);" />
+			<toolbarbutton id="tf-buttonSearch" tooltiptext="Suche starten" label="Suchen" oncommand="TeamFound.onSearch(event);" />
 		</toolbar>
 	</toolbox>
 </overlay>
