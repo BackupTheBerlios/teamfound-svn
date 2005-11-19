@@ -18,6 +18,8 @@
  	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 -->
 
+<?xml-stylesheet href="chrome://teamfound/skin/overlay.css" type="text/css"?>
+
 <overlay id="teamfound-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 	<script src="overlay.js"/>
@@ -31,6 +33,7 @@
 		<toolbar id="tf-toolbar" accessKey="T" class="chromeclass-toolbar"
 		toolbarname="TeamFound Toolbar" hidden="false" persist="hidden">
 
+			<toolbarbutton id="tf-infobutton" tooltiptext="TeamFound Info-Dialog." oncommand="TeamFound.onInfo(event);" />
 			<toolbarbutton id="tf-buttonAddPage" tooltiptext="Fuege aktuelle Seite dem Index hinzu." label="Seite Hinzufuegen" oncommand="TeamFound.onAddPage(event);" />
 
 			<toolbaritem id="tf-tbi1" persist="width">

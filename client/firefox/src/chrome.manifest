@@ -1,2 +1,7 @@
 content teamfound content/
+
 overlay chrome://browser/content/browser.xul chrome://teamfound/content/overlay.xul
+
+skin teamfound classic/1.0 skin/
+
+style chrome://global/content/customizeToolbar.xul chrome://teamfound/skin/overlay.css

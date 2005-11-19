@@ -45,8 +45,7 @@ var TeamFound =
 	}, // onSearch
 
 	// Eine neue Seite soll dem Index hinzugefuegt werden
-	onAddPage: function()
-	{
+	onAddPage: function() {
 		// hinzuzufuegende url (globale variable)
 		addpageurl = content.document.URL;
 
