@@ -30,7 +30,7 @@ print "Getting: $url<br>";
 `wget -P download $url`;
 
 print "Indiziere: $url<br>";
-`java -Xmx5m -cp "/home/jan/teamfound/lucene/lucene-1.4.3.jar:/home/jan/teamfound/lucene/lucene-demos-1.4.3.jar" org.apache.lucene.demo.IndexFiles $url download`;
+`java -Xmx5m -cp "lucene/lucene-1.4.3.jar:lucene/lucene-demos-1.4.3.jar" org.apache.lucene.demo.IndexFiles download`;
 
 print "Loesche: $url<br>";
 `rm download/*`;

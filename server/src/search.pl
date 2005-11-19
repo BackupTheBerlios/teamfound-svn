@@ -29,5 +29,5 @@ my $key = $cgi->param('keyword');
 print "Content-type: text/html\n\n";
 
 print "Suche: $key<br>";
-print `java -Xmx5m -cp "/home/jan/teamfound/lucene/lucene-1.4.3.jar:/home/jan/teamfound/lucene/lucene-demos-1.4.3.jar" org.apache.lucene.demo.SearchFiles $key`;
+print `echo "$key" | java -Xmx5m -cp "lucene/lucene-1.4.3.jar:lucene/lucene-demos-1.4.3.jar" org.apache.lucene.demo.SearchFiles`;
 
