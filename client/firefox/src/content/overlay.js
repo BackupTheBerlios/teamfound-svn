@@ -28,6 +28,7 @@ var TeamFound =
 	// Informations-Dialog soll angezeigt werden
 	onInfo: function() 
 	{
+		content.location = "http://teamfound.berlios.de";
 		if(this.initialized)
 			alert("TeamFound - Ein Projekt der TU-Berlin\n" +
 			"Copyright (c) 2005 Jan Kechel\n" +
