@@ -47,10 +47,10 @@ class SearchFiles {
       }	
 
 	Query query = QueryParser.parse(word, "contents", analyzer);
-	System.out.println("Searching for: " + query.toString("contents"));
+	//System.out.println("Searching for: " + query.toString("contents"));
 
 	Hits hits = searcher.search(query);
-	System.out.println("<H3>" + hits.length() + " total matching documents</H3>");
+	System.out.println(" TeamFound " +hits.length() + " sites<br><br>");
 
 	
 	  for (int i = 0; i < hits.length(); i++) 
@@ -66,8 +66,8 @@ class SearchFiles {
               String url = doc.get("url");
               if (url != null) 
               {
-            	  System.out.println(i + ". URL: " + "<a href=" + url + ">" + url + "</a><br>");
-            	  System.out.println("  Titel: " + doc.get("title")+ "<br><br>");
+            	  System.out.println(i + ". "+ "<a href=" + url + ">" + doc.get("title") + "</a><br>");
+            	  System.out.println("<font size = -1>" + url+ "</font><br><br>");
               } 
               else 
               {
