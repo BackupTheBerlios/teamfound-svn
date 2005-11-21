@@ -27,7 +27,18 @@ my $cgi = new CGI;
 my $key = $cgi->param('keyword');
 
 print "Content-type: text/html\n\n";
+print << "EOF";
+<html>
+<head>
+<title>TeamFound Search-Result</title>
+</head>
+<body style="font-family:sans-serif">
+EOF
 
-print "Suche: $key<br>";
+print "<font size=+2 color=\"#000080\" family=\"courier-new\">TeamFound</font><br>searching for '$key' ...";
 print `java -cp "teamfound.jar" Search.SearchFiles $key`;
 
+print << "EOF";
+</body>
+</html>
+EOF
