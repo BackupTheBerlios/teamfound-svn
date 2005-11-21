@@ -27,10 +27,10 @@ my $url = $cgi->param('url');
 
 print "Content-type: text/html\n\n";
 print "Getting: $url<br>";
-`wget -P download $url`;
+`wget -E -P download $url`;
 
 print "Indiziere: $url<br>";
-`java -Xmx5m -cp "lucene/lucene-1.4.3.jar:lucene/lucene-demos-1.4.3.jar" org.apache.lucene.demo.IndexFiles download`;
+`java -cp "teamfound.jar" Index.TeamFoundIndexer download/* $url`;
 
 print "Loesche: $url<br>";
 `rm download/*`;
