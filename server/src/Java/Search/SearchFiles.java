@@ -16,9 +16,7 @@ package Search;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -30,55 +28,62 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.queryParser.QueryParser;
 
 class SearchFiles {
-  public static void main(String[] args) {
-    try {
+  public static void main(String[] argv) {
+    try 
+    {
       Searcher searcher = new IndexSearcher("index");
       Analyzer analyzer = new StandardAnalyzer();
 
-      BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-      while (true) {
-	System.out.print("Query: ");
-	String line = in.readLine();
+      String word;
+      String usage =new String("SearchFiles <Suchbegriff>");
+      if (argv.length!=1) 
+      {
+			  System.err.println("Usage: " + usage);
+			  return;
+      } 
+      else	
+      {
+			  word = new String(argv[0]);			  
+      }	
 
-	if (line.length() == -1)
-	  break;
-
-	Query query = QueryParser.parse(line, "contents", analyzer);
+	Query query = QueryParser.parse(word, "contents", analyzer);
 	System.out.println("Searching for: " + query.toString("contents"));
 
 	Hits hits = searcher.search(query);
-	System.out.println(hits.length() + " total matching documents");
+	System.out.println("<H3>" + hits.length() + " total matching documents</H3>");
 
-	final int HITS_PER_PAGE = 10;
-	for (int start = 0; start < hits.length(); start += HITS_PER_PAGE) {
-	  int end = Math.min(hits.length(), start + HITS_PER_PAGE);
-	  for (int i = start; i < end; i++) {
+	
+	  for (int i = 0; i < hits.length(); i++) 
+	  {
 	    Document doc = hits.doc(i);
 	    String path = doc.get("path");
-	    if (path != null) {
-              System.out.println(i + ". Pfad: " + path);
-	    } else {
+	    if (path != null) 
+	    {
+              System.out.println(i + ". Pfad: " + path + "<br>");
+	    } 
+	    else 
+	    {
               String url = doc.get("url");
-	      if (url != null) {
-		System.out.println(i + ". URL: " + url);
-		System.out.println("  Titel: " + doc.get("title"));
-	      } else {
-		System.out.println(i + ". " + "No path nor URL for this document");
-	      }
+              if (url != null) 
+              {
+            	  System.out.println(i + ". URL: " + "<a href=http://" + url + ">" + url + "</a><br>");
+            	  System.out.println("  Titel: " + doc.get("title")+ "<br><br>");
+              } 
+              else 
+              {
+            	  System.out.println(i + ". " + "No path nor URL for this document <br>");
+              }
 	    }
 	  }
 
-	  if (hits.length() > end) {
-	    System.out.print("more (y/n) ? ");
-	    line = in.readLine();
-	    if (line.length() == 0 || line.charAt(0) == 'n')
-	      break;
-	  }
-	}
-      }
+	  
+	
+      
       searcher.close();
 
-    } catch (Exception e) {
+    } 
+    catch (Exception e) 
+    {
       System.out.println(" caught a " + e.getClass() +
 			 "\n with message: " + e.getMessage());
     }

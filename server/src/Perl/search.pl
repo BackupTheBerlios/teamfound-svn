@@ -29,5 +29,5 @@ my $key = $cgi->param('keyword');
 print "Content-type: text/html\n\n";
 
 print "Suche: $key<br>";
-print `echo "$key" | java -cp "teamfound.jar" Search.SearchFiles`;
+print `java -cp "teamfound.jar" Search.SearchFiles $key`;
 
