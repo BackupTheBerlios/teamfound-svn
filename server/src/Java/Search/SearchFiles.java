@@ -66,7 +66,7 @@ class SearchFiles {
               String url = doc.get("url");
               if (url != null) 
               {
-            	  System.out.println(i + ". URL: " + "<a href=http://" + url + ">" + url + "</a><br>");
+            	  System.out.println(i + ". URL: " + "<a href=" + url + ">" + url + "</a><br>");
             	  System.out.println("  Titel: " + doc.get("title")+ "<br><br>");
               } 
               else 
