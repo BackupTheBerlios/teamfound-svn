@@ -36,7 +36,7 @@ print << "EOF";
 EOF
 
 print "<font size=+2 color=\"#000080\" family=\"courier-new\">TeamFound</font><br>searching for '$key' ...";
-print `java -cp "teamfound.jar" Search.SearchFiles $key`;
+print `java -cp "teamfound.jar" Search.SearchFiles "$key"`;
 
 print << "EOF";
 </body>
