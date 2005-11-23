@@ -38,6 +38,7 @@ EOF
 print "<font size=+2 color=\"#000080\" family=\"courier-new\">TeamFound</font><br>searching for '$key' ...";
 print `java -cp "teamfound.jar" Search.SearchFiles "$key"`;
 
+print '<br><br><a href="javascript:history.back();"><< go back</a>';
 print << "EOF";
 </body>
 </html>

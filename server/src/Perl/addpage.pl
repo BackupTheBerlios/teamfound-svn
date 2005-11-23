@@ -25,13 +25,30 @@ my $cgi = new CGI;
 
 my $url = $cgi->param('url');
 
+my $filename;
+
 print "Content-type: text/html\n\n";
+
+print "<html><body>";
 print "Getting: $url<br>";
 `wget -E -P download $url`;
+print $url;
+if ( $url=~/http:\/\/.+\/(.+)/ ) 
+   { 
+      #print $1;
+      $filename = $1;
+      
+      print "Indiziere: $url<br>";
+      `java -cp "teamfound.jar" Index.TeamFoundIndexer download/* $url`;
+      
+      print "<br>Loesche: $filename<br>";
+      `rm download/$filename*`;
 
-print "Indiziere: $url<br>";
-`java -cp "teamfound.jar" Index.TeamFoundIndexer download/* $url`;
-
-print "Loesche: $url<br>";
-`rm download/*`;
-
+   }
+else
+{
+   print "Loesche: $url<br>";
+   `rm download/*`;
+}; 
+print '<br><br><a href="javascript:history.back();"><< go back</a>';
+print "</body></html>";  
