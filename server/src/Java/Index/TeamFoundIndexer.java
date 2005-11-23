@@ -137,18 +137,21 @@ public class TeamFoundIndexer {
 				      	
 				      // durchsuche Index nach Seite wenn schon drinn loesche erstmal und
 				      // indiziere neu (ich gehe davon aus dass URL eindeutig als id verwendbar ;-)
-				      while (urlIter.term()!=null && urlIter.term().field().equals("url")) 
-				      {			    	  
-				    	  if (urlIter.term().text().equals(url))
-				    	  {
-				    		  System.out.println("deleting " + (urlIter.term().text()));
-				    		  int i;
-				    		  i = reader.delete(urlIter.term());
-				    		  System.out.println("Sites deleted : "+ i);
-				    	  }
-				    	  
-				    	  if(!urlIter.next())
-				    		  break;
+				      if(urlIter.skipTo(new Term("url", url)))
+				      {
+					      while (urlIter.term()!=null && urlIter.term().field().equals("url")) 
+					      {			    	  
+					    	  if (urlIter.term().text().equals(url))
+					    	  {
+					    		  System.out.println("deleting " + (urlIter.term().text()));
+					    		  int i;
+					    		  i = reader.delete(urlIter.term());
+					    		  System.out.println("Sites deleted : "+ i);
+					    	  }
+					    	  
+					    	  if(!urlIter.next())
+					    		  break;
+					      }
 				      }
 				      
 				      urlIter.close();				  // close uid iterator
