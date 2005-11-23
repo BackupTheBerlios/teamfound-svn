@@ -1,0 +1,15 @@
+
+body { margin-left: 40; margin-right: 40;}
+html { background-color: white; color: #000000; font-family: Arial, Lucida Grande, sans-serif; font-size: 1em; line-height: 1.25em; }
+
+a:link { font-family:Arial,sans-serif; font-style:normal; text-decoration:none; line-height:1.5em; color:#0000FF; margin:0; padding:0; }
+a:visited { font-family:Arial,sans-serif; font-style:normal; text-decoration:none; line-height:1.5em; color:#0000FF; margin:0; padding:0; }
+a:hover { font-family:Arial,sans-serif; font-style:normal; text-decoration:underline; line-height:1.5em; color:#0000FF; margin:0; padding:0; }
+a:active { font-family:Arial,sans-serif; font-style:normal; text-decoration:none; line-height:1.5em; color:#0000FF; margin:0; padding:0; }
+a:focus { font-family:Arial,sans-serif; font-style:normal; text-decoration:none; line-height:1.5em; color:#0000FF; margin:0; padding:0; }
+
+h1 { font-size: 22px; padding-top:25px; color:#333366;}
+h2 { font-size: 18px; padding-top:5px; color:#333366;}
+h3 { font-size: 16px; padding-top:5px; color:#333366;}
+
+
