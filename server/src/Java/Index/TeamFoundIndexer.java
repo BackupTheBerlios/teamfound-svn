@@ -65,18 +65,16 @@ public class TeamFoundIndexer {
 	      Date start = new Date();
 	      
 	      
-	      // ich brauche noch ne bessre Moeglichkeit um zu pruefen ob index existiert
-	      try
+	      // pruefen ob index existiert
+	      if(!IndexReader.indexExists(index))
 	      {
-	    	  writer = new IndexWriter(index, new StandardAnalyzer(), create);
-	    	  writer.close();
+	    	  create = true;
 	      }
-	      catch(java.io.IOException e)
+	      
+	      while(IndexReader.isLocked(index))
 	      {
-	    	  System.out.println("Muss neuen Index anlegen.");
-	    	  create = true;	    	  	    	  	    	  
-	      }
-	      	      	            	      	      
+	    	  java.lang.Thread.sleep(50);
+	      }	      	            	      	      
 	      //hinzufuegen der Seite
 	      indexDocs(file, index, create, url);		
 	      
