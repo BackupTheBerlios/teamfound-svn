@@ -63,11 +63,14 @@ class SearchFiles {
 	    } 
 	    else 
 	    {
-              String url = doc.get("url");
+
+	    	String url = doc.get("url");
               if (url != null) 
               {
             	  System.out.println(i + ". "+ "<a href=" + url + ">" + doc.get("title") + "</a><br>");
-            	  System.out.println("<font size = -1>" + url+ "</font><br><br>");
+            	  System.out.println("<font size = -1>" + doc.get("summary")+ "</font><br>");
+            	  System.out.println("<font size = -2>" + url+ "</font><br><br>");
+            	  
               } 
               else 
               {
