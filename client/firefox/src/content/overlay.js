@@ -42,7 +42,7 @@ var TeamFound =
 		var key = document.getElementById("tf-ml1");
 
 		// Vorerst einfach die vom server erzeugte url anzeigen ohne weitere bearbeitung
-		content.location = "http://thor/tf/search.pl?keyword=" + key.value;
+		content.location = "http://hqpm.dyndns.org/tf/search.pl?keyword=" + key.value;
 	}, // onSearch
 
 	// Eine neue Seite soll dem Index hinzugefuegt werden
@@ -51,7 +51,7 @@ var TeamFound =
 		addpageurl = content.document.URL;
 
 		// server-adresse zum hinzufuegen neuer seiten
-		var url = "http://thor/tf/addpage.pl?url=" + addpageurl;
+		var url = "http://hqpm.dyndns.org/tf/addpage.pl?url=" + addpageurl;
 
 		// Request erstellen (globale variable)
 		// XMLHttpRequest funktioniert mit Mozilla, Firefox, Safari, und Netscape (nicht mit IE)

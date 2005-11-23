@@ -11,5 +11,5 @@ all:
 	cp src/install.rdf build
 	mkdir build/chrome
 	cd src; jar -cvf ../build/chrome/teamfound.jar content/overlay.* skin/icon.png skin/overlay.css
-	cd build; zip -r ../tf-extension.xpi *
+	cd build; zip -r ../teamfound-toolbar-firefox-extension-0.2.xpi *
 

@@ -17,8 +17,8 @@ xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 		</em:targetApplication>
 
 		<!-- Front End MetaData -->
-		<em:name>TeamFound</em:name>
-		<em:description>TeamFound Toolbar - Share your Search-Results</em:description>
+		<em:name>TeamFound Toolbar</em:name>
+		<em:description>TeamFound Toolbar - share your search results</em:description>
 		<em:creator>Jan Kechel</em:creator>
 		<em:homepageURL>http://teamfound.berlios.de/</em:homepageURL>
 	</Description>      
