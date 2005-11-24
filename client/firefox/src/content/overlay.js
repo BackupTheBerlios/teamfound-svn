@@ -22,15 +22,19 @@ var TeamFound =
 	// Initialisierung
 	onLoad: function() 
 	{
-		this.initialized = true;
+		var doc = window._content.document;
+		var xtd = doc.getElementById("insert-teamfound");
+		if( xtd != null)
+		{
+			xtd.innerHTML = xmlhttpext.responseText;
+		}
 	}, // onLoad
 
 	// Informations-Dialog soll angezeigt werden
 	onInfo: function() 
 	{
 		content.location = "http://teamfound.berlios.de";
-		if(this.initialized)
-			alert("TeamFound - Ein Projekt der TU-Berlin\n" +
+		alert(  "TeamFound - Ein Projekt der TU-Berlin\n" +
 			"Copyright (c) 2005 Jan Kechel\n" +
 			"Lizenz: GNU General Public License");
 	}, // onInfo
@@ -43,6 +47,22 @@ var TeamFound =
 
 		// Vorerst einfach die vom server erzeugte url anzeigen ohne weitere bearbeitung
 		content.location = "http://hqpm.dyndns.org/tf/search.pl?keyword=" + key.value;
+
+		// Externe suche
+
+		var url = "http://www.google.de/search?q=" + key.value;
+		// Request erstellen (globale variable)
+		xmlhttpext = new XMLHttpRequest();
+
+		// Callback Registrieren wenn der Server fertig ist
+		xmlhttpext.onreadystatechange = TeamFound.onExternSearchFinished;
+
+		// Request methode, url und asyncron (true/false) definieren
+		xmlhttpext.open("GET", url, true); 
+
+		// Request senden
+		xmlhttpext.send(null);
+		
 	}, // onSearch
 
 	// Eine neue Seite soll dem Index hinzugefuegt werden
@@ -90,7 +110,30 @@ var TeamFound =
 					"Antwort: " + xmlhttp.status + " - " + xmlhttp.statusText);
 			}
 		}
+	}, // onAddPageFinished
+
+	onExternSearchFinished: function()
+	{
+		// nur etwas machen falls der request schon fertig ist
+		if( xmlhttpext.readyState == 4)  
+		{
+			// HTTP-Request Code auswerten
+			if( xmlhttpext.status == 200)
+			{	// OK
+				alert("Die Seite\n'" + addpageurl + "'\nwurde dem Index hinzugefuegt.");
+			}
+			else
+			{	// Fehler
+				alert(  "Es ist ein Fehler aufgetreten. Die Seite\n'" + 
+					addpageurl + 
+					"'\nkonnte dem Index nicht hinzugefuegt werden.\n" +
+					"\n" +
+					"Anfrage: '" + url + "'\n" + 
+					"Antwort: " + xmlhttp.status + " - " + xmlhttp.statusText);
+			}
+		}
 	} // onAddPageFinished
+
 }; // TeamFound
 
 // Window-Listener der onLoad aufruft sobald die TeamFound Extension geladen wurde
@@ -100,5 +143,5 @@ window.addEventListener(
 	{ 
 		TeamFound.onLoad(e); 
 	}, 
-	false); 
+	true); 
 
