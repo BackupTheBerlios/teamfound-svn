@@ -49,13 +49,13 @@ var TeamFound =
 		content.location = "http://hqpm.dyndns.org/tf/search.pl?keyword=" + key.value;
 
 		// Externe suche
-
 		var url = "http://www.google.de/search?q=" + key.value;
+
 		// Request erstellen (globale variable)
 		xmlhttpext = new XMLHttpRequest();
 
 		// Callback Registrieren wenn der Server fertig ist
-		xmlhttpext.onreadystatechange = TeamFound.onExternSearchFinished;
+		//xmlhttpext.onreadystatechange = TeamFound.onExternSearchFinished;
 
 		// Request methode, url und asyncron (true/false) definieren
 		xmlhttpext.open("GET", url, true); 
@@ -97,28 +97,6 @@ var TeamFound =
 		{
 			// HTTP-Request Code auswerten
 			if( xmlhttp.status == 200)
-			{	// OK
-				alert("Die Seite\n'" + addpageurl + "'\nwurde dem Index hinzugefuegt.");
-			}
-			else
-			{	// Fehler
-				alert(  "Es ist ein Fehler aufgetreten. Die Seite\n'" + 
-					addpageurl + 
-					"'\nkonnte dem Index nicht hinzugefuegt werden.\n" +
-					"\n" +
-					"Anfrage: '" + url + "'\n" + 
-					"Antwort: " + xmlhttp.status + " - " + xmlhttp.statusText);
-			}
-		}
-	}, // onAddPageFinished
-
-	onExternSearchFinished: function()
-	{
-		// nur etwas machen falls der request schon fertig ist
-		if( xmlhttpext.readyState == 4)  
-		{
-			// HTTP-Request Code auswerten
-			if( xmlhttpext.status == 200)
 			{	// OK
 				alert("Die Seite\n'" + addpageurl + "'\nwurde dem Index hinzugefuegt.");
 			}
