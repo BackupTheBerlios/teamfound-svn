@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="response">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="interface-version"/>
+        <xs:element ref="return-value"/>
+        <xs:element ref="return-description"/>
+        <xs:element ref="category-counter"/>
+        <xs:element ref="server"/>
+        <xs:element ref="addpage"/>
+        <xs:element ref="search"/>
+        <xs:element ref="addcategory"/>
+        <xs:element ref="getcategories"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="interface-version" type="xs:string"/>
+  <xs:element name="return-value" type="xs:integer"/>
+  <xs:element name="return-description" type="xs:string"/>
+  <xs:element name="category-counter" type="xs:integer"/>
+  <xs:element name="server">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="name"/>
+        <xs:element ref="version"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="version" type="xs:string"/>
+  <xs:element name="addpage" type="url"/>
+  <xs:element name="search">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="keywords"/>
+        <xs:element ref="result"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="keywords">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="word"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="word" type="xs:string"/>
+  <xs:element name="result">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="count"/>
+        <xs:element maxOccurs="unbounded" ref="found"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="count" type="xs:integer"/>
+  <xs:element name="found">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="url">
+          <xs:sequence>
+            <xs:element ref="title"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="title" type="xs:string"/>
+  <xs:element name="addcategory">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="name"/>
+        <xs:element ref="gotid"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="gotid" type="xs:integer"/>
+  <xs:element name="getcategories">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="category"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="name" type="xs:string"/>
+  <xs:complexType name="url">
+    <xs:sequence>
+      <xs:element ref="url"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="url" type="xs:anyURI"/>
+  <xs:element name="category">
+    <xs:complexType>
+      <xs:sequence minOccurs="0">
+        <xs:element ref="name"/>
+        <xs:element ref="description"/>
+        <xs:element ref="id"/>
+        <xs:element ref="subcategories"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="description" type="xs:string"/>
+  <xs:element name="id" type="xs:integer"/>
+  <xs:element name="subcategories">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="category"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

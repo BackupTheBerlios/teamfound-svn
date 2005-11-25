@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="teamfound-interface-milestone2.xsd">
+
+ <interface-version>M2.0</interface-version>
+
+ <return-value>0</return-value>
+ <return-description>OK</return-description>
+
+ <category-counter>54</category-counter>
+
+ <server>
+  <name>TeamFound</name>
+  <version>0.2</version>
+ </server>
+
+ <addpage>
+<url>http://blabla.html</url>
+ </addpage>
+
+ <search>
+<keywords>
+   <word>xxx</word>
+   <word>yyy</word>
+  </keywords>
+
+  <result>
+
+   <count>3</count>
+
+   <found>
+    <url>http://xxx.html</url>
+    <title>Der Titel der Seite</title>
+   </found>
+
+   <found>
+    <url>http://xxx.html</url>
+    <title>Der Titel der Seite</title>
+   </found>
+
+   <found>
+    <url>http://xxx.html</url>
+    <title>Der Titel der Seite</title>
+   </found>
+
+  </result>
+ </search>
+
+ <addcategory>
+ <name>kategoriename</name>
+  <gotid>53</gotid>
+ </addcategory>
+
+ <getcategories>
+ <category>
+   <name>name der kategorie</name>
+   <description>laengere beschreibung</description>
+   <id>0</id>
+   <subcategories>
+    <category>
+    </category>
+    <category>
+    </category>
+   </subcategories>
+  </category>
+ </getcategories>
+ 
+</response>
