@@ -38,8 +38,9 @@
 			<textbox id="tf-settings-server" cols="100" rows="1"/>
 		</groupbox>
 		<hbox>
-			<button align="end" dlgtype="accept"/>
-			<button align="end" dlgtype="cancel"/>
+			<button align="end" dlgtype="accept" accesskey="O"/>
+			<button align="end" dlgtype="cancel" accesskey="C"/>
+			<button align="end" label="Default" oncommand="onSettingsDefault();" accesskey="D"/>
 		</hbox>
 	</vbox>
 </dialog>
