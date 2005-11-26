@@ -33,11 +33,24 @@ var TeamFound =
 	// Informations-Dialog soll angezeigt werden
 	onInfo: function() 
 	{
-		content.location = "http://teamfound.berlios.de";
 		alert(  "TeamFound - Ein Projekt der TU-Berlin\n" +
 			"Copyright (c) 2005 Jan Kechel\n" +
 			"Lizenz: GNU General Public License");
 	}, // onInfo
+
+	// Homepage soll angezeigt werden
+	onHomepage: function() 
+	{
+		content.location = "http://teamfound.berlios.de";
+	}, // onHomepage
+
+
+	onSettings: function()
+	{
+		var setdiag = window.openDialog("chrome://teamfound/content/settings.xul", "TeamFound preferences", "chrome,centerscreen,modal");
+		setdiag.focus();
+
+	}, // onSettings
 
 	// Eine Suche soll durchgefuehrt werden
 	onSearch: function()

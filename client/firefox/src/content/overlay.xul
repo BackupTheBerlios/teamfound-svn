@@ -25,15 +25,25 @@
 	<script src="overlay.js"/>
 
 	<menupopup id="menu_ToolsPopup">
-		<menuitem id="tf-hello" label="TeamFound" 
-		oncommand="TeamFound.onInfo(event);"/>
+		<menu label="TeamFound">
+			<menupopup>
+				<menuitem id="tf-prefs" label="Settings" 
+				oncommand="TeamFound.onSettings(event);"/>
+
+				<menuitem id="tf-info" label="Info" 
+				oncommand="TeamFound.onInfo(event);"/>
+
+				<menuitem id="tf-info" label="Homepage" 
+				oncommand="TeamFound.onHomepage(event);"/>
+			</menupopup>
+		</menu>
 	</menupopup>
 
 	<toolbox id="navigator-toolbox">
 		<toolbar id="tf-toolbar" accessKey="T" class="chromeclass-toolbar"
 		toolbarname="TeamFound Toolbar" hidden="false" persist="hidden">
 
-			<toolbarbutton id="tf-infobutton" tooltiptext="TeamFound Info-Dialog." oncommand="TeamFound.onInfo(event);" />
+			<toolbarbutton id="tf-icon" tooltiptext="TeamFound Info-Dialog." oncommand="TeamFound.onInfo(event);" />
 			<toolbarbutton id="tf-buttonAddPage" tooltiptext="Fuege aktuelle Seite dem Index hinzu." label="Seite Hinzufuegen" oncommand="TeamFound.onAddPage(event);" />
 
 			<toolbaritem id="tf-tbi1" persist="width">
