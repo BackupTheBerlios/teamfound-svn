@@ -5,7 +5,7 @@ xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
 	<Description about="urn:mozilla:install-manifest">
 		<em:id>{818f085f-a8e5-4576-bcc5-16d92bdff65d}</em:id>
-		<em:version>0.3</em:version>
+		<em:version>0.4</em:version>
 		<em:type>2</em:type>
 
 		<em:targetApplication>
@@ -17,9 +17,12 @@ xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 		</em:targetApplication>
 
 		<!-- Front End MetaData -->
-		<em:name>TeamFound Toolbar</em:name>
-		<em:description>TeamFound Toolbar - share your search results</em:description>
+		<em:name>TeamFound</em:name>
+		<em:description>- share your search results</em:description>
 		<em:creator>Jan Kechel</em:creator>
 		<em:homepageURL>http://teamfound.berlios.de/</em:homepageURL>
+		<em:optionsURL>chrome://teamfound/content/settings.xul</em:optionsURL>
+		<em:iconURL>chrome://teamfound/skin/logo_tf_32x32.png</em:iconURL>
+
 	</Description>      
 </RDF>

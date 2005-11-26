@@ -43,7 +43,7 @@
 		<toolbar id="tf-toolbar" accessKey="T" class="chromeclass-toolbar"
 		toolbarname="TeamFound Toolbar" hidden="false" persist="hidden">
 
-			<toolbarbutton id="tf-icon" tooltiptext="TeamFound Info-Dialog." oncommand="TeamFound.onInfo(event);" />
+			<toolbarbutton id="tf-icon" tooltiptext="TeamFound Info-Dialog." oncommand="TeamFound.onSettings(event);" />
 			<toolbarbutton id="tf-buttonAddPage" tooltiptext="Fuege aktuelle Seite dem Index hinzu." label="Seite Hinzufuegen" oncommand="TeamFound.onAddPage(event);" />
 
 			<toolbaritem id="tf-tbi1" persist="width">

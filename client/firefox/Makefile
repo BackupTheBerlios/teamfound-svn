@@ -10,6 +10,6 @@ all:
 	cp src/chrome.manifest.xpi build/chrome.manifest
 	cp src/install.rdf build
 	mkdir build/chrome
-	cd src; jar -cvf ../build/chrome/teamfound.jar content/overlay.* skin/icon.png skin/overlay.css
-	cd build; zip -r ../teamfound-firefox-1.5-extension-0.3-interface-m1.xpi *
+	cd src; jar -cvf ../build/chrome/teamfound.jar content/overlay.* skin/*.png skin/overlay.css content/settings.xul
+	cd build; zip -r ../teamfound-firefox-1.5-extension-0.4-interface-m1.xpi *
 

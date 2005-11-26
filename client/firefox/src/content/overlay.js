@@ -33,7 +33,7 @@ var TeamFound =
 	// Informations-Dialog soll angezeigt werden
 	onInfo: function() 
 	{
-		alert(  "TeamFound - Ein Projekt der TU-Berlin\n" +
+		alert(  "TeamFound - share your search results\n" +
 			"Copyright (c) 2005 Jan Kechel\n" +
 			"Lizenz: GNU General Public License");
 	}, // onInfo
@@ -58,8 +58,21 @@ var TeamFound =
 		// Text-feld auslesen
 		var key = document.getElementById("tf-ml1");
 
+		// Hole Preferences Server
+
+		// Get the root branch
+		var prefs = Components.classes["@mozilla.org/preferences-service;1"].
+		getService(Components.interfaces.nsIPrefBranch);
+
+		// Get the "extensions.teamfound." branch
+		prefs = Components.classes["@mozilla.org/preferences-service;1"].
+		getService(Components.interfaces.nsIPrefService);
+		prefs = prefs.getBranch("extensions.teamfound.");
+
+		var pref_serverurl = prefs.getCharPref("settings.server");
+
 		// Vorerst einfach die vom server erzeugte url anzeigen ohne weitere bearbeitung
-		content.location = "http://hqpm.dyndns.org/tf/search.pl?keyword=" + key.value;
+		content.location = pref_serverurl + "/search.pl?keyword=" + key.value;
 
 		// Externe suche
 		var url = "http://www.google.de/search?q=" + key.value;
@@ -83,8 +96,21 @@ var TeamFound =
 		// hinzuzufuegende url (globale variable)
 		addpageurl = content.document.URL;
 
+		// Hole Preferences Server
+
+		// Get the root branch
+		var prefs = Components.classes["@mozilla.org/preferences-service;1"].
+		getService(Components.interfaces.nsIPrefBranch);
+
+		// Get the "extensions.teamfound." branch
+		prefs = Components.classes["@mozilla.org/preferences-service;1"].
+		getService(Components.interfaces.nsIPrefService);
+		prefs = prefs.getBranch("extensions.teamfound.");
+
+		var pref_serverurl = prefs.getCharPref("settings.server");
+
 		// server-adresse zum hinzufuegen neuer seiten
-		var url = "http://hqpm.dyndns.org/tf/addpage.pl?url=" + addpageurl;
+		var url = pref_serverurl + "/addpage.pl?url=" + addpageurl;
 
 		// Request erstellen (globale variable)
 		// XMLHttpRequest funktioniert mit Mozilla, Firefox, Safari, und Netscape (nicht mit IE)
@@ -124,7 +150,6 @@ var TeamFound =
 			}
 		}
 	} // onAddPageFinished
-
 }; // TeamFound
 
 // Window-Listener der onLoad aufruft sobald die TeamFound Extension geladen wurde
@@ -135,4 +160,3 @@ window.addEventListener(
 		TeamFound.onLoad(e); 
 	}, 
 	true); 
-
