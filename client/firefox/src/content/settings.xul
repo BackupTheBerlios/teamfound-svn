@@ -24,9 +24,9 @@
 <dialog id="tf-settings-dialog" 
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	title="TeamFound Settings"
-	ondialogaccept="return onSettingsOK();"
-	ondialogcancel="return onSettingsCancel();"
-	onload="onSettingsLoad();">
+	ondialogaccept="return TeamFoundSettings.onSettingsOK();"
+	ondialogcancel="return TeamFoundSettings.onSettingsCancel();"
+	onload="return TeamFoundSettings.onSettingsLoad();">
 	>
 
 	<script src="settings.js"/>
@@ -40,7 +40,7 @@
 		<hbox>
 			<button align="end" dlgtype="accept" accesskey="O"/>
 			<button align="end" dlgtype="cancel" accesskey="C"/>
-			<button align="end" label="Default" oncommand="onSettingsDefault();" accesskey="D"/>
+			<button align="end" label="Default" oncommand="TeamFoundSettings.onSettingsDefault();" accesskey="D"/>
 		</hbox>
 	</vbox>
 </dialog>

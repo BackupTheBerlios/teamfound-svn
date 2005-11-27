@@ -43,8 +43,8 @@
 		<toolbar id="tf-toolbar" accessKey="T" class="chromeclass-toolbar"
 		toolbarname="TeamFound Toolbar" hidden="false" persist="hidden">
 
-			<toolbarbutton id="tf-icon" tooltiptext="TeamFound Info-Dialog." oncommand="TeamFound.onSettings(event);" />
-			<toolbarbutton id="tf-buttonAddPage" tooltiptext="Fuege aktuelle Seite dem Index hinzu." label="Seite Hinzufuegen" oncommand="TeamFound.onAddPage(event);" />
+			<toolbarbutton id="tf-icon" tooltiptext="TeamFound configuration" oncommand="TeamFound.onSettings(event);" />
+			<toolbarbutton id="tf-buttonAddPage" tooltiptext="Adds the current page to your TeamFound index" label="Add page" oncommand="TeamFound.onAddPage(event);" />
 
 			<toolbaritem id="tf-tbi1" persist="width">
 				<menulist id="tf-ml1" editable="true" flex="1"
@@ -59,9 +59,9 @@
 			          resizebefore="closest" resizeafter="farthest"
 				  tooltiptext="Groesse des Suchfeldes anpassen" />-->
 
-			<toolbarbutton id="tf-buttonSearch" tooltiptext="Suche starten" label="Suchen" oncommand="TeamFound.onSearch(event);" />
+			<toolbarbutton id="tf-buttonSearch" tooltiptext="search or go to (automatically guesses whether to search or to visit url)" label="Go" oncommand="TeamFound.onSearch(event);" />
 
-			<label id="tf-adress-label" value="this text displays your current url"/>
+			<label id="tf-adress-label" tooltiptext="" value="this text displays your current url"/>
 		</toolbar>
 	</toolbox>
 </overlay>

@@ -15,20 +15,35 @@
 *	You should have received a copy of the GNU General Public License
 *	along with this program; if not, write to the Free Software
 *	Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*
+*	global variables:
+*		xmlhttp - adding page http-request
+*		xmlhttptf - searching teamfound
+*		xmlhttpext - searching extern search engine
 */
+
 
 var TeamFound = 
 {
+	 myTrim: function(s)
+	 {
+		 // Remove leading spaces and carriage returns
+		 while ((s.substring(0,1) == ' ') || (s.substring(0,1) == '\n') || (s.substring(0,1) == '\r'))
+		 { s = s.substring(1,s.length); }
+
+		 // Remove trailing spaces and carriage returns
+		 while ((s.substring(s.length-1,s.length) == ' ') || (s.substring(s.length-1,s.length) == '\n') || (s.substring(s.length-1,s.length) == '\r'))
+		 { s = s.substring(0,s.length-1); }
+
+		 return s;
+	 },
+
 	// Initialisierung
 	onLoad: function() 
 	{
 		document.getElementById("tf-adress-label").value = content.document.URL;
-		var doc = window._content.document;
-		var xtd = doc.getElementById("insert-teamfound");
-		if( xtd != null)
-		{
-			xtd.innerHTML = xmlhttpext.responseText;
-		}
+		document.getElementById("tf-adress-label").tooltiptext = content.document.URL;
+		document.getElementById("tf-adress-label").statustext = content.document.URL;
 	}, // onLoad
 
 	// Informations-Dialog soll angezeigt werden
@@ -57,39 +72,47 @@ var TeamFound =
 	onSearch: function()
 	{
 		// Text-feld auslesen
-		var key = document.getElementById("tf-ml1");
+		var search = TeamFound.myTrim(document.getElementById("tf-ml1").value);
 
 		// Test ob url oder suchwoerter
 		// erstmal wenn kein . (punkt) im feld vorkommt dann sind es suchwoerter, sonst url
-		if( /\./.test(key.value))
+		if( /\./.test(search) && !/[ \"]/.test(search))
 		{
 			// wenn protokoll mit angegeben wurde, dann direkt uebernehmen, sonst http vorhaengen
-			if( /:\/\//.test(key.value))
+			if( /:\/\//.test(search))
 			{
-				content.location = key.value;
+				content.location = search;
 			}
 			else
 			{
-				content.location = "http://" + key.value;
+				content.location = "http://" + search;
 			}
 			return;
 		}
 
 		// OK, also sind suchwoerter angegeben worden.
-		var allwords = key.value.split(" ");
+		var allwords = search.split(" ");
 
 		if( allwords.length == 0)
 		{
-			// empty string .. we won't search vor this ;-)
+			// empty string .. we won't search for this ;-)
 			return;
 		}
 
+		// insert 'AND' between different search-words
 		var searchwithand = allwords[0];
 		for( var i = 1; i < allwords.length; i++)
 		{
-			searchwithand = searchwithand + " AND " + allwords[i];
+			// make sure no empty searches (happens if there are 
+			// several spaces between two words or appending spaces in search-field are given)
+			if( allwords[i].length > 0)
+			{
+				searchwithand = searchwithand + " AND " + allwords[i];
+			}
 		}
 
+		// Ok, template wird gleich geladen, content folgt nach asyncroner antwort
+		content.location = "chrome://teamfound/skin/search_h.html";
 
 		// Hole Preferences Server
 		// Get the root branch
@@ -99,20 +122,32 @@ var TeamFound =
 
 		var pref_serverurl = prefs.getCharPref("settings.server");
 
-		// Vorerst einfach die vom server erzeugte url anzeigen ohne weitere bearbeitung
-		content.location = pref_serverurl + "/search.pl?keyword=" + searchwithand;
+		// TeamFound Suche
+		var teamfoundurl = pref_serverurl + "/search.pl?keyword=" + searchwithand;
+
+		// Request erstellen (globale variable)
+		xmlhttptf= new XMLHttpRequest();
+
+		// Callback Registrieren wenn der Server fertig ist
+		xmlhttptf.onreadystatechange = TeamFound.onTeamFoundSearchFinished;
+
+		// Request methode, url und asyncron (true/false) definieren
+		xmlhttptf.open("GET", teamfoundurl, true); 
+
+		// Request senden
+		xmlhttptf.send(null);
 
 		// Externe suche
-		var url = "http://www.google.de/search?q=" + key.value;
+		var externurl = "http://www.google.de/search?q=" + search;
 
 		// Request erstellen (globale variable)
 		xmlhttpext = new XMLHttpRequest();
 
 		// Callback Registrieren wenn der Server fertig ist
-		//xmlhttpext.onreadystatechange = TeamFound.onExternSearchFinished;
+		xmlhttpext.onreadystatechange = TeamFound.onExternSearchFinished;
 
 		// Request methode, url und asyncron (true/false) definieren
-		xmlhttpext.open("GET", url, true); 
+		xmlhttpext.open("GET", externurl, true); 
 
 		// Request senden
 		xmlhttpext.send(null);
@@ -172,7 +207,56 @@ var TeamFound =
 					"Antwort: " + xmlhttp.status + " - " + xmlhttp.statusText);
 			}
 		}
-	} // onAddPageFinished
+	}, // onAddPageFinished
+
+	// Externe suche beendet
+	onExternSearchFinished: function()
+	{
+		// nur etwas machen falls der request schon fertig ist
+		if( xmlhttpext.readyState == 4)  
+		{
+			// HTTP-Request Code auswerten
+			if( xmlhttpext.status == 200)
+			{	// OK
+				var doc = window._content.document;
+				var xtd = doc.getElementById("teamfound-result-two");
+				if( xtd != null)
+				{
+					xtd.innerHTML = xmlhttpext.responseText;
+				}
+			}
+			else
+			{	// Fehler
+				alert(  "Fehler bei externer suche");
+			}
+		}
+
+	}, // onExternSearchFinished
+
+	// TeamFound suche beendet
+	onTeamFoundSearchFinished: function()
+	{
+		// nur etwas machen falls der request schon fertig ist
+		if( xmlhttptf.readyState == 4)  
+		{
+			// HTTP-Request Code auswerten
+			if( xmlhttptf.status == 200)
+			{	// OK
+
+				var doc = window._content.document;
+				var xtd = doc.getElementById("teamfound-result-one");
+				if( xtd != null)
+				{
+					xtd.innerHTML = xmlhttptf.responseText;
+				}
+			}
+			else
+			{
+				alert("fehler bei TeamFound suche");
+			}
+		}
+	} // onTeamFoundSearchFinished
+
 }; // TeamFound
 
 // Window-Listener der onLoad aufruft sobald die TeamFound Extension geladen wurde

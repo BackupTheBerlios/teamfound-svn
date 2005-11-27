@@ -21,43 +21,46 @@
 */
 
 // Settings OK-Button
-function onSettingsOK()
+var TeamFoundSettings =
 {
-	prefs.setCharPref("settings.serverurl", document.getElementById("tf-settings-server").value);
-	return true;
-} //onSettingsOK
+	onSettingsOK: function()
+	{
+		prefs.setCharPref("settings.serverurl", document.getElementById("tf-settings-server").value);
+		return true;
+	}, //onSettingsOK
 
-// Settings Cancel-Button
-function onSettingsCancel()
-{
-	return true;
-} // onSettingsCancel
+	// Settings Cancel-Button
+	onSettingsCancel: function()
+	{
+		return true;
+	}, // onSettingsCancel
 
-// Settings-Dialog gets loaded
-function onSettingsLoad()
-{
-	prefs = Components.classes["@mozilla.org/preferences-service;1"].
-		getService(Components.interfaces.nsIPrefService).
-		getBranch("extensions.teamfound."); // this declares the global variable
+	// Settings-Dialog gets loaded
+	onSettingsLoad: function()
+	{
+		prefs = Components.classes["@mozilla.org/preferences-service;1"].
+			getService(Components.interfaces.nsIPrefService).
+			getBranch("extensions.teamfound."); // this declares the global variable
 
-	// Get the settings and insert em into the text-fields
-	var serverurl = prefs.getCharPref("settings.serverurl");
-	var servertextbox = document.getElementById("tf-settings-server");
-	servertextbox.value = serverurl;
-} // onSettingsLoad
+		// Get the settings and insert em into the text-fields
+		var serverurl = prefs.getCharPref("settings.serverurl");
+		var servertextbox = document.getElementById("tf-settings-server");
+		servertextbox.value = serverurl;
+	}, // onSettingsLoad
 
-// Settings defaults-button
-function onSettingsDefault()
-{
-	// Get the root branch
-	var defprefs = Components.classes["@mozilla.org/preferences-service;1"].
-		getService(Components.interfaces.nsIPrefBranch).
-		getDefaultBranch("extensions.teamfound."); // this is where we decide to get defaults instead of current configuration
+	// Settings defaults-button
+	onSettingsDefault: function()
+	{
+		// Get the root branch
+		var defprefs = Components.classes["@mozilla.org/preferences-service;1"].
+			getService(Components.interfaces.nsIPrefBranch).
+			getDefaultBranch("extensions.teamfound."); // this is where we decide to get defaults instead of current configuration
 
-	// Get the settings and insert em into the text-fields
-	var defurl = defprefs.getCharPref("settings.serverurl");
-	var servertextbox = document.getElementById("tf-settings-server");
-	servertextbox.value = defurl;
-} // onSettingsDefault
+		// Get the settings and insert em into the text-fields
+		var defurl = defprefs.getCharPref("settings.serverurl");
+		var servertextbox = document.getElementById("tf-settings-server");
+		servertextbox.value = defurl;
+	} // onSettingsDefault
+};
 
 
