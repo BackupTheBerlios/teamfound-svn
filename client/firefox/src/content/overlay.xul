@@ -29,12 +29,6 @@
 			<menupopup>
 				<menuitem id="tf-prefs" label="Settings" 
 				oncommand="TeamFound.onSettings(event);"/>
-
-				<menuitem id="tf-info" label="Info" 
-				oncommand="TeamFound.onInfo(event);"/>
-
-				<menuitem id="tf-info" label="Homepage" 
-				oncommand="TeamFound.onHomepage(event);"/>
 			</menupopup>
 		</menu>
 	</menupopup>

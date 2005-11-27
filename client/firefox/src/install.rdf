@@ -20,6 +20,9 @@ xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 		<em:name>TeamFound</em:name>
 		<em:description>- share your search results</em:description>
 		<em:creator>Jan Kechel</em:creator>
+		<em:contributor>Martin Klink</em:contributor>
+		<em:contributor>Jonas Heese</em:contributor>
+		<em:contributor>Andreas Bachmann</em:contributor>
 		<em:homepageURL>http://teamfound.berlios.de/</em:homepageURL>
 		<em:optionsURL>chrome://teamfound/content/settings.xul</em:optionsURL>
 		<em:iconURL>chrome://teamfound/skin/logo_tf_32x32.png</em:iconURL>

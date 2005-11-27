@@ -46,21 +46,6 @@ var TeamFound =
 		document.getElementById("tf-adress-label").statustext = content.document.URL;
 	}, // onLoad
 
-	// Informations-Dialog soll angezeigt werden
-	onInfo: function() 
-	{
-		alert(  "TeamFound - share your search results\n" +
-			"Copyright (c) 2005 Jan Kechel\n" +
-			"Lizenz: GNU General Public License");
-	}, // onInfo
-
-	// Homepage soll angezeigt werden
-	onHomepage: function() 
-	{
-		content.location = "http://teamfound.berlios.de";
-	}, // onHomepage
-
-
 	onSettings: function()
 	{
 		var setdiag = window.openDialog("chrome://teamfound/content/settings.xul", "TeamFound preferences", "chrome,centerscreen,modal");
@@ -120,7 +105,7 @@ var TeamFound =
 			getService(Components.interfaces.nsIPrefBranch).
 			getBranch("extensions.teamfound.");
 
-		var pref_serverurl = prefs.getCharPref("settings.server");
+		var pref_serverurl = prefs.getCharPref("settings.serverurl");
 
 		// TeamFound Suche
 		var teamfoundurl = pref_serverurl + "/search.pl?keyword=" + searchwithand;
@@ -165,7 +150,7 @@ var TeamFound =
 			getService(Components.interfaces.nsIPrefBranch).
 			getBranch("extensions.teamfound.");
 
-		var pref_serverurl = prefs.getCharPref("settings.server");
+		var pref_serverurl = prefs.getCharPref("settings.serverurl");
 
 		// server-adresse zum hinzufuegen neuer seiten
 		var url = pref_serverurl + "/addpage.pl?url=" + addpageurl;
@@ -213,13 +198,24 @@ var TeamFound =
 	onExternSearchFinished: function()
 	{
 		// nur etwas machen falls der request schon fertig ist
-		if( xmlhttpext.readyState == 4)  
+		/*
+		readonly PRInt32 readyState
+		The state of the request.
+		Possible values: 
+		0 UNINITIALIZED open() has not been called yet. 
+		1 LOADING send() has not been called yet. 
+		2 LOADED send() has been called, headers and status are available. 
+		3 INTERACTIVE Downloading, responseText holds the partial data. 
+		4 COMPLETED Finished with all operations.
+		*/
+		if( xmlhttpext.readyState >= 2)  
 		{
+			var doc = window._content.document;
+			var xtd = doc.getElementById("teamfound-result-two");
+
 			// HTTP-Request Code auswerten
 			if( xmlhttpext.status == 200)
 			{	// OK
-				var doc = window._content.document;
-				var xtd = doc.getElementById("teamfound-result-two");
 				if( xtd != null)
 				{
 					xtd.innerHTML = xmlhttpext.responseText;
@@ -227,7 +223,7 @@ var TeamFound =
 			}
 			else
 			{	// Fehler
-				alert(  "Fehler bei externer suche");
+				xtd.innerHTML = "Error: " + xmlhttpext.status + " - " + xmlhttpext.statusText;
 			}
 		}
 
@@ -237,22 +233,22 @@ var TeamFound =
 	onTeamFoundSearchFinished: function()
 	{
 		// nur etwas machen falls der request schon fertig ist
-		if( xmlhttptf.readyState == 4)  
+		if( xmlhttptf.readyState >= 2)  
 		{
+			var doc = window._content.document;
+			var tfrone = doc.getElementById("teamfound-result-one");
+
 			// HTTP-Request Code auswerten
 			if( xmlhttptf.status == 200)
 			{	// OK
-
-				var doc = window._content.document;
-				var xtd = doc.getElementById("teamfound-result-one");
-				if( xtd != null)
+				if( tfrone != null)
 				{
-					xtd.innerHTML = xmlhttptf.responseText;
+					tfrone.innerHTML = xmlhttptf.responseText;
 				}
 			}
 			else
 			{
-				alert("fehler bei TeamFound suche");
+				tfrone.innerHTML = "Error: " + xmlhttptf.status + " - " + xmlhttptf.statusText;
 			}
 		}
 	} // onTeamFoundSearchFinished
@@ -267,3 +263,5 @@ window.addEventListener(
 		TeamFound.onLoad(e); 
 	}, 
 	true); 
+
+// EOF
