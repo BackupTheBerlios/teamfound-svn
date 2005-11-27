@@ -22,6 +22,7 @@ var TeamFound =
 	// Initialisierung
 	onLoad: function() 
 	{
+		document.getElementById("tf-adress-label").value = content.document.URL;
 		var doc = window._content.document;
 		var xtd = doc.getElementById("insert-teamfound");
 		if( xtd != null)
@@ -58,21 +59,48 @@ var TeamFound =
 		// Text-feld auslesen
 		var key = document.getElementById("tf-ml1");
 
-		// Hole Preferences Server
+		// Test ob url oder suchwoerter
+		// erstmal wenn kein . (punkt) im feld vorkommt dann sind es suchwoerter, sonst url
+		if( /\./.test(key.value))
+		{
+			// wenn protokoll mit angegeben wurde, dann direkt uebernehmen, sonst http vorhaengen
+			if( /:\/\//.test(key.value))
+			{
+				content.location = key.value;
+			}
+			else
+			{
+				content.location = "http://" + key.value;
+			}
+			return;
+		}
 
+		// OK, also sind suchwoerter angegeben worden.
+		var allwords = key.value.split(" ");
+
+		if( allwords.length == 0)
+		{
+			// empty string .. we won't search vor this ;-)
+			return;
+		}
+
+		var searchwithand = allwords[0];
+		for( var i = 1; i < allwords.length; i++)
+		{
+			searchwithand = searchwithand + " AND " + allwords[i];
+		}
+
+
+		// Hole Preferences Server
 		// Get the root branch
 		var prefs = Components.classes["@mozilla.org/preferences-service;1"].
-		getService(Components.interfaces.nsIPrefBranch);
-
-		// Get the "extensions.teamfound." branch
-		prefs = Components.classes["@mozilla.org/preferences-service;1"].
-		getService(Components.interfaces.nsIPrefService);
-		prefs = prefs.getBranch("extensions.teamfound.");
+			getService(Components.interfaces.nsIPrefBranch).
+			getBranch("extensions.teamfound.");
 
 		var pref_serverurl = prefs.getCharPref("settings.server");
 
 		// Vorerst einfach die vom server erzeugte url anzeigen ohne weitere bearbeitung
-		content.location = pref_serverurl + "/search.pl?keyword=" + key.value;
+		content.location = pref_serverurl + "/search.pl?keyword=" + searchwithand;
 
 		// Externe suche
 		var url = "http://www.google.de/search?q=" + key.value;
@@ -98,14 +126,9 @@ var TeamFound =
 
 		// Hole Preferences Server
 
-		// Get the root branch
 		var prefs = Components.classes["@mozilla.org/preferences-service;1"].
-		getService(Components.interfaces.nsIPrefBranch);
-
-		// Get the "extensions.teamfound." branch
-		prefs = Components.classes["@mozilla.org/preferences-service;1"].
-		getService(Components.interfaces.nsIPrefService);
-		prefs = prefs.getBranch("extensions.teamfound.");
+			getService(Components.interfaces.nsIPrefBranch).
+			getBranch("extensions.teamfound.");
 
 		var pref_serverurl = prefs.getCharPref("settings.server");
 

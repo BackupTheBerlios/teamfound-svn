@@ -10,3 +10,8 @@
 #tf-settings-dialog {
 	width:500px;
 }
+
+#tf-adress-label {
+	color:#000080;
+	vertical-align:bottom;
+}

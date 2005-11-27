@@ -55,11 +55,13 @@
 				</menulist>
 			</toolbaritem>
 
-			<splitter id="tf-sp1" state="open" collapse="none"
+			<!--<splitter id="tf-sp1" state="open" collapse="none"
 			          resizebefore="closest" resizeafter="farthest"
-				  tooltiptext="Groesse des Suchfeldes anpassen" />
+				  tooltiptext="Groesse des Suchfeldes anpassen" />-->
 
 			<toolbarbutton id="tf-buttonSearch" tooltiptext="Suche starten" label="Suchen" oncommand="TeamFound.onSearch(event);" />
+
+			<label id="tf-adress-label" value="this text displays your current url"/>
 		</toolbar>
 	</toolbox>
 </overlay>
