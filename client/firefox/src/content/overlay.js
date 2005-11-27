@@ -56,6 +56,13 @@ var TeamFound =
 	// Eine Suche soll durchgefuehrt werden
 	onSearch: function()
 	{
+		// Hole Preferences Server
+		// Get the root branch
+		var prefs = Components.classes["@mozilla.org/preferences-service;1"].
+			getService(Components.interfaces.nsIPrefBranch).
+			getBranch("extensions.teamfound.");
+
+
 		// Text-feld auslesen
 		var search = TeamFound.myTrim(document.getElementById("tf-ml1").value);
 
@@ -97,13 +104,15 @@ var TeamFound =
 		}
 
 		// Ok, template wird gleich geladen, content folgt nach asyncroner antwort
-		content.location = "chrome://teamfound/skin/search_h.html";
+		if( prefs.getIntPref("settings.layout") == 0)
+		{
+			content.location = "chrome://teamfound/skin/search_h.html";
+		}
+		else
+		{
+			content.location = "chrome://teamfound/skin/search_v.html";
+		}
 
-		// Hole Preferences Server
-		// Get the root branch
-		var prefs = Components.classes["@mozilla.org/preferences-service;1"].
-			getService(Components.interfaces.nsIPrefBranch).
-			getBranch("extensions.teamfound.");
 
 		var pref_serverurl = prefs.getCharPref("settings.serverurl");
 

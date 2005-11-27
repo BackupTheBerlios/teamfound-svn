@@ -26,6 +26,7 @@ var TeamFoundSettings =
 	onSettingsOK: function()
 	{
 		prefs.setCharPref("settings.serverurl", document.getElementById("tf-settings-server").value);
+		prefs.setIntPref("settings.layout", document.getElementById("tf-layout").value);
 		return true;
 	}, //onSettingsOK
 
@@ -46,6 +47,8 @@ var TeamFoundSettings =
 		var serverurl = prefs.getCharPref("settings.serverurl");
 		var servertextbox = document.getElementById("tf-settings-server");
 		servertextbox.value = serverurl;
+
+		document.getElementById("tf-layout").selectedIndex = prefs.getIntPref("settings.layout");
 	}, // onSettingsLoad
 
 	// Settings defaults-button

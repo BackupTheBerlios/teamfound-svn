@@ -35,12 +35,26 @@
 		<label id="tf-dialog-heading" value="TeamFound Settings"/>
 		<groupbox>
 			<caption label="Server URL"/>
-			<textbox id="tf-settings-server" cols="100" rows="1"/>
+			<vbox>
+				<textbox id="tf-settings-server" cols="100" rows="1"/>
+				<hbox>
+					<button align="end" label="Reset to TeamFound test server" oncommand="TeamFoundSettings.onSettingsDefault();" accesskey="r"/>
+				</hbox>
+			</vbox>
 		</groupbox>
+		<spacer/>
+		<groupbox>
+			<caption label="Layout search result"/>
+				<radiogroup id="tf-layout">
+					<radio label="divide horizontal" value="0"/>
+					<radio label="append external search results" value="1"/>
+				</radiogroup>
+		</groupbox>
+
 		<hbox>
 			<button align="end" dlgtype="accept" accesskey="O"/>
 			<button align="end" dlgtype="cancel" accesskey="C"/>
-			<button align="end" label="Default" oncommand="TeamFoundSettings.onSettingsDefault();" accesskey="D"/>
 		</hbox>
 	</vbox>
+
 </dialog>

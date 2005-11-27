@@ -20,4 +20,5 @@
 */
 
 pref("extensions.teamfound.settings.serverurl", "http://hqpm.dyndns.org/tf");
+pref("extensions.teamfound.settings.layout", 0);
 
