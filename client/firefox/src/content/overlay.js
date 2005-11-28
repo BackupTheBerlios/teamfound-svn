@@ -41,9 +41,18 @@ var TeamFound =
 	// Initialisierung
 	onLoad: function() 
 	{
+		if( this.initialized != true)
+		{
+			this.initialized = true;
+			HistoryList = new Array();
+		}
+
+		// display current adress
 		document.getElementById("tf-adress-label").value = content.document.URL;
-		document.getElementById("tf-adress-label").tooltiptext = content.document.URL;
-		document.getElementById("tf-adress-label").statustext = content.document.URL;
+
+		// remember adress
+		TeamFound.myAddToHistory(content.document.URL);
+
 	}, // onLoad
 
 	onSettings: function()
@@ -66,19 +75,28 @@ var TeamFound =
 		// Text-feld auslesen
 		var search = TeamFound.myTrim(document.getElementById("tf-ml1").value);
 
+		if( search.length == 0)
+		{
+			return;
+		}
+
 		// Test ob url oder suchwoerter
 		// erstmal wenn kein . (punkt) im feld vorkommt dann sind es suchwoerter, sonst url
 		if( /\./.test(search) && !/[ \"]/.test(search))
 		{
 			// wenn protokoll mit angegeben wurde, dann direkt uebernehmen, sonst http vorhaengen
+			var mygoto;
 			if( /:\/\//.test(search))
 			{
-				content.location = search;
+				mygoto = search;
 			}
 			else
 			{
-				content.location = "http://" + search;
+				mygoto = "http://" + search;
 			}
+
+			// ok, now load page
+			content.location = mygoto;
 			return;
 		}
 
@@ -90,6 +108,9 @@ var TeamFound =
 			// empty string .. we won't search for this ;-)
 			return;
 		}
+
+		// remember line
+		TeamFound.myAddToHistory(search);
 
 		// insert 'AND' between different search-words
 		var searchwithand = allwords[0];
@@ -139,8 +160,51 @@ var TeamFound =
 		xmlhttpext.open("GET", externurl, true); 
 		// Request senden
 		xmlhttpext.send(null);
+
 		
 	}, // onSearch
+
+	// adds a new line to the history, well, won't soon add double-entries
+	myAddToHistory: function(s)
+	{
+		for( var i = 0; i < HistoryList.length; i++)
+		{
+			if( s == HistoryList[i])
+			{
+				return;
+			}
+		}
+		HistoryList.unshift(s);
+	}, //myAddToHistory
+
+	// each time the history popup is shown
+	onHistoyPopup: function()
+	{
+		// Get the menu element that we will be working with
+		var menu = document.getElementById("tf-historylist");
+
+		// Clean up whatever is currently in the menu
+		for(var i=menu.childNodes.length - 1; i>=0; i--) 
+		{
+			menu.removeChild(menu.childNodes.item(i));
+		}
+
+		// Load the search terms into our menu
+		for(var i=0; i<HistoryList.length; i++)
+		{
+			// For each search term, create a menu item element
+			var tempItem = null;
+			tempItem = document.createElement("menuitem");
+			// Set the menuitem element's various attributes:
+			// The label will be the search term itself
+			// The tooltip will be the text "Dynamic Item #", where # is the number of the item
+			tempItem.setAttribute("label", HistoryList[i]);
+			tempItem.setAttribute("tooltiptext", "Dynamic Item " + (i+1));
+
+			// Add the item to our menu
+			menu.appendChild(tempItem);
+		}
+	}, // onHistoyPopup
 
 	// Eine neue Seite soll dem Index hinzugefuegt werden
 	onAddPage: function() {

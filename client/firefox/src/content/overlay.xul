@@ -45,11 +45,7 @@
 			          minwidth="100" width="250"
 				  onkeypress="if(event.which == 13) { TeamFound.onSearch(event); }">
 
-					<menupopup id="tf-list">
-<!--						<menuitem label="Search Google" oncommand="TeamFound.onSettings(event);"/>
-						<menuitem label="Search TeamFound + Google"/>
-						<menuitem label="Goto url"/>
-						-->
+					<menupopup id="tf-historylist" onpopupshowing="TeamFound.onHistoyPopup();">
 					</menupopup>
 				</menulist>
 			</toolbaritem>
