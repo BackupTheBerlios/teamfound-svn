@@ -39,7 +39,7 @@ if ( $url=~/http:\/\/.+\/(.+)/ )
       $filename = $1;
       
       print "Indiziere: $url<br>";
-      `java -cp "teamfound.jar" Index.TeamFoundIndexer download/* $url`;
+      `java -cp "teamfound.jar" Index.TeamFoundIndexer download/$filename* $url`;
       
       print "<br>Loesche: $filename<br>";
       `rm download/$filename*`;
