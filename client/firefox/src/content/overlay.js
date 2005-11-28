@@ -105,44 +105,38 @@ var TeamFound =
 
 		// Ok, template wird gleich geladen, content folgt nach asyncroner antwort
 		if( prefs.getIntPref("settings.layout") == 0)
-		{
+		{	// layout: divide horizontal
 			content.location = "chrome://teamfound/skin/search_h.html";
 		}
 		else
-		{
+		{	// layout: append external results
 			content.location = "chrome://teamfound/skin/search_v.html";
 		}
 
 
 		var pref_serverurl = prefs.getCharPref("settings.serverurl");
 
+
 		// TeamFound Suche
 		var teamfoundurl = pref_serverurl + "/search.pl?keyword=" + searchwithand;
-
 		// Request erstellen (globale variable)
 		xmlhttptf= new XMLHttpRequest();
-
 		// Callback Registrieren wenn der Server fertig ist
 		xmlhttptf.onreadystatechange = TeamFound.onTeamFoundSearchFinished;
-
 		// Request methode, url und asyncron (true/false) definieren
 		xmlhttptf.open("GET", teamfoundurl, true); 
-
 		// Request senden
 		xmlhttptf.send(null);
 
+
 		// Externe suche
 		var externurl = "http://www.google.de/search?q=" + search;
-
 		// Request erstellen (globale variable)
 		xmlhttpext = new XMLHttpRequest();
-
 		// Callback Registrieren wenn der Server fertig ist
 		xmlhttpext.onreadystatechange = TeamFound.onExternSearchFinished;
-
 		// Request methode, url und asyncron (true/false) definieren
 		xmlhttpext.open("GET", externurl, true); 
-
 		// Request senden
 		xmlhttpext.send(null);
 		
@@ -227,7 +221,20 @@ var TeamFound =
 			{	// OK
 				if( xtd != null)
 				{
-					xtd.innerHTML = xmlhttpext.responseText;
+					// ok, now make google viewable from local,
+					// by replacing local references with http://google
+
+					var mygoogle = xmlhttpext.responseText;
+					mygoogle = mygoogle.replace(/href=\//g, "href=http://google.de/");
+					mygoogle = mygoogle.replace(/href="\//g, "href=\"http://google.de/");
+					mygoogle = mygoogle.replace(/action=\//g,"action=http://google.de/");
+					mygoogle = mygoogle.replace(/action="\//g,"action=\"http://google.de/");
+					mygoogle = mygoogle.replace(/src=\//g,"src=http://google.de/");
+					mygoogle = mygoogle.replace(/src="\//g,"src=\"http://google.de/");
+
+
+					// now load google-result into page-template
+					xtd.innerHTML = mygoogle;
 				}
 			}
 			else

@@ -45,7 +45,12 @@
 			          minwidth="100" width="250"
 				  onkeypress="if(event.which == 13) { TeamFound.onSearch(event); }">
 
-					<menupopup id="tf-mp1" />
+					<menupopup id="tf-list">
+<!--						<menuitem label="Search Google" oncommand="TeamFound.onSettings(event);"/>
+						<menuitem label="Search TeamFound + Google"/>
+						<menuitem label="Goto url"/>
+						-->
+					</menupopup>
 				</menulist>
 			</toolbaritem>
 
@@ -54,8 +59,9 @@
 				  tooltiptext="Groesse des Suchfeldes anpassen" />-->
 
 			<toolbarbutton id="tf-buttonSearch" tooltiptext="search or go to (automatically guesses whether to search or to visit url)" label="Go" oncommand="TeamFound.onSearch(event);" />
-
-			<label id="tf-adress-label" tooltiptext="" value="this text displays your current url"/>
+			<vbox pack="center">
+				<label id="tf-adress-label" value="this text displays your current url"/>
+			</vbox>
 		</toolbar>
 	</toolbox>
 </overlay>
