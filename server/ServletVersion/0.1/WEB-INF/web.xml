@@ -30,6 +30,14 @@
       <load-on-startup>5</load-on-startup>
     </servlet>
 
+	<servlet>
+      <servlet-name>indexer</servlet-name>
+      <description>
+      </description>
+      <servlet-class>IndexServlet</servlet-class>
+      <load-on-startup>5</load-on-startup>
+    </servlet>
+
 
 
     <servlet-mapping>
@@ -42,5 +50,11 @@
       <url-pattern>/tf</url-pattern>
     </servlet-mapping>
     
+	 <servlet-mapping>
+      <servlet-name>indexer</servlet-name>
+      <url-pattern>/indexer</url-pattern>
+    </servlet-mapping>
+    
+
     
 </web-app>

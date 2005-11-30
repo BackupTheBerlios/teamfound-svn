@@ -33,7 +33,7 @@ public class TeamFoundServlet  extends HttpServlet {
 		String action = request.getParameter("action");
 		
 		if(action == null) {
-			p.println("Fehler: Keine Aktion ausgewählt");
+			p.println("Fehler: Keine Aktion ausgewaehlt");
 			return;
 		}
 		
