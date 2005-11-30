@@ -33,26 +33,42 @@
 		</menu>
 	</menupopup>
 
+				
 	<toolbox id="navigator-toolbox">
+	
 		<toolbar id="tf-toolbar" accessKey="T" class="chromeclass-toolbar"
 		toolbarname="TeamFound Toolbar" hidden="false" persist="hidden">
+
+
 
 			<toolbarbutton id="tf-icon" tooltiptext="TeamFound configuration" oncommand="TeamFound.onSettings(event);" />
 			<toolbarbutton id="tf-buttonAddPage" tooltiptext="Adds the current page to your TeamFound index" label="Add page" oncommand="TeamFound.onAddPage(event);" />
 
-			<toolbaritem id="tf-tbi1" persist="width">
-				<menulist id="tf-ml1" editable="true" flex="1"
-			          minwidth="100" width="250"
-				  onkeypress="if(event.which == 13) { TeamFound.onSearch(event); }">
-
-					<menupopup id="tf-historylist" onpopupshowing="TeamFound.onHistoyPopup();">
-					</menupopup>
-				</menulist>
+			<toolbaritem>
+				<textbox id="tf-input" 
+					 width="300"
+					 flex="1"
+					 type="autocomplete"
+					 autocompletesearch="history" 
+					 autocompletepopup="PopupAutoComplete"
+					 completeselectedindex="true"
+					 tabscrolling="true"
+					 showcommentcolumn="true"
+					 enablehistory="true"
+					 oninput="gBrowser.userTypedValue = this.value"
+					 ontextentered="return handleURLBarCommand(param);"
+					 ontextreverted="return handleURLBarRevert();"
+					 onfocus="URLBarFocusHandler(event, this);"
+					 onmousedown="URLBarMouseDownHandler(event, this);"
+					 onkeypress="if(event.which == 13) { TeamFound.onSearch(event); }"
+					 onclick="URLBarClickHandler(event, this);">
+				  <hbox>
+				    <button type="menu" id="feed-button">
+				      <menupopup position="after_end"/>
+				    </button>
+				  </hbox>
+				</textbox>
 			</toolbaritem>
-
-			<!--<splitter id="tf-sp1" state="open" collapse="none"
-			          resizebefore="closest" resizeafter="farthest"
-				  tooltiptext="Groesse des Suchfeldes anpassen" />-->
 
 			<toolbarbutton id="tf-buttonSearch" tooltiptext="search or go to (automatically guesses whether to search or to visit url)" label="Go" oncommand="TeamFound.onSearch(event);" />
 			<vbox pack="center">
