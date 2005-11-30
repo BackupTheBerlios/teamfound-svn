@@ -331,4 +331,12 @@ window.addEventListener(
 	}, 
 	true); 
 
+document.getElementById("tf-input").addEventListener(
+	"click",
+	function(e)
+	{
+		TeamFound.onSearch(e);
+	},
+	true);
+
 // EOF

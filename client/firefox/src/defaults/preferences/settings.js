@@ -20,6 +20,6 @@
 */
 
 pref("extensions.teamfound.settings.serverurl", "http://hqpm.dyndns.org/tf");
-pref("extensions.teamfound.settings.searchurl", "http://google.de/search?q=");
-pref("extensions.teamfound.settings.layout", 0);
+pref("extensions.teamfound.settings.searchurl", "http://google.com/search?q=");
+pref("extensions.teamfound.settings.layout", 1);
 
