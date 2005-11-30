@@ -34,20 +34,30 @@
 	<vbox>
 		<label id="tf-dialog-heading" value="TeamFound Settings"/>
 		<groupbox>
-			<caption label="Server URL"/>
+			<caption label="TeamFound server URL"/>
 			<vbox>
 				<textbox id="tf-settings-server" cols="100" rows="1"/>
-				<hbox>
-					<button align="end" label="Reset to TeamFound test server" oncommand="TeamFoundSettings.onSettingsDefault();" accesskey="r"/>
-				</hbox>
 			</vbox>
 		</groupbox>
+
 		<spacer/>
+
+		<groupbox>
+			<caption label="Extern search engine URL"/>
+			<vbox>
+				<textbox id="tf-settings-searchurl" cols="100" rows="1"/>
+			</vbox>
+		</groupbox>
+
+		<spacer/>
+
 		<groupbox>
 			<caption label="Layout search result"/>
 				<radiogroup id="tf-layout">
 					<radio label="divide horizontal" value="0"/>
 					<radio label="append external search results" value="1"/>
+					<radio label="search only extern" value="2"/>
+					<radio label="search only TeamFound" value="3"/>
 				</radiogroup>
 		</groupbox>
 

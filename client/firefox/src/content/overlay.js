@@ -23,9 +23,9 @@
 *		prefs - TeamFound preferences
 */
 
-
 var TeamFound = 
 {
+	// entfernz leerzeichen
 	 myTrim: function(s)
 	 {
 		 // Remove leading spaces and carriage returns
@@ -69,7 +69,7 @@ var TeamFound =
 	}, // onSettings
 
 	// Eine Suche soll durchgefuehrt werden
-	onSearch: function()
+	onSearch: function(event)
 	{
 		// Text-feld auslesen, leerzeichen abscheiden
 		var search = TeamFound.myTrim(document.getElementById("tf-input").value);
@@ -83,37 +83,44 @@ var TeamFound =
 		// erstmal wenn kein . (punkt) im feld vorkommt dann sind es suchwoerter, sonst url
 		if( /\./.test(search) && !/[ \"]/.test(search))
 		{
-			TeamFound.myGotoUrl(search);
+			TeamFound.myGotoUrl(search, event);
 			return;
 		}
 		if( /^about:/.test(search))
 		{
-			TeamFound.myGotoUrl(search);
+			TeamFound.myGotoUrl(search, event);
 			return;
-
 		}
 
 		// Ok, template wird gleich geladen, content folgt nach asyncroner antwort
 		if( prefs.getIntPref("settings.layout") == 0)
 		{	// layout: divide horizontal
 			content.location = "chrome://teamfound/skin/search_h.html";
+			TeamFound.myTeamFoundSearch(search);
+			TeamFound.myGoogleSearch(search);
 		}
-		else
+		else if( prefs.getIntPref("settings.layout") == 1)
 		{	// layout: append external results
 			content.location = "chrome://teamfound/skin/search_v.html";
+			TeamFound.myTeamFoundSearch(search);
+			TeamFound.myGoogleSearch(search);
+
 		}
-
-		TeamFound.myTeamFoundSearch(search);
-		
-		TeamFound.myGoogleSearch(search);
-
+		else if( prefs.getIntPref("settings.layout") == 2)
+		{	// only extern
+			TeamFound.myGoogleSearch(search);
+		}
+		else if( prefs.getIntPref("settings.layout") == 3)
+		{	// only teamfound
+			TeamFound.myTeamFoundSearch(search);
+		}
 	}, // onSearch
 
-	myGotoUrl: function(search)
+	myGotoUrl: function(search, event)
 	{
 		// wenn protokoll mit angegeben wurde, dann direkt uebernehmen, sonst http vorhaengen
 		var mygoto;
-		if( /:\/\//.test(search))
+		if( /:\/\//.test(search) || /about:/.test(search))
 		{
 			mygoto = search;
 		}
@@ -151,6 +158,13 @@ var TeamFound =
 
 		// TeamFound Suche
 		var teamfoundurl = pref_serverurl + "/search.pl?keyword=" + searchwithand;
+
+		// nur layouts 0 und 1 benutzen templates
+		if( prefs.getIntPref("settings.layout") > 1)
+		{	content.location=teamfoundurl;
+			return;
+		}
+		//var teamfoundurl = pref_serverurl + "?keyword=" + searchwithand;
 		// Request erstellen (globale variable)
 		xmlhttptf= new XMLHttpRequest();
 		// Callback Registrieren wenn der Server fertig ist
@@ -163,7 +177,15 @@ var TeamFound =
 
 	myGoogleSearch: function(search)
 	{
-		var externurl = "http://www.google.de/search?q=" + search;
+		var pref_searchurl = prefs.getCharPref("settings.searchurl");
+		var externurl = pref_searchurl + search;
+
+		// nur layouts 0 und 1 benutzen templates
+		if( prefs.getIntPref("settings.layout") > 1)
+		{
+			content.location=externurl;
+			return;
+		}
 		// Request erstellen (globale variable)
 		xmlhttpext = new XMLHttpRequest();
 		// Callback Registrieren wenn der Server fertig ist
@@ -246,20 +268,24 @@ var TeamFound =
 			{	// OK
 				if( xtd != null)
 				{
-					// ok, now make google viewable from local,
-					// by replacing local references with http://google
+					// ok, now make extern viewable from local,
+					// by replacing local references with http://extern-base-url
 
-					var mygoogle = xmlhttpext.responseText;
-					mygoogle = mygoogle.replace(/href=\//g, "href=http://google.de/");
-					mygoogle = mygoogle.replace(/href="\//g, "href=\"http://google.de/");
-					mygoogle = mygoogle.replace(/action=\//g,"action=http://google.de/");
-					mygoogle = mygoogle.replace(/action="\//g,"action=\"http://google.de/");
-					mygoogle = mygoogle.replace(/src=\//g,"src=http://google.de/");
-					mygoogle = mygoogle.replace(/src="\//g,"src=\"http://google.de/");
+					var pref_searchurl = prefs.getCharPref("settings.searchurl");
+					
+					var base = /(http.*?\/\/.*?\/)/.exec(pref_searchurl)[0];
 
+					var externtolocal = xmlhttpext.responseText;
+
+					externtolocal = externtolocal.replace(/href=\//g, "href="+base);
+					externtolocal = externtolocal.replace(/href="\//g, "href=\""+base);
+					externtolocal = externtolocal.replace(/action=\//g,"action="+base);
+					externtolocal = externtolocal.replace(/action="\//g,"action=\""+base);
+					externtolocal = externtolocal.replace(/src=\//g,"src="+base);
+					externtolocal = externtolocal.replace(/src="\//g,"src=\""+base);
 
 					// now load google-result into page-template
-					xtd.innerHTML = mygoogle;
+					xtd.innerHTML = externtolocal;
 				}
 			}
 			else

@@ -46,7 +46,7 @@
 
 			<toolbaritem>
 				<textbox id="tf-input" 
-					 width="300"
+					 width="400"
 					 flex="1"
 					 type="autocomplete"
 					 autocompletesearch="history" 
@@ -60,13 +60,8 @@
 					 ontextreverted="return handleURLBarRevert();"
 					 onfocus="URLBarFocusHandler(event, this);"
 					 onmousedown="URLBarMouseDownHandler(event, this);"
-					 onkeypress="if(event.which == 13) { TeamFound.onSearch(event); }"
+					 onkeypress="if(event.which == 13) { return TeamFound.onSearch();}"
 					 onclick="URLBarClickHandler(event, this);">
-				  <hbox>
-				    <button type="menu" id="feed-button">
-				      <menupopup position="after_end"/>
-				    </button>
-				  </hbox>
 				</textbox>
 			</toolbaritem>
 

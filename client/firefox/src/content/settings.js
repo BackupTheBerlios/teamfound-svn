@@ -26,6 +26,7 @@ var TeamFoundSettings =
 	onSettingsOK: function()
 	{
 		prefs.setCharPref("settings.serverurl", document.getElementById("tf-settings-server").value);
+		prefs.setCharPref("settings.searchurl", document.getElementById("tf-settings-searchurl").value);
 		prefs.setIntPref("settings.layout", document.getElementById("tf-layout").value);
 		return true;
 	}, //onSettingsOK
@@ -48,9 +49,15 @@ var TeamFoundSettings =
 		var servertextbox = document.getElementById("tf-settings-server");
 		servertextbox.value = serverurl;
 
+
+		var searchurl = prefs.getCharPref("settings.searchurl");
+		var searchtextbox = document.getElementById("tf-settings-searchurl");
+		searchtextbox.value = searchurl;
+
 		document.getElementById("tf-layout").selectedIndex = prefs.getIntPref("settings.layout");
 	}, // onSettingsLoad
 
+/*
 	// Settings defaults-button
 	onSettingsDefault: function()
 	{
@@ -64,6 +71,7 @@ var TeamFoundSettings =
 		var servertextbox = document.getElementById("tf-settings-server");
 		servertextbox.value = defurl;
 	} // onSettingsDefault
+	*/
 };
 
 
