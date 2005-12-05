@@ -5,10 +5,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletConfig;
 import java.util.Enumeration;
 import Index.Download;
 import Index.TeamFoundIndexer;
 import Search.SearchFiles;
+
+
 
 /*
  * erster Versuch von Martin
@@ -19,6 +22,7 @@ public class IndexServlet  extends HttpServlet {
 	protected Download d;
 	protected TeamFoundIndexer index;
 	protected SearchFiles searcher;
+	protected ServletConfig conf;
 		  
 	public void init() throws ServletException {
 			  d = new Download();
@@ -36,9 +40,29 @@ public class IndexServlet  extends HttpServlet {
 	}
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		//out.println("Test<br>");
-	
+		String title = "TeamFound";
+		
+		out.println(
+							"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"+
+							"\n"+
+							"<HTML>\n" +
+							"<HEAD><TITLE>" + title + "</TITLE></HEAD>\n"+
+							"<BODY>\n");
+
+		//conf = this.getServletConfig();
+		//out.println("Servlet Name: "+conf.getServletName()+ "<br>");
+		//java.util.Enumeration en = conf.getInitParameterNames();
+		//while(en.hasMoreElements())
+		//{
+		//	out.println("Servlet InitParameter: "+ "<br>");
+		//}
+		//out.println("Servlet Info: "+this.getServletInfo()+ "<br>");
+	   //out.println("Object HachCode: "+this.hashCode()+"<br>");		
+
+		
 		Enumeration paramNames = request.getParameterNames();
 
 		while(paramNames.hasMoreElements()) 
@@ -48,17 +72,31 @@ public class IndexServlet  extends HttpServlet {
 				  if(paramName.equals("url"))
 				  {
 						
-						String filename = d.downloadFile(paramValues[0]);
-						out.println(filename);
 						if(!(paramValues[0].equals("")))
-							index.index(filename,paramValues[0]);
+						{
+							//out.println(paramValues[0]);
+							String filename = new String("download"+this.hashCode());
+							filename = d.downloadFile(paramValues[0], filename);
+							//Wenn es nicht moeglich ist runterzuladen gebe ich -1 zurueck
+							if(filename.equals("-1"))
+							{
+								out.println("Download fehlgeschlagen...<br>");
+							}
+							else
+							{
+								out.println("Download als "+ filename +"<br>");
+								out.println("Indiziere " + paramValues[0] + "<br>");
+								index.index(filename,paramValues[0]);
+						
+							}
+						}
 						else
 							out.println("kein Parameter");
 							 
 				  }
 				  else if (paramName.equals("keyword"))
-				  {
-						out.println("searching" + paramValues[0]);
+				  {							 
+						out.println("searching " + paramValues[0] + "<br>");
 						
 						if(!(paramValues[0].equals("")))
 						{
@@ -76,11 +114,7 @@ public class IndexServlet  extends HttpServlet {
 				  }
 		
 		}
-		
-		
-		
-			
-		
+		out.println("</BODY></HTML>");
 		
 	}
 	
