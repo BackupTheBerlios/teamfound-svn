@@ -1,9 +1,3 @@
-
-
-/*
- * Martin Klink
- * Einfache Klasse die erstmal eine Url downloaden soll!
- */
 package Index;
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
@@ -15,28 +9,46 @@ import java.net.MalformedURLException;
 import java.io.IOException;
 
 
+/**
+ * @author Martin Klink, Jonas Heese
+ * Einfache Klasse die erstmal eine Url downloaden soll!
+ * 
+ * (jonas am 5.12.05):
+ * Habe diese Klasse mal etwas umgebaut. Die Übergabe einer URL reicht aus, die 
+ * Rückgabe eines Datei-Objektes ebenfalls.
+ * 
+ * Diese Klasse sollte irgendwann nochmal serialisiert werden, das zwei 
+ * simultane Requests, die gleiche Datei herunterzuladen keine Probleme macht.
+ * 
+ * Genauso toll wäre ein Cache Managment, so das bei obigem Szenario, die 
+ * Datei nur einmal heruntergeladen werden würde.
+ * (/jonas)
+ * 
+ */
 public class Download
 {
-	private URL u;
-	private URLConnection ucon;
-	private DataInputStream instream = null;
-	private int data;
-	private FileOutputStream out;
-	private DataOutputStream dout;
-	//spaeter sollten wir uns darum kuemmern namen zu vergeben
-	private File toWriteIn;
+	
+	protected String tempDir = "/tmp";
 	
 	
-	
-	public String downloadFile(String todownload, String filename)
+	public File downloadFile(URL adress) throws DownloadFailedException
 	{
+		// Habe diese deklarationen mal in die methode gezogen, da es 
+		// eigentlich keinen grund gibt, diese Methode nicht halbwegs 
+		// threadsafe zu machen (jonas) 
+		URLConnection ucon = null;
+		DataInputStream instream = null;
+		int data;
+		FileOutputStream out = null;
+		DataOutputStream dout = null;
+		File toWriteIn = null;
+
 		try
 		{
 			//create url
-			u = new URL(todownload);
-
+			
 			//create URLConnection
-			ucon = u.openConnection();
+			ucon = adress.openConnection();
 			ucon.connect();
 			//ucon.getHeaderFields();
 			
@@ -51,12 +63,19 @@ public class Download
 			String type = ucon.getContentType();
 			if (!type.startsWith("text"))
 			{
-					  return("-1");
+					// was genau ist hier das problem?
+					// @todo bitte mal bessere Excpetion-.Beschreibung nachtragen :)
+					throw new DownloadFailedException("uhm, dunno what has happened, but it has failed!");
 			}
-					  
-			String fn = new String("/tmp/"+filename+".html"); 
-			toWriteIn = new File(fn);
 			
+			// @todo Die HTML-Endung hier ist irgendwie unschön, ich schlage vor wie hier schon grundsätzlich
+			// gemacht, die URL zu hashen und das abzuspeichern. Ist die Dateiendung hier wichtig? Eigentlich 
+			// sollte sowas doch vor dem Download geprüft werden?! So im Sinne, wenn wir eine Dateiart nicht 
+			// verarbeiten können, knallt es schon beim Download, nicht erst beim Versuch die zu indexieren.			
+			toWriteIn = new File(tempDir+(adress.getHost()+adress.getPath()).hashCode()+".html");
+			
+			// Hier würde sich evtl. ein Cache-Managment gut machen :)
+			toWriteIn.createNewFile();
 			
 			//outputStream zum schreiben in file
 			out = new FileOutputStream(toWriteIn);
@@ -67,25 +86,25 @@ public class Download
 				dout.write(data);	  
 			}
 			
-			return(fn);
+			
 		}
 		catch (MalformedURLException mue)
 		{
-			System.out.println("MalformedURLException");
-			mue.printStackTrace();
-			return("-1");
+			DownloadFailedException e = new DownloadFailedException("Malformed URL");
+			e.initCause(mue);
 		}
 		catch (IOException ioe)
 		{
-			System.out.println("IOException");
-			ioe.printStackTrace();
-			return ("-1");
+			DownloadFailedException e = new DownloadFailedException("IO-Exception");
+			e.initCause(ioe);
 		}
+
 		finally
 		{
-		
+			// tidy up
 			try
 			{
+				// @todo das fliegt uns um die ohren, wenn da noch nullpointer drin sind?! (jonas)
 				instream.close();
 				dout.flush();
 				dout.close();
@@ -98,8 +117,8 @@ public class Download
 			}
 		}
 		
-		
+		// Datei-Objekt zurückgeben, könnte zwar ein Nullpointer sein, in diesem 
+		// Fall müsste aber eine Exception geflogen sein.			
+		return toWriteIn;
 	}
-
-	
 }

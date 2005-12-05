@@ -18,7 +18,7 @@ package Index;
 
 import java.io.*;
 import org.apache.lucene.document.*;
-import Html.HTMLParser;
+import Index.Html.HTMLParser;
 
 /** A utility for making Lucene Documents for HTML documents. */
 

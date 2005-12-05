@@ -8,6 +8,19 @@ package Index;
  * erster Indexersteller fuer Teamfound
  * Nutze erstmal den HTMLParser vom Apache-Projekt der bei den Demos dabei war und
  * halte mich so an die Funktionsweise von HTMLIndexer 
+ * 
+ * Jonas Heese
+ * 05.12.2005
+ * 
+ * Habe das Interface etwas transparenter gestaltet, der Indexer ist nun ein richtiges 
+ * Objekt, sollte evtl. aber noch singleton werden damit das später keine Probleme 
+ * beim Dateizugriff gibt.
+ * 
+ * Den Download der zu indexierenden URL übernimmt nun diese Klasse
+ * 
+ * Irgendwo hier müsste noch serialisiert werden, das wir den Index nicht 
+ * mit gleichzeitigen Zugriffen zerstören.
+ * 
  */
 
 
@@ -18,15 +31,62 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 
 
 public class TeamFoundIndexer {
 
 	
-	private static IndexReader reader;		  // zum Index durchsuchen
-	private static IndexWriter writer;		  // zum Anfuegen unseres Html Files
-	private static TermEnum urlIter;		  // iterator ueber Url der Page
+	private IndexReader reader;		  // zum Index durchsuchen
+	private IndexWriter writer;		  // zum Anfuegen unseres Html Files
+	private TermEnum urlIter;		  // iterator ueber Url der Page
+	
+	protected String index = "/tmp/index";
+	protected Download dl;
+	
+	public TeamFoundIndexer() {
+		dl = new Download();
+	}
+	
+	/**
+	 * Zweiter Versuch von Jonas
+	 * 
+	 * Ich habe mal etwas aufgräumt, so wird die URL erst hier heruntergeladen (eigentlich kein 
+	 * Grund das vorher zu tun?!) 
+	 * @throws Exception 
+	 */
+	public int index(String url) throws DownloadFailedException, IndexAccessException {
+		// 1. Datei herunterladen
+		File f = null;
+		try {
+			f = dl.downloadFile(new URL(url));
+		} catch(MalformedURLException mue) {
+			DownloadFailedException e = new DownloadFailedException("nested MalformedURLException");
+			e.initCause(mue);
+		}
+		
+		if(f == null) {
+			// download fehlgeschlagen, das sollte eigentlich nicht vorkommen, 
+			// da dieser eine exception hätte werfen müssen... keine ahnung was 
+			// man nun tut
+			throw new DownloadFailedException("Unknown download error - No data received");
+		}
+		
+		// 2. Datei indexieren
+		try {
+			indexDocs(f, index, !IndexReader.indexExists(index), url);
+		} catch(Exception e) {
+			IndexAccessException a = new IndexAccessException("nested Exception");
+			a.initCause(e);
+			throw a;
+		}
+		
+		// scheint geklappt zu haben		
+		// fertig
+		return 1;
+	}
 	
 	
 	  public static void index(String dname, String url) {
@@ -62,7 +122,7 @@ public class TeamFoundIndexer {
 	    //	  java.lang.Thread.sleep(50);
 	    //  }	      	            	      	      
 	      //hinzufuegen der Seite
-	      indexDocs(file, index, create, url);		
+	      //indexDocs(file, index, create, url);		
 	      
 	      Date end = new Date();
 
@@ -88,7 +148,7 @@ public class TeamFoundIndexer {
 	   * @param url
 	   * @throws Exception
 	   */
-	  private static void indexDocs(File file, String index, boolean create, String url)
+	  private void indexDocs(File file, String index, boolean create, String url)
 	       throws Exception 
 	       {
 		  		if(create)
@@ -164,7 +224,7 @@ public class TeamFoundIndexer {
 	  /**
 	   * Das wirkliche einfuegen in den Index
 	   */
-	  private static void indexDocs(File file, String url) throws Exception 
+	  private void indexDocs(File file, String url) throws Exception 
 	  {
 	   
 			// index nur von html htm oder txt

@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletConfig;
 import java.util.Enumeration;
 import Index.Download;
+import Index.DownloadFailedException;
+import Index.IndexAccessException;
 import Index.TeamFoundIndexer;
 import Search.SearchFiles;
 
@@ -71,27 +73,18 @@ public class IndexServlet  extends HttpServlet {
 				  String[] paramValues = request.getParameterValues(paramName);
 				  if(paramName.equals("url"))
 				  {
-						
 						if(!(paramValues[0].equals("")))
 						{
-							//out.println(paramValues[0]);
-							String filename = new String("download"+this.hashCode());
-							filename = d.downloadFile(paramValues[0], filename);
-							//Wenn es nicht moeglich ist runterzuladen gebe ich -1 zurueck
-							if(filename.equals("-1"))
-							{
-								out.println("Download fehlgeschlagen...<br>");
+							try {
+								index.index(paramValues[0]);
+							} catch(IndexAccessException iae) {
+								iae.printStackTrace();
+							} catch (DownloadFailedException e) {
+								e.printStackTrace();
 							}
-							else
-							{
-								out.println("Download als "+ filename +"<br>");
-								out.println("Indiziere " + paramValues[0] + "<br>");
-								index.index(filename,paramValues[0]);
-						
-							}
+						} else {
+							out.println("Parameter URL hat keinen Wert.");
 						}
-						else
-							out.println("kein Parameter");
 							 
 				  }
 				  else if (paramName.equals("keyword"))
