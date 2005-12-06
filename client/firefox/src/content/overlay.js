@@ -56,9 +56,6 @@ var TeamFound =
 				getBranch("extensions.teamfound.");
 		}
 
-		// display current adress
-		document.getElementById("tf-adress-label").value = content.document.URL;
-
 	}, // onLoad
 
 	onSettings: function()
@@ -131,6 +128,10 @@ var TeamFound =
 
 		// ok, now load page
 		content.location = mygoto;
+
+		// delete input-field now
+		document.getElementById("tf-input").value = "";
+
 	}, // myGotoUrl
 
 	myTeamFoundSearch: function(search)
@@ -258,7 +259,7 @@ var TeamFound =
 		3 INTERACTIVE Downloading, responseText holds the partial data. 
 		4 COMPLETED Finished with all operations.
 		*/
-		if( xmlhttpext.readyState >= 2)  
+		if( xmlhttpext.readyState >= 3)  
 		{
 			var doc = window._content.document;
 			var xtd = doc.getElementById("teamfound-result-two");
@@ -300,7 +301,7 @@ var TeamFound =
 	onTeamFoundSearchFinished: function()
 	{
 		// nur etwas machen falls der request schon fertig ist
-		if( xmlhttptf.readyState >= 2)  
+		if( xmlhttptf.readyState >= 3)  
 		{
 			var doc = window._content.document;
 			var tfrone = doc.getElementById("teamfound-result-one");
@@ -322,21 +323,14 @@ var TeamFound =
 
 }; // TeamFound
 
-// Window-Listener der onLoad aufruft sobald die TeamFound Extension geladen wurde
+// Window-Listener (einmalig initalisierung, dann aktualisierung der URL)
 window.addEventListener(
-	"load", 
+	"focus", 
 	function(e) 
 	{ 
 		TeamFound.onLoad(e); 
 	}, 
 	true); 
 
-document.getElementById("tf-input").addEventListener(
-	"click",
-	function(e)
-	{
-		TeamFound.onSearch(e);
-	},
-	true);
 
 // EOF

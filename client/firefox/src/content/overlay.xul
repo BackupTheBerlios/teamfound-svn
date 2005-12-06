@@ -63,9 +63,7 @@
 			</toolbaritem>
 
 			<toolbarbutton id="tf-buttonSearch" tooltiptext="search or go to (automatically guesses whether to search or to visit url)" label="Go" oncommand="TeamFound.onSearch(event);" />
-			<vbox pack="center">
-				<label id="tf-adress-label" value="this text displays your current url"/>
-			</vbox>
 		</toolbar>
 	</toolbox>
 </overlay>
+
