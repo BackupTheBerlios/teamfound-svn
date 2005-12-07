@@ -12,10 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class TeamFoundServlet  extends HttpServlet {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6850332153666031497L;
 	protected TeamFoundServer tfs;
 	
 	public void init() throws ServletException {

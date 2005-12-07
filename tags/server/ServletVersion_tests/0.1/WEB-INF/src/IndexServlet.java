@@ -21,10 +21,6 @@ import Search.SearchFiles;
 
 public class IndexServlet  extends HttpServlet {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7334617329126271918L;
 	protected Download d;
 	protected TeamFoundIndexer index;
 	protected SearchFiles searcher;
