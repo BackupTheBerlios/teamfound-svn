@@ -20,7 +20,7 @@ public class Testdbconnect
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 			//conn.setAutoCommit(false);
 			
-			db.addRootCategory(conn,new categoryBean());
+			db.addRootCategory(conn,new categoryBean("testcat"));
 			
 			db.query(conn,"SELECT * FROM category");
 			

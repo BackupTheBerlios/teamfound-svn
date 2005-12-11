@@ -255,17 +255,17 @@ public class DBLayerHSQL implements DBLayer
 	 */
 	public void addRootCategory(Connection conn, categoryBean catbean) throws SQLException
 	{
-	
+		// lock table category , set savepoint
+		java.sql.Savepoint addRC;
+		//addRC = conn.setSavepoint("addRootCategory");
+		
 		Statement st = null;
 		st = conn.createStatement();    // erstelle statements
+		//TODO ist die Bean auch gefuellt			
+		String insert = new String("INSERT INTO category(left,right,name) VALUES(1,2,'"+catbean.getCategory()+"')");
 		
-		String insert = new String("INSERT INTO category(left,right,name) VALUES(1,2,'rootcat')");
 		//Statement um PrimKey zu kriegen
 		String prim = new String("CALL IDENTITY()");
-		
-				// lock table category , set savepoint
-		java.sql.Savepoint addRC;
-		addRC = conn.setSavepoint("addRootCategory");	
 		
 		try
 		{
@@ -287,13 +287,12 @@ public class DBLayerHSQL implements DBLayer
 		}
 		catch(SQLException e)
 		{
-			conn.rollback(addRC);
+			//conn.rollback(addRC);
 			//TODO LoggMessage
 			System.out.println("AddRoot: "+ e);
 			
 		}
 		
-		conn.commit();
 	}
 
 	/**
