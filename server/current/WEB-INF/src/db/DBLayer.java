@@ -67,15 +67,19 @@ public interface DBLayer
 
 	/**
 	 * Einfuegen einer rootCategory ins Set ..
-	 *
+	 * Bean Objekt braucht nur Name und wird mit id etc. zurueckgeliefert
+	 * 
 	 */
-	public void addRootCategory(Connection conn, categoryBean catbean) throws SQLException;
+	public categoryBean addRootCategory(Connection conn, categoryBean catbean) throws SQLException;
 
 	/**
 	 * Einfuegen einer Category ins Set ..
 	 *
+	 * Bean Objekt braucht nur Name und wird mit id etc. zurueckgeliefert
+	 * Parent muss seine ID kennen.. da laut interface der Client alle IDs hat
+	 * und mitsendet habe ich mich jetzt darauf verlassen dass id vorhanden
 	 */
-	public void addCategory(Connection conn, categoryBean catbean) throws SQLException;
+	public categoryBean addCategory(Connection conn, categoryBean catbean,categoryBean parent) throws SQLException;
 	
 	 /**
 	 * Hinzufuegen einer Url (entweder schon indiziert oder wird gleich indiziert)

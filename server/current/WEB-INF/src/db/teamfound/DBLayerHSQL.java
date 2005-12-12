@@ -11,6 +11,7 @@
 package db.teamfound;
 
 import org.hsqldb.*;
+import org.hsqldb.jdbc.jdbcConnection;
 import db.DBLayer;
 import db.dbbeans.*;
 import java.sql.Connection;
@@ -104,7 +105,7 @@ public class DBLayerHSQL implements DBLayer
 			
 			//create Category table
 			//String sqlcreate = new String("CREATE TABLE category (id INTEGER IDENTITY,root_id INTEGER, left INTEGER, right INTEGER, name VARCHAR,CONSTRAINT leftset UNIQUE (left), CONSTRAINT rightset UNIQUE (right))");			
-			String sqlcreate = new String("CREATE TABLE category (id INTEGER IDENTITY,root_id INTEGER, left INTEGER, right INTEGER, name VARCHAR)");			
+			String sqlcreate = new String("CREATE TABLE category (id INTEGER IDENTITY,root_id INTEGER, left INTEGER, right INTEGER, name VARCHAR,beschreibung VARCHAR)");			
 			if(!update(c,sqlcreate))
 				System.out.println("error in Statement "+ sqlcreate);
 
@@ -132,7 +133,7 @@ public class DBLayerHSQL implements DBLayer
 		}
 		catch (SQLException ex2)
 		{
-			c.rollback(init);
+			c.rollback();
 			//existiert wohl schon 
 			//dann brauch ich auch nichts anlegen
 			System.out.println("Fehler beim DB initialisieren" +ex2);
@@ -178,7 +179,7 @@ public class DBLayerHSQL implements DBLayer
 	 * dummie fuer select Anfragen
 	 *nur als testfunktion zu verwenden..
 	 */
-	public synchronized void query(Connection conn,String expression) throws  SQLException
+	public void query(Connection conn,String expression) throws  SQLException
 	{
 		Statement st = null;
 		ResultSet rs = null;
@@ -222,7 +223,7 @@ public class DBLayerHSQL implements DBLayer
 	* @param pass  Passwort
 	* @param database DBname
 	*/
-	private synchronized boolean update(Connection conn,String expression) throws  SQLException
+	private boolean update(Connection conn,String expression) throws  SQLException
 	{
 		Statement st = null;
 
@@ -230,7 +231,7 @@ public class DBLayerHSQL implements DBLayer
 
 		int i = st.executeUpdate(expression);    // run the query
 
-		if (i == -1) 
+			if (i == -1) 
 		{
 			return false;
 			//spaeter mal Loggeintrag
@@ -242,55 +243,139 @@ public class DBLayerHSQL implements DBLayer
 
 	/**
 	 * Einfuegen einer Category ins Set ..
+	 * in der Bean muss die rootCategory und links und rechts des 
+	 * Knotens stehen an den wir anhaengen wollen
+	 *	Bsp.          1A6
+	 *			2B3			4C5
+	 * Wir wollen an B was anhaengen dann brauchen wir A und 2,3
+	 *
+	 *
+	 * 
+	 * TODO man braucht nur rootCat und den namen der Oberkategorie
 	 *
 	 */
-	public void addCategory(Connection conn, categoryBean catbean) throws SQLException
+	public categoryBean addCategory(Connection conn, categoryBean catbean, categoryBean metacat) throws SQLException
 	{
-		//TODO Inhalt
+		//Bean fuer Return anlegen
+		categoryBean re;
+		re = catbean;
+		
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		//zu welchem RootKnoten gehoert die neue Kategorie
+		String getRootId = new String("select root_id from category where id = "+metacat.getID());
+		Integer rootid;
+		//rechts von der ElternKategorie
+		String getMetaRight = new String ("select right from category where id ="+ metacat.getID());
+		
+		conn.setSavepoint("addcat");
+		try
+		{	
+			//Rootid holen
+			ResultSet rsi = st.executeQuery(getRootId);
+			rsi.next();
+			rootid = rsi.getInt(1);
+
+			//Rootid holen
+			rsi = st.executeQuery(getMetaRight);
+			rsi.next();
+			metacat.setRight(rsi.getInt(1));
+		
+			//bei allen Knoten die zur selben Wurzel gehoeren und deren linker Wert > 
+			//dem rechten der Metakategorie ist muss links um 2 erhoeht werden		
+			String updateLeft = new String("UPDATE category SET left = left+2 WHERE root_id = "+rootid+" and left > "+metacat.getRight());
+		
+			//bei allen Knoten die zur selben Wurzel gehoeren und deren rechter Wert >= 
+			//dem rechten der Metakategorie ist muss rechts um 2 erhoeht werden  
+			String updateRight = new String("UPDATE category SET right = right+2 WHERE root_id = "+rootid+" and right >= "+metacat.getRight());
+	
+			//Einfuegen des neuen Knotens
+			String insertNew = new String("INSERT INTO category (root_id, left, right, name, beschreibung) VALUES ("+rootid+","+metacat.getRight()+","+(metacat.getRight()+1)+",'"+catbean.getCategory()+"','"+catbean.getBeschreibung()+"')");
+	
+			//ausfuehren der Updates und des Inserts
+			st.executeUpdate(updateLeft);	
+			st.executeUpdate(updateRight);	
+			st.executeUpdate(insertNew);	
+			
+			//erzeugte id holen
+			rsi = st.executeQuery("CALL IDENTITY()");
+			rsi.next();
+			int identity = rsi.getInt(1);
+			
+			conn.commit();
+			
+			//Bean fuer Rueckgabe bereit machen
+			re.setID(identity);
+			re.setRootID(rootid);
+			re.setLeft(metacat.getRight());
+			re.setRight(metacat.getRight()+1);
+			
+			return(re);
+		}
+		catch(SQLException e)
+		{
+			conn.rollback();
+			//logging machen
+			System.out.println("AddCategory :"+e);
+			return null;
+		}
+		
 	}
 
 	/**
 	 * Einfuegen einer rootCategory ins Set ..
 	 *
 	 */
-	public void addRootCategory(Connection conn, categoryBean catbean) throws SQLException
+	public categoryBean addRootCategory(Connection conn, categoryBean catbean) throws SQLException
 	{
-		// lock table category , set savepoint
-		java.sql.Savepoint addRC;
-		//addRC = conn.setSavepoint("addRootCategory");
+		//Bean fuer Return anlegen
+		categoryBean re = catbean;
 		
 		Statement st = null;
 		st = conn.createStatement();    // erstelle statements
 		//TODO ist die Bean auch gefuellt			
-		String insert = new String("INSERT INTO category(left,right,name) VALUES(1,2,'"+catbean.getCategory()+"')");
+		String insert = new String("INSERT INTO category(left,right,name,beschreibung) VALUES(1,2,'"+catbean.getCategory()+"','"+catbean.getBeschreibung()+"')");
+		
+		//returnbean fuellen
+		re.setLeft(1);
+		re.setRight(2);
 		
 		//Statement um PrimKey zu kriegen
 		String prim = new String("CALL IDENTITY()");
 		
+		// lock table category , set savepoint
+		conn.setSavepoint("addrootcot");
+
 		try
 		{
+
 			//ausfuehren des inserts
 			st.executeUpdate(insert);
 
-			//key holen
+			//erzeugte id holen
 			ResultSet rsi = st.executeQuery(prim);
 			rsi.next();
 			int identity = rsi.getInt(1);
-		
+			
+			//returnbean fuellen
+			re.setID(identity);
+		    re.setRootID(identity);	
+			
 			//update von root_id
 			String upd = new String("UPDATE category SET root_id = " +identity+ " WHERE id =" +identity);
-			st.executeUpdate(upd);
-
-			
+			st.executeUpdate(upd);			
 			conn.commit();
+			
+			return(re);
 			
 		}
 		catch(SQLException e)
 		{
-			//conn.rollback(addRC);
-			//TODO LoggMessage
+			conn.rollback();
+			//TODO LoggMessage statt print
 			System.out.println("AddRoot: "+ e);
-			
+			return null;
 		}
 		
 	}

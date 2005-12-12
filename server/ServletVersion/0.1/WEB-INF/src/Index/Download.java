@@ -65,7 +65,7 @@ public class Download
 			{
 					// was genau ist hier das problem?
 					// @todo bitte mal bessere Excpetion-.Beschreibung nachtragen :)
-					throw new DownloadFailedException("uhm, dunno what has happened, but it has failed!");
+					throw new DownloadFailedException("Falscher Content Type nur text kann zur Zeit indiziert werden.");
 			}
 			
 			// @todo Die HTML-Endung hier ist irgendwie unschön, ich schlage vor wie hier schon grundsätzlich

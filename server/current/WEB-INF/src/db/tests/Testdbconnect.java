@@ -14,26 +14,40 @@ public class Testdbconnect
 		DBLayer db2 = new DBLayerHSQL();
 
 		Connection conn;
-		//Connection conn2;
+		Connection conn2;
 		try
 		{
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 			//conn.setAutoCommit(false);
 			
-			db.addRootCategory(conn,new categoryBean("testcat"));
+			//neuen rootcat anlegen
+			categoryBean rootcat = new categoryBean();
+			rootcat.setCategory("rootcat");
+			rootcat.setBeschreibung("TestRootKategorie!");
+			rootcat = db.addRootCategory(conn,rootcat);
 			
-			db.query(conn,"SELECT * FROM category");
+			System.out.println("rootCAT:");
+			rootcat.printAll();
+		
+			//neue cat anlegen
+			categoryBean newcat = new categoryBean();
+			newcat.setCategory("newcat");
+			newcat.setBeschreibung("TestKategorie!");
 			
-			db.query(conn,"SELECT * FROM indexedurls");
+			newcat = db.addCategory(conn,newcat,rootcat);
+			
+			System.out.println("newCAT:");
+			newcat.printAll();
 
-			//conn2 = db2.getConnection("tf","tfpass","anyserver","tfdb");
-			
-			//System.out.println("conn1 hashcode: " + conn.hashCode());
-			
-			//System.out.println("conn2 hashcode: " + conn2.hashCode());
+
 			
 			conn.close();
-			//conn2.close();
+			
+			conn2 = db.getConnection("tf","tfpass","anyserver","tfdb");
+			db.query(conn2,"SELECT * FROM category");
+			
+			db.query(conn2,"SELECT * FROM indexedurls");
+			conn2.close();
 		}
 		catch (Exception e)
 		{
