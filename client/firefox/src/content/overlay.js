@@ -20,6 +20,7 @@
 *		xmlhttp - adding page http-request
 *		xmlhttptf - searching teamfound
 *		xmlhttpext - searching extern search engine
+*		xmlhttpcat - loading categories
 *		prefs - TeamFound preferences
 */
 
@@ -54,9 +55,70 @@ var TeamFound =
 			prefs = Components.classes["@mozilla.org/preferences-service;1"].
 				getService(Components.interfaces.nsIPrefBranch).
 				getBranch("extensions.teamfound.");
+
+			TeamFound.loadCategories();
 		}
 
 	}, // onLoad
+
+	loadCategories: function()
+	{
+		var pref_serverurl = prefs.getCharPref("settings.serverurl");
+
+		// Milestone 2 request: getcategories
+		var command = "?want=xml&version=2&command=getcategories";
+
+		// Request erstellen (globale variable)
+		xmlhttpcat = new XMLHttpRequest();
+		// Callback Registrieren wenn der Server fertig ist
+		xmlhttpcat.onreadystatechange = TeamFound.onLoadCategoriesFinished;
+		// Request methode, url und asyncron (true/false) definieren
+		xmlhttpcat.open("GET", pref_serverurl + command, true); 
+		// Request senden
+		xmlhttpcat.send(null);
+	}, // loadCategories
+
+	onLoadCategoriesFinished: function()
+    {
+		// nur etwas machen falls der request schon fertig ist
+		if( xmlhttpcat.readyState == 4)  
+		{
+			// HTTP-Request Code auswerten
+			if( xmlhttpcat.status == 200)
+			{	// OK
+
+				// Server-Name anzeigen
+				var catmenu = document.getElementById("tf-categories");
+				catmenu.setAttribute("label", xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue);
+
+				// menue loeschen
+				for(var i = catmenu.childNodes.length - 1; i >= 0; i--) 
+				{
+					catmenu.removeChild(catmenu.childNodes.item(i));
+				}
+
+				// Auf Fehlercode 0 (OK) testen
+				if( xmlhttpcat.responseXML.getElementsByTagName("return-value")[0].firstChild.nodeValue != 0)
+				{
+					alert("Error: " + xmlhttpcat.responseXML.getElementsByTagName("return-description")[0].firstChild.nodeValue + "\n");
+					return;
+				}
+
+				// popup erzeugen
+				var catpopup = document.createElement("menupopup");
+				catmenu.appendChild(catpopup);
+
+				// item erzeugen
+				var item1 = document.createElement("menuitem");
+				item1.setAttribute("label", xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].getElementsByTagName("category")[0].getElementsByTagName("name")[0].firstChild.nodeValue);
+				catpopup.appendChild(item1);
+			}
+			else
+			{
+				alert("Error loading categories from server..");
+			}
+		}
+	}, // onLoadCategoriesFinished
 
 	onSettings: function()
 	{
@@ -198,8 +260,10 @@ var TeamFound =
 	}, // myGoogleSearch
 
 	// Eine neue Seite soll dem Index hinzugefuegt werden
-	onAddPage: function() {
-		// hinzuzufuegende url (globale variable) addpageurl = content.document.URL;
+	onAddPage: function() 
+	{
+		// hinzuzufuegende url (globale variable) 
+		addpageurl = content.document.URL;
 
 		var pref_serverurl = prefs.getCharPref("settings.serverurl");
 

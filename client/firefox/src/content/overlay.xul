@@ -42,6 +42,12 @@
 
 
 			<toolbarbutton id="tf-icon" tooltiptext="TeamFound configuration" oncommand="TeamFound.onSettings(event);" />
+
+			<menu id="tf-categories" label="loading ..">
+				<menupopup>
+				</menupopup>
+			</menu>
+
 			<toolbarbutton id="tf-buttonAddPage" tooltiptext="Adds the current page to your TeamFound index" label="Add page" oncommand="TeamFound.onAddPage(event);" />
 
 			<toolbaritem>
