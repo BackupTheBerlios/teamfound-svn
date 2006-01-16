@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.lang.Math;
 
 public class DBLayerHSQL implements DBLayer
 {
@@ -110,11 +111,18 @@ public class DBLayerHSQL implements DBLayer
 				System.out.println("error in Statement "+ sqlcreate);
 
 			//create URL table
-			sqlcreate = "CREATE TABLE indexedurls (id IDENTITY,url VARCHAR,category INTEGER,indexdate DATE,FOREIGN KEY (category) REFERENCES category(id))";
+			sqlcreate = "CREATE TABLE indexedurls (id INTEGER IDENTITY,url VARCHAR,indexdate DATE)";
+			if(!update(c,sqlcreate))
+				System.out.println("error in Statement "+ sqlcreate);
+
+			//create ForeignKeyTable Url <-> Category
+			sqlcreate = "CREATE TABLE urltocategory (id INTEGER IDENTITY,url INTEGER,category INTEGER, FOREIGN KEY (category) REFERENCES category(id), FOREIGN KEY (url) REFERENCES indexedurls(id))";
 			if(!update(c,sqlcreate))
 				System.out.println("error in Statement "+ sqlcreate);
 			
+			
 			//Grant rights to user
+			
 			cuser=("GRANT ALL ON category TO " +user);
 			if(!update(c,cuser))
 				System.out.println("error bei grant to User ");
@@ -122,6 +130,11 @@ public class DBLayerHSQL implements DBLayer
 			cuser=("GRANT ALL ON indexedurls TO " +user);
 			if(!update(c,cuser))
 				System.out.println("error bei grant to User ");
+			
+			cuser=("GRANT ALL ON urltocategory TO " +user);
+			if(!update(c,cuser))
+				System.out.println("error bei grant to User ");
+
 			
 			//create root of the category tree
 			// ID1 : 	1 setroot 2
@@ -380,8 +393,129 @@ public class DBLayerHSQL implements DBLayer
 		
 	}
 
+	/** 
+	* Loescht ein Blatt aus dem Category-Baum (nested Set) 
+	* Achtung keine Fehlermeldung falls es kein Blatt war und
+	* in dem fall wird einfach gar nichts gemacht ....
+	* TODO exception fuer den beschriebenen Fall
+	* 
+	* @param conn  Connection
+	* @param catbean  categoryBean
+	*
+	*/
+	public void deleteLeafCategory(Connection conn, categoryBean catbean) throws SQLException
+	{
+		
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		//TODO pruefen ob alles schon in der Bean gespeichert ist
+		//Benoetigte Informationen (Root Left und Right) auslesen
+		String getBeanInfo = new String("select root_id,left,right from category where id = "+catbean.getID());
+		conn.setSavepoint("deleteLeaf");
+		try
+		{	
+			//Category Info holen
+			ResultSet rs = st.executeQuery(getBeanInfo);			
+			// result in categoryBean schreiben
+			rs.next();
+			catbean.setRootID(rs.getInt(1));
+			catbean.setLeft(rs.getInt(2));
+			catbean.setRight(rs.getInt(3));
+			//pruefen ob es wirklich ein Leaf ist
+			if(catbean.getLeft()+1 != catbean.getRight())
+			{
+				System.out.println("DeleteLeafCategory: Zu loeschende Category ist kein Blatt!");
+				return;
+			}
+
+			//Category loeschen
+			String stmnt = new String("DELETE FROM category WHERE id = "+catbean.getID());
+			st.executeUpdate(stmnt);
+
+			//die restlichen Knoten anpassen
+			stmnt = ("UPDATE category SET left = left-2 WHERE root_id = "+catbean.getRootID()+" AND left > "+catbean.getRight());
+			st.executeUpdate(stmnt);
+			
+			stmnt  = ("UPDATE category SET right = right-2 WHERE root_id = "+catbean.getRootID()+" AND right > "+catbean.getRight());
+			st.executeUpdate(stmnt);
+
+			//Zugordnungen zu Urls entfernen
+			//TODO sollte diese Methode ueberhaupt gehen wenn urls zugeordnet sind?
+			stmnt = ("DELETE FROM urlstocategory WHERE id = "+catbean.getID());
+			st.executeUpdate(stmnt);
+
+			conn.commit();
+			return;
+		}
+		catch(SQLException e)
+		{
+			conn.rollback();
+			//logging machen
+			System.out.println("deleteLeafCategory :"+e);
+			return; 
+		}
+		
+	}
+	/** 
+	* Loescht einen TeilBaum aus dem Category-Baum (nested Set) 
+	* TODO alle Zuordnungne zu Urls entfernen 
+	* Ist es ueberhaupt in unserem Prog erlaubt ?
+	* 
+	* @param conn  Connection
+	* @param catbean  categoryBean
+	*
+	*/
+	public void deletePartialTree(Connection conn, categoryBean catbean) throws SQLException
+	{
+		
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		//TODO pruefen ob alles schon in der Bean gespeichert ist
+		//Benoetigte Informationen (Root Left und Right) auslesen
+		String getBeanInfo = new String("select root_id,left,right from category where id = "+catbean.getID());
+		conn.setSavepoint("deletePartialTree");
+		try
+		{	
+			//Category Info holen
+			ResultSet rs = st.executeQuery(getBeanInfo);			
+			// result in categoryBean schreiben
+			rs.next();
+			catbean.setRootID(rs.getInt(1));
+			catbean.setLeft(rs.getInt(2));
+			catbean.setRight(rs.getInt(3));
+
+			//wert um den verschoben wird berechnen
+			double move = java.lang.Math.floor((catbean.getRight() - catbean.getLeft())/2);
+			move = 2 * (1 + move);
+
+			//Categorien loeschen
+			String stmnt = new String("DELETE FROM category WHERE root_id = "+catbean.getRootID()+" AND left BETWEEN "+catbean.getLeft()+" AND "+catbean.getRight());
+			st.executeUpdate(stmnt);
+
+			//die restlichen Knoten anpassen
+			stmnt = ("UPDATE category SET left = left - "+move+" WHERE root_id = "+catbean.getRootID()+" AND left > "+catbean.getRight());
+			st.executeUpdate(stmnt);
+			
+			stmnt  = ("UPDATE category SET right = right - "+move+" WHERE root_id = "+catbean.getRootID()+" AND right > "+catbean.getRight());
+			st.executeUpdate(stmnt);
+
+			conn.commit();
+			return;
+		}
+		catch(SQLException e)
+		{
+			conn.rollback();
+			//logging machen
+			System.out.println("deleteLeafCategory :"+e);
+			return; 
+		}
+		
+	}
 	/**
 	 * Hinzufuegen einer Url (entweder schon indiziert oder wird gleich indiziert)
+	 * ohne zugehoeriger Category
 	 */ 
 	public void addUrl(Connection conn, urltabBean urlbean) throws SQLException
 	{
@@ -389,7 +523,24 @@ public class DBLayerHSQL implements DBLayer
 	}
 
 	/**
-	 * Category ahand bezeichnung suchen ..
+	 * Hinzufuegen einer Url (entweder schon indiziert oder wird gleich indiziert)
+	 * mit zugehoeriger Category
+	 */ 
+	public void addUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException
+	{
+		//TODO Inhalt
+	}
+
+	/**
+	 * Hinzufuegen einer Category zu einer Url
+	 */ 
+	public void addCatToUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException
+	{
+		//TODO Inhalt
+	}
+
+	/**
+	 * Category anhand bezeichnung suchen ..
 	 *
 	 */
 	public categoryBean getCategoryByName(Connection conn, String catname) throws SQLException
