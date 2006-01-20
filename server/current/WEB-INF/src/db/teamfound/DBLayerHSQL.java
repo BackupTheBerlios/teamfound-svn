@@ -105,7 +105,6 @@ public class DBLayerHSQL implements DBLayer
 					System.out.println("error bei create User ");
 			
 			//create Category table
-			//String sqlcreate = new String("CREATE TABLE category (id INTEGER IDENTITY,root_id INTEGER, left INTEGER, right INTEGER, name VARCHAR,CONSTRAINT leftset UNIQUE (left), CONSTRAINT rightset UNIQUE (right))");			
 			String sqlcreate = new String("CREATE TABLE category (id INTEGER IDENTITY,root_id INTEGER, left INTEGER, right INTEGER, name VARCHAR,beschreibung VARCHAR)");			
 			if(!update(c,sqlcreate))
 				System.out.println("error in Statement "+ sqlcreate);
@@ -117,6 +116,12 @@ public class DBLayerHSQL implements DBLayer
 
 			//create ForeignKeyTable Url <-> Category
 			sqlcreate = "CREATE TABLE urltocategory (id INTEGER IDENTITY,url INTEGER,category INTEGER, FOREIGN KEY (category) REFERENCES category(id), FOREIGN KEY (url) REFERENCES indexedurls(id))";
+			if(!update(c,sqlcreate))
+				System.out.println("error in Statement "+ sqlcreate);
+
+			//create ForeignKeyTable Url <-> Category
+			//nicht jede Category sondern nur jede root Cat braucht eine Version
+			sqlcreate = "CREATE TABLE categoryversion (id INTEGER IDENTITY,rootid INTEGER,version INTEGER, FOREIGN KEY (rootid) REFERENCES category(id))";
 			if(!update(c,sqlcreate))
 				System.out.println("error in Statement "+ sqlcreate);
 			
@@ -135,11 +140,9 @@ public class DBLayerHSQL implements DBLayer
 			if(!update(c,cuser))
 				System.out.println("error bei grant to User ");
 
-			
-			//create root of the category tree
-			// ID1 : 	1 setroot 2
-			//if(!update(c,"INSERT INTO category(id,root_id,left,right,name) VALUES(1,1,1,2,'testcat')"))
-			//	System.out.println("error bei first Insert ");
+			cuser=("GRANT ALL ON categoryversion TO " +user);
+			if(!update(c,cuser))
+				System.out.println("error bei grant to User ");
 			
 			c.commit();
 	
@@ -190,7 +193,8 @@ public class DBLayerHSQL implements DBLayer
 
 	/**
 	 * dummie fuer select Anfragen
-	 *nur als testfunktion zu verwenden..
+	 * nur als testfunktion zu verwenden..
+	 * Schreibt einfach Ergebnisse an Konsole.
 	 */
 	public void query(Connection conn,String expression) throws  SQLException
 	{
@@ -227,7 +231,7 @@ public class DBLayerHSQL implements DBLayer
 	}
 
 	/** 
-	* Methode zum ausfuehren aller Create, Drop, Insert, und Update Anfragen
+	* Methode zum ausfuehren einzelner Create, Drop, Insert, und Update Anfragen
 	* 
 	* Note: fuer viele updates nacheinader sollte das StatementObject immer
 	* wieder verwenden ...
@@ -256,15 +260,16 @@ public class DBLayerHSQL implements DBLayer
 
 	/**
 	 * Einfuegen einer Category ins Set ..
-	 * in der Bean muss die rootCategory und links und rechts des 
-	 * Knotens stehen an den wir anhaengen wollen
+	 * von der uebergeordneten Kategorie reicht die ID der rest wird 
+	 * in diser Methode ausgelesen! 
+	 * 
 	 *	Bsp.          1A6
 	 *			2B3			4C5
 	 * Wir wollen an B was anhaengen dann brauchen wir A und 2,3
 	 *
 	 *
 	 * 
-	 * TODO man braucht nur rootCat und den namen der Oberkategorie
+	 * 
 	 *
 	 */
 	public categoryBean addCategory(Connection conn, categoryBean catbean, categoryBean metacat) throws SQLException
@@ -290,7 +295,8 @@ public class DBLayerHSQL implements DBLayer
 			rsi.next();
 			rootid = rsi.getInt(1);
 
-			//Rootid holen
+			
+			//Right holen
 			rsi = st.executeQuery(getMetaRight);
 			rsi.next();
 			metacat.setRight(rsi.getInt(1));
@@ -315,6 +321,10 @@ public class DBLayerHSQL implements DBLayer
 			rsi = st.executeQuery("CALL IDENTITY()");
 			rsi.next();
 			int identity = rsi.getInt(1);
+
+			//update der categoryversion
+			String updateCatVersion = new String("UPDATE categoryversion SET version = version+1 WHERE rootid = "+rootid);
+			st.executeUpdate(updateCatVersion);	
 			
 			conn.commit();
 			
@@ -378,6 +388,11 @@ public class DBLayerHSQL implements DBLayer
 			//update von root_id
 			String upd = new String("UPDATE category SET root_id = " +identity+ " WHERE id =" +identity);
 			st.executeUpdate(upd);			
+
+			//neuer Eintrag in CategoryVersionTabelle
+			insert = new String("INSERT INTO categoryversion(rootid,version) VALUES("+identity+",1)");
+			st.executeUpdate(insert);			
+			
 			conn.commit();
 			
 			return(re);
@@ -513,31 +528,246 @@ public class DBLayerHSQL implements DBLayer
 		}
 		
 	}
-	/**
-	 * Hinzufuegen einer Url (entweder schon indiziert oder wird gleich indiziert)
-	 * ohne zugehoeriger Category
-	 */ 
-	public void addUrl(Connection conn, urltabBean urlbean) throws SQLException
+
+	/** 
+	* Loescht eine beliebigen Knoten aus dem Category-Baum (nested Set) 
+	* TODO alle Zuordnungne zu Urls entfernen 
+	* Ist es ueberhaupt in unserem Prog erlaubt ?
+	* 
+	* @param conn  Connection
+	* @param catbean  categoryBean
+	*
+	*/
+	public void deleteCategory(Connection conn, categoryBean catbean) throws SQLException
 	{
-		//TODO Inhalt
+		//TODO
+	}
+	
+		
+	/**
+	 * Hinzufuegen einer Url(nur Url in der Bean benoetigt) 
+	 * ohne zugehoerige Category
+	 * liefert bean mit der ID und dem erzeugten Datum zurueck
+	 * Achtung: keine Ueberpruefung ob bereits existiert!
+	 * 
+	 * @param conn  Connection
+	 * @param urlbean urltabBean
+	 * 
+	 **/
+	public urltabBean addUrl(Connection conn, urltabBean urlbean) throws SQLException
+	{
+		//Bean fuer Return anlegen
+		urltabBean re = urlbean;
+
+		//Datum erzeugen mit den Werten von "jetzt"
+		java.util.Date d = new java.util.Date();
+		java.sql.Date dat = new java.sql.Date(d.getTime());
+		re.setDate(dat);
+		
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		//TODO ist die Bean auch gefuellt			
+		
+		//insert statement
+		String insert = new String("INSERT INTO indexedurls(url,indexdate) VALUES('"+re.getUrl()+"','"+dat.toString()+"')");
+		
+		
+		//Statement um PrimKey zu kriegen
+		String prim = new String("CALL IDENTITY()");
+		
+		// lock table category , set savepoint
+		conn.setSavepoint("addurl");
+
+		try
+		{
+
+			//ausfuehren des inserts
+			st.executeUpdate(insert);
+
+			//erzeugte id holen
+			ResultSet rsi = st.executeQuery(prim);
+			rsi.next();
+			int identity = rsi.getInt(1);
+			
+			//returnbean fuellen
+			re.setID(identity);
+			
+			conn.commit();
+			
+			return(re);
+			
+		}
+		catch(SQLException e)
+		{
+			conn.rollback();
+			//TODO LoggMessage statt print
+			System.out.println("AddUrl: "+ e);
+			return null;
+		}
+		
 	}
 
+
 	/**
-	 * Hinzufuegen einer Url (entweder schon indiziert oder wird gleich indiziert)
+	 * Hinzufuegen einer Url (nur Url in der Bean benoetigt)
 	 * mit zugehoeriger Category
+	 *
+	 * Achtung: keine Ueberpruefung ob URL bereits existiert!
 	 */ 
-	public void addUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException
+	public urltabBean addUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException
 	{
-		//TODO Inhalt
+		//Bean fuer Return anlegen
+		urltabBean re = urlbean;
+
+		//Datum erzeugen mit den Werten von "jetzt"
+		java.util.Date d = new java.util.Date();
+		java.sql.Date dat = new java.sql.Date(d.getTime());
+		re.setDate(dat);
+		
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		//TODO ist die Bean auch gefuellt			
+		
+		//insert statement
+		String insert = new String("INSERT INTO indexedurls(url,indexdate) VALUES('"+re.getUrl()+"','"+dat.toString()+"')");
+		
+		//Statement um PrimKey zu kriegen
+		String prim = new String("CALL IDENTITY()");
+		
+		// lock table category , set savepoint
+		conn.setSavepoint("addurl");
+
+		try
+		{
+
+			//ausfuehren des URL inserts
+			st.executeUpdate(insert);
+
+			//erzeugte id holen
+			ResultSet rsi = st.executeQuery(prim);
+			rsi.next();
+			int identity = rsi.getInt(1);
+			
+			//returnbean fuellen
+			re.setID(identity);
+			
+			//Verbindung auf Category setzen
+			insert = ("INSERT INTO urltocategory(url,category) VALUES("+re.getID()+","+catbean.getID()+")");
+			st.executeUpdate(insert);
+
+
+			conn.commit();
+			
+			return(re);
+			
+		}
+		catch(SQLException e)
+		{
+			conn.rollback();
+			//TODO LoggMessage statt print
+			System.out.println("AddUrl: "+ e);
+			return null;
+		}
 	}
 
 	/**
 	 * Hinzufuegen einer Category zu einer Url
+	 * genau diese Category wird der URL zugeordnet(keine zuordnung der Parentkategorien)
 	 */ 
 	public void addCatToUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException
 	{
-		//TODO Inhalt
+
+		
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		//TODO Beans auch gefuellt			
+		
+		// lock table category , set savepoint
+		conn.setSavepoint("addtourl");
+
+		try
+		{
+			//Verbindung auf Category setzen
+			String insert = new String("INSERT INTO urltocategory(url,category) VALUES("+urlbean.getID()+","+catbean.getID()+")");
+			st.executeUpdate(insert);
+			
+			conn.commit();
+		}
+		catch(SQLException e)
+		{
+			conn.rollback();
+			//TODO LoggMessage statt print
+			System.out.println("AddCatToUrl: "+ e);
+		}
 	}
+	/**
+	 * Alle Eltern zur Category finden 
+	 * in der CategoryBean wird nur die ID benoetigt 
+	 */ 
+	public java.util.Vector<categoryBean> findAllParents(Connection conn, categoryBean catbean) throws SQLException
+	{
+				
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		//TODO ist die Bean auch gefuellt			
+
+		//wir brauchen auf jeden left und right der category
+		String getBeanInfo = new String("select left,right from category where id = "+catbean.getID());
+
+				// lock table category , set savepoint
+		conn.setSavepoint("findallparents");
+
+		try
+		{
+			//Category Info holen
+			ResultSet rs = st.executeQuery(getBeanInfo);			
+			// result in categoryBean schreiben
+			rs.next();
+			catbean.setLeft(rs.getInt(1));
+			catbean.setRight(rs.getInt(2));
+			
+			//find statement
+			String find = new String("SELECT * FROM category where left < "+catbean.getLeft()+" and right > "+catbean.getRight());
+			ResultSet rsi = st.executeQuery(find);
+			
+			java.util.Vector<categoryBean> revec = new java.util.Vector<categoryBean>();
+
+			//results in Return Array schreiben
+			while(rsi.next())
+			{
+				categoryBean re = new categoryBean();
+				
+				re.setID(rsi.getInt(1));
+				
+				re.setRootID(rsi.getInt(2));
+				
+				re.setLeft(rsi.getInt(3));
+				
+				re.setRight(rsi.getInt(4));
+				
+				re.setCategory(rsi.getString(5));
+				
+				re.setBeschreibung(rsi.getString(6));
+				
+				if(!revec.add(re))
+					System.out.println("an Vector adden fehlgeschlagen!");
+			}
+
+			
+			conn.commit();
+			
+			return(revec);
+			
+		}
+		catch(SQLException e)
+		{
+			conn.rollback();
+			//TODO LoggMessage statt print
+			System.out.println("FindAllParents: "+ e);
+			return null;
+		}
+	}
+	
 
 	/**
 	 * Category anhand bezeichnung suchen ..

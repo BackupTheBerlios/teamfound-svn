@@ -82,10 +82,29 @@ public interface DBLayer
 	public categoryBean addCategory(Connection conn, categoryBean catbean,categoryBean parent) throws SQLException;
 	
 	 /**
-	 * Hinzufuegen einer Url (entweder schon indiziert oder wird gleich indiziert)
-	 */ 
-	public void addUrl(Connection conn, urltabBean urlbean) throws SQLException;
+	  *Hinzufuegen einer Url (nur Url in der Bean benoetigt)
+	  *
+	  *
+	  *Achtung: keine Ueberpruefung ob URL bereits existiert!
+	  **/
+	public urltabBean addUrl(Connection conn, urltabBean urlbean) throws SQLException;
 
+	 /**
+	  *Hinzufuegen einer Url (nur Url in der Bean benoetigt)
+	  *mit zugehoeriger Category
+	  *
+	  *Achtung: keine Ueberpruefung ob URL bereits existiert!
+	  **/
+	public urltabBean addUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException;
+
+/**
+	 * Alle Eltern zur Category finden 
+	 * in der CategoryBean wird nur die ID benoetigt 
+	 */ 
+	public java.util.Vector<categoryBean> findAllParents(Connection conn, categoryBean catbean) throws SQLException;
+
+
+	
 	/**
 	 * Category ahand bezeichnung suchen ..
 	 *

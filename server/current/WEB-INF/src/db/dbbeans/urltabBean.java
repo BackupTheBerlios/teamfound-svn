@@ -13,23 +13,20 @@ public class urltabBean implements Serializable
 
 	private Integer id;
 	private String url;
-	private Integer cat_id;
 	private Date datum;
 
 	public urltabBean()
 	{};
 
-	public urltabBean(String neurl,Date dat)
+	public urltabBean(String neurl)
 	{
 		url = neurl;
-		datum = dat;
-		
 	}
-	public urltabBean(String neurl,Date dat,Integer cat)
+	public urltabBean(String neurl,Date dat,Integer id)
 	{
 		url = neurl;
 		datum = dat;
-		cat_id = cat;
+		id = id;
 		
 	}
 	
@@ -51,12 +48,16 @@ public class urltabBean implements Serializable
 		datum=dat;
 	}
 	
-	public Integer getCategory()
+	public Integer getID()
 	{
-		return(cat_id);
+		return(id);
 	}
-	public void setCat(Integer cat)
+	public void setID(Integer neid)
 	{
-		cat_id=cat;
+		id=neid;
+	}
+	public void printAll()
+	{
+		System.out.println("ID:"+id+" URL:"+url+" Datum:"+datum.getTime());
 	}
 }
