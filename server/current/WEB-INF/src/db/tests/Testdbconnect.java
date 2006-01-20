@@ -97,19 +97,7 @@ public class Testdbconnect
 
 			System.out.println("\n");
 		
-			//neue cat anlegen
-			System.out.println("lege neue Cat an");
-			newcat.setCategory("newcat6");
-			newcat.setBeschreibung("TestKategorie6!");
-			
-			oldcat = db.addCategory(conn,newcat,oldcat);
-			
-			System.out.println("newCAT6:");
-			oldcat.printAll();
-
-			System.out.println("\n");
-		
-	
+				
 
 			//neue url anlegen
 			System.out.println("lege neue url an");
@@ -155,8 +143,32 @@ public class Testdbconnect
 			
 			System.out.println("\n");
 
+			//eine url zu einer cat  zuordnen
 			
+			//erstmal neue cat anlegen
+			System.out.println("lege neue Cat an");
+			newcat.setCategory("newcat6");
+			newcat.setBeschreibung("TestKategorie6!");
+			
+			oldcat = db.addCategory(conn,newcat,oldcat);
+			
+			System.out.println("newCAT6:");
+			oldcat.printAll();
 
+			System.out.println("\n");
+		
+
+			System.out.println("eine Url mit zu Cat zuordenen mit allen Elternkategorien:");
+			db.addCatwithParentsToUrl(conn,newurl2,oldcat);
+			
+			System.out.println("die Url:");
+			newurl2.printAll();
+			System.out.println("die CAT dazu:");
+			oldcat.printAll();
+			System.out.println("\n");
+
+
+			
 			System.out.println("\n");
 			System.out.println("Alle Tabellen abfragen:");
 			conn.close();

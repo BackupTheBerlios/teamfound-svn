@@ -61,6 +61,7 @@ public interface DBLayer
 	 /**
 	  * fuer select Anfragen
 	  *nur als testfunktion zu verwenden..
+	  *gibt ergebnisse des select-statements auf der Konsole aus
 	  */
 	public void query(Connection conn, String expression) throws  SQLException;
 
@@ -75,25 +76,73 @@ public interface DBLayer
 	/**
 	 * Einfuegen einer Category ins Set ..
 	 *
-	 * Bean Objekt braucht nur Name und wird mit id etc. zurueckgeliefert
-	 * Parent muss seine ID kennen.. da laut interface der Client alle IDs hat
-	 * und mitsendet habe ich mich jetzt darauf verlassen dass id vorhanden
+	 * Bean Objekt braucht nur Name (und Beschreibung) Es wird mit id etc. zurueckgeliefert.
+	 * Das ParentObject muss ausschlieslich seine ID kennen..
+	 * (nicht vorher mit einer extra Anfrage fuellen,dass wird von dieser Funktion selber erledigt)
+	 * da laut interface der Client alle IDs der Kathegorien hat
+	 * und mitsendet ist das also kein Problem
 	 */
 	public categoryBean addCategory(Connection conn, categoryBean catbean,categoryBean parent) throws SQLException;
 	
-	 /**
-	  *Hinzufuegen einer Url (nur Url in der Bean benoetigt)
-	  *
-	  *
-	  *Achtung: keine Ueberpruefung ob URL bereits existiert!
-	  **/
-	public urltabBean addUrl(Connection conn, urltabBean urlbean) throws SQLException;
+	/** 
+	* Loescht ein Blatt aus dem Category-Baum (nested Set) 
+	* Achtung keine Fehlermeldung falls es kein Blatt war und
+	* in dem fall wird einfach gar nichts gemacht ....
+	* TODO exception fuer den beschriebenen Fall
+	* 
+	* @param conn  Connection
+	* @param catbean  categoryBean
+	*
+	*/
+	public void deleteLeafCategory(Connection conn, categoryBean catbean) throws SQLException;
+	
+	/** 
+	* Loescht einen TeilBaum aus dem Category-Baum (nested Set) 
+	* TODO alle Zuordnungne zu Urls entfernen oder soll das uebergeordnet geregelt werden? 
+	* Ist es ueberhaupt in unserem Prog erlaubt ?
+	* 
+	* @param conn  Connection
+	* @param catbean  categoryBean
+	*
+	*/
+	public void deletePartialTree(Connection conn, categoryBean catbean) throws SQLException;
 
-	 /**
+	/** 
+	* Loescht eine beliebigen Knoten aus dem Category-Baum (nested Set) 
+	* TODO alle Zuordnungne zu Urls entfernen 
+	* Ist es ueberhaupt in unserem Prog erlaubt ?
+	* Methode bisher nicht implementiert ...!!!
+	* 
+	* @param conn  Connection
+	* @param catbean  categoryBean
+	*
+	*/
+	public void deleteCategory(Connection conn, categoryBean catbean) throws SQLException;
+
+	/**
+	 * Hinzufuegen einer Url(nur Url in der Bean benoetigt) 
+	 * ohne zugehoerige Category
+	 * liefert bean mit der ID und dem erzeugten Datum zurueck
+	 * 
+	 * Achtung: keine Ueberpruefung ob URL bereits existiert! 
+	 * Wuerde also doppelte Eintraege generieren ...
+	 * 
+	 * @param conn  Connection
+	 * @param urlbean urltabBean
+	 * 
+	 **/
+	public urltabBean addUrl(Connection conn, urltabBean urlbean) throws SQLException;
+	
+	/**
 	  *Hinzufuegen einer Url (nur Url in der Bean benoetigt)
 	  *mit zugehoeriger Category
 	  *
 	  *Achtung: keine Ueberpruefung ob URL bereits existiert!
+	  *
+	  * Da ich mir im jetzigen Design keinen UseCase sehe lass ich die Methode erstmal
+	  * wie sie grad is und verbessere nicht mehr drann
+	  * DEPRECATED
+	  * 
 	  **/
 	public urltabBean addUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException;
 
@@ -103,7 +152,22 @@ public interface DBLayer
 	 */ 
 	public java.util.Vector<categoryBean> findAllParents(Connection conn, categoryBean catbean) throws SQLException;
 
+	/**
+	 * Hinzufuegen einer Category zu einer Url
+	 * genau diese Category wird der URL zugeordnet(keine zuordnung der Parentkategorien)
+	 * 
+	 * Achtung: addCatwithParentsToUrl verwenden ... Deprecated! 
+	 * 
+	 */ 
+	public void addCatToUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException;
 
+	/**
+	 * Hinzufuegen einer Category zu einer Url
+	 * Es werden auch alle ElternCategorien mit zugeordnet
+	 *
+	 * Die IDs von Category und Url reichen aus ...
+	 */ 
+	public void addCatwithParentsToUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException;
 	
 	/**
 	 * Category ahand bezeichnung suchen ..

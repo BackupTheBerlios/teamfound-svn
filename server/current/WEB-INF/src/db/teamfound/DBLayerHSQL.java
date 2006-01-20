@@ -27,7 +27,6 @@ public class DBLayerHSQL implements DBLayer
 
 	/** 
 	* Verbindung zur Datenbank herstellen
-	*  wird wohl noch private denke ich
 	*
 	* @param user  Nutzername
 	* @param pass  Passwort
@@ -474,7 +473,7 @@ public class DBLayerHSQL implements DBLayer
 	}
 	/** 
 	* Loescht einen TeilBaum aus dem Category-Baum (nested Set) 
-	* TODO alle Zuordnungne zu Urls entfernen 
+	* TODO alle Zuordnungne zu Urls entfernen oder soll das uebergeordnet geregelt werden? 
 	* Ist es ueberhaupt in unserem Prog erlaubt ?
 	* 
 	* @param conn  Connection
@@ -548,7 +547,7 @@ public class DBLayerHSQL implements DBLayer
 	 * Hinzufuegen einer Url(nur Url in der Bean benoetigt) 
 	 * ohne zugehoerige Category
 	 * liefert bean mit der ID und dem erzeugten Datum zurueck
-	 * Achtung: keine Ueberpruefung ob bereits existiert!
+	 * Achtung: keine Ueberpruefung ob URL bereits existiert!
 	 * 
 	 * @param conn  Connection
 	 * @param urlbean urltabBean
@@ -613,6 +612,8 @@ public class DBLayerHSQL implements DBLayer
 	 * mit zugehoeriger Category
 	 *
 	 * Achtung: keine Ueberpruefung ob URL bereits existiert!
+	 * 			auch nur Zuordnung genau der Kategorie(eltern nicht betrachtet) 
+	 * 			
 	 */ 
 	public urltabBean addUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException
 	{
@@ -767,7 +768,63 @@ public class DBLayerHSQL implements DBLayer
 			return null;
 		}
 	}
-	
+	/**
+	 * Hinzufuegen einer Category zu einer Url
+	 * Es werden auch alle ElternCategorien mit zugeordnet
+	 *
+	 * Die IDs von Category und Url reichen aus ...
+	 *
+	 * Die Funktion erkennt schon vorhandene Verbindungen !
+	 * 
+	 */ 
+	public void addCatwithParentsToUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException
+	{
+		java.util.Vector<categoryBean> catvec = findAllParents(conn, catbean);
+		catvec.add(catbean);
+		
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		// lock table category , set savepoint
+		conn.setSavepoint("addcptourl");
+
+		try
+		{
+			String vorhandene = new String("SELECT * FROM urltocategory WHERE url = "+urlbean.getID());
+			ResultSet rsi = st.executeQuery(vorhandene);
+			//ueberpruefen ob die Url schon einer der Cats zugeordnet sind
+			//und wenn ja diese aus dem Vector rausnehmen
+			while(rsi.next())
+			{
+				for(int i=0; i<catvec.size(); i++)
+				{
+					if( catvec.get(i).getID() == rsi.getInt("category"))
+					{
+						catvec.remove(i);
+					}
+				}
+			}
+			
+			
+			//Alle Zuordnungen durchfueheren 
+			java.util.Iterator it = catvec.iterator();
+			while(it.hasNext())
+			{
+				categoryBean c = (categoryBean)it.next();
+				//Verbindung auf Category setzen
+				String ins = new String("INSERT INTO urltocategory(url,category) VALUES("+urlbean.getID()+","+c.getID()+")");
+				st.executeUpdate(ins);
+			
+			}	
+			conn.commit();
+		}
+		catch(SQLException e)
+		{
+			conn.rollback();
+			//TODO LoggMessage statt print
+			System.out.println("AddCatwithParentsToUrl: "+ e);
+		}
+	}
 
 	/**
 	 * Category anhand bezeichnung suchen ..
