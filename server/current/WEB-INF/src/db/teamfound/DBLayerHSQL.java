@@ -2,7 +2,7 @@
  * Created 10.12.2005
  *
  * DBlayer fuer HSQLDB 
- * Zur Zeit entwickelt um HSQLDB in teamfound eingebettet laufen zu lassen und
+ * entwickelt um HSQLDB in teamfound eingebettet laufen zu lassen und
  * nicht als Server.
  *
  * @author Martin Klink
@@ -152,6 +152,7 @@ public class DBLayerHSQL implements DBLayer
 			//existiert wohl schon 
 			//dann brauch ich auch nichts anlegen
 			System.out.println("Fehler beim DB initialisieren" +ex2);
+			throw(ex2);
 		}
 		
 
@@ -340,7 +341,7 @@ public class DBLayerHSQL implements DBLayer
 			conn.rollback();
 			//logging machen
 			System.out.println("AddCategory :"+e);
-			return null;
+			throw(e);
 		}
 		
 	}
@@ -402,7 +403,7 @@ public class DBLayerHSQL implements DBLayer
 			conn.rollback();
 			//TODO LoggMessage statt print
 			System.out.println("AddRoot: "+ e);
-			return null;
+			throw(e);
 		}
 		
 	}
@@ -467,7 +468,7 @@ public class DBLayerHSQL implements DBLayer
 			conn.rollback();
 			//logging machen
 			System.out.println("deleteLeafCategory :"+e);
-			return; 
+			throw(e); 
 		}
 		
 	}
@@ -523,7 +524,7 @@ public class DBLayerHSQL implements DBLayer
 			conn.rollback();
 			//logging machen
 			System.out.println("deleteLeafCategory :"+e);
-			return; 
+			throw(e); 
 		}
 		
 	}
@@ -601,7 +602,7 @@ public class DBLayerHSQL implements DBLayer
 			conn.rollback();
 			//TODO LoggMessage statt print
 			System.out.println("AddUrl: "+ e);
-			return null;
+			throw(e);
 		}
 		
 	}
@@ -667,7 +668,7 @@ public class DBLayerHSQL implements DBLayer
 			conn.rollback();
 			//TODO LoggMessage statt print
 			System.out.println("AddUrl: "+ e);
-			return null;
+			throw(e);
 		}
 	}
 
@@ -699,6 +700,7 @@ public class DBLayerHSQL implements DBLayer
 			conn.rollback();
 			//TODO LoggMessage statt print
 			System.out.println("AddCatToUrl: "+ e);
+			throw(e);
 		}
 	}
 	/**
@@ -765,7 +767,7 @@ public class DBLayerHSQL implements DBLayer
 			conn.rollback();
 			//TODO LoggMessage statt print
 			System.out.println("FindAllParents: "+ e);
-			return null;
+			throw(e);
 		}
 	}
 	/**
@@ -823,36 +825,270 @@ public class DBLayerHSQL implements DBLayer
 			conn.rollback();
 			//TODO LoggMessage statt print
 			System.out.println("AddCatwithParentsToUrl: "+ e);
+			throw(e);
 		}
 	}
 
 	/**
 	 * Category anhand bezeichnung suchen ..
+	 * wir brauchen als Information in welchem Projekt nach der Kathegorie gesucht wird.
+	 * (nur id muss in Bean stehen)
+	 *
+	 * wenn keine Kathegorie gefunden wird, ist return null
+	 * 
+	 * Es kann in mehreren Projekten auch gleichlautende Kathegorien geben.
+	 * Wichtig:Gleichlautend bedeuted in so einem Fall nicht,
+	 * dass es diesselbe Kathegorie ist!
 	 *
 	 */
-	public categoryBean getCategoryByName(Connection conn, String catname) throws SQLException
+	public categoryBean getCategoryByName(Connection conn, String catname, categoryBean rootbean) throws SQLException
 	{
-		//TODO Inhalt
-		return(new categoryBean());
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		try
+		{
+			String search = new String("SELECT * FROM category WHERE root_id = "+rootbean.getID()+" AND	name = '"+catname+"'");
+			ResultSet rsi = st.executeQuery(search);
+			
+			if(rsi.next())
+			{
+				categoryBean re = new categoryBean(
+						rsi.getInt("id"),
+						rsi.getInt("root_id"),
+						rsi.getString("name"),
+						rsi.getString("beschreibung"),
+						rsi.getInt("left"),
+						rsi.getInt("right"));
+				return(re);
+			}
+			else
+				return null;
+									
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("GetCategorybyName: "+ e);
+			throw(e);
+		}
+
+		
 	}
 
 	/**
-	 * nach Url suchen
+	 * nach Url suchen -> liefert gefuellte urltabBean
+	 * Returnwert ist Null wenn die Url nicht in der Datenbank ist
 	 */ 
 	public urltabBean getUrl(Connection conn, String url) throws SQLException
 	{
-		//TODO Inhalt
-		return(new urltabBean());
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		try
+		{
+			String search = new String("SELECT id,url,indexdate FROM indexedurls WHERE url = '"+url+"'");
+			ResultSet rsi = st.executeQuery(search);
+			
+			if(rsi.next())
+			{
+				urltabBean re = new urltabBean(
+						rsi.getString(2),
+						rsi.getDate(3),
+						rsi.getInt(1));
+				return(re);
+			}
+			else
+				return null;
+									
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("GetUrl ohne RootCategory: "+ e);
+			throw(e);
+		}
 	}
-
+	
+	/**
+	 * nach Url suchen -> liefert gefuellte urltabBean
+	 * Returnwert ist Null wenn die Url nicht in der Datenbank ist
+	 * oder nicht dem Mituebergebenen Projekt zugeordnet ist.
+	 * (die categoryBean kann z.b. der Root des Projektes sein um 
+	 * rauszufinden ob die URL in dem Projekt ist. 
+	 * Es wird nur die ID der Kathegorie benoetigt)
+	 */ 
+	public urltabBean getUrl(Connection conn, String url, categoryBean rootbean) throws SQLException
+	{
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		try
+		{
+			String search = new String("SELECT i.id,i.url,i.indexdate FROM indexedurls i,urltocategory u WHERE i.url = '"+url+"' AND i.id = u.url AND u.category = "+rootbean.getID());
+			ResultSet rsi = st.executeQuery(search);
+			
+			if(rsi.next())
+			{
+				urltabBean re = new urltabBean(
+						rsi.getString("url"),
+						rsi.getDate("indexdate"),
+						rsi.getInt("id"));
+				return(re);
+			}
+			else
+				return null;
+									
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("GetUrl mit RootCategory: "+ e);
+			throw(e);
+		}
+	}
+	
 	/**
 	 * CategoryBaum auslesen ..
-	 * TODO RueckgabeWert
+	 * Wir brauchen die ID der Rootbean, da wir fuer verschiedene Projekte
+	 * verschiedene Baeume speichern koennen
+	 * Zurueckgeliefert wird ein String,der die vollstaendigen XML Darstellung liefert!
 	 */
-	public void getCategoryTree(Connection conn) throws SQLException
+	public String getCategoryTree(Connection conn,categoryBean rootbean) throws SQLException
 	{
-		//TODO Inhalt
-	}
+		
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		try
+		{
+			//wir ordnen die ergebnisse mal ein wenig vor 
+			//String search = new String("SELECT * FROM category WHERE root_id = "+rootbean.getID()+ " GROUP BY left");
 
+			String search = new String("SELECT a.id, a.left, a.right, a.name, a.beschreibung,count(*) AS level FROM category AS a, category AS b WHERE a.root_id = "+rootbean.getID()+ " AND b.root_id = "+rootbean.getID()+" AND a.left BETWEEN b.left AND b.right GROUP BY a.id, a.left, a.right, a.name, a.beschreibung ORDER BY a.left");
+			ResultSet rsi = st.executeQuery(search);
+			rsi.next();
+			//startlevel im Baum
+			int start=	rsi.getInt(6);
+			String result = new String();
+			result = buildTree(rsi,result,start);
+			return(result);
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("GetCategoryTree: "+ e);
+			throw(e);
+		}
+		
+	}
 	
+	//hilfe fuer getCategoryTree
+	private String buildTree(ResultSet rsi,String xmlreturn,int startlevel) throws SQLException
+	{
+			
+		//muss immer neue Cat anfangen (name beschr id wird benoetigt)
+		xmlreturn = beginCatXML(xmlreturn, rsi.getString(4),rsi.getString(5),rsi.getInt(1));
+			
+		//wenn der Baum noch ein Level weitergeht
+		if(rsi.next())
+		{
+			//welches level haben wir den jetzt
+			int currentlevel = rsi.getInt(6);
+			
+			//wenn ich ein level im Baum absteige brauchen wir eine neue Subcategory
+			if(currentlevel > startlevel)
+			{
+				//subcats folgen
+				xmlreturn = beginSubCatXML(xmlreturn);
+				
+				//rekursiv buildTree aufrufen
+				xmlreturn = buildTree(rsi, xmlreturn,currentlevel);
+			}
+			if(currentlevel == startlevel)
+			{
+				//muessen den Geschwisterknoten schliessen
+				xmlreturn = endCatXML(xmlreturn);
+				//und jetzt wieder rekusiv weitermachen
+				xmlreturn = buildTree(rsi, xmlreturn,currentlevel);
+			}
+			if(currentlevel < startlevel)
+			{
+				//wir muessen soviele kategorien und Subkategorien schliessen wie level im
+				//Baum nach oben gesprungen wurden
+				for(int i = currentlevel; i<startlevel;i++)
+				{
+					xmlreturn = endCatXML(xmlreturn);
+					xmlreturn = endSubCatXML(xmlreturn);
+				}
+				//muessen den Geschwisterknoten schliessen
+				xmlreturn = endCatXML(xmlreturn);
+				//rekursiv buildTree aufrufen (jetzt kaeme sozusagen den Geschwisterknoten drann dessen Bruder geschlossen wurde)
+				xmlreturn = buildTree(rsi, xmlreturn,currentlevel);
+			}
+		}
+		else
+		{
+			//wenn es der letzte eintrag ist muessen wir noch alles bis rootcat schliessen
+			//und das level der rootcat ist immer eins
+			for(int i=1; i<startlevel;i++)
+			{
+					xmlreturn = endCatXML(xmlreturn);
+					xmlreturn = endSubCatXML(xmlreturn);
+			}
+
+				xmlreturn = endCatXML(xmlreturn);
+		}
+		return(xmlreturn);
+	}
+	//nur hilfe fuer  buildTree
+	private String beginCatXML(String bisher,String name, String beschreibung,int id)
+	{
+		String re = new String(bisher +" <category> <name>"+name+"</name> <description>"+beschreibung+"</description> <id>"+id+"</id> ");
+		return re;		
+	}
+	//nur hilfe fuer  buildTree
+	private String endCatXML(String bisher)
+	{
+		return(bisher +" </category> "); 		
+	}
+	//nur hilfe fuer  buildTree
+	private String beginSubCatXML(String bisher)
+	{
+		return(bisher +" <subcategories> "); 		
+	}
+	//nur hilfe fuer  buildTree
+	private String endSubCatXML(String bisher)
+	{
+		return(bisher +" </subcategories> "); 		
+	}
+	/**
+	 * Liefert die Versionsnummer fuer den Baum der zu diesem RootKnoten gehoert.
+	 * 
+	 */ 
+	public Integer getVersionNumber(Connection conn,categoryBean rootbean) throws SQLException
+	{
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		try
+		{
+			String search = new String("SELECT version FROM categoryversion WHERE rootid = "+rootbean.getID());
+			ResultSet rsi = st.executeQuery(search);
+			
+			if(rsi.next())
+			{
+				return(rsi.getInt(1));
+			}
+			else
+				return null;
+									
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("GetVersionNumber: "+ e);
+			throw(e);
+		}
+	}
 }

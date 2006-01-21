@@ -167,14 +167,128 @@ public class Testdbconnect
 			oldcat.printAll();
 			System.out.println("\n");
 
+			//Kathegorie anhand bezeichnung suchen
+			System.out.println("Kathegorie anhand bezeichnung suchen:");
+			categoryBean cbean = db.getCategoryByName(conn,oldcat.getCategory(),rootcat);
+			
+			System.out.println("Kathegoriename war " +oldcat.getCategory()+" :");
+			System.out.println("die gefunden CAT dazu:");
+			if (cbean == null)
+				System.out.println("nichts gefunden!");
+			else
+				cbean.printAll();
+			System.out.println("\n");
+
+			//nach einer URL suchen
+			System.out.println("Nach einer URL suchen:");
+			urltabBean ubean = db.getUrl(conn,"www.abc.de");
+			
+			System.out.println("URL war www.abc.de :");
+			System.out.println("die gefunden URLBean dazu:");
+			if(ubean == null)
+				 System.out.println("nichts gefunden!");
+			else
+				ubean.printAll();
+			System.out.println("\n");
+			
+			System.out.println("Nach einer URL suchen:");
+			ubean = db.getUrl(conn,"www.abs.de");
+			
+			System.out.println("URL war www.abs.de :");
+			System.out.println("die gefunden URLBean dazu:");
+			if(ubean == null)
+				 System.out.println("nichts gefunden!");
+			else
+				ubean.printAll();
+			System.out.println("\n");
+
+			System.out.println("Nach einer URL suchen:");
+			ubean = db.getUrl(conn,"www.urlmitCategory.de");
+			
+			System.out.println("URL war www.urlmitCategory.de :");
+			System.out.println("die gefunden URLBean dazu:");
+			if(ubean == null)
+				 System.out.println("nichts gefunden!");
+			else
+				ubean.printAll();
+			System.out.println("\n");
+
+			//nach URL mit category suchen
+			System.out.println("Nach einer URL in der rootcategory suchen:");
+			ubean = db.getUrl(conn,"www.abs.de",rootcat);
+			
+			System.out.println("URL war www.abs.de :");
+			System.out.println("die gefunden URLBean dazu:");
+			if(ubean == null)
+				 System.out.println("nichts gefunden!");
+			else
+				ubean.printAll();
+			System.out.println("\n");
+
+			System.out.println("Nach einer URL in der rootcategory suchen:");
+			ubean = db.getUrl(conn,"www.urlmitCategory.de",rootcat);
+			
+			System.out.println("URL war www.urlmitCategory.de :");
+			System.out.println("die gefunden URLBean dazu:");
+			if(ubean == null)
+				 System.out.println("nichts gefunden!");
+			else
+				ubean.printAll();
+			System.out.println("\n");
+
+			//Versionsnummer des  categorytree suchen
+			System.out.println("Nach Versionsnummer des trees suchen:");
+			Integer temp = db.getVersionNumber(conn,rootcat);
+			
+			System.out.println("die gefundene Version dazu:");
+			if(temp == null)
+				 System.out.println("nichts gefunden!");
+			else
+				System.out.println(temp.toString());
+			System.out.println("\n");
 
 			
+			
+// Alles nochmal ausgeben
 			System.out.println("\n");
 			System.out.println("Alle Tabellen abfragen:");
 			conn.close();
+	
+			
 			
 			conn2 = db.getConnection("tf","tfpass","anyserver","tfdb");
 			
+			//Test
+			//erstmal neue cat anlegen
+			newcat.setCategory("KindvonRoot");
+			newcat.setBeschreibung("KindvonRoot");
+			categoryBean cat = new categoryBean(); 
+			cat.setID(0);
+			newcat = db.addCategory(conn2,newcat,cat);
+		
+			newcat.setCategory("KindvonTestKategorie1");
+			newcat.setBeschreibung("KindvonTestKategorie1");
+			cat.setID(1);
+			newcat = db.addCategory(conn2,newcat,cat);
+
+			newcat.setCategory("NOcheinKindvonTestKategorie1");
+			newcat.setBeschreibung("NochEinKindvonTestKategorie1");
+			cat.setID(1);
+			newcat = db.addCategory(conn2,newcat,cat);
+
+
+			System.out.println("Select fuer die CategoryTree:");
+			db.query(conn2,"SELECT a.left,COUNT(a.left) as level FROM category AS a, category AS b WHERE a.root_id = 0 AND b.root_id = 0 AND a.left BETWEEN b.left AND b.right GROUP BY a.left ORDER BY a.left ");
+			
+			System.out.println("Select fuer die CategoryTree:");
+			db.query(conn2,"SELECT a.id,a.left,a.right,a.name,a.beschreibung,COUNT(*) as level FROM category AS a, category AS b WHERE a.root_id = 0 AND b.root_id = 0 AND a.left BETWEEN b.left AND b.right GROUP BY a.id,a.left,a.right,a.name,a.beschreibung ORDER BY a.left");
+		
+			System.out.println("\n");
+			System.out.println("getCategoryTree Test:");
+			String test = db.getCategoryTree(conn2,rootcat);
+			System.out.println(test);
+			
+			System.out.println("\n");
 			System.out.println("category table:");
 			db.query(conn2,"SELECT * FROM category");
 			

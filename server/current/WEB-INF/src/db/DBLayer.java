@@ -170,22 +170,68 @@ public interface DBLayer
 	public void addCatwithParentsToUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException;
 	
 	/**
-	 * Category ahand bezeichnung suchen ..
+	 * Category anhand bezeichnung suchen ..
+	 * wir brauchen als Information in welchem Projekt nach der Kathegorie gesucht wird.
+	 * (nur id muss in Bean stehen)
+	 *
+	 * wenn keine Kathegorie gefunden wird, ist return null
+	 * 
+	 * Es kann in mehreren Projekten auch gleichlautende Kathegorien geben.
+	 * Wichtig:Gleichlautend bedeuted in so einem Fall nicht,
+	 * dass es diesselbe Kathegorie ist!
 	 *
 	 */
-	public categoryBean getCategoryByName(Connection conn, String catname) throws SQLException;
+	public categoryBean getCategoryByName(Connection conn, String catname, categoryBean rootbean) throws SQLException;
 
 	/**
 	 * nach Url suchen
 	 */ 
 	public urltabBean getUrl(Connection conn, String url) throws SQLException;
+	
+	/**
+	 * nach Url suchen -> liefert gefuellte urltabBean
+	 * Returnwert ist Null wenn die Url nicht in der Datenbank ist
+	 * oder nicht dem Mituebergebenen Projekt zugeordnet ist.
+	 * (die categoryBean kann z.b. der Root des Projektes sein um 
+	 * rauszufinden ob die URL in dem Projekt ist. 
+	 * Es wird nur die ID der Kathegorie benoetigt)
+	 */ 
+	public urltabBean getUrl(Connection conn, String url, categoryBean rootbean) throws SQLException;
 
 	/**
 	 * CategoryBaum auslesen ..
-	 * TODO RueckgabeWert
+	 * Wir brauchen die ID der Rootbean, da wir fuer verschiedene Projekte
+	 * verschiedene Baeume speichern koennen
+	 * Zurueckgeliefert wird ein String,der die XML Darstellung 
+	 * des trees beinhaltet so wie sie fuer die getCategory 
+	 * anfrage des Clients benoetigt wird!
+	 *
+	 * Bsp. :
+	 * <category>
+	 * 	<name>name der 1. kategorie</name>
+	 *	<description>laengere beschreibung</description>
+	 *	<id>0</id>
+	 *	<subcategories>
+	 *		<category>
+	 *		<name>unterkat 1.1</name>
+	 *		<id>1</id>
+	 *		<subcategories>
+	 *		.
+	 *		.
+	 *		.
+	 * 	</subcategories>
+	 * </category>
 	 */
-	public void getCategoryTree(Connection conn) throws SQLException;
+	public String getCategoryTree(Connection conn,categoryBean rootbean) throws SQLException;
 
+
+	/**
+	 * Liefert die Versionsnummer fuer den Baum der zu diesem RootKnoten gehoert.
+	 * 
+	 */
+	public Integer getVersionNumber(Connection conn,categoryBean rootbean) throws SQLException;
+
+		
 //TODO Was man noch so braucht
 
 

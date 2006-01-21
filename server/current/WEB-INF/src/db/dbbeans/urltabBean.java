@@ -22,11 +22,11 @@ public class urltabBean implements Serializable
 	{
 		url = neurl;
 	}
-	public urltabBean(String neurl,Date dat,Integer id)
+	public urltabBean(String neurl,Date dat,Integer neid)
 	{
 		url = neurl;
 		datum = dat;
-		id = id;
+		id = neid;
 		
 	}
 	
