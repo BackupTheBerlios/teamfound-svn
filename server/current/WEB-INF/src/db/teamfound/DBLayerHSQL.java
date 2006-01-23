@@ -607,15 +607,15 @@ public class DBLayerHSQL implements DBLayer
 		
 	}
 
-
 	/**
-	 * Hinzufuegen einer Url (nur Url in der Bean benoetigt)
-	 * mit zugehoeriger Category
-	 *
-	 * Achtung: keine Ueberpruefung ob URL bereits existiert!
-	 * 			auch nur Zuordnung genau der Kategorie(eltern nicht betrachtet) 
-	 * 			
-	 */ 
+	  *Hinzufuegen einer Url (nur Url in der Bean benoetigt)
+	  *mit zugehoeriger Category(auch hier nur ID benoetigt)
+	  *
+	  *Die Funktion ueberprueft ob die Url existiert und 
+	  *fuegt in dem Fall nur den Link auf die Kathegorie hinzu.
+	  * 
+	  *Es werden automatisch Links auf alle Elternkathegorien mit hinzugefuegt.
+	  **/
 	public urltabBean addUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException
 	{
 		//Bean fuer Return anlegen
@@ -641,21 +641,64 @@ public class DBLayerHSQL implements DBLayer
 
 		try
 		{
-
-			//ausfuehren des URL inserts
-			st.executeUpdate(insert);
-
-			//erzeugte id holen
-			ResultSet rsi = st.executeQuery(prim);
-			rsi.next();
-			int identity = rsi.getInt(1);
+			//erstmal kucken ob die URL schon in der DB ist
+			urltabBean tmp;
+			tmp = getUrl(conn, urlbean.getUrl());
+			if(tmp== null) //URL ist noch nciht indiziert
+			{
 			
-			//returnbean fuellen
-			re.setID(identity);
+				//ausfuehren des URL inserts
+				st.executeUpdate(insert);
+
+				//erzeugte id holen
+				ResultSet rs = st.executeQuery(prim);
+				rs.next();
+				int identity = rs.getInt(1);
 			
-			//Verbindung auf Category setzen
-			insert = ("INSERT INTO urltocategory(url,category) VALUES("+re.getID()+","+catbean.getID()+")");
-			st.executeUpdate(insert);
+				//returnbean fuellen
+				re.setID(identity);
+			}
+			else //URL ist schon in der DB
+			{
+				//wir muessen also die ausgelesene urltabBean zurueckliefern
+				re = tmp;
+			}
+			
+		//Verbindungen auf der Kathegorien auf URL setzen
+			
+			//erstmal alle Eltern auslesen
+			java.util.Vector<categoryBean> catvec = findAllParents(conn, catbean);
+			//die Kathegorie selbst in den Vector schreiben damit haben wir alle Kathegorien
+			//zu denen die Url gehoert
+			catvec.add(catbean);
+			
+			//auslesen ob die URL schon irgentwelschen Kathegorien angehoert
+			String vorhandene = new String("SELECT * FROM urltocategory WHERE url = "+urlbean.getID());
+			ResultSet rsi = st.executeQuery(vorhandene);
+			//ueberpruefen ob die Url schon einer der Cats zugeordnet sind
+			//und wenn ja diese aus dem Vector rausnehmen
+			while(rsi.next())
+			{
+				for(int i=0; i<catvec.size(); i++)
+				{
+					if( catvec.get(i).getID() == rsi.getInt("category"))
+					{
+						catvec.remove(i);
+					}
+				}
+			}
+			
+			
+			//Alle Zuordnungen durchfueheren 
+			java.util.Iterator it = catvec.iterator();
+			while(it.hasNext())
+			{
+				categoryBean c = (categoryBean)it.next();
+				//Verbindung auf Category setzen
+				String ins = new String("INSERT INTO urltocategory(url,category) VALUES("+re.getID()+","+c.getID()+")");
+				st.executeUpdate(ins);
+			
+			}	
 
 
 			conn.commit();
@@ -717,9 +760,6 @@ public class DBLayerHSQL implements DBLayer
 		//wir brauchen auf jeden left und right der category
 		String getBeanInfo = new String("select left,right from category where id = "+catbean.getID());
 
-				// lock table category , set savepoint
-		conn.setSavepoint("findallparents");
-
 		try
 		{
 			//Category Info holen
@@ -755,16 +795,12 @@ public class DBLayerHSQL implements DBLayer
 				if(!revec.add(re))
 					System.out.println("an Vector adden fehlgeschlagen!");
 			}
-
-			
-			conn.commit();
 			
 			return(revec);
 			
 		}
 		catch(SQLException e)
 		{
-			conn.rollback();
 			//TODO LoggMessage statt print
 			System.out.println("FindAllParents: "+ e);
 			throw(e);
@@ -1062,6 +1098,7 @@ public class DBLayerHSQL implements DBLayer
 	{
 		return(bisher +" </subcategories> "); 		
 	}
+
 	/**
 	 * Liefert die Versionsnummer fuer den Baum der zu diesem RootKnoten gehoert.
 	 * 
@@ -1091,4 +1128,6 @@ public class DBLayerHSQL implements DBLayer
 			throw(e);
 		}
 	}
+
+	
 }

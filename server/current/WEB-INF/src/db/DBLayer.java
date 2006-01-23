@@ -126,6 +126,10 @@ public interface DBLayer
 	 * 
 	 * Achtung: keine Ueberpruefung ob URL bereits existiert! 
 	 * Wuerde also doppelte Eintraege generieren ...
+	 *
+	 * Bitte die Funktion mit Kathegorie verwenden und zumindestens die RootKathegorie
+	 * mitangeben!
+	 * DEPRECATED 
 	 * 
 	 * @param conn  Connection
 	 * @param urlbean urltabBean
@@ -135,18 +139,16 @@ public interface DBLayer
 	
 	/**
 	  *Hinzufuegen einer Url (nur Url in der Bean benoetigt)
-	  *mit zugehoeriger Category
+	  *mit zugehoeriger Category(auch hier nur ID benoetigt)
 	  *
-	  *Achtung: keine Ueberpruefung ob URL bereits existiert!
-	  *
-	  * Da ich mir im jetzigen Design keinen UseCase sehe lass ich die Methode erstmal
-	  * wie sie grad is und verbessere nicht mehr drann
-	  * DEPRECATED
+	  *Die Funktion ueberprueft ob die Url existiert und 
+	  *fuegt in dem Fall nur den Link auf die Kathegorie hinzu.
 	  * 
+	  *Es werden automatisch Links auf alle Elternkathegorien mit hinzugefuegt.
 	  **/
 	public urltabBean addUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException;
 
-/**
+	/**
 	 * Alle Eltern zur Category finden 
 	 * in der CategoryBean wird nur die ID benoetigt 
 	 */ 
@@ -182,6 +184,7 @@ public interface DBLayer
 	 *
 	 */
 	public categoryBean getCategoryByName(Connection conn, String catname, categoryBean rootbean) throws SQLException;
+
 
 	/**
 	 * nach Url suchen
