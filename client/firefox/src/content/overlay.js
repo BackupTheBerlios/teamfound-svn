@@ -78,6 +78,8 @@ var TeamFound =
 		xmlhttpcat.send(null);
 	}, // loadCategories
 
+
+
 	onLoadCategoriesFinished: function()
     {
 		// nur etwas machen falls der request schon fertig ist
@@ -108,10 +110,7 @@ var TeamFound =
 				var catpopup = document.createElement("menupopup");
 				catmenu.appendChild(catpopup);
 
-				// item erzeugen
-				var item1 = document.createElement("menuitem");
-				item1.setAttribute("label", xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].getElementsByTagName("category")[0].getElementsByTagName("name")[0].firstChild.nodeValue);
-				catpopup.appendChild(item1);
+				TeamFound.addCategory(xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes, catpopup);
 			}
 			else
 			{
@@ -120,6 +119,53 @@ var TeamFound =
 		}
 	}, // onLoadCategoriesFinished
 
+
+	addCategory: function(childnodes, menup)
+	{
+		var sep = document.createElement("menuseparator");
+		var s = document.createElement("menuitem");
+		s.setAttribute("label", "Search here");
+		var a = document.createElement("menuitem");
+		a.setAttribute("label", "Add page here");
+		var std = document.createElement("menuitem");
+		std.setAttribute("label", "Select as default");
+
+
+		menup.appendChild(s);
+		menup.appendChild(a);
+
+		// foreach category
+		if( childnodes != false)
+		{
+			menup.appendChild(sep);
+			for( var i = 0; i <  childnodes.length; i++)
+			{
+				if( childnodes.item(i).nodeName == "category")
+				{
+					//alert( childnodes.item(i).getElementsByTagName("name")[0].firstChild.nodeValue);
+
+					
+					var item1 = document.createElement("menu");
+					item1.setAttribute("label", childnodes.item(i).getElementsByTagName("name")[0].firstChild.nodeValue);
+					menup.appendChild(item1);
+
+					var item2 = document.createElement("menupopup");
+					item1.appendChild(item2);
+
+					
+					if( childnodes.item(i).getElementsByTagName("subcategories")[0])
+					{
+						TeamFound.addCategory( childnodes.item(i).getElementsByTagName("subcategories")[0].childNodes, item2);
+					}
+					else
+					{
+						TeamFound.addCategory( false, item2);
+					}
+				}
+			}
+		}
+	},
+	
 	onSettings: function()
 	{
 		var setdiag = window.openDialog("chrome://teamfound/content/settings.xul", "TeamFound preferences", "chrome,centerscreen,modal");
