@@ -36,7 +36,7 @@ public class TeamFoundController implements Controller {
 		// 1. URL herunterladen
 		NewIndexEntry entry = loader.downloadFile(adress);
 		
-		// 2. Indexieren
+		// 2. Indexieren 
 
 		// 3. Datenbank aktualisieren
 		

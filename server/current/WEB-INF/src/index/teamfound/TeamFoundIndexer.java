@@ -1,70 +1,51 @@
-/*
- * Created on Dec 6, 2005
+/**
+ * Created on Mar 21, 2006
  */
 package index.teamfound;
 
+import java.io.File;
 import java.net.URL;
 
-import sync.ReadWriteSync;
-
 import controller.IndexAccessException;
+import controller.teamfound.TeamFoundSearchResult;
 import controller.SearchResult;
 import index.Indexer;
 import index.NewIndexEntry;
 
 /**
- * Indexer für Milestone2-Spezifikation
+ * Implementation Indexer nach Milestone2-Spezifikation
  * 
- * Benutzt Apache-Lucene als unterliegende Bibliothek
+ * Der Indexer übernimmt die low-level Arbeiten direkt am Index, er kümmert sich
+ * weder um Datenbank noch um Download der Daten
  * 
- * Dieses Objekt ist Threadsafe, siehe ReadWriteSync
- * @author Jonas Heese <dev-teamfound@jonasheese.de>
- * @see sync.ReadWriteSync
+ * Der Indexer muss selbst für synchronisierung der Zugriffe sorgen: Es wird 
+ * angenommen das jede Indexer-Instanz Threadsafe ist! 
+ * 
+ * 
+ * @author Martin Klink
+ *
  */
 public class TeamFoundIndexer implements Indexer {
-
-	protected ReadWriteSync sync;
-	
-	public TeamFoundIndexer() {
-		sync = new ReadWriteSync();
+	/**
+	 * Fügt einen neuen Eintrag in den Index ein
+	 * @param entry Das ENtry-Objekt welches eingefügt werden soll
+	 * @param adress Die URL, die zu diesem Dokument führt
+	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Exceptions einpacken
+	 */
+	public void addUrl(NewIndexEntry entry, URL adress) throws IndexAccessException
+	{
+		int i = 0;
+	}
+		
+	/**
+	 * Eine Query auf dem Index ausführen
+	 * @param query Der Query-String
+	 * @return Das Suchergebnis zu diesem query oder null wenn nichts gefunden wurde 
+	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
+	 */
+	public SearchResult query(String query) throws IndexAccessException
+	{
+		return(new TeamFoundSearchResult());	
 	}
 	
-	public void addUrl(NewIndexEntry entry, URL adress) throws IndexAccessException {
-		try {
-			sync.doWrite();
-		} catch(InterruptedException e) {
-			IndexAccessException e2 = new IndexAccessException("nested InterruptedException");
-			e2.initCause(e);
-			throw e2;
-		}
-		
-		// *****************
-		// hier muss der entsprechende Code zum einfügen in den index hin 
-		// *****************
-		
-		// achtung! mit aufruf der nächsten Zeile endet der write-lock!
-		sync.endWrite();
-
-	}
-
-	public SearchResult query(String query) throws IndexAccessException {
-		try {
-			sync.doRead();
-		} catch(InterruptedException e) {
-			IndexAccessException e2 = new IndexAccessException("nested InterruptedException");
-			e2.initCause(e);
-			throw e2;
-		}
-		
-		// *****************
-		// hier muss der entsprechende Code zum auslesen aus dem index hin
-		// *****************
-		
-		// achtung! mit aufruf der nächsten Zeile endet der read-lock!
-		sync.endRead();	
-		
-		// hier muss natürlich irgendwann mal das richtige suchergebnis zurückgegeben werden 
-		return null;
-	}
-
 }

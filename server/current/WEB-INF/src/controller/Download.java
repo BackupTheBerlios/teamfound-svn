@@ -68,11 +68,10 @@ public class Download
 			//File erstellen
 			
 			String type = ucon.getContentType();
+			//ueberpruefen des Content Types nur text-types werden akzeptiert
 			if (!type.startsWith("text"))
 			{
-					// was genau ist hier das problem?
-					// @todo bitte mal bessere Excpetion-.Beschreibung nachtragen :)
-					throw new DownloadFailedException("uhm, dunno what has happened, but it has failed!");
+					throw new DownloadFailedException("Wrong ContentType! At this time only text types are allowed! ");
 			}
 			
 			// @todo Die HTML-Endung hier ist irgendwie unschön, ich schlage vor wie hier schon grundsätzlich
@@ -92,8 +91,12 @@ public class Download
 			{
 				dout.write(data);	  
 			}
-			
-			entry = new SimpleNewIndexEntry(adress.toString(), toWriteIn, ucon.getHeaderFields());
+		
+			//TODO hier muss noch irgentwie die Kategorien her
+			//damit ich kompilieren kann erstaml einfach 0
+			int[] c = new int[1];
+			c[0]=0;
+			entry = new SimpleNewIndexEntry(adress.toString(), toWriteIn, ucon.getHeaderFields(),c);
 			
 			
 		}
