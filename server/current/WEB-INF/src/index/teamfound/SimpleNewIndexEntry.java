@@ -89,6 +89,8 @@ public class SimpleNewIndexEntry implements NewIndexEntry {
 		/* doc.add(Field.Keyword("datum",datum));*/
 
 		//TODO anderen HTML Parser suchen -> dann koennen wir ohne das apbspeichern der URL als File auskommen
+		//TODO Test ob File existiert
+		
 		index.Parser.Html.HTMLParser parser = new HTMLParser(f);
 		
 		//Ok, der Parser liefert uns einen Reader der uns den Text ohne HTML Tags etc.

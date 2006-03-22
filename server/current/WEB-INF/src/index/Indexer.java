@@ -26,10 +26,11 @@ public interface Indexer {
 	/**
 	 * Fügt einen neuen Eintrag in den Index ein
 	 * @param entry Das ENtry-Objekt welches eingefügt werden soll
-	 * @param adress Die URL, die zu diesem Dokument führt
+	 * @param adress Die URL, die zu diesem Dokument führtt
+	 * @param path Pfad des Indexes (muss aus den Properties kommen)
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Exceptions einpacken
 	 */
-	public void addUrl(NewIndexEntry entry, URL adress) throws IndexAccessException;
+	public void addUrl(NewIndexEntry entry, URL adress, String path) throws IndexAccessException;
 	
 	/**
 	 * Eine Query auf dem Index ausführen
