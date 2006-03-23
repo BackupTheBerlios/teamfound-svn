@@ -4,14 +4,18 @@ import db.DBLayer;
 import db.dbbeans.*;
 import db.teamfound.DBLayerHSQL;
 import java.sql.Connection;
+import config.Config;
+import config.teamfound.TeamFoundConfig;
 
 public class Testdbconnect
 {
 	public static void main(String args[])
 	{
+
+		Config c = new TeamFoundConfig();
 		DBLayer db;
-		db = new DBLayerHSQL();
-		DBLayer db2 = new DBLayerHSQL();
+		db = new DBLayerHSQL(c);
+		DBLayer db2 = new DBLayerHSQL(c);
 
 		Connection conn;
 		Connection conn2;
