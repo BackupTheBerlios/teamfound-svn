@@ -14,6 +14,7 @@ import controller.SearchResult;
 import index.Indexer;
 import index.NewIndexEntry;
 import index.teamfound.TeamFoundAnalyzer;
+import index.IndexSync;
 
 import sync.*;
 
@@ -68,7 +69,7 @@ public class TeamFoundIndexer implements Indexer {
 		try
 		{
 			//schreibewunsch anmelden
-			Sync.sema.doWrite();
+			IndexSync.sema.doWrite();
 			
 			//Dokument erstellen und in den Index schreiben
 			Document doc = entry.getdocument();
@@ -80,7 +81,7 @@ public class TeamFoundIndexer implements Indexer {
 			writer.close();
 			
 			//schreiben fertig
-			Sync.sema.endWrite();
+			IndexSync.sema.endWrite();
 
 		}
 		catch(java.io.IOException io)
@@ -104,7 +105,7 @@ public class TeamFoundIndexer implements Indexer {
 		finally
 		{
 			//auf jeden Fall muessen wir den lock freigeben
-			Sync.sema.endWrite();
+			IndexSync.sema.endWrite();
 		}
 	}
 		
@@ -119,14 +120,14 @@ public class TeamFoundIndexer implements Indexer {
 	public SearchResult query(String query) throws IndexAccessException
 	{
 		//lesewunsch anmelden
-		//Sync.sema.doRead();
+		//IndexSync.sema.doRead();
 
 		
 		//TODO
 	
 		
 		//lesen fertig
-		//Sync.sema.endRead();
+		//IndexSync.sema.endRead();
 		
 		return(new TeamFoundSearchResult());	
 	}
