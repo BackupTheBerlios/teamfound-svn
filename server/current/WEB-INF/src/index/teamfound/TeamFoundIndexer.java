@@ -16,6 +16,8 @@ import index.NewIndexEntry;
 import index.teamfound.TeamFoundAnalyzer;
 import index.IndexSync;
 
+import config.Config;
+
 import sync.*;
 
 import org.apache.lucene.index.IndexWriter;
@@ -36,6 +38,16 @@ import org.apache.lucene.document.Document;
  *
  */
 public class TeamFoundIndexer implements Indexer {
+
+	//der Indexer braucht zugang zur Konfiguration damit er den Index findet
+	private Config tfconfig;
+	private ReadWriteSync indexsync; 
+	
+	public TeamFoundIndexer(Config c, ReadWriteSync s )
+	{
+		tfconfig = c;
+		indexsync = s;
+	}
 	
 	/**
 	 * neuen Index erstellen
@@ -43,13 +55,17 @@ public class TeamFoundIndexer implements Indexer {
 	 * benoetigt. Der Pfad muss dann aus Konfig Daten kommen.
 	 *
 	 * @param path Dateipfad, gibt an wo der Index angelegt wird
+	 * 				sollte der Basispfad von Teamfound sein
 	 *
 	 */
 	public void createIndex(String path) throws java.io.IOException
 	{
+		
+		String indexpath = (path+"/index");
+		
 		if(!IndexReader.indexExists(path))
 		{
-				IndexWriter writer = new IndexWriter(path, new TeamFoundAnalyzer(), true);
+				IndexWriter writer = new IndexWriter(indexpath, new TeamFoundAnalyzer(), true);
 				writer.close();
 		}
 		
@@ -64,16 +80,20 @@ public class TeamFoundIndexer implements Indexer {
 	 * @param adress Die URL, die zu diesem Dokument führt
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Exceptions einpacken
 	 */
-	public void addUrl(NewIndexEntry entry, URL adress, String path) throws IndexAccessException
+	public void addUrl(NewIndexEntry entry, URL adress) throws IndexAccessException
 	{
+		//teamfound BasePfad erfragen und indexPfad bauen 
+		String path = tfconfig.getConfValue("tfpath");
+		String indexpath = (path+"/index");
+		
 		try
 		{
 			//schreibewunsch anmelden
-			IndexSync.sema.doWrite();
+			indexsync.doWrite();
 			
 			//Dokument erstellen und in den Index schreiben
 			Document doc = entry.getdocument();
-			IndexWriter writer = new IndexWriter(path, new TeamFoundAnalyzer(), false);
+			IndexWriter writer = new IndexWriter(indexpath, new TeamFoundAnalyzer(), false);
 			writer.addDocument(doc);
 			
 			//TODO eigentlich muss man nur gelegentlich optimieren, irgentwann noch ein Management dafuer
@@ -81,7 +101,7 @@ public class TeamFoundIndexer implements Indexer {
 			writer.close();
 			
 			//schreiben fertig
-			IndexSync.sema.endWrite();
+			indexsync.endWrite();
 
 		}
 		catch(java.io.IOException io)
@@ -105,7 +125,7 @@ public class TeamFoundIndexer implements Indexer {
 		finally
 		{
 			//auf jeden Fall muessen wir den lock freigeben
-			IndexSync.sema.endWrite();
+			indexsync.endWrite();
 		}
 	}
 		
@@ -120,14 +140,14 @@ public class TeamFoundIndexer implements Indexer {
 	public SearchResult query(String query) throws IndexAccessException
 	{
 		//lesewunsch anmelden
-		//IndexSync.sema.doRead();
+		//indexsync.doRead();
 
 		
 		//TODO
 	
 		
 		//lesen fertig
-		//IndexSync.sema.endRead();
+		//indexsync.endRead();
 		
 		return(new TeamFoundSearchResult());	
 	}

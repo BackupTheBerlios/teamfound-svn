@@ -14,12 +14,15 @@ import controller.IndexAccessException;
 import controller.Controller;
 import controller.SearchResult;
 
+import config.Config;
+import config.teamfound.TeamFoundConfig;
+
 public class TeamFoundController implements Controller {
 
 	Download loader = new Download();
 	
-	public TeamFoundController() {
-		
+	public TeamFoundController() 
+	{
 	}
 	
 	public void addToIndex(String url) throws DownloadFailedException, IndexAccessException {
@@ -52,5 +55,6 @@ public class TeamFoundController implements Controller {
 		// 2. Fertig
 		return null;
 	}
+	
 
 }

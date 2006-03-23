@@ -30,7 +30,7 @@ public interface Indexer {
 	 * @param path Pfad des Indexes (muss aus den Properties kommen)
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Exceptions einpacken
 	 */
-	public void addUrl(NewIndexEntry entry, URL adress, String path) throws IndexAccessException;
+	public void addUrl(NewIndexEntry entry, URL adress ) throws IndexAccessException;
 	
 	/**
 	 * Eine Query auf dem Index ausführen

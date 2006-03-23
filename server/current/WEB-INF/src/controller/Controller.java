@@ -6,12 +6,16 @@ package controller;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
 
+import config.Config;
+
 /**
  * Interface für einen Controller nach Milestone2-Spezifikation
  * 
  * @author Jonas Heese <dev-teamfound@jonasheese.de>
  */
 public interface Controller {
+
+	
 	/**
 	 * Eine URL zum Index hinzufügen
 	 * 
@@ -26,4 +30,7 @@ public interface Controller {
 	 * @see controller.SearchResult
 	 */
 	public SearchResult search(String query) throws IndexAccessException;
+
+	
 }
+
