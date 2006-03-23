@@ -20,11 +20,14 @@ public class IndexerTest
 	{
 
 
-		//Index anlegen
+		//Indexer anlegen
 		System.out.println("Index anlegen:");
 		Config c = new TeamFoundConfig();
 		sync.ReadWriteSync s = new sync.ReadWriteSync();
 		TeamFoundIndexer tfindexer = new TeamFoundIndexer(c,s);
+		
+		
+		//Index anlegen
 		String pfad = new String("/home/moddin/Uni/OpenSourceSoftEnt/teamfound/server/teamfoundDir");
 
 		try

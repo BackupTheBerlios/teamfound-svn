@@ -14,7 +14,6 @@ import controller.SearchResult;
 import index.Indexer;
 import index.NewIndexEntry;
 import index.teamfound.TeamFoundAnalyzer;
-import index.IndexSync;
 
 import config.Config;
 
