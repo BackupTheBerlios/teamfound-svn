@@ -1,0 +1,20 @@
+# dises File umbenennen in teamfound.properties und anpassen
+
+# Server Einstellungen Teamfound
+# ------------------------------
+#
+# 
+
+
+#
+# Teamfound benoetigt einen Pfad im System mit schreibberechtigung 
+# an dem die Datenbank,der Index sowie temporaere Html-Daten abgelegt werden
+# koennen.
+#
+# Systempath for the Index, DB and tmporary files. Needs write access.
+# 
+# path ends with "/" Example "/somepath/tfDaten/"
+#
+tfpath = /home/moddin/Uni/OpenSourceSoftEnt/teamfound/server/teamfoundDir/
+
+		 	
