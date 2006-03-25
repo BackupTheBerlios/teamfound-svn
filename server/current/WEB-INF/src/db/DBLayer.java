@@ -15,6 +15,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Vector;
+
 import db.dbbeans.*;
 
 
@@ -152,7 +154,7 @@ public interface DBLayer
 	 * Alle Eltern zur Category finden 
 	 * in der CategoryBean wird nur die ID benoetigt 
 	 */ 
-	public java.util.Vector<categoryBean> findAllParents(Connection conn, categoryBean catbean) throws SQLException;
+	public Vector<categoryBean> findAllParents(Connection conn, categoryBean catbean) throws SQLException;
 
 	/**
 	 * Hinzufuegen einer Category zu einer Url

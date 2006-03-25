@@ -27,9 +27,9 @@ public interface Controller {
 	 * Nach einer Query im Index suchen
 	 * 
 	 * @todo Das Ergebnis müsste genauer spezifiziert werden, siehe Interface SearchResult
-	 * @see controller.SearchResult
+	 * @see controller.SearchResponse
 	 */
-	public SearchResult search(String query) throws IndexAccessException;
+	public SearchResponse search(String query) throws IndexAccessException;
 
 	
 }

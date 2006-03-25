@@ -12,7 +12,7 @@ import controller.Download;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
 import controller.Controller;
-import controller.SearchResult;
+import controller.SearchResponse;
 
 import config.Config;
 import config.teamfound.TeamFoundConfig;
@@ -47,7 +47,7 @@ public class TeamFoundController implements Controller {
 		
 	}
 
-	public SearchResult search(String query) throws IndexAccessException {
+	public SearchResponse search(String query) throws IndexAccessException {
 		// 0. Datenbank nach Kategorien durchsuchen
 		
 		// 1. Im Index Suchen

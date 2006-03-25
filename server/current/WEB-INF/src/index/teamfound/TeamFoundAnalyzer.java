@@ -24,7 +24,7 @@ public class TeamFoundAnalyzer extends Analyzer
 		if ("cats".equals(field)) 
 		{
 			return  WS.tokenStream(field, reader);
-		} 
+		}  
 		else 
 		{
 			// fuer alles andere nehmen wir den Standard
@@ -34,3 +34,4 @@ public class TeamFoundAnalyzer extends Analyzer
 	}
 								
 }
+    

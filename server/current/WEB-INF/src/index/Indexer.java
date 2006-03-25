@@ -3,11 +3,10 @@
  */
 package index;
 
-import java.io.File;
 import java.net.URL;
 
 import controller.IndexAccessException;
-import controller.SearchResult;
+import controller.SearchResponse;
 
 /**
  * Interface für einen Indexer nach Milestone2-Spezifikation
@@ -38,6 +37,6 @@ public interface Indexer {
 	 * @return Das Suchergebnis zu diesem query oder null wenn nichts gefunden wurde 
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
 	 */
-	public SearchResult query(String query) throws IndexAccessException;
+	public SearchResponse query(String query) throws IndexAccessException;
 	
 }

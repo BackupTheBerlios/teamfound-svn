@@ -9,7 +9,7 @@ import java.net.URL;
 
 import controller.IndexAccessException;
 import controller.teamfound.TeamFoundSearchResult;
-import controller.SearchResult;
+import controller.SearchResponse;
 
 import index.Indexer;
 import index.NewIndexEntry;
@@ -136,7 +136,7 @@ public class TeamFoundIndexer implements Indexer {
 	 * @return Das Suchergebnis zu diesem query oder null wenn nichts gefunden wurde 
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
 	 */
-	public SearchResult query(String query) throws IndexAccessException
+	public SearchResponse query(String query) throws IndexAccessException
 	{
 		//lesewunsch anmelden
 		//indexsync.doRead();

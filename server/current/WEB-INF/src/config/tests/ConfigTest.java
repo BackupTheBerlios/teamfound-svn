@@ -1,7 +1,7 @@
 /* Martin Klink 23.3.06
  */
 
-
+/*
 package config.tests;
 
 import config.*;
@@ -15,3 +15,4 @@ public class ConfigTest
 		System.out.println(tfc.getConfValue("tfpath"));
 	}
 }
+*/

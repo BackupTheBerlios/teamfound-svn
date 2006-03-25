@@ -4,13 +4,9 @@
  */
 package controller.teamfound;
 
-import index.NewIndexEntry;
+import controller.SearchResponse;
 
-
-import controller.IndexAccessException;
-import controller.SearchResult;
-
-public class TeamFoundSearchResult implements SearchResult {
+public class TeamFoundSearchResult implements SearchResponse {
 
 	
 	public TeamFoundSearchResult() 
