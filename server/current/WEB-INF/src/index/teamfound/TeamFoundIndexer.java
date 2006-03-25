@@ -128,27 +128,82 @@ public class TeamFoundIndexer implements Indexer {
 		}
 	}
 		
-	
-	
 	/**
 	 * Eine Query auf dem Index ausführen
 	 * @param query Der Query-String
+	 * @param categorys Array mit Kathegorie-ids in denen gesucht werden muss es muss mindestens eine id mitgeliefert werden (mindestens die root id des Projektes)
 	 * @return Das Suchergebnis zu diesem query oder null wenn nichts gefunden wurde 
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
 	 */
-	public SearchResponse query(String query) throws IndexAccessException
+	public SearchResponse query(String query, int[] categorys) throws IndexAccessException
 	{
 		//lesewunsch anmelden
 		//indexsync.doRead();
 
 		
 		//TODO
-	
+		//glaube ich muss fuer jede id eine Termquerry erstellen
+		//diese dann per Boolean querry verbinden
+		//fuer den String nehm ich den Querryparser
+		//dann sollte ich wohl die vom Querryparser generierte Frage mit der
+		//den anderen verbinden mit Boolean querry
+//bin nicht mehr sicher	
+ 	/*	
+		String path = tfconfig.getConfValue("tfpath");
+		String indexpath = (path+"/index");		
+		Searcher searcher = new IndexSearcher("indexpath");		
+		
+		//ein versuch fuer die suche!		
+		String querys[] = new String [2];
+		querys[0] = query;
+		querys[1] = query;
+		
+		String felder[] = new String[2];
+		felder[0] = new String("contents"); 
+		felder[1] = new String("title");
+
+		Query humanquery = MultiFieldQueryParser.parse(querys, felder, new TeamFoundAnalyzer());
+		
+		BooleanQuery catquerry;
+		TermQuery[] tq = new TermQuery[categorys.length];
+		Term startterm = new Term("cats","id");
+		term t;
+		
+		if(categorys.length < 1)
+		{
+			//TODO was soll nun sein 
+			IndexAccessException a = new IndexAccessException("keine Category angegeben!");
+			throw a;
+
+		}
+		
+		if(categorys.length < 2)
+		{
+				t = startterm.createTerm("id:"+categorys[0]);
+                tq[0] = new TermQuerry(t[0]);
+				catquerry.add(tq[0], BooleanClause.Occur.MUST);
+		}
+		else
+		{
+			for(int i=0; i<categorys.length; i++)
+			{
+				t = startterm.createTerm("id:"+categorys[i]);
+				tq[i] = new TermQuerry(t[i]);
+				catquerry.add(tq[i], BooleanClause.Occur.SHOULD); 
+			}
+		}
+		
+		
+		
+		
+		Hits hits = searcher.search(query);
 		
 		//lesen fertig
 		//indexsync.endRead();
-		
+	*/	
 		return(new TeamFoundSearchResult());	
 	}
+	
+	
 	
 }
