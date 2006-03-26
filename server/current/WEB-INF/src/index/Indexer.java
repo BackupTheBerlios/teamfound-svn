@@ -39,6 +39,6 @@ public interface Indexer {
 	 * @return Das Suchergebnis zu diesem query oder null wenn nichts gefunden wurde 
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
 	 */
-	public SearchResult query(String query, int[] categorys) throws IndexAccessException;
+	public SearchResponse query(String query, int[] categorys) throws IndexAccessException;
 	
 }

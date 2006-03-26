@@ -136,7 +136,7 @@ public class TeamFoundIndexer implements Indexer {
 	 * @return Das Suchergebnis zu diesem query oder null wenn nichts gefunden wurde 
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
 	 */
-	public SearchResult query(String query, int[] categorys) throws IndexAccessException
+	public SearchResponse query(String query, int[] categorys) throws IndexAccessException
 	{
 		//lesewunsch anmelden
 		//indexsync.doRead();
@@ -201,8 +201,10 @@ public class TeamFoundIndexer implements Indexer {
 		
 		//lesen fertig
 		//indexsync.endRead();
-	*/	
-		return(new TeamFoundSearchResult());	
+	*/
+		String keywords[] = new String[0];
+		keywords[0] = "ein Schluesselwort";
+		return(new SearchResponse(keywords));	
 	}
 	
 	
