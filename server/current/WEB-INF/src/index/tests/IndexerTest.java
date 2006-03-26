@@ -46,25 +46,38 @@ public class IndexerTest
 		System.out.println("Doc in Index:");
 	
 			//erstmal ein Entry anlegen
-			String url = new String("http://www.irgentwas.de");
-			File f = new File("/tmp/index.html");
+			String url = new String("http://www.Inhalt.htm");
+			File f = new File("/home/moddin/testseiten/Inhalt.htm");
 			Map headers = new java.util.HashMap();
-			int[] id = new int[3];
-			id[0] = 1;
-			id[1] = 2;
-			id[2] = 5;
+			int[] id = new int[2];
+			id[0] = 3;
+			id[1] = 5;
 			SimpleNewIndexEntry tentry = new SimpleNewIndexEntry(url,f,headers,id);
+	
+			//erstmal ein Entry anlegen
+			String url2 = new String("http://www.Regeln.de");
+			File f2 = new File("/home/moddin/testseiten/Regel.htm");
+			int[] id2 = new int[3];
+			id2[0] = 1;
+			id2[1] = 3;
+			id2[2] = 6;
+			SimpleNewIndexEntry tentry2 = new SimpleNewIndexEntry(url2,f2,headers,id2);
 		
+
 		try
 		{
 			URL u1 = new URL("http://www.irgentwas.de");
 			
 			//eintrag adden
 			tfindexer.addUrl(tentry,u1);
+			tfindexer.addUrl(tentry2,u1);
 			
 			System.out.println("Eintrag geadded");
+			String frage = new String("Wikipedia");
 			
-		
+			System.out.println("rufe Suche auf:");
+			controller.SearchResponse resp;
+			resp = tfindexer.query(frage,id);
 		}
 		catch (Exception e)
 		{

@@ -10,6 +10,8 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.HitIterator;
 import org.apache.lucene.document.Document;
 import org.jdom.Element;
+import java.util.Vector;
+import java.util.Iterator;
 
 /**
  * Erste Idee für eine Suchergebnis-Rückgabe, müsste noch genauer drüber geredet werden
@@ -52,25 +54,34 @@ public class SearchResponse extends Response {
 		result.addContent(count);
 	}
 	
-	public void addSearchResults(Hits hits) throws IOException {
-		HitIterator it = (HitIterator)hits.iterator();
+	public void addSearchResults(Vector<Document> hits) throws IOException {
+		Iterator it = (Iterator)hits.iterator();
 		
 		
-		Hit h;
+		//Hit h;
 		Document d;
 		Element found, url, title, category;
 		while(it.hasNext()) {
-			h = (Hit)it.next();
-			d = h.getDocument();
+			d = (Document)it.next();
 			found = new Element("found");
 			url = new Element("url");
-			url.addContent("http://www.example.com");
+			
+			// Felder im Document see SimpleNewIndexEntry.java
+			// 1. url -- Die Url als String
+			// 2. contents -- die indezierten Suchwoerter die sich aus der Seite ergaben
+			// 3. summary  -- ein String den der HtmlParser geliefert hat
+			// 4. title  -- wie 3.
+			// 5. cats -- von uns tokenized CategoryIds
+			
+			url.addContent(d.get("url"));
 			found.addContent(url);
 			
 			title = new Element("title");
-			title.addContent("Sample Title - Fetching real results is not yet implemented");
+			title.addContent(d.get("title"));
 			found.addContent(title);
 			
+			//hmm nicht auf die  schnelle, muessen wir wahrscheinlich den String der im 
+			//Feld steht aufsplitten oder aus db lesen
 			category = new Element("incategory");
 			category.addContent("1");
 			found.addContent(category);

@@ -6,6 +6,7 @@ package index.teamfound;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Vector;
 
 import controller.IndexAccessException;
 import controller.teamfound.TeamFoundSearchResult;
@@ -23,6 +24,17 @@ import sync.*;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.Hits;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.HitIterator;
+import org.apache.lucene.search.Hit;			
 
 /**
  * Implementation Indexer nach Milestone2-Spezifikation
@@ -108,7 +120,7 @@ public class TeamFoundIndexer implements Indexer {
 		{
 			//z.b. File existiert gar nicht
 			//TODO noch was machen?
-			System.out.println("TeamFoundIndexer"+io);
+			System.out.println("TeamFoundIndexer : addUrl()"+io);
 			IndexAccessException a = new IndexAccessException("nested Exception");
 			a.initCause(io);
 			throw a;
@@ -117,7 +129,7 @@ public class TeamFoundIndexer implements Indexer {
 		catch(java.lang.InterruptedException ie)
 		{
 			//TODO noch was machen?
-			System.out.println("TeamFoundIndexer"+ ie);
+			System.out.println("TeamFoundIndexer : addUrl()"+ ie);
 			IndexAccessException a = new IndexAccessException("nested Exception");
 			a.initCause(ie);
 			throw a;
@@ -140,71 +152,131 @@ public class TeamFoundIndexer implements Indexer {
 	{
 		//lesewunsch anmelden
 		//indexsync.doRead();
-
 		
-		//TODO
-		//glaube ich muss fuer jede id eine Termquerry erstellen
-		//diese dann per Boolean querry verbinden
-		//fuer den String nehm ich den Querryparser
-		//dann sollte ich wohl die vom Querryparser generierte Frage mit der
-		//den anderen verbinden mit Boolean querry
-//bin nicht mehr sicher	
- 	/*	
+ 		
 		String path = tfconfig.getConfValue("tfpath");
 		String indexpath = (path+"/index");		
-		Searcher searcher = new IndexSearcher("indexpath");		
-		
-		//ein versuch fuer die suche!		
-		String querys[] = new String [2];
-		querys[0] = query;
-		querys[1] = query;
-		
-		String felder[] = new String[2];
-		felder[0] = new String("contents"); 
-		felder[1] = new String("title");
-
-		Query humanquery = MultiFieldQueryParser.parse(querys, felder, new TeamFoundAnalyzer());
-		
-		BooleanQuery catquerry;
-		TermQuery[] tq = new TermQuery[categorys.length];
-		Term startterm = new Term("cats","id");
-		term t;
-		
-		if(categorys.length < 1)
+		try
 		{
-			//TODO was soll nun sein 
-			IndexAccessException a = new IndexAccessException("keine Category angegeben!");
+			//lesewunsch anmelden
+			indexsync.doRead();
+		
+			IndexSearcher searcher = new IndexSearcher(indexpath);		
+			//ein versuch fuer die suche!		
+			String querys[] = new String [2];
+			querys[0] = query;
+			querys[1] = query;
+		
+			String felder[] = new String[2];
+			felder[0] = new String("contents"); 
+			felder[1] = new String("title");
+			Query humanquery = MultiFieldQueryParser.parse(querys, felder, new org.apache.lucene.analysis.standard.StandardAnalyzer());
+		
+		
+			BooleanQuery catquerry = new BooleanQuery();
+			TermQuery[] tq = new TermQuery[categorys.length];
+			Term startterm = new Term("cats","id:0");
+			Term t;
+		
+			if(categorys.length < 1)
+			{
+				//TODO was soll nun sein 
+				IndexAccessException a = new IndexAccessException("keine Category angegeben!");
+				throw a;
+
+			}	
+		
+			if(categorys.length < 2)
+			{
+				t = startterm.createTerm("id:"+categorys[0]);
+                tq[0] = new TermQuery(t);
+				catquerry.add(tq[0], BooleanClause.Occur.MUST);
+			}
+			else
+			{
+				for(int i=0; i<categorys.length; i++)
+				{
+					t = startterm.createTerm("id:"+categorys[i]);
+					tq[i] = new TermQuery(t);
+					catquerry.add(tq[i], BooleanClause.Occur.SHOULD); 
+				}
+			}
+
+			BooleanQuery completequery = new BooleanQuery();
+		
+			completequery.add(humanquery, BooleanClause.Occur.SHOULD);
+			completequery.add(catquerry, BooleanClause.Occur.MUST);
+		
+						
+			String keywords[] = new String[1];
+			keywords[0] = query;
+			SearchResponse result = new SearchResponse(keywords);
+			
+			Hits hits = searcher.search(completequery);
+			//nur zum testen
+			System.out.println("Anzahl Ergebnisse:"+hits.length());
+			
+
+			
+			HitIterator it = (HitIterator)hits.iterator();
+			Hit hit;
+			Document d;
+			
+			Vector<Document> docvec = new Vector<Document>();
+			
+			//TODO Das geht eigentlich nicht aus PerformanceGruenden ...
+			while(it.hasNext())
+			{
+				hit = (Hit)it.next();
+				d = hit.getDocument();
+			
+				docvec.add(d);
+			
+				result.addSearchResults(docvec);
+			}
+
+			searcher.close();
+			//lesen fertig
+			indexsync.endRead();
+
+
+			return(result);
+
+			
+		}
+		catch(java.io.IOException ioe)
+		{
+			//TODO
+			System.out.println(ioe);
+			IndexAccessException a = new IndexAccessException("nested Exception");
+			a.initCause(ioe);
 			throw a;
 
 		}
-		
-		if(categorys.length < 2)
+		catch(org.apache.lucene.queryParser.ParseException pe)
 		{
-				t = startterm.createTerm("id:"+categorys[0]);
-                tq[0] = new TermQuerry(t[0]);
-				catquerry.add(tq[0], BooleanClause.Occur.MUST);
+			//TODO
+			System.out.println(pe);
+			IndexAccessException a = new IndexAccessException("nested Exception");
+			a.initCause(pe);
+			throw a;
+
 		}
-		else
+		catch(java.lang.InterruptedException ie)
 		{
-			for(int i=0; i<categorys.length; i++)
-			{
-				t = startterm.createTerm("id:"+categorys[i]);
-				tq[i] = new TermQuerry(t[i]);
-				catquerry.add(tq[i], BooleanClause.Occur.SHOULD); 
-			}
+			//TODO noch was machen?
+			System.out.println("TeamFoundIndexer query()"+ ie);
+			IndexAccessException a = new IndexAccessException("nested Exception");
+			a.initCause(ie);
+			throw a;
 		}
+		finally
+		{
+			//auf jeden Fall muessen wir den lock freigeben
+			indexsync.endRead();
+		}
+				
 		
-		
-		
-		
-		Hits hits = searcher.search(query);
-		
-		//lesen fertig
-		//indexsync.endRead();
-	*/
-		String keywords[] = new String[0];
-		keywords[0] = "ein Schluesselwort";
-		return(new SearchResponse(keywords));	
 	}
 	
 	
