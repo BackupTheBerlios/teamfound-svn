@@ -7,6 +7,7 @@ import java.net.URL;
 
 import controller.IndexAccessException;
 import controller.SearchResponse;
+import controller.SearchResult;
 
 /**
  * Interface für einen Indexer nach Milestone2-Spezifikation

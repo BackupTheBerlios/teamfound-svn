@@ -50,8 +50,7 @@ public class DBLayerHSQL implements DBLayer
 	{
 		// Im standalone Modus haben wir keinen Server damit ist diese Variable unintressant.
 		// Zurzeit wuerde die Datenbank(name im String database) unter
-		// teamfoundDir/db/ im aktuellen Ausfuehrungsverzeichnis landen
-		// dies solle spaeter aus einem property stammen 
+		// xxxx/db/ landen (xxxx stammt aus properties file)
 		// Vorschlag ein teamfound folder fuer index und db ..
 		String dblocation = new String("jdbc:hsqldb:file:"+tfconfig.getConfValue("tfpath")+"/db/"+database+";ifexists=true");
 	

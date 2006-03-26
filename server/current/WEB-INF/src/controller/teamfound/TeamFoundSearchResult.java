@@ -5,8 +5,9 @@
 package controller.teamfound;
 
 import controller.SearchResponse;
+import controller.SearchResult;
 
-public class TeamFoundSearchResult implements SearchResponse {
+public class TeamFoundSearchResult implements SearchResult {
 
 	
 	public TeamFoundSearchResult() 
