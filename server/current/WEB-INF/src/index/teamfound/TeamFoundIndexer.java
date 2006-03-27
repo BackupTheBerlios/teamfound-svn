@@ -175,7 +175,7 @@ public class TeamFoundIndexer implements Indexer {
 			//So nun den zweiten Teil der Frage aus den Kategorien bilden 
 			BooleanQuery catquerry = new BooleanQuery();
 			TermQuery[] tq = new TermQuery[categorys.length];
-			Term startterm = new Term("cats","id:0");
+			Term startterm = new Term("cats","0");
 			Term t;
 		
 			if(categorys.length < 1)
@@ -188,7 +188,7 @@ public class TeamFoundIndexer implements Indexer {
 		
 			if(categorys.length < 2)
 			{
-				t = startterm.createTerm("id:"+categorys[0]);
+				t = startterm.createTerm(String.valueOf(categorys[0]));
                 tq[0] = new TermQuery(t);
 				catquerry.add(tq[0], BooleanClause.Occur.MUST);
 			}
@@ -196,7 +196,7 @@ public class TeamFoundIndexer implements Indexer {
 			{
 				for(int i=0; i<categorys.length; i++)
 				{
-					t = startterm.createTerm("id:"+categorys[i]);
+					t = startterm.createTerm(String.valueOf(categorys[i]));
 					tq[i] = new TermQuery(t);
 					//nur zum testen
 					//System.out.println("id["+i+"]:"+categorys[i] +" TermQuery: "+tq[i].toString());

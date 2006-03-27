@@ -113,7 +113,7 @@ public class SimpleNewIndexEntry implements NewIndexEntry {
 		String cats = new String();
 		for(int i=0; i<categoryID.length; i++ )
 		{
-			cats = (cats + "id:" + categoryID[i] + " ");
+			cats = (cats + categoryID[i] + " ");
 		}
 		//Kategorien speicher indexieren und zwar als tokens
 		doc.add(new Field("cats",cats,true,true,true));
