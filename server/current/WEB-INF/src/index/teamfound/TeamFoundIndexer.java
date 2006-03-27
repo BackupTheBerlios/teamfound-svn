@@ -160,7 +160,8 @@ public class TeamFoundIndexer implements Indexer {
 			indexsync.doRead();
 		
 			IndexSearcher searcher = new IndexSearcher(indexpath);		
-			//ein versuch fuer die suche!		
+			
+			//erstmal die Frage aus den Suchworten bilden		
 			String querys[] = new String [2];
 			querys[0] = query;
 			querys[1] = query;
@@ -171,6 +172,7 @@ public class TeamFoundIndexer implements Indexer {
 			Query humanquery = MultiFieldQueryParser.parse(querys, felder, new org.apache.lucene.analysis.standard.StandardAnalyzer());
 		
 		
+			//So nun den zweiten Teil der Frage aus den Kategorien bilden 
 			BooleanQuery catquerry = new BooleanQuery();
 			TermQuery[] tq = new TermQuery[categorys.length];
 			Term startterm = new Term("cats","id:0");
@@ -196,15 +198,25 @@ public class TeamFoundIndexer implements Indexer {
 				{
 					t = startterm.createTerm("id:"+categorys[i]);
 					tq[i] = new TermQuery(t);
+					//nur zum testen
+					//System.out.println("id["+i+"]:"+categorys[i] +" TermQuery: "+tq[i].toString());
 					catquerry.add(tq[i], BooleanClause.Occur.SHOULD); 
 				}
 			}
+			//nur zum testen
+			//System.out.println(catquerry.toString());
+			//nur zum testen
+			//System.out.println(humanquery.toString());
 
+			//Vollstaendige Frage bauen
 			BooleanQuery completequery = new BooleanQuery();
 		
-			completequery.add(humanquery, BooleanClause.Occur.SHOULD);
+			completequery.add(humanquery, BooleanClause.Occur.MUST);
 			completequery.add(catquerry, BooleanClause.Occur.MUST);
-		
+			
+			//nur zum testen
+			System.out.println(completequery.toString());
+
 						
 			String keywords[] = new String[1];
 			keywords[0] = query;
@@ -212,7 +224,7 @@ public class TeamFoundIndexer implements Indexer {
 			
 			Hits hits = searcher.search(completequery);
 			//nur zum testen
-			System.out.println("Anzahl Ergebnisse:"+hits.length());
+			//System.out.println("Anzahl Ergebnisse:"+hits.length());
 			
 
 			
@@ -223,16 +235,21 @@ public class TeamFoundIndexer implements Indexer {
 			Vector<Document> docvec = new Vector<Document>();
 			
 			//TODO Das geht eigentlich nicht aus PerformanceGruenden ...
+			//Document Vector bauen
 			while(it.hasNext())
 			{
 				hit = (Hit)it.next();
 				d = hit.getDocument();
+
+				//nur zum testen
+				//System.out.println(d.get("url"));
 			
 				docvec.add(d);
-			
-				result.addSearchResults(docvec);
 			}
 
+			//den Vektor mit Dokumenten ins SearchResult
+			result.addSearchResults(docvec);
+			
 			searcher.close();
 			//lesen fertig
 			indexsync.endRead();

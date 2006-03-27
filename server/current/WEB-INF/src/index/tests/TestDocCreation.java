@@ -16,7 +16,7 @@ public class TestDocCreation
 	public static void main(String args[])
 	{
 		String url = new String("www.irgentwas.de");
-		File f = new File("/tmp/index.html");
+		File f = new File("/home/moddin/testseiten/Inhalt.htm");
 		Map headers = new java.util.HashMap();
 		int[] id = new int[3];
 		id[0] = 1;
