@@ -10,8 +10,6 @@
 
 package db.teamfound;
 
-import org.hsqldb.*;
-import org.hsqldb.jdbc.jdbcConnection;
 import db.DBLayer;
 import db.dbbeans.*;
 import java.sql.Connection;
@@ -20,7 +18,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.lang.Math;
 
 import config.Config;
 

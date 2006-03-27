@@ -76,7 +76,7 @@ public class IndexerTest
 			String frage = new String("Wikipedia");
 			
 			System.out.println("rufe Suche auf:");
-			controller.SearchResponse resp;
+			controller.response.SearchResponse resp;
 			resp = tfindexer.query(frage,id);
 		}
 		catch (Exception e)

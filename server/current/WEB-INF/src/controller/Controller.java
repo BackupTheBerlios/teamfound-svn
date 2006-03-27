@@ -5,8 +5,8 @@ package controller;
 
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
+import controller.response.SearchResponse;
 
-import config.Config;
 
 /**
  * Interface für einen Controller nach Milestone2-Spezifikation

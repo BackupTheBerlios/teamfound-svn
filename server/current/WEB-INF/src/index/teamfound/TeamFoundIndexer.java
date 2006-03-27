@@ -9,9 +9,7 @@ import java.net.URL;
 import java.util.Vector;
 
 import controller.IndexAccessException;
-import controller.teamfound.TeamFoundSearchResult;
-import controller.SearchResponse;
-import controller.SearchResult;
+import controller.response.SearchResponse;
 
 import index.Indexer;
 import index.NewIndexEntry;

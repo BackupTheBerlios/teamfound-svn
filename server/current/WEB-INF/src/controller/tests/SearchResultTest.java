@@ -7,7 +7,7 @@ import org.jdom.Document;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
-import controller.SearchResponse;
+import controller.response.SearchResponse;
 
 public class SearchResultTest {
 	public static void main(String[] args) {

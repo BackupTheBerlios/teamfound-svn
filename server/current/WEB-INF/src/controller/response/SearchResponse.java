@@ -1,13 +1,10 @@
 /*
  * Created on Dec 6, 2005
  */
-package controller;
+package controller.response;
 
 import java.io.IOException;
 
-import org.apache.lucene.search.Hit;
-import org.apache.lucene.search.Hits;
-import org.apache.lucene.search.HitIterator;
 import org.apache.lucene.document.Document;
 import org.jdom.Element;
 import java.util.Vector;

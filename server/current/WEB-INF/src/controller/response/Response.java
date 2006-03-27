@@ -1,7 +1,7 @@
 /*
  * Created on Mar 25, 2006
  */
-package controller;
+package controller.response;
 
 import org.jdom.Document;
 import org.jdom.Element;

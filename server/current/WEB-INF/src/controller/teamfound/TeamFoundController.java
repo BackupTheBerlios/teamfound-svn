@@ -12,10 +12,8 @@ import controller.Download;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
 import controller.Controller;
-import controller.SearchResponse;
+import controller.response.SearchResponse;
 
-import config.Config;
-import config.teamfound.TeamFoundConfig;
 
 public class TeamFoundController implements Controller {
 
