@@ -5,6 +5,9 @@ package controller;
 
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
+import controller.response.AddCategoriesResponse;
+import controller.response.AddPageResponse;
+import controller.response.GetCategoriesResponse;
 import controller.response.SearchResponse;
 
 
@@ -21,7 +24,7 @@ public interface Controller {
 	 * 
 	 * @todo Kategorien hinzufügen
 	 */
-	public void addToIndex(String url) throws DownloadFailedException, IndexAccessException;
+	public AddPageResponse addToIndex(String url) throws DownloadFailedException, IndexAccessException;
 	
 	/**
 	 * Nach einer Query im Index suchen
@@ -29,8 +32,19 @@ public interface Controller {
 	 * @todo Das Ergebnis müsste genauer spezifiziert werden, siehe Interface SearchResult
 	 * @see controller.SearchResponse
 	 */
-	public SearchResponse search(String query) throws IndexAccessException;
+	public SearchResponse search(String query, int offset) throws IndexAccessException;
 
+	public GetCategoriesResponse getCategories();
 	
+	public AddCategoriesResponse addCategory(String name, int parentCat, String description);
+	
+	
+	// evtl.später:
+	
+	/*
+	public DeleteCategoryResponse deleteCategory(int nr);
+	
+	public ConfigResponse getConfiguration();
+	
+	*/
 }
-

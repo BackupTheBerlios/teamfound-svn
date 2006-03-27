@@ -125,7 +125,7 @@ public class SearchResponse extends Response {
 		search.addContent(this.result);
 		
 		
-		org.jdom.Document doc = super.getXml();
+		org.jdom.Document doc = super.getBaseDocument();
 		Element root = doc.getRootElement();
 		
 		root.addContent(search);

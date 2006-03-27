@@ -12,6 +12,9 @@ import controller.Download;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
 import controller.Controller;
+import controller.response.AddCategoriesResponse;
+import controller.response.AddPageResponse;
+import controller.response.GetCategoriesResponse;
 import controller.response.SearchResponse;
 
 
@@ -23,7 +26,7 @@ public class TeamFoundController implements Controller {
 	{
 	}
 	
-	public void addToIndex(String url) throws DownloadFailedException, IndexAccessException {
+	public AddPageResponse addToIndex(String url) throws DownloadFailedException, IndexAccessException {
 		URL adress = null;
 		try {
 			adress = new URL(url);
@@ -43,6 +46,8 @@ public class TeamFoundController implements Controller {
 		
 		// 4. fertig
 		
+		// hier muss eine addpage-response zurückgegeben werden
+		return null;
 	}
 
 	public SearchResponse search(String query) throws IndexAccessException {
@@ -51,6 +56,22 @@ public class TeamFoundController implements Controller {
 		// 1. Im Index Suchen
 		
 		// 2. Fertig
+		return null;
+	}
+
+	
+	public SearchResponse search(String query, int offset) throws IndexAccessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public GetCategoriesResponse getCategories() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public AddCategoriesResponse addCategory(String name, int parentCat, String description) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	

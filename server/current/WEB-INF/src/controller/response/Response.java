@@ -20,7 +20,7 @@ import org.jdom.Element;
  */
 
 
-public class Response {
+public abstract class Response {
 	
 	protected Document doc;
 	
@@ -30,7 +30,7 @@ public class Response {
 	 * Gibt das Suchergebnis als XML nach Milestone2-Spezifikation zurück
 	 * @return
 	 */
-	public Document getXml() {
+	public Document getBaseDocument() {
 		Element root = new Element("response");
 		doc = new Document(root);
 		Element interfaceVersion = new Element("interface-version");
@@ -65,4 +65,6 @@ public class Response {
 		returnStatus = code;
 		returnDescription = description;
 	}
+	
+	public abstract Document getXML();
 }
