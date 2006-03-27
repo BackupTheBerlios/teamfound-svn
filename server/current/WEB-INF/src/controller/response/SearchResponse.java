@@ -77,11 +77,18 @@ public class SearchResponse extends Response {
 			title.addContent(d.get("title"));
 			found.addContent(title);
 			
-			//hmm nicht auf die  schnelle, muessen wir wahrscheinlich den String der im 
-			//Feld steht aufsplitten oder aus db lesen
-			category = new Element("incategory");
-			category.addContent("1");
-			found.addContent(category);
+			//String aufsplitten und Kathegorien raussuchen
+			String catstr = d.get("cats");
+			String cats[] = catstr.split(" ");
+			
+			
+			for(int i=0; i<cats.length; i++)
+			{
+
+				category = new Element("incategory");
+				category.addContent(cats[i]);
+				found.addContent(category);
+			}
 			
 			this.result.addContent(found);
 		}
