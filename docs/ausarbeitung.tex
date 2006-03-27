@@ -1,0 +1,80 @@
+\documentclass[german]{article}
+
+\usepackage{listings}
+\lstset{numbers=left, numberstyle=\tiny, numbersep=5pt}
+\lstset{language=Java}
+\usepackage{german}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+
+\title{Teamfound}
+
+\author{Jonas Heese, ...}
+
+\date{März 2006}
+
+\maketitle
+
+\section{Einleitung}
+
+\begin{itemize}
+\item Was ist Teamfound, wo kommt es her?
+\item Was ist der Sinn?
+\item Was gibt es bisher an vergleichbarer Technologie?
+\item Was sind die Probleme vergleichbarer Technologie und was macht TF besser?
+\end{itemize}
+
+\section{Serverarchitektur}
+
+\subsection{Technik}
+\begin{itemize}
+\item Welche Plattform und warum?
+\\
+Java, Servlets
+\item Welche Kernbibliotheken und warum?
+\\
+Lucene, HSQLDB, (JDom)
+\end{itemize}
+
+\subsection{Architektur}
+\begin{itemize}
+\item Servlet
+\item Controller
+\\
+-> DB
+\\
+-> Kategorien
+\item Indexer
+\item Response (auch: xml->xsl->html)
+\end{itemize}
+
+\subsection{Ablauf eines Requests}
+
+Komplette Beschreibung, evtl. auch mit Diagramm
+
+\section{Protokoll}
+
+Jeweils Anfrage und Antworten
+
+\begin{itemize}
+\item Zielsetzung und Sinn des Protokolls
+\item Umsetzung (Designentscheidungen, Technik,...)
+\item Dokumentation (Wie siehts wirklich aus)
+\end{itemize}
+
+\section{Clients}
+
+\subsection{Web-Client}
+
+\subsection{Firefox-Toolbar}
+
+\subsection{Internet Explorer-Toolbar}
+
+
+\section{Projektablauf, organisation, Meilensteine}
+
+
+\section{Fazit}
+
