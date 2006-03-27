@@ -66,7 +66,7 @@ public class IndexServlet extends HttpServlet {
 			if (paramName.equals("url")) {
 				if (!(paramValues[0].equals(""))) {
 					try {
-						index.addToIndex(paramValues[0]);
+						index.addToIndex(paramValues[0],0);
 					} catch (IndexAccessException iae) {
 //						 TODO Auto-generated catch block
 						iae.printStackTrace();

@@ -67,4 +67,7 @@ public abstract class Response {
 	}
 	
 	public abstract Document getXML();
+
+	public abstract String getHTML();
+
 }

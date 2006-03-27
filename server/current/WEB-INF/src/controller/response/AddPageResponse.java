@@ -31,4 +31,10 @@ public class AddPageResponse extends Response {
 		
 		return d;	
 	}
+
+	@Override
+	public String getHTML() {
+		// TODO Auto-generated method stub
+		return "Not yet implemented";
+	}
 }

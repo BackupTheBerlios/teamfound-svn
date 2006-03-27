@@ -24,7 +24,7 @@ public interface Controller {
 	 * 
 	 * @todo Kategorien hinzufügen
 	 */
-	public AddPageResponse addToIndex(String url) throws DownloadFailedException, IndexAccessException;
+	public AddPageResponse addToIndex(String url, int category) throws DownloadFailedException, IndexAccessException;
 	
 	/**
 	 * Nach einer Query im Index suchen

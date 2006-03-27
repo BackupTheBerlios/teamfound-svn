@@ -26,7 +26,7 @@ public class TeamFoundController implements Controller {
 	{
 	}
 	
-	public AddPageResponse addToIndex(String url) throws DownloadFailedException, IndexAccessException {
+	public AddPageResponse addToIndex(String url, int category) throws DownloadFailedException, IndexAccessException {
 		URL adress = null;
 		try {
 			adress = new URL(url);

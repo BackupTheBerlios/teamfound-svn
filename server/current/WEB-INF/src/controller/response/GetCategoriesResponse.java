@@ -94,4 +94,10 @@ public class GetCategoriesResponse extends Response {
 			}
 		}
 	}
+
+	@Override
+	public String getHTML() {
+		// TODO Auto-generated method stub
+		return "not yet implemented";
+	}
 }

@@ -139,6 +139,12 @@ public class SearchResponse extends Response {
 		
 		return doc;
 	}
+
+	@Override
+	public String getHTML() {
+		// TODO Auto-generated method stub
+		return "not yet implemented";
+	}
 	
 }
 

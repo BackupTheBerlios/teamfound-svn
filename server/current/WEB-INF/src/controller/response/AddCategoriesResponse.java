@@ -37,4 +37,10 @@ public class AddCategoriesResponse extends Response {
 		return d;
 	}
 
+	@Override
+	public String getHTML() {
+		// TODO Auto-generated method stub
+		return "not yet implemented";
+	}
+
 }

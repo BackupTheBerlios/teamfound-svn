@@ -4,7 +4,6 @@
 package index.teamfound;
 
 
-import java.io.File;
 import java.net.URL;
 import java.util.Vector;
 
@@ -29,7 +28,6 @@ import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.HitIterator;
 import org.apache.lucene.search.Hit;			
