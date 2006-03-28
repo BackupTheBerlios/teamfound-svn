@@ -8,6 +8,8 @@ import java.net.URL;
 import controller.IndexAccessException;
 import controller.response.SearchResponse;
 
+import org.apache.lucene.document.Document;
+
 /**
  * Interface für einen Indexer nach Milestone2-Spezifikation
  * 
@@ -41,5 +43,26 @@ public interface Indexer {
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
 	 */
 	public SearchResponse query(String query, int[] categorys, int count, int offset) throws IndexAccessException;
+	
+	/**
+	 * Ein einzelnes Dokument aus dem Index loeschen
+	 * @param url Die url des zu loeschenden Documents
+	 * @return das geloeschte Document (wird benoetigt damit updates moeglich werden)
+	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
+	 */
+	//TODO
+	//public Document delDoc(String url) throws IndexAccessException;
+	
+	/**
+	 * Alle Dokumente einer bestimmten Kategorie aus dem Index loeschen
+	 * @param id Die ID  der Kategorie
+	 * @return Vector mit geloeschten Documenten (wird benoetigt damit updates moeglich werden)
+	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
+	 */
+	//TODO 
+	//public Vector<Document> delCat(int id) throws IndexAccessException;
+	
+
+
 	
 }
