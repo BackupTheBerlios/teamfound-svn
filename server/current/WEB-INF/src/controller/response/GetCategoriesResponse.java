@@ -44,6 +44,7 @@ public class GetCategoriesResponse extends Response {
 	
 	
 	private void saveSubcategories(Element el, Integer id) {
+		System.out.println("handling category "+id);
 		// haben wir überhaupt unterkategorien?
 		if(categories.containsKey(id)) {
 			Element subcat = new Element("subcategories");
@@ -53,8 +54,12 @@ public class GetCategoriesResponse extends Response {
 				Tuple<Integer, Element> t = i.next();
 				subcat.addContent(t.getSecond());
 				saveSubcategories(t.getSecond(), t.getFirst());
+				el.addContent(subcat);
 			}
 		} // else: rekursionsabbruch
+		else {
+			System.out.println("no subcats");
+		}
 	}
 
 	/**
@@ -86,10 +91,10 @@ public class GetCategoriesResponse extends Response {
 			// speichern, damit später der richtige kategoriebaum aufgebaut werden kann
 			if(categories.containsKey(parentID)) {
 				List<Tuple<Integer, Element>> l = categories.get(parentID);
-				l.add(new Tuple<Integer, Element>(parentID, cat));
+				l.add(new Tuple<Integer, Element>(ID, cat));
 			} else {
 				List<Tuple<Integer, Element>> l = new LinkedList<Tuple<Integer, Element>>();
-				l.add(new Tuple<Integer, Element>(parentID, cat));
+				l.add(new Tuple<Integer, Element>(ID, cat));
 				categories.put(parentID, l);
 			}
 		}
