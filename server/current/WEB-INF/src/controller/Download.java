@@ -37,7 +37,7 @@ public class Download
 	protected String tempDir = "/tmp";
 	
 	
-	public NewIndexEntry downloadFile(URL adress) throws DownloadFailedException
+	public NewIndexEntry downloadFile(URL adress, int[] cats) throws DownloadFailedException
 	{
 		// Habe diese deklarationen mal in die methode gezogen, da es 
 		// eigentlich keinen grund gibt, diese Methode nicht halbwegs 
@@ -92,11 +92,7 @@ public class Download
 				dout.write(data);	  
 			}
 		
-			//TODO hier muss noch irgentwie die Kategorien her
-			//damit ich kompilieren kann erstaml einfach 0
-			int[] c = new int[1];
-			c[0]=0;
-			entry = new SimpleNewIndexEntry(adress.toString(), toWriteIn, ucon.getHeaderFields(),c);
+			entry = new SimpleNewIndexEntry(adress.toString(), toWriteIn, ucon.getHeaderFields(),cats);
 			
 			
 		}

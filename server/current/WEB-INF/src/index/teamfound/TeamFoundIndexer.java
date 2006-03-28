@@ -31,6 +31,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.HitIterator;
 import org.apache.lucene.search.Hit;			
+import org.apache.lucene.index.TermDocs;
 
 /**
  * Implementation Indexer nach Milestone2-Spezifikation
@@ -79,6 +80,60 @@ public class TeamFoundIndexer implements Indexer {
 		
 	}
 	
+	/**
+	 * Fügt einen neuen Eintrag in den Index eina
+	 * Diese Funktion geht davon aus, dass der Eintrag ncoh nicht existiert
+	 * Sollte er existieren wuerde es doppelte Eintraege geben!
+	 * 
+	 * @param document Das ENtry-Objekt welches eingefügt werden soll
+	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Exceptions einpacken
+	 */
+	public void addUrl(Document doc) throws IndexAccessException
+	{
+		//teamfound BasePfad erfragen und indexPfad bauen 
+		String path = tfconfig.getConfValue("tfpath");
+		String indexpath = (path+"/index");
+		
+		try
+		{
+			//schreibewunsch anmelden
+			indexsync.doWrite();
+			
+			IndexWriter writer = new IndexWriter(indexpath, new TeamFoundAnalyzer(), false);
+			writer.addDocument(doc);
+			
+			//TODO eigentlich muss man nur gelegentlich optimieren, irgentwann noch ein Management dafuer
+			writer.optimize();
+			writer.close();
+			
+			//schreiben fertig
+			indexsync.endWrite();
+
+		}
+		catch(java.io.IOException io)
+		{
+			//z.b. File existiert gar nicht
+			//TODO noch was machen?
+			System.out.println("TeamFoundIndexer : addUrl(doc)"+io);
+			IndexAccessException a = new IndexAccessException("nested Exception");
+			a.initCause(io);
+			throw a;
+									
+		}
+		catch(java.lang.InterruptedException ie)
+		{
+			//TODO noch was machen?
+			System.out.println("TeamFoundIndexer : addUrl(doc)"+ ie);
+			IndexAccessException a = new IndexAccessException("nested Exception");
+			a.initCause(ie);
+			throw a;
+		}
+		finally
+		{
+			//auf jeden Fall muessen wir den lock freigeben
+			indexsync.endWrite();
+		}
+	}
 	/**
 	 * Fügt einen neuen Eintrag in den Index eina
 	 * Diese Funktion geht davon aus, dass der Eintrag ncoh nicht existiert
@@ -296,9 +351,73 @@ public class TeamFoundIndexer implements Indexer {
 			indexsync.endRead();
 		}
 				
-		
 	}
 	
+	/**
+	 * Ein einzelnes Dokument aus dem Index loeschen
+	 * @param url Die url des zu loeschenden Documents
+	 * @return das geloeschte Document (wird benoetigt damit updates moeglich werden)
+	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
+	 */
+	public Document delDoc(String url) throws IndexAccessException
+	{
+		//teamfound BasePfad erfragen und indexPfad bauen 
+		String path = tfconfig.getConfValue("tfpath");
+		String indexpath = (path+"/index");
+		
+		try
+		{
+			//schreibewunsch anmelden
+			indexsync.doWrite();
+			
+			//Reader erstellen. Document auslesen und loeschen
+			IndexReader reader = IndexReader.open(indexpath);
+			Document doc = new Document();
+			Term t = new Term("url",url);
+			TermDocs tdocs = reader.termDocs(t);
+			//TODO eigentlich sollte es nur einen URL geben falls nicht werden einfach
+			//alle geloescht und nur das letzte Dokument wir zurueckgegeben
+			int docnum;
+			while(tdocs.next())
+			{
+				docnum = tdocs.doc();
+				doc = reader.document(docnum);
+				reader.deleteDocument(docnum);
+			}
+			tdocs.close();
+			
+			reader.close();
+						
+			//schreiben fertig
+			indexsync.endWrite();
+			return(doc);
+		}
+		catch(java.io.IOException io)
+		{
+			//TODO noch was machen?
+			System.out.println("TeamFoundIndexer : delDoc(url)"+io);
+			IndexAccessException a = new IndexAccessException("nested Exception");
+			a.initCause(io);
+			throw a;
+									
+		}
+		catch(java.lang.InterruptedException ie)
+		{
+			//TODO noch was machen?
+			System.out.println("TeamFoundIndexer : delDoc(url)"+ ie);
+			IndexAccessException a = new IndexAccessException("nested Exception");
+			a.initCause(ie);
+			throw a;
+		}
+		finally
+		{
+			//auf jeden Fall muessen wir den lock freigeben
+			indexsync.endWrite();
+		}	
+	}
+	
+
+		
 	
 	
 }

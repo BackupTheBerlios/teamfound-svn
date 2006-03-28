@@ -122,6 +122,9 @@ public class IndexerTest
 			qids[1] = 6;
 			printSearch(frage, qids, tfindexer);
 
+			System.out.println("\ndeleteDoc testen:\n");
+			Document document = tfindexer.delDoc("http://www.Regeln.de");
+			System.out.println(document.toString());
 			
 		}
 		catch (Exception e)

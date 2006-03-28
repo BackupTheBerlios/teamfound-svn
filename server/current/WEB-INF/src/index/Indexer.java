@@ -50,8 +50,7 @@ public interface Indexer {
 	 * @return das geloeschte Document (wird benoetigt damit updates moeglich werden)
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
 	 */
-	//TODO
-	//public Document delDoc(String url) throws IndexAccessException;
+	public Document delDoc(String url) throws IndexAccessException;
 	
 	/**
 	 * Alle Dokumente einer bestimmten Kategorie aus dem Index loeschen
@@ -62,7 +61,15 @@ public interface Indexer {
 	//TODO 
 	//public Vector<Document> delCat(int id) throws IndexAccessException;
 	
-
+	/**
+	 * Fügt einen neuen Eintrag in den Index eina
+	 * Diese Funktion geht davon aus, dass der Eintrag ncoh nicht existiert
+	 * Sollte er existieren wuerde es doppelte Eintraege geben!
+	 * 
+	 * @param document Das ENtry-Objekt welches eingefügt werden soll
+	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Exceptions einpacken
+	 */
+	public void addUrl(Document doc) throws IndexAccessException;
 
 	
 }

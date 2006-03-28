@@ -4,6 +4,8 @@
 package controller.teamfound;
 
 import index.NewIndexEntry;
+import index.Indexer;
+import index.teamfound.TeamFoundIndexer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,15 +30,19 @@ import db.teamfound.DBLayerHSQL;
 import db.DBLayer;
 import db.dbbeans.*;
 
-
-
+import sync.ReadWriteSync;
+import org.apache.lucene.document.Document;
 
 public class TeamFoundController implements Controller {
 
 	Download loader = new Download();
+	public ReadWriteSync indexSync;
+	public Config conf;
 	
 	public TeamFoundController() 
 	{
+		conf = new TeamFoundConfig();
+		indexSync = new ReadWriteSync();
 	}
 	
 	/**
@@ -60,7 +66,10 @@ public class TeamFoundController implements Controller {
 		 DBLayer db;
 		 db = new DBLayerHSQL(conf);
 		 Connection conn;
-		 
+		
+		//Indexer erstellen
+		Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
+		
 		try
 		{
 		 	conn = db.getConnection("tf","tfpass","anyserver","tfdb");
@@ -83,35 +92,72 @@ public class TeamFoundController implements Controller {
 				}
 				if(!updateurl)
 				{
-					//TODO
 					//Erfolgsmeldung liefern
+					return(new AddPageResponse(url));
 				}
 				else
 				{
-					//TODO
 					//1.Doc im index loeschen
-					//2.Doc neu adden mit allen sich ergebenden Kats
+					 Document doc = tfindexer.delDoc(url);
+					 doc.removeField("cats");
+					 
+					 //2.Doc neu adden mit allen sich ergebenden Kats
+					 String cats = new String();
+					 Vector<Integer> allcats = new Vector<Integer>();
+					 allcats.addAll(oldcats);
+					 allcats.addAll(newcats);
+					 java.util.Iterator allit = allcats.iterator();
+					 Integer tmp;
+					 while(allit.hasNext())
+					 {
+						 tmp = (Integer)allit.next();
+						 cats = (cats + tmp.intValue() +" ");
+					 }
+					 doc.add(new org.apache.lucene.document.Field("cats",cats,true,true,true));
+					 tfindexer.addUrl(doc);
+					 
 					//3.DB Aktualisieren
+					java.util.Iterator newit = newcats.iterator();
+					categoryBean catbean = new categoryBean();
+					while(newit.hasNext())
+					{
+						catbean.setID((Integer)newit.next());
+						db.addCatwithParentsToUrl(conn,urlbean,catbean);
+					}
+					
 					//4.Erfolgsmeldung liefern
+					return(new AddPageResponse(url));
 				}
 
 			}
 		
 			// 1. URL herunterladen
-			NewIndexEntry entry = loader.downloadFile(adress);
+			NewIndexEntry entry = loader.downloadFile(adress, category);
 		
-			// 2. Indexieren 
+			// 2. Indexieren
+			tfindexer.addUrl(entry,adress);
 
 			// 3. Datenbank aktualisieren
+			urltabBean ub = new urltabBean(url);			
+			categoryBean catbean = new categoryBean();
+			catbean.setID(new Integer(category[0]));
+			urltabBean ubean = db.addUrl(conn, ub, catbean);
+			
+			//so category[0] ist drinn nun fehlen noch die anderen
+			for(int i = 1; i<category.length; i++)
+			{
+				catbean.setID(new Integer(category[i]));
+				db.addCatwithParentsToUrl(conn,ubean,catbean);
+			}
 		
 			// 4. fertig
-		
 			// hier muss eine addpage-response zurückgegeben werden
+			return(new AddPageResponse(url));
 		}
 		catch(Exception e)
 		{
 			//TODO
-			System.out.println("Fuck off!");
+			System.out.println("Fuck off!" +e);
 		}
 		return null;
 	}
