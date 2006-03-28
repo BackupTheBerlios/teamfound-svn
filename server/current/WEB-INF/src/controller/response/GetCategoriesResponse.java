@@ -95,6 +95,8 @@ public class GetCategoriesResponse extends Response {
 			} else {
 				List<Tuple<Integer, Element>> l = new LinkedList<Tuple<Integer, Element>>();
 				l.add(new Tuple<Integer, Element>(ID, cat));
+				
+				
 				categories.put(parentID, l);
 			}
 		}

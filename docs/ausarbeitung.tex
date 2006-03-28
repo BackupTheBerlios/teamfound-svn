@@ -26,29 +26,44 @@
 \item Was sind die Probleme vergleichbarer Technologie und was macht TF besser?
 \end{itemize}
 
-\section{Serverarchitektur}
+\section{Teamfound-Server}
 
-\subsection{Technik}
-\begin{itemize}
-\item Welche Plattform und warum?
-\\
-Java, Servlets
-\item Welche Kernbibliotheken und warum?
-\\
-Lucene, HSQLDB, (JDom)
-\end{itemize}
+Die Entscheidung für eine Plattform wurde implizit durch die Entscheidung für eine Bibliothek zum indexieren und durchsuchen von Dokumenten getroffen. Nachdem einige Tage nach derartigen Bibliotheken Ausschau gehalten wurde, ist sehr schnell deutlich geworden, das Lucene \footnote{www.lucene.de} vom Apache-Projekt\footnote{http://www.apache.org} die am weitest entwickelte Bibliothek ist. Ein weiterer Vorteil ist die aktive Community rund um Lucene, so wurde während unserer Entwicklung noch ein Sprung von Version 1.5 auf 1.9 mitgemacht. Andere Bibliotheken, zum Beispiel in Perl oder PHP boten keine ausreichende Dokumentation oder Erweiterbarkeit.
+Die ursprüngliche Lucene-Version ist in Java implementiert, ein weiteres Projekt bemüht sich um dessen Umsetzung in C und mittlerweile (Am Ende des Projekts hat Zend Technologies\footnote{http://www.zend.com} einen PHP-Wrapper\footnote{http://framework.zend.com/manual/en/zend.search.html} für Lucene veröffentlicht.
+
+Somit war die Wahl der Plattform auf Java gefallen, eine erste mehr als Proof-of-Concept anzusehende Version von Teamfound wurde mittels zwei Perl-CGI-Scripten und einem Systemaufruf der Lucene-Bibliothek umgesetzt. Dieses Vorgehen startet bei jeder Anfrage an den Webserver eine neue Java virtuel machine, was natürlich überhaupt nicht effektiv ist. 
+
+Daher fiel eine weitere Entscheidung, für eine Java-Servlet-Umsetzung, um die benötigte Umgebung für Anfragen an den Lucene-Index nicht für jedes Request neu zu schaffen. Somit besteht der Server aus einer 100\%igen Java-Umgebung und es entfällt damit die Notwendigkeit für aufwändige und zeit-kostende Wrapper um mehrere Programmiersprachen zu verbinden.
+
+\subsection{Kernbibliotheken}
+
+\subsubsection{Apache Lucene}
+
+Lucene ist - laut eigener Aussage - der harte Teil einer Suchmaschine. Diese Bibliothek erzeugt und durchsucht einen Volltextindex, kümmert sich aber weder darum wo die Daten herkommen, wie die Ergebnisse präsentiert werden oder wie die Suchanfragen vom Benutzer an den Index kommen. Der Index ist hingegen bietet viele Möglichkeiten die eigenen Daten zu analysieren und in sogenannten Dokumenten in den Index zu speichern. Eigene $Analyzer$ sind mit wenig Aufwand umzusetzen (sofern die mitgelieferten nicht ausreichen), auch aufwändigere Parser sind möglich, wie es zB. für HTML-Seiten notwendig ist.
+Darüberhinaus kann jedes Dokument im Index beliebige $Felder$ enthalten, ein Feld ist als Inhaltselement eines Dokuments zu verstehen (Überschrift, Inhalt, Beschreibung). Dabei können völlig verschiedene Arten von Dokumenten in einem Index gespeichert werden sowie Suchanfragen direkt an ein oder mehrere Felder gestellt werden. Diese starke Erweiterbarkeit ist zum Beispiel bei der Implementierung von Dokumentenkategorien in TeamFound sehr wichtig gewesen (Siehe TODO: link einfügen)
+
+TODO: Query Syntax, beteiligte Arten von Klassen genauer ausführen (Analyzer, Document, Field, IndexReader, IndexWriter, Query, QueryParser, ....)
+
+\subsubsection{HSQLDB}
+
+\subsubsection{Weitere Bibliotheken}
+
+jdom
 
 \subsection{Architektur}
-\begin{itemize}
-\item Servlet
-\item Controller
-\\
--> DB
-\\
--> Kategorien
-\item Indexer
-\item Response (auch: xml->xsl->html)
-\end{itemize}
+
+\subsubsection{Servlet}
+
+Das Servlet ist der Einstiegspunkt für jegliche Anfragen an TeamFound. Dem Servlet kommt dabei die Rolle eines Wächters zu, welcher überprüft ob notwendige Parameter für die einzelnen Anfragen vorhanden sind. Ist eine Anfrage gültig, wird diese an den sogenannten Controller weitergereicht, welcher die eigentlichen TeamFound-Komponenten steuert. Dieser Controller gibt immer ein Response-Objekt zurück, welches vom Servlet dann zB. als XML oder HTML serialisiert und als Antwort zum Client geschickt wird.
+
+\subsubsection{Controller}
+
+\subsubsection{Indexer}
+
+\subsubsection{Response}
+
+Antworten werden in TeamFound immer als XML generiert, diese XML-Repräsentation kann bevor sie zum Client geschickt wird, noch mittels XSLT in eine geeignete HTML-Fassung gewandelt werden.
+Eine Basisklasse Response übernimmt dabei das Handling des eigentlichen JDOM-Document-Objektes, während die eigentlichen Antwort-Klassen, wie SearchResponse oder AddPageResponse ihre eigentlichen Inhalte an die Standardelemente einer Antwort anhängen (Siehe dazu mehr im Kapitel Protokoll TODO: LINK).
 
 \subsection{Ablauf eines Requests}
 
