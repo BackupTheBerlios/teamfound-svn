@@ -21,10 +21,11 @@ public interface Controller {
 	
 	/**
 	 * Eine URL zum Index hinzufügen
-	 * 
-	 * @todo Kategorien hinzufügen
+	 *
+	 * @param url die hinzuzufuegende Url
+	 * @param category[] die Kategorien in die die URL gehoert (eigentlich mindestens die root Kategorie des Projekts ... normalerweise 0
 	 */
-	public AddPageResponse addToIndex(String url, int category) throws DownloadFailedException, IndexAccessException;
+	public AddPageResponse addToIndex(String url, int category[]) throws DownloadFailedException, IndexAccessException;
 	
 	/**
 	 * Nach einer Query im Index suchen

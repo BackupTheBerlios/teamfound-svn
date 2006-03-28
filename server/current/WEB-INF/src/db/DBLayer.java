@@ -190,6 +190,13 @@ public interface DBLayer
 	public urltabBean getUrl(Connection conn, String url) throws SQLException;
 	
 	/**
+	 * nach Kategorien der Url suchen
+	 * @return ids der kategorien
+	 * @param id der Url
+	 */ 
+	public Vector<Integer> getCatsOfUrl(Connection conn, Integer urlid) throws SQLException;
+	
+	/**
 	 * nach Url suchen -> liefert gefuellte urltabBean
 	 * Returnwert ist Null wenn die Url nicht in der Datenbank ist
 	 * oder nicht dem Mituebergebenen Projekt zugeordnet ist.

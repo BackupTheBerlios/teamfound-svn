@@ -19,6 +19,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import java.util.Vector;
+
 import config.Config;
 
 public class DBLayerHSQL implements DBLayer
@@ -950,6 +952,40 @@ public class DBLayerHSQL implements DBLayer
 			throw(e);
 		}
 	}
+
+	/**
+	 * nach Kategorien der Url suchen
+	 * @return ids der kategorien
+	 * @param id der Url
+	 */ 
+	public Vector<Integer> getCatsOfUrl(Connection conn, Integer urlid) throws SQLException
+	{
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		try
+		{
+			String search = new String("SELECT url,category FROM urltocategory WHERE url = '"+urlid.toString()+"'");
+			ResultSet rsi = st.executeQuery(search);
+			
+			
+			Vector<Integer> re = new Vector<Integer>();
+			while(rsi.next())
+			{
+				re.add(rsi.getInt(2));
+			}
+
+			return(re);
+									
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("DBLayerHSQL: getCatsOfUrl "+ e);
+			throw(e);
+		}
+	}
+
 	
 	/**
 	 * nach Url suchen -> liefert gefuellte urltabBean
