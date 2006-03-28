@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app 
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" 
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+    <display-name>TeamFound</display-name>
+    <description>
+    to be added later
+    </description>
+
+
+	<!-- das teamfound-servlet -->	
+	<servlet>
+      <servlet-name>tf</servlet-name>
+      <description>
+      </description>
+      <servlet-class>servlet.TeamFoundServlet</servlet-class>
+      <load-on-startup>5</load-on-startup>
+    </servlet>
+
+	<!-- dieses servlet testet den controller -->
+	<servlet>
+      <servlet-name>test</servlet-name>
+      <description>
+      </description>
+      <servlet-class>servlet.TestServlet</servlet-class>
+      <load-on-startup>5</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+      <servlet-name>tf</servlet-name>
+      <url-pattern>/tf</url-pattern>
+    </servlet-mapping>
+    
+	 <servlet-mapping>
+      <servlet-name>test</servlet-name>
+      <url-pattern>/test</url-pattern>
+    </servlet-mapping>
+</web-app>
