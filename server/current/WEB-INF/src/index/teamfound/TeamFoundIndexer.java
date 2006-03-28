@@ -142,13 +142,12 @@ public class TeamFoundIndexer implements Indexer {
 	 * @param query Der Query-String
 	 * @param categorys Array mit Kathegorie-ids in denen gesucht werden muss es muss mindestens eine id mitgeliefert werden (mindestens die root id des Projektes)
 	 * @return Das Suchergebnis zu diesem query oder null wenn nichts gefunden wurde 
+	 * @param count Wieviele ergebnisse sollen geliefert werden
+	 * @param offset wieviele ergebebnisse waren vorher schon da
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
 	 */
-	public SearchResponse query(String query, int[] categorys) throws IndexAccessException
+	public SearchResponse query(String query, int[] categorys, int count , int offset ) throws IndexAccessException
 	{
-		//lesewunsch anmelden
-		//indexsync.doRead();
-		
  		
 		String path = tfconfig.getConfValue("tfpath");
 		String indexpath = (path+"/index");		
@@ -167,7 +166,7 @@ public class TeamFoundIndexer implements Indexer {
 			String felder[] = new String[2];
 			felder[0] = new String("contents"); 
 			felder[1] = new String("title");
-			Query humanquery = MultiFieldQueryParser.parse(querys, felder, new org.apache.lucene.analysis.standard.StandardAnalyzer());
+			Query humanquery = MultiFieldQueryParser.parse(querys, felder, new TeamFoundAnalyzer());
 		
 		
 			//So nun den zweiten Teil der Frage aus den Kategorien bilden 
@@ -183,13 +182,15 @@ public class TeamFoundIndexer implements Indexer {
 				throw a;
 
 			}	
-		
+			
+			//bei nur einer Kategorie muessen die gefundenen Seiten in der Kategorie sein
 			if(categorys.length < 2)
 			{
 				t = startterm.createTerm(String.valueOf(categorys[0]));
                 tq[0] = new TermQuery(t);
 				catquerry.add(tq[0], BooleanClause.Occur.MUST);
 			}
+			//bei mehreren Kategorien muessen die Seiten nur in einer der Kategorien sein
 			else
 			{
 				for(int i=0; i<categorys.length; i++)
@@ -215,29 +216,35 @@ public class TeamFoundIndexer implements Indexer {
 			//nur zum testen
 			System.out.println(completequery.toString());
 
-						
+			//Response erstellen
+			//TODO Keywords? lieber in den Queryparser einen fertigen QueryString			
 			String keywords[] = new String[1];
 			keywords[0] = query;
 			SearchResponse result = new SearchResponse(keywords);
 			
+			//die komplette Anfrage an LuceneIndex stellen
 			Hits hits = searcher.search(completequery);
 			//nur zum testen
 			//System.out.println("Anzahl Ergebnisse:"+hits.length());
 			
-
+			//neue Ergebnisse?
+			if(hits.length() < offset)
+			{
+				return null;
+			}
 			
-			HitIterator it = (HitIterator)hits.iterator();
-			Hit hit;
+			//Wieviel Docs koennen wir liefern
+			int ende = offset+count;
+			if(hits.length() < ende)
+				ende = hits.length();
+			
 			Document d;
-			
 			Vector<Document> docvec = new Vector<Document>();
 			
-			//TODO Das geht eigentlich nicht aus PerformanceGruenden ...
 			//Document Vector bauen
-			while(it.hasNext())
+			for(int i = offset; i < ende; i++) 
 			{
-				hit = (Hit)it.next();
-				d = hit.getDocument();
+				d = hits.doc(i);
 
 				//nur zum testen
 				//System.out.println(d.get("url"));

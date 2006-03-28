@@ -26,7 +26,7 @@ public class IndexerTest
 			controller.response.SearchResponse resp;
 			try
 			{	
-				resp = tfindexer.query(frage,ids);
+				resp = tfindexer.query(frage,ids,30,0);
 
 				org.jdom.Document xmldoc = resp.getXML();
 				

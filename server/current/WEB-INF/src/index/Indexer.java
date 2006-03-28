@@ -35,9 +35,11 @@ public interface Indexer {
 	 * Eine Query auf dem Index ausführen
 	 * @param query Der Query-String
 	 * @param categorys Array mit Kathegorie-ids in denen gesucht werden muss es muss mindestens eine id mitgeliefert werden (mindestens die root id des Projektes)
-	 * @return Das Suchergebnis zu diesem query oder null wenn nichts gefunden wurde 
+	 * @return Das Suchergebnis zu diesem query oder null wenn nichts gefunden wurde
+	 * @param count Wieviele ergebnisse sollen geliefert werden
+	 * @param offset wieviele ergebebnisse waren vorher schon da
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
 	 */
-	public SearchResponse query(String query, int[] categorys) throws IndexAccessException;
+	public SearchResponse query(String query, int[] categorys, int count, int offset) throws IndexAccessException;
 	
 }
