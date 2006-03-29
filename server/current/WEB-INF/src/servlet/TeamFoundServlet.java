@@ -11,4 +11,9 @@ package servlet;
  */
 
 public class TeamFoundServlet extends BaseServlet {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7678377551301363275L;
 }

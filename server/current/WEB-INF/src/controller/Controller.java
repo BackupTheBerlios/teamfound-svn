@@ -8,6 +8,7 @@ import controller.IndexAccessException;
 import controller.response.AddCategoriesResponse;
 import controller.response.AddPageResponse;
 import controller.response.GetCategoriesResponse;
+import controller.response.GetProjectsResponse;
 import controller.response.SearchResponse;
 
 
@@ -40,7 +41,7 @@ public interface Controller {
 	public AddCategoriesResponse addCategory(String name, int parentCat, String description);
 
 	//TODO Response -> einfach Kategorien nur halt als Liste nicht als Baum ...
-	public void GetProjects();
+	public GetProjectsResponse getProjects();
 	
 	// evtl.später:
 	

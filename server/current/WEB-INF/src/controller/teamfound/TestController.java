@@ -9,6 +9,7 @@ import controller.IndexAccessException;
 import controller.response.AddCategoriesResponse;
 import controller.response.AddPageResponse;
 import controller.response.GetCategoriesResponse;
+import controller.response.GetProjectsResponse;
 import controller.response.SearchResponse;
 
 public class TestController implements Controller {
@@ -44,6 +45,26 @@ public class TestController implements Controller {
 	public void GetProjects()
 	{
 		return;
+	}
+
+	public AddPageResponse addToIndex(String url, int[] category) throws DownloadFailedException, IndexAccessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public SearchResponse search(String query, int offset, int[] category) throws IndexAccessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public GetCategoriesResponse getCategories(int rootid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public GetProjectsResponse getProjects() {
+		// TODO Auto-generated method stub
+		return null;		
 	}
 
 }

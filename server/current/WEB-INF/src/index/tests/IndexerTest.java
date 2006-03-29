@@ -16,7 +16,6 @@ import config.Config;
 import config.teamfound.TeamFoundConfig;
 
 import java.net.URL;
-import java.util.List;
 
 public class IndexerTest
 {

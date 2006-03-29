@@ -29,8 +29,6 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.HitIterator;
-import org.apache.lucene.search.Hit;			
 import org.apache.lucene.index.TermDocs;
 
 /**

@@ -44,7 +44,7 @@ public abstract class BaseServlet extends HttpServlet {
 		commands.put("addpage", new Integer(2));
 		commands.put("getcategories", new Integer(3));
 		commands.put("addcategories", new Integer(4));
-		
+		commands.put("getprojects", new Integer(5));
 	}
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -134,11 +134,25 @@ public abstract class BaseServlet extends HttpServlet {
 			} else {
 				offset = Integer.parseInt(req.getParameter("keyword"));
 			}			
-			return ctrl.search(query, offset);
+			String[] rawcat;
+			if(!params.containsKey("category")) {
+				r = new ErrorResponse();
+				r.returnValue(2, "Need Parameter 'category'");
+				return r;		
+			} else {
+				rawcat = req.getParameterValues("category");
+				int[] categories = new int[rawcat.length];
+				
+				for(int h = 0; h < rawcat.length; h++) {
+					categories[h] = Integer.parseInt(rawcat[h]);
+				}
+				return ctrl.search(query, offset, categories);
+			}			
+
+			
 			
 		case 2:
 			String url;
-			int category;
 			// suche, es müssen die parameter category und url da sein
 			if(!params.containsKey("url")) {
 				r = new ErrorResponse();
@@ -148,16 +162,34 @@ public abstract class BaseServlet extends HttpServlet {
 				url = req.getParameter("url");
 			}
 			
+			String[] rawcat2;
 			if(!params.containsKey("category")) {
-				category = 0;				
+				r = new ErrorResponse();
+				r.returnValue(2, "Need Parameter 'category'");
+				return r;		
 			} else {
-				category = Integer.parseInt(req.getParameter("category"));
+				rawcat2 = req.getParameterValues("category");
+				int[] categories = new int[rawcat2.length];
+				
+				for(int h = 0; h < rawcat2.length; h++) {
+					categories[h] = Integer.parseInt(rawcat2[h]);
+				}
+				return ctrl.addToIndex(url, categories);
 			}			
-			return ctrl.addToIndex(url, category);
+			
+			
 			
 		case 3:
 			// keine weiteren parameter
-			return ctrl.getCategories();
+			int projectID;
+			if(!params.containsKey("projectID")) {
+				r = new ErrorResponse();
+				r.returnValue(2, "Need Parameter 'projectID'");
+				return r;
+			} else {
+				projectID = Integer.parseInt(req.getParameter("projectID"));
+			}
+			return ctrl.getCategories(projectID);
 			
 		case 4:
 			String name, description;
@@ -188,11 +220,21 @@ public abstract class BaseServlet extends HttpServlet {
 			}			
 			
 			return ctrl.addCategory(name, parentID, description);
+			
+		case 5:
+			return ctrl.getProjects();
+			
+			
+			
 		}
 		
 		r = new ErrorResponse();
 		r.returnValue(-1, "Unknown command");
 		return r;
+		
+		
+			
+		
 	}
 	
 	

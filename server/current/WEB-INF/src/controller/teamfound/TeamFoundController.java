@@ -21,6 +21,7 @@ import controller.Controller;
 import controller.response.AddCategoriesResponse;
 import controller.response.AddPageResponse;
 import controller.response.GetCategoriesResponse;
+import controller.response.GetProjectsResponse;
 import controller.response.SearchResponse;
 
 import config.Config;
@@ -194,9 +195,9 @@ public class TeamFoundController implements Controller {
 	}
 	
 	//TODO Response -> einfach Kategorien nur halt als Liste nicht als Baum ...
-	public void GetProjects()
+	public GetProjectsResponse getProjects()
 	{
-		return;
+		return null;
 	}
 	
 
