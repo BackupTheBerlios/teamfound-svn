@@ -12,9 +12,10 @@ package db;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
+import java.util.List;
 
 import db.dbbeans.*;
-
+import tools.Tuple;
 
 public interface DBLayer
 {
@@ -245,8 +246,16 @@ public interface DBLayer
 	/**
 	 * Liefert die Versionsnummer fuer den Baum der zu diesem RootKnoten gehoert.
 	 * 
+	 * Achtung geht nur mit wirklicher RootKategorie
 	 */
 	public Integer getVersionNumber(Connection conn,categoryBean rootbean) throws SQLException;
+	/**
+	 * Liefert Tuple <Integer,Integer> 
+	 * der erste int ist die ID der RootCAT der Zweite ist die Version des Baumes
+	 * 
+	 */
+	public List<Tuple<Integer,Integer>> getAllVersions(Connection conn) throws SQLException;
+
 
 		
 //TODO Was man noch so braucht

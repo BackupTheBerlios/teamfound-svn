@@ -12,6 +12,8 @@ package db.teamfound;
 
 import db.DBLayer;
 import db.dbbeans.*;
+import tools.Tuple;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -20,6 +22,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.util.Vector;
+import java.util.List;
+import java.util.AbstractList;
+import java.util.LinkedList;
 
 import config.Config;
 
@@ -1234,6 +1239,38 @@ public class DBLayerHSQL implements DBLayer
 			throw(e);
 		}
 	}
+	/**
+	 * Liefert Tuple <Integer,Integer> 
+	 * der erste int ist die ID der RootCAT der Zweite ist die Version des Baumes
+	 * 
+	 */
+	public List<Tuple<Integer,Integer>> getAllVersions(Connection conn) throws SQLException
+	{
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		try
+		{
+			String search = new String("SELECT rootid,version FROM categoryversion");
+			ResultSet rsi = st.executeQuery(search);
+			Tuple<Integer,Integer> versiontuple;
+			List<Tuple<Integer,Integer>> versionlist = new LinkedList<Tuple<Integer,Integer>>();
+			if(rsi.next())
+			{
+				versiontuple = new Tuple<Integer,Integer>(rsi.getInt(1), rsi.getInt(2));
+				versionlist.add(versiontuple);
+			}
+			return(versionlist);
+									
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("GetVersionNumber: "+ e);
+			throw(e);
+		}
+	}
+
 
 	
 }

@@ -8,11 +8,11 @@ import java.net.URL;
 import java.util.Vector;
 
 import controller.IndexAccessException;
-import controller.response.SearchResponse;
 
 import index.Indexer;
 import index.NewIndexEntry;
 import index.teamfound.TeamFoundAnalyzer;
+
 
 import config.Config;
 
@@ -199,7 +199,7 @@ public class TeamFoundIndexer implements Indexer {
 	 * @param offset wieviele ergebebnisse waren vorher schon da
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
 	 */
-	public SearchResponse query(String query, int[] categorys, int count , int offset ) throws IndexAccessException
+	public Vector<Document> query(String query, int[] categorys, int count , int offset ) throws IndexAccessException
 	{
  		
 		String path = tfconfig.getConfValue("tfpath");
@@ -269,12 +269,6 @@ public class TeamFoundIndexer implements Indexer {
 			//nur zum testen
 			System.out.println(completequery.toString());
 
-			//Response erstellen
-			//TODO Keywords? lieber in den Queryparser einen fertigen QueryString			
-			String keywords[] = new String[1];
-			keywords[0] = query;
-			SearchResponse result = new SearchResponse(keywords);
-			
 			//die komplette Anfrage an LuceneIndex stellen
 			Hits hits = searcher.search(completequery);
 			//nur zum testen
@@ -305,15 +299,13 @@ public class TeamFoundIndexer implements Indexer {
 				docvec.add(d);
 			}
 
-			//den Vektor mit Dokumenten ins SearchResult
-			result.addSearchResults(docvec);
 			
 			searcher.close();
 			//lesen fertig
 			indexsync.endRead();
 
 
-			return(result);
+			return(docvec);
 
 			
 		}

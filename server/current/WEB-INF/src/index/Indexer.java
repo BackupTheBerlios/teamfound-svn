@@ -10,6 +10,8 @@ import controller.response.SearchResponse;
 
 import org.apache.lucene.document.Document;
 
+import java.util.Vector;
+
 /**
  * Interface für einen Indexer nach Milestone2-Spezifikation
  * 
@@ -42,7 +44,7 @@ public interface Indexer {
 	 * @param offset wieviele ergebebnisse waren vorher schon da
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Excpetions einpacken.
 	 */
-	public SearchResponse query(String query, int[] categorys, int count, int offset) throws IndexAccessException;
+	public Vector<Document> query(String query, int[] categorys, int count, int offset) throws IndexAccessException;
 	
 	/**
 	 * Ein einzelnes Dokument aus dem Index loeschen

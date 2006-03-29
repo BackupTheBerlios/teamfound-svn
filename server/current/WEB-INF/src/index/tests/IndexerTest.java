@@ -7,9 +7,9 @@ package index.tests;
 import org.apache.lucene.document.*;
 import java.io.File;
 import java.util.Map;
+import java.util.Vector;
+import java.util.Iterator;
 
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 
 import index.teamfound.*;
 import config.Config;
@@ -22,15 +22,18 @@ public class IndexerTest
 	public static void printSearch(String frage, int[] ids, TeamFoundIndexer tfindexer)
 	{
 			System.out.println("Rufe Suche auf:");
-			controller.response.SearchResponse resp;
+			//controller.response.SearchResponse resp;
+			Vector<Document> docvec;
 			try
 			{	
-				resp = tfindexer.query(frage,ids,30,0);
-
-				org.jdom.Document xmldoc = resp.getXML();
-				
-				XMLOutputter xmlout = new XMLOutputter(Format.getPrettyFormat());
-				System.out.println(xmlout.outputString(xmldoc));
+				docvec = tfindexer.query(frage,ids,30,0);
+				Iterator it = docvec.iterator();
+				Document doc; 
+				while(it.hasNext())
+				{
+					doc = (Document)it.next();
+					System.out.println(doc.toString());
+				}
 
 			}
 			catch (Exception e)

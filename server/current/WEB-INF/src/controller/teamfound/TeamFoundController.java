@@ -13,6 +13,7 @@ import java.net.URL;
 import java.sql.Connection;
 
 import java.util.Vector;
+import java.util.List;
 
 import controller.Download;
 import controller.DownloadFailedException;
@@ -32,6 +33,9 @@ import db.DBLayer;
 import db.dbbeans.*;
 
 import sync.ReadWriteSync;
+
+import tools.Tuple;
+
 import org.apache.lucene.document.Document;
 
 public class TeamFoundController implements Controller {
@@ -63,7 +67,6 @@ public class TeamFoundController implements Controller {
 		}
 		
 		//DBVerbindung fuer die Funktion erstellen
-		 Config conf = new TeamFoundConfig();
 		 DBLayer db;
 		 db = new DBLayerHSQL(conf);
 		 Connection conn;
@@ -93,8 +96,10 @@ public class TeamFoundController implements Controller {
 				}
 				if(!updateurl)
 				{
-					//Erfolgsmeldung liefern
-					return(new AddPageResponse(url));
+					//Erfolgsmeldung liefer
+					List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+					AddPageResponse resp = new AddPageResponse(vertup ,url);
+					return(resp);
 				}
 				else
 				{
@@ -127,7 +132,10 @@ public class TeamFoundController implements Controller {
 					}
 					
 					//4.Erfolgsmeldung liefern
-					return(new AddPageResponse(url));
+					List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+					AddPageResponse resp = new AddPageResponse(vertup ,url);
+					return(resp);
+
 				}
 
 			}
@@ -153,35 +161,101 @@ public class TeamFoundController implements Controller {
 		
 			// 4. fertig
 			// hier muss eine addpage-response zurückgegeben werden
-			return(new AddPageResponse(url));
+			List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+			AddPageResponse resp = new AddPageResponse(vertup ,url);
+			return(resp);
 		}
 		catch(Exception e)
 		{
-			//TODO
-			System.out.println("Fuck off!" +e);
+			//TODO Exceptions richtig machen
+ 			System.out.println("TeamFoundController : AddToIndex)"+e);
+            IndexAccessException a = new IndexAccessException("nested Exception");
+			a.initCause(e);
+			throw a;
+									 
+
 		}
-		return null;
 	}
 
-	public SearchResponse search(String query, int category[]) throws IndexAccessException {
-		// 0. Datenbank nach Kategorien durchsuchen
+	public SearchResponse search(String query, int category[]) throws IndexAccessException 
+	{
+		try
+		{
+	// 0. Datenbank nach Kategorienversionen durchsuchen
+			DBLayer db;
+			db = new DBLayerHSQL(conf);
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+			List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 		
-		// 1. Im Index Suchen
+	// 1. Im Index Suchen
 		
-		Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
-		//TODO -> hart den count auf 30 und den Offset auf 0 ??
-		SearchResponse resp = tfindexer.query(query, category , 30, 0 ); 
-		return (resp);
+			Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
+			//TODO -> hart den count auf 30 und den Offset auf 0 ??
+			Vector<Document> docvec = tfindexer.query(query, category , 30, 0 ); 
+	
+		
+	//2.Antwort bauen
+			//TODO keywords ?
+			String[] keywords = new String[1];
+			keywords[0] = query;
+			SearchResponse resp = new SearchResponse(vertup ,keywords);
+			resp.addSearchResults(docvec);
+		
+			return (resp);
+		}
+		catch(Exception e)
+		{
+			//TODO Exceptions richtig machen
+ 			System.out.println("TeamFoundController : search)"+e);
+            IndexAccessException a = new IndexAccessException("nested Exception");
+			a.initCause(e);
+			throw a;
+									 
+
+		}
 	}
 
 	
 	public SearchResponse search(String query, int offset, int category[]) throws IndexAccessException 
 	{
+		try
+		{
+	// 0. Datenbank nach Kategorienversionen durchsuchen
 		
-		Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
-		//TODO -> hart den count auf 30 ??
-		SearchResponse resp = tfindexer.query(query, category , 30, offset ); 
-		return (resp);
+			DBLayer db;
+			db = new DBLayerHSQL(conf);
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+			List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+		
+	// 1. Im Index Suchen
+		
+			Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
+			//TODO -> hart den count auf 30 ?
+			Vector<Document> docvec = tfindexer.query(query, category , 30, offset ); 
+	
+		
+	//2.Antwort bauen
+		//TODO keywords ?
+			String[] keywords = new String[1];
+			keywords[0] = query;
+			SearchResponse resp = new SearchResponse(vertup ,keywords);
+			resp.addSearchResults(docvec);
+		
+			return (resp);
+		}
+		catch(Exception e)
+		{
+			//TODO Exceptions richtig machen
+ 			System.out.println("TeamFoundController : search)"+e);
+            IndexAccessException a = new IndexAccessException("nested Exception");
+			a.initCause(e);
+			throw a;
+		}
+
 	}
 
 	public GetCategoriesResponse getCategories(int rootid) {

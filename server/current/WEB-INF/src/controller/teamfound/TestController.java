@@ -13,7 +13,6 @@ import controller.response.GetProjectsResponse;
 import controller.response.SearchResponse;
 
 public class TestController implements Controller {
-/*
 	public AddPageResponse addToIndex(String url, int category[])
 			throws DownloadFailedException, IndexAccessException {
 		AddPageResponse r = new AddPageResponse(null, "http://test.com");
@@ -26,7 +25,6 @@ public class TestController implements Controller {
 		SearchResponse r = new SearchResponse(null, keywords);
 		return r;
 	}
-
 	public GetCategoriesResponse getCategories(int rootid) {
 		GetCategoriesResponse r = new GetCategoriesResponse(null);
 		r.addCategory("test", "beschreibung", new Integer(0), new Integer(0));
@@ -35,18 +33,12 @@ public class TestController implements Controller {
 		
 		return r;
 	}
-*/
+
 	public AddCategoriesResponse addCategory(String name, int parentCat,
 			String description) {
 		AddCategoriesResponse r = new AddCategoriesResponse(null, name, parentCat+1);
 		return r;
 	}
-/*	//TODO Response -> einfach Kategorien nur halt als Liste nicht als Baum ...
-	public void GetProjects()
-	{
-		return;
-	}
-*/
 
 	public GetProjectsResponse getProjects() {
 		// TODO Auto-generated method stub
