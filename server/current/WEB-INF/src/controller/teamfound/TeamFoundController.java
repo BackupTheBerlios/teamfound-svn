@@ -167,14 +167,20 @@ public class TeamFoundController implements Controller {
 		
 		// 1. Im Index Suchen
 		
-		// 2. Fertig
-		return null;
+		Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
+		//TODO -> hart den count auf 30 und den Offset auf 0 ??
+		SearchResponse resp = tfindexer.query(query, category , 30, 0 ); 
+		return (resp);
 	}
 
 	
-	public SearchResponse search(String query, int offset, int category[]) throws IndexAccessException {
-		// TODO Auto-generated method stub
-		return null;
+	public SearchResponse search(String query, int offset, int category[]) throws IndexAccessException 
+	{
+		
+		Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
+		//TODO -> hart den count auf 30 ??
+		SearchResponse resp = tfindexer.query(query, category , 30, offset ); 
+		return (resp);
 	}
 
 	public GetCategoriesResponse getCategories(int rootid) {
