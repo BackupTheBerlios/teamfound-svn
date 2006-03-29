@@ -13,7 +13,7 @@
 
 \begin{document}
 
-\title{Teamfound}
+\title{TeamFound}
 
 \author{Jonas Heese, ...}
 
@@ -52,16 +52,21 @@ Im Folgenden werden die einzelnen Teile von TeamFound detailliert dargestellt. D
 
 \subsubsection{Suchanfragen}
 
+Suchanfragen an TeamFound werden wie in jeder anderen Volltextsuche mittels Schlüselwörter gestellt. Dabei hängt es von der Index-Implementierung ab, wie genau verschiedene Felder durchsucht oder Schlüsselwörter verknüpft werden können.
+
 \subsubsection{Kategorien}
 \label{kategorien}
+Jedes Dokument im Index kann in einer oder mehrerer Kategorien enthalten sein. Kategorien werden dabei als Baum dargestellt, es gibt also eine Wurzelkategorie sowie eine unbestimmte Anzahl weiterer Kategorien die jeweils eine Elternkategorie haben. 
 
+Suchanfragen an eine Kategorie findet nur Dokumente in dieser oder einer ihrer Unterkategorien. Das wirkliche Begrenzen der Suche auf genau eine Kategorie, ohne Unterkategorien ist in dieser TeamFound-Version noch nicht vorhanden.
 
 
 \section{Teamfound-Server}
 
-
 \subsection{Anforderungen}
 
+In der Vorbereitung des Projektes wurde unter anderem auf die Verzweigung von Open Source-Projekten eingegangen: Es soll nicht jedesmal das Rad neu erfunden werden, eine wichtige Herausforderung im Open Source-Entwicklungsmuster ist es einerseits andere geeignete Projekte zu finden und diese dann effektiv in das eigene Projekt zu integrieren. In diesem Sinne war die erste Phase in der TeamFound-Entwicklung von Recherchearbeiten geprägt. Für den TeamFound-Server heisst das: Es muss eine Bibliothek gefunden werden, welche uns die Volltextindexierung von beliebigen Dokumenten möglich macht. Diese Bibliothek muss dann - sofern sie dieses nicht schon selber anbietet - geeignet ans Internet gebracht werden, einerseits um neue Dokumente herunterzuladen und in den Index aufzunehmen, andererseits um Suchanfragen entgegenzunehmen und deren Ergebnisse zurückzugeben.
+Diese Bibliothek sollte möglichst erweiterbar sein, um auch die Anforderungen von (relativ) einfachen Dokumentenkategorien umsetzen zu können. Für die Verwaltung der Kategorien würde eine Datenbank benötigt werden, da die Verknüpfung von Kategorien, sowie deren Details, wie Namen und Beschreibung nichts mit der Index-Bibliothek zu tun haben.
 
 \subsection{Plattform}
 
@@ -85,7 +90,7 @@ TODO: Query Syntax, beteiligte Arten von Klassen genauer ausführen (Analyzer, Do
 
 \subsubsection{Weitere Bibliotheken}
 
-jdom
+Zur Erzeugung der XML-Antworten (Siehe Kapitel \ref{response}) wird die JDOM-Bibliothek\footnote{http://www.jdom.org} von Jason Hunter benutzt. JDOM ist eine abgewandelte DOM-Implementierung\footnote{Document Object Model} und bietet die Möglichkeit mit einfachen Java-Code sauberes XML zu erzeugen. JDOM wird ebenfalls benutzt um die XML-Dokumente in HTML zu wandeln, sofern der Client dieses wünscht.
 
 \subsection{Architektur}
 
