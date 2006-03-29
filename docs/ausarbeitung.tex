@@ -87,9 +87,171 @@ Jeweils Anfrage und Antworten
 
 \subsection{Internet Explorer-Toolbar}
 
+Auch beim Internet Explorer stand zunächst die Frage wie dieser überhaupt zu erweitern ist. 
+Google und Yahoo haben mit ihren Toolbar's vorgemacht das es geht, nur das wie war zu lösen.
+
+Erste Anlaufstelle um der Problemlösung näher zu kommen 
+war CodeProject (www.codeproject.com). 
+Mit 2,8 Mio Mitgliedern ist sie die größte Community Seite für die Windows Entwicklung. 
+Eine Suche nach ``IE Toolbar'' führte zu einer .NET basierten Bibliothekt 
+für die Entwicklung von BandObjects, also Band Objekten (http://www.codeproject.com/csharp/dotnetbandobjects.asp).
+Das mitgelieferte Beispiel funktionierte auf Anhieb 
+und es wurde begonnen die Extension zu implementieren.
+
+\subsubsection{Custom Explorer Bars, Tool Bands, and Desk Bands}
+
+Es gibt verschiedene Möglichkeiten eigene Komponenten in den Internet Explorer zu integrieren. 
+Im folgenden werden einige Konzepte vorgestellt.
+
+\paragraph{Explorer Bars}
+
+Ein zentrales Konzept zur Erweiterung des Internet Explorers, sind Explorer Bars. 
+Explorer Bars sind Teilbereiche der Oberfläche des Explorers, 
+welche nicht zur Renderfläche der HTML Seite gehören.
+Explorer Bars wurden erstmalig mit dem Internet Explorer 4.0 eingeführt 
+und bieten eine sehr flexible Möglichkeit den Explorer zu erweitern. 
+Derzeit werden Funktionen wie Favorieten und die Suche innerhalb einer 
+Explorer Bar dargestellt. Die Darstellung von Explorer Bars kann entweder Horizontal 
+oder Vertikal erfolgen und sie werden über den Menu Ansicht -> Explorerleisten ein- und ausgeblendet.
+
+\paragraph{Tool Bands}
+
+Die Werkzeugleiste des Internet Explorers ist eine sogenannte ``Rebar'', 
+also ein Container der wiederum mehrere Werkzeugleisten enthalten kann. 
+Diese Werkzeugleisten werden Toolbands genannt. Erstmalig wurde das Konzept 
+mit dem Internet Explorer 5.0 eingeführt um die Radio Leiste zu realisieren. 
+Mittlerweile gibt es verschiedene Toolbands wie die Adressleiste und auch 
+Fremdanbieter wie Google und Yahoo nutzen das Konzept.
+
+\paragraph{Deskbands}
+
+Diese Komponenten verfolgen den selben Ansatz, haben aber primär nichts mit dem Internet 
+Explorer zu tun. Sie dienen dazu den Desktop um weitere Leisten zu erweitern. 
+Berühmtester Vertreter dieser Kategorie ist die Adressleiste. 
+Sie kann ausser im Explorer und Internet Explorer auch in der Taskleiste erscheinen.
+
+\subsubsection{Entwicklung der Band Objekte}
+
+Die Entwicklung dieser Komponenten basiert, wie ein sehr großer Teil der 
+Windowsentwicklung auf COM. Das Component Objekt Model von Microsoft 
+ist eines der ältesten Komponentensysteme und bildet Zusammen mit dem 
+Windows API die Grundlage für die Entwicklung von Windowssoftware.
+
+\subsubsection{COM, Schnittstellen, Klassen, Registry}
+
+Im folgende soll ein kurzer Überblick über COM gegeben werden, 
+der die Schritte auf dem Weg zu Entwicklung der Band Objects erklärt.
+
+\paragraph{COM Schnittstellen}
+
+Zentrales Konzept von COM ist das Interface. In der COM Terminologie
+ ist eine Schnittstelle, eine nach der COM Spezifikation aufgebauten, 
+ Struktur mit Platzhaltern für Funktionszeiger. 
+Diese Erklärung macht bereits deutlich auf welchem Level COM 
+ursprünglich definiert worden ist.
+Schnittstellen können von Komponenten erfragt werden, und anschließend über 
+die Methodenzeiger entsprechende Funktionen aufgerufen werden. 
+In einer einfachen - praktisch puren - COM Application muss man das 
+Aussehen der Schnittstellen genau kennen. Später kam ein Feature mit dem 
+Namen ``OLE Automatisierung'' hinzu, welches ähnliche Konzepte wie Java Reflection bietet.
+Jede Schnittstelle wird eindeutig über einen GUID - Global Unique Identifier - indentifiziert.
+  
+\paragraph{COM Komponenten}
+
+Eine Komponente in der COM Terminologie ist eine abgeschlosse binäre Einheit, 
+welche Funktionalität über eine Schnittstelle bereitstellt. 
+Komponenten sind also in Programmen (Executables) oder Bibliotheken (Dynamic Link Libraries) enthalten.
+
+\paragraph{Registry}
+
+Normalerweise, auch wenn das problemlos möglich wäre, 
+wird eine COM Bibliothek nicht direkt referenziert und geladen. 
+Stattdessen nutz man Funktionen der COM API um eine Instanz einer Komponente mit einer 
+bestimmten Schnittstelle zu erhalten. Dazu übergibt man der Funktion die GUID der 
+Schnittstelle welche man nutzen möchte. Diese Funktion bemüht die Windows Registry 
+um die Bibliothek zu finden in der die Komponente mit der Schnittstelle implementiert ist, 
+lädt diese, erzeugt die Komponente und gibt die Schnittstelle zurück.
+Damit das funktioniert, ist jede COM Komponente vor ihrer Benutzung in der Registry einzutragen.
+
+\subsubsection{Band Objekte und COM}
+
+Alle Band Objekte sind wiederum COM Komponenten, welche bestimmte Schnittstellen 
+implementieren müssen. Diese Schnittstellen werden vom Internet Explorer erwartet und abgefragt. 
+Für die Entwicklung von Band Objekten müssen in jedem Fall die folgenden Schnittstellen implementiert werden:
+
+\paragraph{IUnknown}
+
+Das ist die Basisschnittstelle welche jedes COM Objekt implementieren muss. 
+Sie bietet Funktionen zum Abrufen weiterer Schnittstellen sowie zur Referenzzählung.
+
+\paragraph{IClassFactory}
+
+Bietet Funktionen zum Erzeugen neuer Instanzen von COM Klassen.
+
+\paragraph{IDeskBand}
+
+Das ist die Basisschnittstelle für alle Band Objekte. IDeskBand erbt von 
+IDockingWindow welches wiederum von IOleWindow erbt. Anhand der Namen der 
+Schnittstellen lassen sich ungefähr die Funktionen ableiten.
+IOleWindow liefert das Fenster (jedes Element in Windows ist ein Fenster) 
+an sich, IDockingWindow sorgt für das Anzeigen und Deaktivieren und 
+IDeskBand liefert Informationen über das Band Objekt an sich.
+
+Mit Hilfe von GetBandInfo kann der Internet Explorer ermitteln wie 
+die Leiste heist, wie sie dargestellt werden soll und welche Größen sie haben darf.
+
+\paragraph{IObjectWithSite}
+
+Über diese Schnisttelle hat man die Möglichkeit mit dem Container 
+- also mit dem Internet Explorer zum Beispiel - des Band Objektes zu 
+kommunizieren. Der Internet Explorer ist selbst ebenfalls ein COM Objekt 
+welches diverse Schnittstellen implementiert. Über die SetSite Funktion 
+weist er dem Band Objekt die eigene IUnknown Schnittstelle zu.
+
+\paragraph{IPersistStream}
+
+Diese Schnittstelle wird vom Container verwendet um den Zustand des Band 
+Objekts zu speichern oder zu laden. Das Band Objekt implementiert diese 
+Schnittstelle um sich selbst in den übergebenen Stream zu serialiasieren oder zu deserialisieren
+
+Daneben gibt es noch einige weitere Schnittstellen z.B. für Benutzereingaben, 
+auf welche hier jedoch nicht näher eingegangen werden soll.
+
+\subsubsection{Registrierung der Band Objekte}
+
+Jedes Band Objekt muss wie bereits erwähnt, als COM Objekt registriert werden. 
+Darüber hinaus muss dem Internet Explorer nocht mitgeteilt werden, das er eine 
+Toolleiste zur Verfügung hat. Dies geschieht ebenfalls über einen Eintrag in der Windows Registry.
+
+\subsubsection{Die BandObject Library}
+
+Alles was im Abschnitt COM und Band Object Entwicklung beschrieben worden ist, 
+nimmt einem die Band Objekt Library ab. Der ganze ``schmuzige'' COM Teil wird durch 
+eine CSharp Klasse gekapselt welche von UserControll erbt und all die Schnittstellen implementiert. 
+Was dem Entwickler der Toolbar bleibt ist eine Klasse zu erstellen 
+welche von der BandObject erbt. Da BandObject selber von UserControl 
+erbt, steht einem auch der visuelle Designer zum erstellen der Toolbar zur Verfügung.
+Die Funktionalität der Toolbar kann also bequem in CSharp erfolgen.
+
+\subsubsection{Teamfound Internet Exlorer Toolbar}
+
+\paragraph{Entwicklung}
+
+
+Installation
+
+Für die Installation auf einem Client PC kopiert man alle im Paket enthaltenen Quellen in einen Ordner.
+Die Toolbar lässt dann einfach mit dem Install.cmd installieren. Im wesentlichen passiert dabei folgendes:
+
+Die Bibliotheken BandObject.dll und Teamfound.IE.dll werden als COM Objekt registriert und im globalen Assembly Cache registriert. 
+
+Alle anderen Bibliotheken werden ebenfalls im globalen Assemblycache registriert.
+
+
 
 \section{Projektablauf, organisation, Meilensteine}
 
 
 \section{Fazit}
 
+\end{document}
