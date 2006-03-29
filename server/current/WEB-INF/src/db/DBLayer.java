@@ -242,7 +242,20 @@ public interface DBLayer
 	 */
 	public String getCategoryTree(Connection conn,categoryBean rootbean) throws SQLException;
 
+	/**
+	 * liefert alle Kinder der Kategorie
+	 * bean muss left und right enthalten
+	 * 
+	 */
+	public Vector<categoryBean> getAllChildCategorys(Connection conn, categoryBean rootbean)throws SQLException;
+	
+	/**
+	 * liefert ganze categoryBean zu der Id
+	 *
+	 */
+	public categoryBean getCatByID(Connection conn, int id) throws SQLException;
 
+	
 	/**
 	 * Liefert die Versionsnummer fuer den Baum der zu diesem RootKnoten gehoert.
 	 * 
@@ -256,6 +269,11 @@ public interface DBLayer
 	 */
 	public List<Tuple<Integer,Integer>> getAllVersions(Connection conn) throws SQLException;
 
+	/**
+	 * Liest alle WurzelKategorien aus.
+	 * (ob diese nun als Projekte oder sonstewas indentifiziert werden)
+	 */
+	public Vector<categoryBean> getAllRootCats(Connection conn) throws SQLException;
 
 		
 //TODO Was man noch so braucht

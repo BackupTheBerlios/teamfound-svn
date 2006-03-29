@@ -14,6 +14,7 @@ import java.sql.Connection;
 
 import java.util.Vector;
 import java.util.List;
+import java.util.Iterator;
 
 import controller.Download;
 import controller.DownloadFailedException;
@@ -258,20 +259,126 @@ public class TeamFoundController implements Controller {
 
 	}
 
-	public GetCategoriesResponse getCategories(int rootid) {
-		// TODO Auto-generated method stub
-		return null;
+	public GetCategoriesResponse getCategories(int rootid) 
+	{
+		
+		try
+		{
+		//0. DatenBAnk verbindung		
+			DBLayer db;
+			db = new DBLayerHSQL(conf);
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+		//1. Versionen der KategorieBaeume aus db
+			List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+
+		//3. response fuellen
+			GetCategoriesResponse resp = new GetCategoriesResponse(vertup);
+			
+			categoryBean rootbean = db.getCatByID(conn,rootid);
+			Vector<categoryBean> childvec = db.getAllChildCategorys(conn, rootbean);
+			
+			resp.addRoot(
+					rootbean.getCategory(),
+					rootbean.getBeschreibung(),
+					rootbean.getID(),
+					rootbean.getID());
+
+			Iterator it = childvec.iterator();
+			while(it.hasNext())
+			{
+				categoryBean catbean = (categoryBean)it.next();
+				categoryBean parent = db.findParent(conn, catbean);
+				resp.addCategory(
+						catbean.getCategory(),
+						catbean.getBeschreibung(),
+						catbean.getID(),
+						parent.getID());
+						
+			}
+			return(resp);
+			
+		}
+		catch(Exception e)
+		{
+			//TODO Exceptions richtig machen
+ 			System.out.println("TeamFoundController : addCategory)"+e);
+			return null;
+		}
+		
 	}
 
-	public AddCategoriesResponse addCategory(String name, int parentCat, String description) {
-		// TODO Auto-generated method stub
-		return null;
+	public AddCategoriesResponse addCategory(String name, int parentCat, String description) 
+	{
+		try
+		{
+		//1. Versionen der KategorieBaeume aus db
+			DBLayer db;
+			db = new DBLayerHSQL(conf);
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+			List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+
+		//2. categorybeans erstellen und ind db adden
+			categoryBean newcat = new categoryBean();
+			newcat.setCategory(name);
+			newcat.setBeschreibung(description);
+			categoryBean parentcat = new categoryBean();
+			parentcat.setID(parentCat);
+			
+			newcat = db.addCategory(conn, newcat, parentcat);
+		
+		//3.response liefern		
+			AddCategoriesResponse resp = new AddCategoriesResponse(
+					vertup,
+					newcat.getCategory(),
+					newcat.getID());
+			return(resp);
+
+		}
+		catch(Exception e)
+		{
+			//TODO Exceptions richtig machen
+ 			System.out.println("TeamFoundController : addCategory)"+e);
+			return null;
+		}
+			
 	}
 	
-	//TODO Response -> einfach Kategorien nur halt als Liste nicht als Baum ...
 	public GetProjectsResponse getProjects()
 	{
-		return null;
+		try
+		{
+		//1. Versionen der KategorieBaeume und alle RootCats() aus der Datenbank holen
+			DBLayer db;
+			db = new DBLayerHSQL(conf);
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+			List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+			Vector<categoryBean> catvec = db.getAllRootCats(conn);
+		//2. mit den Infos die Response fuellen
+			GetProjectsResponse resp = new GetProjectsResponse(vertup);
+			Iterator it = catvec.iterator();
+			while(it.hasNext())
+			{
+				categoryBean cat = (categoryBean)it.next();
+				resp.addProject(cat.getCategory(), cat.getBeschreibung(),cat.getID());
+						
+			}
+			return(resp);
+			
+		
+		}
+		catch(Exception e)
+		{
+			//TODO Exceptions richtig machen
+ 			System.out.println("TeamFoundController : getProjects)"+e);
+			return null;
+		}
+		
 	}
 	
 

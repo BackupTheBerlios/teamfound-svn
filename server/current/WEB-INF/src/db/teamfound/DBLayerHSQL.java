@@ -280,9 +280,6 @@ public class DBLayerHSQL implements DBLayer
 	 * Wir wollen an B was anhaengen dann brauchen wir A und 2,3
 	 *
 	 *
-	 * 
-	 * 
-	 *
 	 */
 	public categoryBean addCategory(Connection conn, categoryBean catbean, categoryBean metacat) throws SQLException
 	{
@@ -1271,6 +1268,135 @@ public class DBLayerHSQL implements DBLayer
 		}
 	}
 
+	/**
+	 * Liest alle WurzelKategorien aus.
+	 * (ob diese nun als Projekte oder sonstewas indentifiziert werden)
+	 */
+	public Vector<categoryBean> getAllRootCats(Connection conn)throws SQLException
+	{
+		String getcats = new String("select id,root_id,left,right,name,beschreibung from category where id=root_id");
+	
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		try
+		{
+			ResultSet rsi = st.executeQuery(getcats);
+			Vector<categoryBean> result = new Vector<categoryBean>();
+			
+			if(rsi.next())
+			{
+				categoryBean cat = new categoryBean( 
+						rsi.getInt(1), 
+						rsi.getInt(2),
+						rsi.getString(5),
+						rsi.getString(6),
+						rsi.getInt(3),
+						rsi.getInt(4));
+				result.add(cat);
+			}
+			return(result);
+									
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("GetVersionNumber: "+ e);
+			throw(e);
+		}
+		
+	}
+
+	/**
+	 * liefert alle Kinder der Kategorie
+	 * !die categoryBean muss left und right enthalten
+	 * 
+	 */
+	public Vector<categoryBean> getAllChildCategorys(Connection conn, categoryBean rootbean)throws SQLException
+	{
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		//TODO ist die Bean auch gefuellt			
+
+
+		try
+		{
+			
+			//find statement
+			String find = new String("SELECT * FROM category where left > "+rootbean.getLeft()+" and right < "+rootbean.getRight());
+			ResultSet rsi = st.executeQuery(find);
+			
+			java.util.Vector<categoryBean> revec = new java.util.Vector<categoryBean>();
+
+			//results in Return Array schreiben
+			while(rsi.next())
+			{
+				categoryBean re = new categoryBean();
+				
+				re.setID(rsi.getInt(1));
+				
+				re.setRootID(rsi.getInt(2));
+				
+				re.setLeft(rsi.getInt(3));
+				
+				re.setRight(rsi.getInt(4));
+				
+				re.setCategory(rsi.getString(5));
+				
+				re.setBeschreibung(rsi.getString(6));
+				
+				if(!revec.add(re))
+					System.out.println("an Vector adden fehlgeschlagen!");
+			}
+			
+			return(revec);
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("GetAllChildCats: "+ e);
+			throw(e);
+		}
+	
+	}
+	
+	/**
+	 * liefert ganze categoryBean zu der Id
+	 *
+	 */
+	public categoryBean getCatByID(Connection conn, int id) throws SQLException
+	{
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		try
+		{
+			String search = new String("SELECT * FROM category WHERE id = "+id);
+			ResultSet rsi = st.executeQuery(search);
+			
+			if(rsi.next())
+			{
+				categoryBean re = new categoryBean(
+						rsi.getInt("id"),
+						rsi.getInt("root_id"),
+						rsi.getString("name"),
+						rsi.getString("beschreibung"),
+						rsi.getInt("left"),
+						rsi.getInt("right"));
+				return(re);
+			}
+			else
+				return null;
+									
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("GetCategorybyName: "+ e);
+			throw(e);
+		}
+	}
 
 	
 }
