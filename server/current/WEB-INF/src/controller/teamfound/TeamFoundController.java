@@ -162,7 +162,7 @@ public class TeamFoundController implements Controller {
 		return null;
 	}
 
-	public SearchResponse search(String query) throws IndexAccessException {
+	public SearchResponse search(String query, int category[]) throws IndexAccessException {
 		// 0. Datenbank nach Kategorien durchsuchen
 		
 		// 1. Im Index Suchen
@@ -172,12 +172,12 @@ public class TeamFoundController implements Controller {
 	}
 
 	
-	public SearchResponse search(String query, int offset) throws IndexAccessException {
+	public SearchResponse search(String query, int offset, int category[]) throws IndexAccessException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public GetCategoriesResponse getCategories() {
+	public GetCategoriesResponse getCategories(int rootid) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -186,6 +186,14 @@ public class TeamFoundController implements Controller {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	//TODO Response -> einfach Kategorien nur halt als Liste nicht als Baum ...
+	public void GetProjects()
+	{
+		return;
+	}
+	
+
 	
 
 }

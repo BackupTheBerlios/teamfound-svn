@@ -813,6 +813,70 @@ public class DBLayerHSQL implements DBLayer
 			throw(e);
 		}
 	}
+
+	/**
+	 *	Parent zur Category finden 
+	 * 	in der CategoryBean wird nur die ID benoetigt 
+	 */ 
+	public categoryBean findParent(Connection conn, categoryBean catbean) throws SQLException
+	{
+
+
+
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		//TODO ist die Bean auch gefuellt			
+
+		//wir brauchen auf jeden left und right der category
+		String getBeanInfo = new String("select left,right from category where id = "+catbean.getID());
+
+		try
+		{
+			//Category Info holen
+			ResultSet rs = st.executeQuery(getBeanInfo);			
+			// result in categoryBean schreiben
+			rs.next();
+			catbean.setLeft(rs.getInt(1));
+			catbean.setRight(rs.getInt(2));
+			
+			//find statement
+			String find = new String("SELECT * FROM category where left < "+catbean.getLeft()+" and right > "+catbean.getRight());
+			ResultSet rsi = st.executeQuery(find);
+			
+			categoryBean re = new categoryBean();
+
+			//results in Return Array schreiben
+			while(rsi.next())
+			{
+				re.setID(rsi.getInt(1));
+				
+				re.setRootID(rsi.getInt(2));
+				
+				re.setLeft(rsi.getInt(3));
+				
+				re.setRight(rsi.getInt(4));
+				
+				re.setCategory(rsi.getString(5));
+				
+				re.setBeschreibung(rsi.getString(6));
+				
+			}
+			
+			return(re);
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("DBLayerHSQL.FindParent: "+ e);
+			throw(e);
+		}
+
+		
+	}
+
+
+	
 	/**
 	 * Hinzufuegen einer Category zu einer Url
 	 * Es werden auch alle ElternCategorien mit zugeordnet

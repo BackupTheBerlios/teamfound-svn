@@ -33,12 +33,14 @@ public interface Controller {
 	 * @todo Das Ergebnis müsste genauer spezifiziert werden, siehe Interface SearchResult
 	 * @see controller.SearchResponse
 	 */
-	public SearchResponse search(String query, int offset) throws IndexAccessException;
+	public SearchResponse search(String query, int offset, int category[]) throws IndexAccessException;
 
-	public GetCategoriesResponse getCategories();
+	public GetCategoriesResponse getCategories(int rootid);
 	
 	public AddCategoriesResponse addCategory(String name, int parentCat, String description);
-	
+
+	//TODO Response -> einfach Kategorien nur halt als Liste nicht als Baum ...
+	public void GetProjects();
 	
 	// evtl.später:
 	

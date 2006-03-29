@@ -153,6 +153,15 @@ public interface DBLayer
 	public Vector<categoryBean> findAllParents(Connection conn, categoryBean catbean) throws SQLException;
 
 	/**
+	 *	Parent zur Category finden 
+	 * 	in der CategoryBean wird nur die ID benoetigt 
+	 */ 
+	public categoryBean findParent(Connection conn, categoryBean catbean) throws SQLException;
+
+
+
+	
+	/**
 	 * Hinzufuegen einer Category zu einer Url
 	 * genau diese Category wird der URL zugeordnet(keine zuordnung der Parentkategorien)
 	 * 
