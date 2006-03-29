@@ -10,11 +10,14 @@ import java.util.List;
 import org.jdom.Document;
 import org.jdom.Element;
 
+import tools.Tuple;
+
 public class GetProjectsResponse extends Response {
 
 	protected List<Element> projects;
 	
-	public GetProjectsResponse() {
+	public GetProjectsResponse(List<Tuple<Integer,Integer>> projectCounters) {
+		super(projectCounters);
 		projects = new LinkedList<Element>();
 	}
 	

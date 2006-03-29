@@ -3,10 +3,18 @@
  */
 package controller.response;
 
+import java.util.List;
+
 import org.jdom.Document;
+
+import tools.Tuple;
 
 
 public class ErrorResponse extends Response {
+
+	public ErrorResponse(List<Tuple<Integer, Integer>> projectCounters) {
+		super(projectCounters);
+	}
 
 	public Document getXML() {
 		return super.getBaseDocument();

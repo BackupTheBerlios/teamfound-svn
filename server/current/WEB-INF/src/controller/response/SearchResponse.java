@@ -7,6 +7,10 @@ import java.io.IOException;
 
 import org.apache.lucene.document.Document;
 import org.jdom.Element;
+
+import tools.Tuple;
+
+import java.util.List;
 import java.util.Vector;
 import java.util.Iterator;
 
@@ -24,14 +28,16 @@ public class SearchResponse extends Response {
 	
 	protected Element result;
 	
-	public SearchResponse(String[] keywords) {
+	public SearchResponse(List<Tuple<Integer,Integer>> projectCounters, String[] keywords) {
+		super(projectCounters);
 		this.keywords = keywords;
 		
 		
 		createResultElement();
 	}
 	
-	public SearchResponse(String[] keywords, int offset, int number) {
+	public SearchResponse(List<Tuple<Integer,Integer>> projectCounters, String[] keywords, int offset, int number) {
+		super(projectCounters);
 		this.keywords = keywords;
 		this.offset = offset;
 		this.number = number;

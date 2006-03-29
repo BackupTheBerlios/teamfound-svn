@@ -59,7 +59,7 @@ public abstract class BaseServlet extends HttpServlet {
 		try {
 			resp = launchCommand(request);
 		} catch(Exception e) {
-			resp = new ErrorResponse();
+			resp = new ErrorResponse(null);
 			resp.returnValue(-1, "Internal Error: "+e.getClass());
 			e.printStackTrace();
 		}
@@ -82,25 +82,25 @@ public abstract class BaseServlet extends HttpServlet {
 		// parameter validieren
 		Map params = req.getParameterMap();
 		if(!params.containsKey("wants")) {
-			r = new ErrorResponse();
+			r = new ErrorResponse(null);
 			r.returnValue(2, "Need Parameter 'wants'");
 			return r;
 		}
 		
 		if(!params.containsKey("version")) {
-			r = new ErrorResponse();
+			r = new ErrorResponse(null);
 			r.returnValue(2, "Need Parameter 'version'");
 			return r;
 		} else {
 			if(!req.getParameter("version").equals("2")) {
-				r = new ErrorResponse();
+				r = new ErrorResponse(null);
 				r.returnValue(3, "Incompatible Interface Version");
 				return r;
 			}
 		}
 		
 		if(!params.containsKey("command")) {
-			r = new ErrorResponse();
+			r = new ErrorResponse(null);
 			r.returnValue(2, "Need Parameter 'command'");
 			return r;
 		}
@@ -110,7 +110,7 @@ public abstract class BaseServlet extends HttpServlet {
 		
 		// kommando existent?
 		if(!commands.containsKey(cmd)) {
-			r = new ErrorResponse();
+			r = new ErrorResponse(null);
 			r.returnValue(-1, "Command not found");
 			return r;
 		}
@@ -122,7 +122,7 @@ public abstract class BaseServlet extends HttpServlet {
 			int offset;
 			// suche, es müssen die parameter keyword und offset da sein
 			if(!params.containsKey("keyword")) {
-				r = new ErrorResponse();
+				r = new ErrorResponse(null);
 				r.returnValue(2, "Need Parameter 'keyword'");
 				return r;
 			} else {
@@ -136,7 +136,7 @@ public abstract class BaseServlet extends HttpServlet {
 			}			
 			String[] rawcat;
 			if(!params.containsKey("category")) {
-				r = new ErrorResponse();
+				r = new ErrorResponse(null);
 				r.returnValue(2, "Need Parameter 'category'");
 				return r;		
 			} else {
@@ -155,7 +155,7 @@ public abstract class BaseServlet extends HttpServlet {
 			String url;
 			// suche, es müssen die parameter category und url da sein
 			if(!params.containsKey("url")) {
-				r = new ErrorResponse();
+				r = new ErrorResponse(null);
 				r.returnValue(2, "Need Parameter 'url'");
 				return r;
 			} else {
@@ -164,7 +164,7 @@ public abstract class BaseServlet extends HttpServlet {
 			
 			String[] rawcat2;
 			if(!params.containsKey("category")) {
-				r = new ErrorResponse();
+				r = new ErrorResponse(null);
 				r.returnValue(2, "Need Parameter 'category'");
 				return r;		
 			} else {
@@ -180,10 +180,10 @@ public abstract class BaseServlet extends HttpServlet {
 			
 			
 		case 3:
-			// keine weiteren parameter
+			// getCategories (für eine kategorie)
 			int projectID;
 			if(!params.containsKey("projectID")) {
-				r = new ErrorResponse();
+				r = new ErrorResponse(null);
 				r.returnValue(2, "Need Parameter 'projectID'");
 				return r;
 			} else {
@@ -196,7 +196,7 @@ public abstract class BaseServlet extends HttpServlet {
 			int parentID;
 			// addCategories
 			if(!params.containsKey("name")) {
-				r = new ErrorResponse();
+				r = new ErrorResponse(null);
 				r.returnValue(2, "Need Parameter 'name'");
 				return r;
 			} else {
@@ -204,7 +204,7 @@ public abstract class BaseServlet extends HttpServlet {
 			}			
 
 			if(!params.containsKey("description")) {
-				r = new ErrorResponse();
+				r = new ErrorResponse(null);
 				r.returnValue(2, "Need Parameter 'description'");
 				return r;
 			} else {
@@ -212,7 +212,7 @@ public abstract class BaseServlet extends HttpServlet {
 			}			
 			
 			if(!params.containsKey("subcategoryof")) {
-				r = new ErrorResponse();
+				r = new ErrorResponse(null);
 				r.returnValue(2, "Need Parameter 'subcategoryof'");
 				return r;
 			} else {
@@ -228,7 +228,7 @@ public abstract class BaseServlet extends HttpServlet {
 			
 		}
 		
-		r = new ErrorResponse();
+		r = new ErrorResponse(null);
 		r.returnValue(-1, "Unknown command");
 		return r;
 		

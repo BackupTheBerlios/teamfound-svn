@@ -21,7 +21,8 @@ public class GetCategoriesResponse extends Response {
 	
 	protected Element root;
 	
-	public GetCategoriesResponse() {
+	public GetCategoriesResponse(List<Tuple<Integer,Integer>> projectCounters) {
+		super(projectCounters);
 		categories = new HashMap<Integer, List<Tuple<Integer, Element>>>();
 	}
 	

@@ -3,8 +3,13 @@
  */
 package controller.response;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.jdom.Document;
 import org.jdom.Element;
+
+import tools.Tuple;
 
 /**
  * Implementiert die Rückgabe des Servers
@@ -26,6 +31,14 @@ public abstract class Response {
 	
 	protected int returnStatus = 0;
 	protected String returnDescription;
+	
+	protected List<Tuple<Integer, Integer>> pCounters;
+	
+	public Response(List<Tuple<Integer,Integer>> projectCounters) {
+		pCounters = projectCounters;
+	}
+	
+	
 	/**
 	 * Gibt das Suchergebnis als XML nach Milestone2-Spezifikation zurück
 	 * @return
@@ -48,6 +61,31 @@ public abstract class Response {
 		Element retValue = new Element("return-value");
 		retValue.addContent(Integer.toString(returnStatus));
 		root.addContent(retValue);
+		
+		// projectCounter
+		if(pCounters != null) {
+			Element pc = new Element("project-counter");
+			Iterator<Tuple<Integer, Integer>> i = pCounters.iterator();
+			
+			root.addContent(pc);
+			
+			Element project, projectID, projectC;
+			Tuple<Integer, Integer> t;
+			while(i.hasNext()) {
+				t = i.next();
+				
+				project = new Element("project");
+				projectID = new Element("projectID");
+				projectC = new Element("count");
+				project.addContent(projectID);
+				project.addContent(projectC);
+				
+				projectID.addContent(t.getFirst().toString());
+				projectC.addContent(t.getSecond().toString());
+				
+				pc.addContent(project);
+			}
+		}
 		
 		Element retDescr = new Element("return-description");
 		if(returnDescription == null) {

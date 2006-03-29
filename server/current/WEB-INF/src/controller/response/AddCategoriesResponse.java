@@ -3,8 +3,12 @@
  */
 package controller.response;
 
+import java.util.List;
+
 import org.jdom.Document;
 import org.jdom.Element;
+
+import tools.Tuple;
 
 
 public class AddCategoriesResponse extends Response {
@@ -12,7 +16,8 @@ public class AddCategoriesResponse extends Response {
 	protected String name;
 	protected Integer ID;
 	
-	public AddCategoriesResponse(String name, Integer newID) {
+	public AddCategoriesResponse(List<Tuple<Integer,Integer>> projectCounters, String name, Integer newID) {
+		super(projectCounters);
 		this.name = name;
 		this.ID = newID;
 	}
