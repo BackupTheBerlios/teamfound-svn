@@ -62,6 +62,39 @@ public class GetCategoriesResponse extends Response {
 		}
 	}
 
+	protected Element getElement(String name, String description, Integer ID, Integer parentID) {
+//		 unterbaum aufbauen
+		Element cat = new Element("category");
+		Element elname = new Element("name");
+		cat.addContent(elname);
+		Element eldescription = new Element("description");
+		cat.addContent(eldescription);
+		Element id = new Element("id");
+		cat.addContent(id);
+		
+
+		// inhalt einfügen
+		elname.addContent(name);
+		eldescription.addContent(description);
+		id.addContent(ID.toString());
+		
+		return cat;
+	}
+	
+	/**
+	 * Speichert die Wurzel des Baumes
+	 * 
+	 * Es kann immer nur eine Wurzel pro Antwort gespeichert werden! Bei erneutem Aufruf dieser Methode wird die alte Wurzel überschrieben!
+	 * 
+	 * @param name
+	 * @param description
+	 * @param ID
+	 * @param parentID
+	 */
+	public void addRoot(String name, String description, Integer ID, Integer parentID) {
+		root = getElement(name, description, ID, parentID);
+	}
+	
 	/**
 	 * Speichert eine Kategorie in der Antwort
 	 * @param name
@@ -71,34 +104,19 @@ public class GetCategoriesResponse extends Response {
 	 */
 	public void addCategory(String name, String description, Integer ID, Integer parentID) {
 		
-		// unterbaum aufbauen
-		Element cat = new Element("category");
-		Element elname = new Element("name");
-		cat.addContent(elname);
-		Element eldescription = new Element("description");
-		cat.addContent(eldescription);
-		Element id = new Element("id");
-		cat.addContent(id);
+		Element cat = getElement(name, description, ID, parentID);
 		
-		// inhalt einfügen
-		elname.addContent(name);
-		eldescription.addContent(description);
-		id.addContent(ID.toString());
 		
-		if(ID.intValue() == 0) {
-			this.root = cat;
+		// speichern, damit später der richtige kategoriebaum aufgebaut werden kann
+		if(categories.containsKey(parentID)) {
+			List<Tuple<Integer, Element>> l = categories.get(parentID);
+			l.add(new Tuple<Integer, Element>(ID, cat));
 		} else {
-			// speichern, damit später der richtige kategoriebaum aufgebaut werden kann
-			if(categories.containsKey(parentID)) {
-				List<Tuple<Integer, Element>> l = categories.get(parentID);
-				l.add(new Tuple<Integer, Element>(ID, cat));
-			} else {
-				List<Tuple<Integer, Element>> l = new LinkedList<Tuple<Integer, Element>>();
-				l.add(new Tuple<Integer, Element>(ID, cat));
-				
-				
-				categories.put(parentID, l);
-			}
+			List<Tuple<Integer, Element>> l = new LinkedList<Tuple<Integer, Element>>();
+			l.add(new Tuple<Integer, Element>(ID, cat));
+			
+			
+			categories.put(parentID, l);
 		}
 	}
 
