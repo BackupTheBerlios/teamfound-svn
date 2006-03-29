@@ -1206,6 +1206,7 @@ public class DBLayerHSQL implements DBLayer
 
 	/**
 	 * Liefert die Versionsnummer fuer den Baum der zu diesem RootKnoten gehoert.
+	 * Achtung geht nur mit wirklicher RootKategorie
 	 * 
 	 */ 
 	public Integer getVersionNumber(Connection conn,categoryBean rootbean) throws SQLException
