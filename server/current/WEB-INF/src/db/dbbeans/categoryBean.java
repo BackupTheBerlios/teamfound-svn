@@ -93,7 +93,7 @@ public class categoryBean implements Serializable
 		System.out.println("cat:"+category);
 		System.out.println("bes "+beschreibung);
 		System.out.println("l "+left);
-		System.out.println("r "+right);
+		System.out.println("r "+right+"\n");
 
 	}
 }

@@ -73,5 +73,15 @@ public interface Indexer {
 	 */
 	public void addUrl(Document doc) throws IndexAccessException;
 
-	
+	/**
+	 * neuen Index erstellen
+	 * Eigentlich nur beim Anlegen von neuen TeamfoundServer
+	 * benoetigt. Der Pfad muss dann aus Konfig Daten kommen.
+	 *
+	 * @param path Dateipfad, gibt an wo der Index angelegt wird
+	 * 				sollte der Basispfad von Teamfound sein
+	 *
+	 */
+	public void createIndex(String path) throws java.io.IOException;
+		
 }

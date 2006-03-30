@@ -44,5 +44,8 @@ public class TestController implements Controller {
 		// TODO Auto-generated method stub
 		return null;		
 	}
-
+    public boolean initServer()
+	{
+		return true;
+	}
 }

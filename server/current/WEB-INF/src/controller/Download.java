@@ -34,7 +34,7 @@ import java.io.IOException;
 public class Download
 {
 	
-	protected String tempDir = "/tmp";
+	protected String tempDir = "/tmp/";
 	
 	
 	public NewIndexEntry downloadFile(URL adress, int[] cats) throws DownloadFailedException
@@ -78,8 +78,9 @@ public class Download
 			// gemacht, die URL zu hashen und das abzuspeichern. Ist die Dateiendung hier wichtig? Eigentlich 
 			// sollte sowas doch vor dem Download geprüft werden?! So im Sinne, wenn wir eine Dateiart nicht 
 			// verarbeiten können, knallt es schon beim Download, nicht erst beim Versuch die zu indexieren.			
-			toWriteIn = new File(tempDir+(adress.getHost()+adress.getPath()).hashCode()+".html");
+			//toWriteIn = new File(tempDir+(adress.getHost()+adress.getPath()).hashCode()+".html");
 			
+			toWriteIn = new File(tempDir+adress.hashCode()+".htm");
 			// Hier würde sich evtl. ein Cache-Managment gut machen :)
 			toWriteIn.createNewFile();
 			

@@ -1,5 +1,4 @@
-# dises File umbenennen in teamfound.properties und anpassen
-
+#
 # Server Einstellungen Teamfound
 # ------------------------------
 #
@@ -13,8 +12,11 @@
 #
 # Systempath for the Index, DB and tmporary files. Needs write access.
 # 
-# path ends with "/" Example "/somepath/tfDaten/"
-#
-tfpath = /home/moddin/Uni/OpenSourceSoftEnt/teamfound/server/teamfoundDir/
+# hier ist es grad runpath und dann teamfound
+tfpath = teamfoundDir
 
-		 	
+#Bezeichnung und Beschreibung des Projekts oder teams oder der beliebigen 
+#Gruppe die diesen Teamfoundserver benutzt
+
+project = Ossi-Teamfound
+description = Ein Projekt der TU-Berlin. Ziel ist eine Team-Suchmaschiene.		 	

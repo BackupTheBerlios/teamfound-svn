@@ -1398,5 +1398,32 @@ public class DBLayerHSQL implements DBLayer
 		}
 	}
 
-	
+	/**
+	 * gibt true zurueck falls die DB schon existiert
+	 */
+	public boolean initialized(Connection conn)throws SQLException
+	{
+		Statement st = null;
+		st = conn.createStatement();    // erstelle statements
+		
+		try
+		{
+			String search = new String("SELECT * FROM category");
+			ResultSet rsi = st.executeQuery(search);
+			
+			if(rsi.next())
+			{
+				return(true);
+			}
+			else
+				return false;
+									
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("initialized: "+ e);
+			throw(e);
+		}
+	}
 }

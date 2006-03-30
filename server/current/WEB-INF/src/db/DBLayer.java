@@ -73,6 +73,11 @@ public interface DBLayer
 	public categoryBean addRootCategory(Connection conn, categoryBean catbean) throws SQLException;
 
 	/**
+	 * gibt true zurueck falls die DB schon existiert
+	 */
+	public boolean initialized(Connection conn)throws SQLException;
+	
+	/**
 	 * Einfuegen einer Category ins Set ..
 	 *
 	 * Bean Objekt braucht nur Name (und Beschreibung) Es wird mit id etc. zurueckgeliefert.

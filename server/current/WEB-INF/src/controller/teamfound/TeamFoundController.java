@@ -62,6 +62,20 @@ public class TeamFoundController implements Controller {
 		URL adress = null;
 		try {
 			adress = new URL(url);
+			/*System.out.println(adress.toString());
+			System.out.println(adress.toExternalForm());
+			System.out.println(adress.hashCode());
+			System.out.println(adress.getPort());
+			System.out.println(adress.getPath());
+			System.out.println(adress.getHost());
+			System.out.println(adress.getFile());
+			System.out.println(adress.getProtocol());
+			System.out.println(adress.getRef());
+			System.out.println(adress.getQuery());
+			System.out.println(adress.getUserInfo());
+			//System.out.println(adress.getContent());
+			System.out.println(adress.getAuthority());*/
+			
 		} catch (MalformedURLException e) {
 			DownloadFailedException e2 = new DownloadFailedException("nested MalformedURLException");
 			e2.initCause(e);
@@ -80,9 +94,10 @@ public class TeamFoundController implements Controller {
 		 	conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 		
 			// 0. Datenbank auf Existenz der URL checken
-			urltabBean urlbean = db.getUrl(conn,url);
+			urltabBean urlbean = db.getUrl(conn,adress.toString());
 			if(urlbean != null)
 			{
+				System.out.println("habe Url schon indiziert!");
 				//Kategorien vergleichen falls weche Fehlen mit in den Vector aufnehmen
 				Vector<Integer> oldcats = db.getCatsOfUrl(conn,urlbean.getID());
 				Vector<Integer> newcats = new Vector<Integer>();
@@ -98,14 +113,17 @@ public class TeamFoundController implements Controller {
 				if(!updateurl)
 				{
 					//Erfolgsmeldung liefer
+					System.out.println("Nichts an der URL hat sich geaendert!");
 					List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
-					AddPageResponse resp = new AddPageResponse(vertup ,url);
+					AddPageResponse resp = new AddPageResponse(vertup ,adress.toString());
 					return(resp);
 				}
 				else
 				{
+
+					System.out.println("Neue Category zu der URL hinzutun");
 					//1.Doc im index loeschen
-					 Document doc = tfindexer.delDoc(url);
+					 Document doc = tfindexer.delDoc(adress.toString());
 					 doc.removeField("cats");
 					 
 					 //2.Doc neu adden mit allen sich ergebenden Kats
@@ -134,21 +152,26 @@ public class TeamFoundController implements Controller {
 					
 					//4.Erfolgsmeldung liefern
 					List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
-					AddPageResponse resp = new AddPageResponse(vertup ,url);
+					AddPageResponse resp = new AddPageResponse(vertup ,adress.toString());
 					return(resp);
 
 				}
 
 			}
-		
+	
+			System.out.println("habe Url noch nicht indiziert!");
 			// 1. URL herunterladen
+			System.out.println("1. Url herunterladen!");
 			NewIndexEntry entry = loader.downloadFile(adress, category);
 		
 			// 2. Indexieren
+			System.out.println("2. Url in den Index!");
 			tfindexer.addUrl(entry,adress);
 
 			// 3. Datenbank aktualisieren
-			urltabBean ub = new urltabBean(url);			
+
+			System.out.println("3. Url in die DB!");
+			urltabBean ub = new urltabBean(adress.toString());			
 			categoryBean catbean = new categoryBean();
 			catbean.setID(new Integer(category[0]));
 			urltabBean ubean = db.addUrl(conn, ub, catbean);
@@ -163,13 +186,13 @@ public class TeamFoundController implements Controller {
 			// 4. fertig
 			// hier muss eine addpage-response zurückgegeben werden
 			List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
-			AddPageResponse resp = new AddPageResponse(vertup ,url);
+			AddPageResponse resp = new AddPageResponse(vertup ,adress.toString());
 			return(resp);
 		}
 		catch(Exception e)
 		{
 			//TODO Exceptions richtig machen
- 			System.out.println("TeamFoundController : AddToIndex)"+e);
+ 			System.out.println("TeamFoundController : AddToIndex"+e);
             IndexAccessException a = new IndexAccessException("nested Exception");
 			a.initCause(e);
 			throw a;
@@ -278,6 +301,10 @@ public class TeamFoundController implements Controller {
 			
 			categoryBean rootbean = db.getCatByID(conn,rootid);
 			Vector<categoryBean> childvec = db.getAllChildCategorys(conn, rootbean);
+		
+			//nur zum testen
+			System.out.println("Rootbean:");
+			rootbean.printAll();
 			
 			resp.addRoot(
 					rootbean.getCategory(),
@@ -290,6 +317,18 @@ public class TeamFoundController implements Controller {
 			{
 				categoryBean catbean = (categoryBean)it.next();
 				categoryBean parent = db.findParent(conn, catbean);
+			
+				//nur zum testen
+				System.out.println("\ncurrent parentbean:");
+				parent.printAll();
+				
+				//nur zum testen
+				System.out.println("\ncurrent child:");
+				catbean.printAll();
+				
+				System.out.println("\n");
+
+				
 				resp.addCategory(
 						catbean.getCategory(),
 						catbean.getBeschreibung(),
@@ -380,7 +419,55 @@ public class TeamFoundController implements Controller {
 		}
 		
 	}
-	
+	/**
+	 * Diese Funktion liest die Konfiguration und initialisiert mit den
+	 * Angaben die Datenbank und den Index.
+	 *
+	 * @return true->initialized(entweder war schon oder ist es nun) false->heisst irgentwas funzt nicht richtig im Server
+	 */
+	public boolean initServer()
+	{
+		try
+		{
+		// Da noch keine Admin schnittstelle wird diese Funktion einfach aufgerufen
+		// prueft ob was existiert und wenn nicht legt es die noetigen sachen an ...
+		//TODO Admin innerface und diese ueberfluessige Ueberpruefung raus!
+		
+		//0. kucken ob schon was existiert
+			DBLayer db;
+			db = new DBLayerHSQL(conf);
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+			if(db.initialized(conn))
+				return true;
+
+			
+		//1. Konfiguration auslesen 
+			String tfpath = conf.getConfValue("tfpath");
+			String project = conf.getConfValue("project"); 
+			String description = conf.getConfValue("description");
+			
+		//2. Index anlegen
+			Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
+			tfindexer.createIndex(tfpath);
+			
+		//2. DB initialiesieren
+			categoryBean catbean = new categoryBean(project);
+			catbean.setBeschreibung(description);
+			catbean = db.addRootCategory(conn, catbean);
+			//nur zum testen
+			//System.out.println("Id Project: "+ catbean.getID());
+			
+			return(true);
+		}
+		catch(Exception e)
+		{
+			//TODO Exceptions richtig machen
+ 			System.out.println("TeamFoundController : initDB"+e);
+			return false;
+		}
+		
+	}
 
 	
 

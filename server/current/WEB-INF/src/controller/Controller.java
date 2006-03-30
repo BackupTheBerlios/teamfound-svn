@@ -51,4 +51,13 @@ public interface Controller {
 	public ConfigResponse getConfiguration();
 	
 	*/
+	/**
+	 * Diese Funktion liest die Konfiguration und initialisiert mit den
+	 * Angaben die Datenbank und den Index.
+	 *
+	 * @return true->initialized(entweder war schon oder ist es nun) false->heisst entweder Index oder Datenbank laesst sich nicht anlegen oder erreichen
+	 */
+	public boolean initServer();
+		
+	
 }
