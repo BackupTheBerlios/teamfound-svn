@@ -37,7 +37,11 @@
 			<caption label="TeamFound server URL"/>
 			<vbox>
 				<textbox id="tf-settings-server" cols="100" rows="1"/>
+				<hbox>
+					<button label="get category-tree" oncommand="return TeamFound.loadCategories();"/>
+				</hbox>
 			</vbox>
+
 		</groupbox>
 
 		<spacer/>

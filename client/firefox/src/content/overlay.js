@@ -110,7 +110,7 @@ var TeamFound =
 				var catpopup = document.createElement("menupopup");
 				catmenu.appendChild(catpopup);
 
-				TeamFound.addCategory(xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes, catpopup);
+				TeamFound.addCategory(xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes, catpopup, xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue, 0);
 			}
 			else
 			{
@@ -120,52 +120,7 @@ var TeamFound =
 	}, // onLoadCategoriesFinished
 
 
-	addCategory: function(childnodes, menup)
-	{
-		var sep = document.createElement("menuseparator");
-		var s = document.createElement("menuitem");
-		s.setAttribute("label", "Search here");
-		var a = document.createElement("menuitem");
-		a.setAttribute("label", "Add page here");
-		var std = document.createElement("menuitem");
-		std.setAttribute("label", "Select as default");
-
-
-		menup.appendChild(s);
-		menup.appendChild(a);
-
-		// foreach category
-		if( childnodes != false)
-		{
-			menup.appendChild(sep);
-			for( var i = 0; i <  childnodes.length; i++)
-			{
-				if( childnodes.item(i).nodeName == "category")
-				{
-					//alert( childnodes.item(i).getElementsByTagName("name")[0].firstChild.nodeValue);
-
-					
-					var item1 = document.createElement("menu");
-					item1.setAttribute("label", childnodes.item(i).getElementsByTagName("name")[0].firstChild.nodeValue);
-					menup.appendChild(item1);
-
-					var item2 = document.createElement("menupopup");
-					item1.appendChild(item2);
-
-					
-					if( childnodes.item(i).getElementsByTagName("subcategories")[0])
-					{
-						TeamFound.addCategory( childnodes.item(i).getElementsByTagName("subcategories")[0].childNodes, item2);
-					}
-					else
-					{
-						TeamFound.addCategory( false, item2);
-					}
-				}
-			}
-		}
-	},
-	
+		
 	onSettings: function()
 	{
 		var setdiag = window.openDialog("chrome://teamfound/content/settings.xul", "TeamFound preferences", "chrome,centerscreen,modal");
@@ -174,7 +129,7 @@ var TeamFound =
 	}, // onSettings
 
 	// Eine Suche soll durchgefuehrt werden
-	onSearch: function(event)
+	onSearch: function(event, category)
 	{
 		// Text-feld auslesen, leerzeichen abscheiden
 		var search = TeamFound.myTrim(document.getElementById("tf-input").value);
@@ -201,13 +156,13 @@ var TeamFound =
 		if( prefs.getIntPref("settings.layout") == 0)
 		{	// layout: divide horizontal
 			content.location = "chrome://teamfound/skin/search_h.html";
-			TeamFound.myTeamFoundSearch(search);
+			TeamFound.myTeamFoundSearch(search, category);
 			TeamFound.myGoogleSearch(search);
 		}
 		else if( prefs.getIntPref("settings.layout") == 1)
 		{	// layout: append external results
 			content.location = "chrome://teamfound/skin/search_v.html";
-			TeamFound.myTeamFoundSearch(search);
+			TeamFound.myTeamFoundSearch(search, category);
 			TeamFound.myGoogleSearch(search);
 
 		}
@@ -217,7 +172,7 @@ var TeamFound =
 		}
 		else if( prefs.getIntPref("settings.layout") == 3)
 		{	// only teamfound
-			TeamFound.myTeamFoundSearch(search);
+			TeamFound.myTeamFoundSearch(search, category);
 		}
 	}, // onSearch
 
@@ -242,7 +197,7 @@ var TeamFound =
 
 	}, // myGotoUrl
 
-	myTeamFoundSearch: function(search)
+	myTeamFoundSearch: function(search, category)
 	{
 		var allwords = search.split(" ");
 
@@ -266,7 +221,9 @@ var TeamFound =
 		var pref_serverurl = prefs.getCharPref("settings.serverurl");
 
 		// TeamFound Suche
-		var teamfoundurl = pref_serverurl + "/search.pl?keyword=" + searchwithand;
+		var teamfoundurl = pref_serverurl + "?command=search&keyword=" + searchwithand + "&category=" + category;
+
+		alert(teamfoundurl);
 
 		// nur layouts 0 und 1 benutzen templates
 		if( prefs.getIntPref("settings.layout") > 1)
@@ -306,7 +263,7 @@ var TeamFound =
 	}, // myGoogleSearch
 
 	// Eine neue Seite soll dem Index hinzugefuegt werden
-	onAddPage: function() 
+	onAddPage: function(category) 
 	{
 		// hinzuzufuegende url (globale variable) 
 		addpageurl = content.document.URL;
@@ -314,7 +271,7 @@ var TeamFound =
 		var pref_serverurl = prefs.getCharPref("settings.serverurl");
 
 		// server-adresse zum hinzufuegen neuer seiten
-		var url = pref_serverurl + "/addpage.pl?url=" + addpageurl;
+		var url = pref_serverurl + "/addpage.pl?url=" + addpageurl + "&category=" + category;
 
 		// Request erstellen (globale variable)
 		// XMLHttpRequest funktioniert mit Mozilla, Firefox, Safari, und Netscape (nicht mit IE)
@@ -406,6 +363,62 @@ var TeamFound =
 		}
 
 	}, // onExternSearchFinished
+
+	addCategory: function(childnodes, menup, desc, id)
+	{
+		// create search, add and select menu-items
+		var sep = document.createElement("menuseparator");
+
+		var s = document.createElement("menuitem");
+		s.setAttribute("label", "Search '" + desc + "'");
+		s.setAttribute("oncommand", "TeamFound.onSearch(0, " + id + ");", false);
+
+		var a = document.createElement("menuitem");
+		a.setAttribute("label", "Add page to '" + desc + "'");
+		a.setAttribute("oncommand", "TeamFound.onAddPage(" + id + ");", false);
+
+		var std = document.createElement("menuitem");
+		std.setAttribute("label", "Select '" + desc + "' as default");
+
+
+		menup.appendChild(s);
+		menup.appendChild(a);
+		menup.appendChild(std);
+
+		// foreach sub-category
+		if( childnodes != false)
+		{
+			menup.appendChild(sep);
+			for( var i = 0; i <  childnodes.length; i++)
+			{
+				if( childnodes.item(i).nodeName == "category")
+				{
+					// category values
+					var catid = childnodes.item(i).getElementsByTagName("id")[0].firstChild.nodeValue;
+					var catname = childnodes.item(i).getElementsByTagName("name")[0].firstChild.nodeValue;
+					//var catdesc = childnodes.item(i).getElementsByTagName("description")[0].firstChild.nodeValue;
+
+					var item1 = document.createElement("menu");
+					item1.setAttribute("label", catname);
+					menup.appendChild(item1);
+
+					var item2 = document.createElement("menupopup");
+					item1.appendChild(item2);
+
+					
+					if( childnodes.item(i).getElementsByTagName("subcategories")[0])
+					{	// more subcategories exist
+						TeamFound.addCategory( childnodes.item(i).getElementsByTagName("subcategories")[0].childNodes, item2, childnodes.item(i).getElementsByTagName("name")[0].firstChild.nodeValue, catid);
+					}
+					else
+					{	// no more subcategories
+						TeamFound.addCategory( false, item2, childnodes.item(i).getElementsByTagName("name")[0].firstChild.nodeValue, catid);
+					}
+				}
+			}
+		}
+	},
+
 
 	// TeamFound suche beendet
 	onTeamFoundSearchFinished: function()
