@@ -69,8 +69,17 @@ Der Web-Client ist ein einfaches HTML-Formular (\texttt{<form>..</form>}), welch
 \label{webclient}
 \end{figure}
 
+Als interessante Erweiterung, bot sich hier allerdings ein einfacher Javascript-Link an, der, als Bookmark in den eigenen Browser eingef"ugt, die Nachteile des Web-Clients zum Teil ausr"aumt:
+
+\begin{verbatim}
+javascript:location.href='http://serverurl/addpage.pl?
+url='+encodeURIComponent(location.href)
+\end{verbatim}
+
+Mit diesem einfachen Link, kann das l"astige Kopieren umgangen werden, indem "uber Javascript die URL der aktuell im eigenen Browser angezeigten Seite, durch einen einfachen Click auf diesen Bookmark, direkt an den TeamFound-Server gesendet wird. (Beispiel ist f"ur Milestone 1)
+
 \subsubsection{Implementation}
-Die \textit{extrem einfache} Implementation sieht wie folgt aus:
+Die \textit{extrem einfache} Implementation des Web-Clients f"ur eine Suchanfrage entsprechend Milestone 2 sieht wie folgt aus:
 \begin{verbatim}
 <form action="serverurl">
 	search: <input type="text" name="keyword">
