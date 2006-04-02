@@ -62,6 +62,25 @@ Jeweils Anfrage und Antworten
 \section{Clients}
 
 \subsection{Web-Client}
+Der Web-Client ist ein einfaches HTML-Formular (\texttt{<form>..</form>}), welches Anfragen an den Server sendet und die Antwort direkt im Browser anzeigt. Dieser Client ist von daher praktisch, da man keine extra Erweiterung f"ur den Browser installieren muss, und von daher unpraktisch, da man die URL einer neu hinzuzuf"ugende Seite immer zuerst manuell kopieren, dann die Seite des Web-Clients laden und schliesslich die URL manuell eintragen muss.
+\begin{figure}[h]
+\epsfig{file=webclient}
+\caption{Web-Client Screenshot}
+\label{webclient}
+\end{figure}
+
+\subsubsection{Implementation}
+Die \textit{extrem einfache} Implementation sieht wie folgt aus:
+\begin{verbatim}
+<form action="serverurl">
+	search: <input type="text" name="keyword">
+	<input type="hidden" name="want" value="html">
+	<input type="hidden" name="version" value="2">
+	<input type="hidden" name="command" value="search">
+	<input type="submit">
+</form>
+\end{verbatim}
+Bei dem Design der TeamFound-Interfaces war diese M"oglichkeit der HTML-Formulare die entscheidende Grundlage. Alle Anfragen an den Server k"onnen mit HTML-Formularen ohne Zus"atze (wie Javascript, Applets, Extensions, etc.) generiert werden.
 
 \subsection{Firefox-Toolbar}
 
