@@ -1,67 +1,6 @@
-\documentclass[german]{article}
-
-\usepackage{listings}
-\lstset{numbers=left, numberstyle=\tiny, numbersep=5pt}
-\lstset{language=Java}
-\usepackage{german}
-\usepackage[latin1]{inputenc}
-\usepackage[T1]{fontenc}
-
-
-\makeatletter
-\makeatother
-
-\begin{document}
-
-\title{TeamFound}
-
-\author{Jonas Heese, ...}
-
-\date{März 2006}
-
-\maketitle
-
-%\abstract{TeamFound ist eine Teamsuchmaschine und ist im Wintersemester 2005/2006 w"ahrend des Projekts "Infrastrukturen zur Open Source Softwareentwicklung" an der Technischen Universit"at Berlin entstanden}
-
-
-
-\pagebreak
-
-\tableofcontents{}
-
-\pagebreak
-
-\section{Einleitung}
-
-TeamFound ist wie man bereits aus dem Namen schliessen mag eine Suchmaschine für Teams. Der Vorteil einer eigenen Suchmaschine liegt ganz einfach darin, das nicht jedes Teammitglied eine herkömmliche Suchmaschine bemühen muss um Inhalte zu finden, die ein anderes Teammitglied bereits recherchiert hat. Andererseit sist es aber nicht gesagt, das die gesuchten Informationen wirklich schon in der eigenen Teamsuchmaschine vorhanden ist, daher suchen TeamFound-Clients immer auch in einer zweiten herkömmlichen Suchmaschine.
-
-Bisherige Technik um Suchergebnisse zu verteilen integrieren sich dagegen sehr viel schlechter in einen vorhandenen Arbeitsprozess, zum Beispiel könnten einfache Bookmarks ausgetauscht werden, diese sind aber unter Umständen nicht von allen Teammitgliedern veränderbar, die Integration in einen Webbrowser ist hier quasi nicht vorhanden. 
-
-Eine weitere Möglichkeit bieten Kataloge\footnote{Jede größere Suchmaschine bietet eigene Kataloge. Das DMOZ-Projekt (http:/www.dmoz.org) stellt einen unabhängigen Versuch dar, das Internet zu kategorisieren} oder Verschlagwortungen wie del.icio.us \footnote{http://del.icio.us}, selbst wenn eine derartige Software in Form einer Teamsuchmaschine eingesetzt werden können, bieten sie eigentlich keine Integration in vorhandene Browser und damit würden vorhandene Arbeitsabläufe nachhaltig gestört.
-\\
-TeamFound will - gerade durch die Integration in bekannte Browser - diese Integration einfacher möglich machen. Das Hinzufügen neuer Seiten sowie das Suchen im eigenen Index ist durch eine einfache Toolbar oder - genau wie bei bekannten Suchmaschinen - mittels einer Webseite möglich. Dabei können Seiten nicht nur in den Index eingefügt werden sondern auch in beliebig viele Kategorien einsortiert werden, welche wiederrum einzeln oder als Baum durchsucht werden können.
-
-\section{TeamFound}
-
-TeamFound besteht aus mehreren Komponenten, zentraler Bestandteil ist wie bei allen anderen vorgestellten Technologien ein Server, welche Suchanfragen entgegennimmt, deren Ergebnisse übermittelt und sich außerdem um das herunterladen neuer Seiten und deren einfügen in den Index kümmert. Anders als bei anderen Technologien, ist die Client-Integration aber seit Beginn des projektes Teil der Planungen. TeamFound implementiert Clients unter anderem als Toolbar in bekannte Browser, natürlich ist es auch für ein geeignetes Webfrontend möglich TeamFound-Server zu benutzen, genauso wie auch andere Suchmaschinen meist über deren Internetseiten benutzt werden. Allerdings wurde bei der Clientkonzeption von TeamFound eher auf die Möglichkeiten von Browsererweiterungen eingegangen, als auf die Anforderungen von Webseiten.
-
-Im Folgenden werden die einzelnen Teile von TeamFound detailliert dargestellt. Dabei handelt es sich zuerst um den TeamFound-Server und anschliessend um die Toolbars für den Firefox-Browser vom Mozilla-Projekt sowie der Integration in den Internet Explorer von Microsoft. Da diese Browser auf sehr unterschiedlicher Technik basieren werden die einzelnen Toolbars auch getrennt beschrieben.
-
-\subsection{Funktionsumfang}
-
-\subsubsection{Suchanfragen}
-
-Suchanfragen an TeamFound werden wie in jeder anderen Volltextsuche mittels Schlüselwörter gestellt. Dabei hängt es von der Index-Implementierung ab, wie genau verschiedene Felder durchsucht oder Schlüsselwörter verknüpft werden können.
-
-\subsubsection{Kategorien}
-\label{kategorien}
-Jedes Dokument im Index kann in einer oder mehrerer Kategorien enthalten sein. Kategorien werden dabei als Baum dargestellt, es gibt also eine Wurzelkategorie sowie eine unbestimmte Anzahl weiterer Kategorien die jeweils eine Elternkategorie haben. 
-
-Suchanfragen an eine Kategorie findet nur Dokumente in dieser oder einer ihrer Unterkategorien. Das wirkliche Begrenzen der Suche auf genau eine Kategorie, ohne Unterkategorien ist in dieser TeamFound-Version noch nicht vorhanden.
-
-
+\chapter{Implementation}
 \section{Teamfound-Server}
-
+\index{Server}
 \subsection{Anforderungen}
 
 In der Vorbereitung des Projektes wurde unter anderem auf die Verzweigung von Open Source-Projekten eingegangen: Es soll nicht jedesmal das Rad neu erfunden werden, eine wichtige Herausforderung im Open Source-Entwicklungsmuster ist es einerseits andere geeignete Projekte zu finden und diese dann effektiv in das eigene Projekt zu integrieren. In diesem Sinne war die erste Phase in der TeamFound-Entwicklung von Recherchearbeiten geprägt. Für den TeamFound-Server heisst das: Es muss eine Bibliothek gefunden werden, welche uns die Volltextindexierung von beliebigen Dokumenten möglich macht. Diese Bibliothek muss dann - sofern sie dieses nicht schon selber anbietet - geeignet ans Internet gebracht werden, einerseits um neue Dokumente herunterzuladen und in den Index aufzunehmen, andererseits um Suchanfragen entgegenzunehmen und deren Ergebnisse zurückzugeben.
@@ -289,11 +228,4 @@ Die Bibliotheken BandObject.dll und Teamfound.IE.dll werden als COM Objekt regis
 Alle anderen Bibliotheken werden ebenfalls im globalen Assemblycache registriert.
 
 
-
-\section{Projektablauf, organisation, Meilensteine}
-
-
-\section{Fazit}
-
-\end{document}
 
