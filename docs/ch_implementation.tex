@@ -92,6 +92,53 @@ Die \textit{extrem einfache} Implementation des Web-Clients f"ur eine Suchanfrag
 Bei dem Design der TeamFound-Interfaces war diese M"oglichkeit der HTML-Formulare die entscheidende Grundlage. Alle Anfragen an den Server k"onnen mit HTML-Formularen ohne Zus"atze (wie Javascript, Applets, Extensions, etc.) generiert werden.
 
 \subsection{Firefox-Toolbar}
+Der Mozilla Firefox l"asst sich durch sogenannte \textit{Extensions} sehr einfach erweitern. Als grundlegende Techniken werden daf"ur XUL (XML User Interface Language) und Javascript ben"otigt. Desweiteren gibt es eine exakt vordefinierte Verzeichnisstruktur sowie eine Beschreibungs-Datei (\texttt{install.rdf}) im RDF (Resource Description Framework) Format, umd die Erweiterung automatisiert installierbar in Firefox-Browsern zu machen.
+
+\begin{figure}[h]
+\epsfig{file=ffextension-kategorien}
+\caption{Firefox-Toolbar mit Kategorien-Baum (Version 0.8, Milestone 2)}
+\label{fftoolbar}
+\end{figure}
+
+\subsubsection{Dateien}
+Die Verzeichnisstruktur der TeamFound Firefox Extension sowie alle enthaltenen Dateien sind:
+\begin{verbatim}
+chrome.manifest
+install.rdf
+
+content/
+- overlay.js  
+- overlay.xul  
+- settings.js  
+- settings.xul
+
+defaults/
+- preferences/
+  - settings.js
+
+skin/
+- icon.png  
+- logo_tf_32x32.png  
+- overlay.css  
+- search_h.html  
+- search_v.html  
+- xmlstyle.css
+\end{verbatim}
+
+Die eigentliche Funktionalit"at steckt dabei in dem Unterverzeichnis content:
+\begin{description}
+\item[overlay.xul] Definiert das Aussehen der Toolbar
+\item[overlay.js] Definiert die Funktionalit"at der Toolbar
+\item[settings.xul] Definiert das Aussehen des Einstellungen-Dialogs
+\item[settings.js] Definiert die Funktionalit"at des Einstellungen-Dialogs
+\end{description}
+
+\begin{figure}[h]
+\epsfig{file=screenshot-search-server-0.1-firefox-toolbar-0.4.eps}
+\caption{Firefox-Toolbar Suchergebnis (Version 0.4, Milestone 1)}
+\label{fftoolbarsuchergebnis}
+\end{figure}
+
 
 \subsection{Internet Explorer-Toolbar}
 

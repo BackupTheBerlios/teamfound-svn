@@ -17,6 +17,12 @@ TeamFound will - gerade durch die Integration in bekannte Browser - diese Integr
 
 \subsection{Komponenten}
 
+\begin{figure}[h]
+\epsfig{file=architecture1}
+\caption{grobe Architektur Client <-> Server <-> Suchmaschiene}
+\label{webclient}
+\end{figure}
+
 TeamFound besteht aus mehreren Komponenten, zentraler Bestandteil ist wie bei allen anderen vorgestellten Technologien ein Server, welche Suchanfragen entgegennimmt, deren Ergebnisse übermittelt und sich außerdem um das herunterladen neuer Seiten und deren einfügen in den Index kümmert. Anders als bei anderen Technologien, ist die Client-Integration aber seit Beginn des projektes Teil der Planungen. TeamFound implementiert Clients unter anderem als Toolbar in bekannte Browser, natürlich ist es auch für ein geeignetes Webfrontend möglich TeamFound-Server zu benutzen, genauso wie auch andere Suchmaschinen meist über deren Internetseiten benutzt werden. Allerdings wurde bei der Clientkonzeption von TeamFound eher auf die Möglichkeiten von Browsererweiterungen eingegangen, als auf die Anforderungen von Webseiten.
 
 Im Folgenden werden die einzelnen Teile von TeamFound detailliert dargestellt. Dabei handelt es sich zuerst um den TeamFound-Server und anschliessend um die Toolbars für den Firefox-Browser vom Mozilla-Projekt sowie der Integration in den Internet Explorer von Microsoft. Da diese Browser auf sehr unterschiedlicher Technik basieren werden die einzelnen Toolbars auch getrennt beschrieben.
