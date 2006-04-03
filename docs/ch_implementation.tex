@@ -7,7 +7,7 @@ In der Vorbereitung des Projektes wurde unter anderem auf die Verzweigung von Op
 Diese Bibliothek sollte möglichst erweiterbar sein, um auch die Anforderungen von (relativ) einfachen Dokumentenkategorien umsetzen zu können. Für die Verwaltung der Kategorien würde eine Datenbank benötigt werden, da die Verknüpfung von Kategorien, sowie deren Details, wie Namen und Beschreibung nichts mit der Index-Bibliothek zu tun haben.
 
 \subsection{Plattform}
-
+\label{platform}
 Die Entscheidung für eine Plattform wurde implizit durch die Entscheidung für eine Bibliothek zum indexieren und durchsuchen von Dokumenten getroffen. Nachdem einige Tage nach derartigen Bibliotheken Ausschau gehalten wurde, ist sehr schnell deutlich geworden, das Lucene \footnote{www.lucene.de} vom Apache-Projekt\footnote{http://www.apache.org} die am weitest entwickelte Bibliothek ist. Ein weiterer Vorteil ist die aktive Community rund um Lucene, so wurde während unserer Entwicklung noch ein Sprung von Version 1.5 auf 1.9 mitgemacht. Andere Bibliotheken, zum Beispiel in Perl oder PHP boten keine ausreichende Dokumentation oder Erweiterbarkeit.
 Die ursprüngliche Lucene-Version ist in Java implementiert, ein weiteres Projekt bemüht sich um dessen Umsetzung in C und mittlerweile (Am Ende des Projekts hat Zend Technologies\footnote{http://www.zend.com} einen PHP-Wrapper\footnote{http://framework.zend.com/manual/en/zend.search.html} für Lucene veröffentlicht.
 
@@ -80,6 +80,21 @@ Die Syntax ist "ahnlich der von Google oder anderer Suchseiten.
 
 
 \subsection{Datenbank HSQLDB}
+Die Entscheidung keine f"ur Webapplikationen typische Datenbank wie MySQL einzusetzen 
+ist leicht erkl"art. Wie schon in Kapitel \ref{platform} beschrieben, sollte eine 
+Java-Umgebung eingesetzt werden.
+Das schr"ankt erstmal nur auf Datenbanken ein, die JDBC kompatibel sind.
+Deshalb ist der Server auch leicht um einen weiteren Datenbanklayer zu erweitern, falls
+andere Datenbanken erw"unscht sind.
+
+HSQLDB wurde von uns ausgew"ahlt, weil wir sie als kleine Java-Bibliothek einbinden k"onnen
+und es damit den Nutzern unseres Servers ersparen sich extra um einen Datenbankserver zu k"ummern.
+HSQLDB kann als Server oder in Programme eingebettet laufen.
+In der derzeitigen Version nutzen wir den eingebetteten Modus, und haben somit eine
+kleine Datenbank f"ur den Teamfoundserver allein.
+Die "ublichen Riten wie Datenbanknutzer anlegen usw. k"onnen wir dadurch im Server selbst automatisiert regeln.
+HSQLDB hat sehr gut Ergebnisse in dem PolePosition benchmark (siehe Literaturverzeichnis PolPos) geliefert und unterst"utzt einen grossteil der ANSI-92 SQL,SQL 99 und 2003 Standards bis hin zu Transaktionen.
+Ausserdem wird HSQLDB in einigen bekannten Projekten(z.b. JBoss, Mathematica, OpenOffice)  erfolgereich eingesetzt, was uns ausreichend von der Zuverl"assigkeit "uberzeugt hat.
 
 \subsection{Weitere Bibliotheken}
 
