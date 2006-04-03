@@ -20,6 +20,8 @@ public class GetCategoriesResponse extends Response {
 	protected Map<Integer, List<Tuple<Integer, Element>>> categories;
 	
 	protected Element root;
+
+	private Integer rootID;
 	
 	public GetCategoriesResponse(List<Tuple<Integer,Integer>> projectCounters) {
 		super(projectCounters);
@@ -38,7 +40,7 @@ public class GetCategoriesResponse extends Response {
 		// hole root
 		Element root = this.root;
 		getcat.addContent(root);
-		saveSubcategories(root, new Integer(0));
+		saveSubcategories(root, rootID);
 
 		return d;
 	}
@@ -55,8 +57,8 @@ public class GetCategoriesResponse extends Response {
 				Tuple<Integer, Element> t = i.next();
 				subcat.addContent(t.getSecond());
 				saveSubcategories(t.getSecond(), t.getFirst());
-				el.addContent(subcat);
 			}
+			el.addContent(subcat);			
 		} // else: rekursionsabbruch
 		else {
 			System.out.println("no subcats");
@@ -94,6 +96,7 @@ public class GetCategoriesResponse extends Response {
 	 */
 	public void addRoot(String name, String description, Integer ID, Integer parentID) {
 		root = getElement(name, description, ID, parentID);
+		rootID = ID;
 	}
 	
 	/**
