@@ -15,18 +15,73 @@ Somit war die Wahl der Plattform auf Java gefallen, eine erste mehr als Proof-of
 
 Daher fiel eine weitere Entscheidung, für eine Java-Servlet-Umsetzung, um die benötigte Umgebung für Anfragen an den Lucene-Index nicht für jedes Request neu zu schaffen. Somit besteht der Server aus einer 100\%igen Java-Umgebung und es entfällt damit die Notwendigkeit für aufwändige und zeit-kostende Wrapper um mehrere Programmiersprachen zu verbinden.
 
-\subsection{Kernbibliotheken}
 
-\subsubsection{Apache Lucene}
+\subsection{Kernbibliothek Apache Lucene}
+
+\subsubsection{Allgemein}
+
 
 Lucene ist - laut eigener Aussage - der harte Teil einer Suchmaschine. Diese Bibliothek erzeugt und durchsucht einen Volltextindex, kümmert sich aber weder darum wo die Daten herkommen, wie die Ergebnisse präsentiert werden oder wie die Suchanfragen vom Benutzer an den Index kommen. Der Index ist hingegen bietet viele Möglichkeiten die eigenen Daten zu analysieren und in sogenannten Dokumenten in den Index zu speichern. Eigene $Analyzer$ sind mit wenig Aufwand umzusetzen (sofern die mitgelieferten nicht ausreichen), auch aufwändigere Parser sind möglich, wie es zB. für HTML-Seiten notwendig ist.
 Darüberhinaus kann jedes Dokument im Index beliebige $Felder$ enthalten, ein Feld ist als Inhaltselement eines Dokuments zu verstehen (Überschrift, Inhalt, Beschreibung). Dabei können völlig verschiedene Arten von Dokumenten in einem Index gespeichert werden sowie Suchanfragen direkt an ein oder mehrere Felder gestellt werden. Diese starke Erweiterbarkeit ist zum Beispiel bei der Implementierung von Dokumentenkategorien in TeamFound sehr wichtig gewesen (Siehe Kapitel \ref{kategorien})
 
-TODO: Query Syntax, beteiligte Arten von Klassen genauer ausführen (Analyzer, Document, Field, IndexReader, IndexWriter, Query, QueryParser, ....)
+\subsubsection{Wichtige Komponenten}
 
-\subsubsection{HSQLDB}
 
-\subsubsection{Weitere Bibliotheken}
+\paragraph{Document und Field}
+
+
+Ein Lucene-\texttt{Document} ist die Basisspeichereinheit in einem von Lucene erstellten Index. Die Argumente bzw. Ergebnisse beim Einf"ugen und Suchen sind immer Lucene-\texttt{Documents}. 
+
+Diese Dokumente bestehen aus einer variablen Anzahl von Feldern (\texttt{Field}).
+Um ein Dokument zu erstellen kann man beliebig Felder definieren. Sinnvollerweise ist 
+mindestens ein Inhaltsfeld definiert. Dieses wird in Token zerlegt und indiziert.
+Es ist sinnvoll weitere Felder zu definieren, die nicht indiziert oder zerlegt,
+sondern als zus"atzliche Information gespeichert werden. Ein eideutiges Schl"usselwort
+oder eine URL sind typisch, da nur so eine Unterscheidung von Dokumenten m"oglich wird.
+Es k"onnen beliebig weitere Felder angelegt werden z.B. Author, Adresse, Zusammenfassung
+oder Kathegorie. 
+
+Allerdings werden Felder generell uninterpretiert als Text abgelegt.
+Ausser Felder (wie das Inhaltsfeld), die zerlegt und indiziert werden. Diese sind 
+textuell nicht wiederherstellbar, aber jetzt mithilfe von Anfragen durchsuchbar. 
+
+
+\paragraph{Analyzer}
+
+
+	Der \texttt{Analyzer} ist die Komponente, welche zu indizierende Felder 
+in Tokenstreams umwandelt, damit diese dann ausgewertet werden k"onnen.
+Das kann beliebig komplex oder simple sein. Ein Analyzer kann z.B. speziell auf eine 
+bestimmte Sprache ausgelegt sein und Artikel Pronomen etc. direkt ausfiltern oder einfach
+anhand von $Whitespaces$ Token bilden. Als Nutzer von Lucene sind hier beliebig 
+M"oglichkeiten selbst zu Erweiterungen um eigene Anspr"uche zu erf"ullen.  
+
+Genauso ist es m"oglich verschiedene \texttt{Analyzer} zu verbinden 
+um unterschiedliche Felder auf unterschiedliche Weise zu zerlegen.
+
+
+\paragraph{Query und QuerryParser}
+
+
+Um nun indizierte Felder zu durchsuchen ist die
+Grundeinheit die \texttt{Query}. Der Name ist etwas irref"uhrend, da es sich hierbei noch
+nicht um wirkliche Anfragen handelt. Eine \texttt{Query} besteht erstmal nur aus einem 
+einzelnen Token. Nach diesem k"onnte gesucht werden. Lucene bietet nun verschiedenste
+M"oglichkeiten solche Grundsteine in vielf"altiger Art zu kombinieren um komplexere
+Anfragen zu bilden. Dies ist vorallem sinnvoll f"ur Anfragen, die sich oft wiederholen und
+automatisiert gestellt werden.
+
+Um allerdings nach von Menschen formulierten Anfragen zu suchen,
+bietet Lucene eine Erleichterung. Der \texttt{QuerryParser} stellt eine einfache Syntax zur
+Verf"ugung. Diese wird ausgewertet und liefert die komplexe Anfrage f"ur den Index.
+Die Syntax ist "ahnlich der von Google oder anderer Suchseiten.
+( siehe Literaturverzeichnis LucQS )
+
+
+
+\subsection{Datenbank HSQLDB}
+
+\subsection{Weitere Bibliotheken}
 
 Zur Erzeugung der XML-Antworten (Siehe Kapitel \ref{response}) wird die JDOM-Bibliothek\footnote{http://www.jdom.org} von Jason Hunter benutzt. JDOM ist eine abgewandelte DOM-Implementierung\footnote{Document Object Model} und bietet die Möglichkeit mit einfachen Java-Code sauberes XML zu erzeugen. JDOM wird ebenfalls benutzt um die XML-Dokumente in HTML zu wandeln, sofern der Client dieses wünscht.
 
