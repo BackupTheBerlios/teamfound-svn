@@ -17,7 +17,7 @@ Daher fiel eine weitere Entscheidung, für eine Java-Servlet-Umsetzung, um die be
 
 
 \subsection{Kernbibliothek Apache Lucene}
-
+\label{lucene}
 \subsubsection{Allgemein}
 
 
@@ -79,7 +79,7 @@ Die Syntax ist "ahnlich der von Google oder anderer Suchseiten.
 
 
 
-\subsection{Datenbank HSQLDB}
+\subsection{HSQLDB}
 Die Entscheidung keine f"ur Webapplikationen typische Datenbank wie MySQL einzusetzen 
 ist leicht erkl"art. Wie schon in Kapitel \ref{platform} beschrieben, sollte eine 
 Java-Umgebung eingesetzt werden.
@@ -96,6 +96,7 @@ Die "ublichen Riten wie Datenbanknutzer anlegen usw. k"onnen wir dadurch im Serv
 HSQLDB hat sehr gut Ergebnisse in dem PolePosition benchmark (siehe Literaturverzeichnis PolPos) geliefert und unterst"utzt einen grossteil der ANSI-92 SQL,SQL 99 und 2003 Standards bis hin zu Transaktionen.
 Ausserdem wird HSQLDB in einigen bekannten Projekten(z.b. JBoss, Mathematica, OpenOffice)  erfolgereich eingesetzt, was uns ausreichend von der Zuverl"assigkeit "uberzeugt hat.
 
+
 \subsection{Weitere Bibliotheken}
 
 Zur Erzeugung der XML-Antworten (Siehe Kapitel \ref{response}) wird die JDOM-Bibliothek\footnote{http://www.jdom.org} von Jason Hunter benutzt. JDOM ist eine abgewandelte DOM-Implementierung\footnote{Document Object Model} und bietet die Möglichkeit mit einfachen Java-Code sauberes XML zu erzeugen. JDOM wird ebenfalls benutzt um die XML-Dokumente in HTML zu wandeln, sofern der Client dieses wünscht.
@@ -108,16 +109,49 @@ Das Servlet ist der Einstiegspunkt für jegliche Anfragen an TeamFound. Dem Servl
 
 \subsubsection{Controller}
 
+Die Hauptaufgabe des Controllers besteht darin, die Teilaufgaben, die sich aus einer 
+Anfrage ergeben koordiniert an Datenbank und Index zu stellen.
+Ausserdem sorgt er f"ur den Download der zu indezierenden Dokumente.
+
+Die Zugriffe auf den Index werden dabei durch eine Instanz eines Indexers erledigt.
+Um die Zugriffe der Indexer auf den Index zu steuern, besitzt der Controller ein
+Semaphorobjekt. Dieses realisiert eine Leser-Schreiber-Kooperation der beauftragten
+Indexer.
+
+Der Zugriff auf die Datenbank erfolgt "uber den DBLayer. Dieser stellt
+s"amtliche Funktionalit"at zum lesen und schreiben der Datenbank zur
+Verf"ugung.
+
+Wenn alle Teilaufgaben erf"ullt sind generiert der Controller aus den 
+erhaltenen Informationen eine Response und "ubergibt diese dem Servlet.
+
 \subsubsection{Indexer}
+Der Indexer ist f"ur die Arbeit direkt am Lucene-Index verantwortlich. Er f"ugt 
+Dokumente (siehe \ref{lucene}) in den Index ein oder entfernt sie wieder. 
+Ausserdem f"uhrt er Suchanfragen auf dem Index aus.
+Die von uns definierten Dokumente (siehe \ref{}) werden im Indexer aus den 
+gegebenen Informationen erstellt. 
+Zur Indizierung benutzt der Indexer einen eigenen Analyzer (siehe \ref{lucene}), 
+der haupts"achlich ben"otigt wird um das Kategorienfeld korekt zu zerlegen.
+
+Die Anfragen werden zu eiem teil durch den QueryParser (siehe \ref{lucene}) und zum 
+anderen vom Indexer generiert. Der Indexer erstellt dabei die Einschr"ankung
+welche Kategorien in der Anfrage g"ultig sind.
+Aus beiden teilen wird die gesammte Anfrage gebildet und an den Index gestellt.
+Die Verarbeitung der Ergebnisse "ubernimmt der Controller.
 
 \subsubsection{Response}
 
 Antworten werden in TeamFound immer als XML generiert, diese XML\-Repräsentation kann bevor sie zum Client geschickt wird, noch mittels XSLT in eine geeignete HTML\-Fassung gewandelt werden.
 Eine Basisklasse Response übernimmt dabei das Handling des eigentlichen JDOM-Document-Objektes, während die eigentlichen Antwort\-Klassen, wie SearchResponse oder AddPageResponse ihre eigentlichen Inhalte an die Standardelemente einer Antwort anhängen (Siehe dazu mehr im Kapitel Protokoll TODO: LINK).
 
+
+\subsubsection{Datenmodell}
+
 \subsection{Ablauf eines Requests}
 
 Komplette Beschreibung, evtl. auch mit Diagramm
+
 
 \section{Protokoll}
 
