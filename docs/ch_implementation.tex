@@ -104,7 +104,7 @@ Zur Erzeugung der XML-Antworten (Siehe Kapitel \ref{response}) wird die JDOM-Bib
 
 \section{Architektur}
 
-\begin{figure}[h]
+\begin{figure}
 \includegraphics[width=16cm]{bilder/aufbau2.eps}
 \caption{grobe ServerArchitektur}
 \label{serverarchgrob}
@@ -172,7 +172,7 @@ von Nutzer- und Rechtemanagement zu kl"aren sein.
 
 \subsection{Datenbank}
 
-\begin{figure}[h]
+\begin{figure}
 \includegraphics[width=16cm]{bilder/db.eps}
 \caption{Datenbank-ERD}
 \label{dberd}
@@ -281,7 +281,7 @@ Auf diese Weise k"onnen wir die Anfragen leicht so erweitern, dass sie mithilfe 
 \subsection{Kategorienbaum}
 \label{katrep}
 
-\begin{figure}[h]
+\begin{figure}
 \includegraphics[width=16cm]{bilder/katstruktur.eps}
 \caption{Repr"asentation der Kategorien in DB und Index}
 \label{katstruktur}
@@ -296,7 +296,7 @@ Auf diese Weise k"onnen wir die Anfragen leicht so erweitern, dass sie mithilfe 
 \subsection{AddpageRequest}
 \label{addpagerequest}
 
-\begin{figure}[h]
+\begin{figure}
 \includegraphics[width=16cm]{bilder/ablaufaddpage1.eps}
 \caption{Indizieren einer neuen URL}
 \label{addpage1}
@@ -692,7 +692,7 @@ Wird erst in Interface Milestone 3 implementiert werden. Es stellt sich die Frag
 
 \section{Web-Client}
 Der Web-Client ist ein einfaches HTML-Formular (\texttt{$<$form$>$..$<$/form$>$}), welches Anfragen an den Server sendet und die Antwort direkt im Browser anzeigt. Dieser Client ist von daher praktisch, da man keine extra Erweiterung f"ur den Browser installieren muss, und von daher unpraktisch, da man die URL einer neu hinzuzuf"ugende Seite immer zuerst manuell kopieren, dann die Seite des Web-Clients laden und schliesslich die URL manuell eintragen muss.
-\begin{figure}[h]
+\begin{figure}
 \epsfig{file=webclient}
 \caption{Web-Client Screenshot}
 \label{webclient}
@@ -723,13 +723,13 @@ Bei dem Design der TeamFound-Interfaces war diese M"oglichkeit der HTML-Formular
 \section{Firefox-Toolbar}
 Der Mozilla Firefox l"asst sich durch sogenannte \textit{Extensions} sehr einfach erweitern. Als grundlegende Techniken werden daf"ur XUL (XML User Interface Language) und Javascript ben"otigt. Desweiteren gibt es eine exakt vordefinierte Verzeichnisstruktur sowie eine Beschreibungs-Datei (\texttt{install.rdf}) im RDF (Resource Description Framework) Format, umd die Erweiterung automatisiert installierbar in Firefox-Browsern zu machen.
 
-\begin{figure}[h]
+\begin{figure}
 \epsfig{file=ffextension-kategorien}
 \caption{Firefox-Toolbar mit Kategorien-Baum (v0.8, Milestone 2)}
 \label{fftoolbar}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}
 \epsfig{file=ffextension-settings}
 \caption{Firefox-Toolbar Settings Dialog (v0.8, Milestone 2)}
 \label{fftoolbar}
@@ -768,7 +768,7 @@ Die eigentliche Funktionalit"at steckt dabei in dem Unterverzeichnis content:
 \item[settings.js] Definiert die Funktionalit"at des Einstellungen-Dialogs
 \end{description}
 
-\begin{figure}[h]
+\begin{figure}
 \epsfig{file=screenshot-search-server-0.1-firefox-toolbar-0.4.eps}
 \caption{Firefox-Toolbar Suchergebnis (v0.4, Milestone 1)}
 \label{fftoolbarsuchergebnis}
