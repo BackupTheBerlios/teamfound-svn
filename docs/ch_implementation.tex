@@ -171,6 +171,7 @@ In sp"ateren Versionen von Teamfound wird an dieser Stelle sicherlich auch das P
 von Nutzer- und Rechtemanagement zu kl"aren sein.
 
 \subsection{Datenbank}
+\label{datenbank}
 
 \begin{figure}
 \includegraphics[width=16cm]{bilder/db.eps}
@@ -278,7 +279,7 @@ so dass er die Tokens dieses Feldes einfach anhand des Trenncharakters generiert
 Auf diese Weise k"onnen wir die Anfragen leicht so erweitern, dass sie mithilfe von Kategorien eingeschr"ankt werden k"onnen.
 
 
-\subsection{Kategorienbaum}
+\subsection{Repr"asentation der Kategorien}
 \label{katrep}
 
 \begin{figure}
@@ -287,7 +288,61 @@ Auf diese Weise k"onnen wir die Anfragen leicht so erweitern, dass sie mithilfe 
 \label{katstruktur}
 \end{figure}
 
+Da ein wichtiger Teil des derzeitigen Servers die Verwaltung der Kategorien 
+betrifft, soll hier noch einmal etwas genauer auf diese eingegangen werden.
 
+Wie schon in Kapitel \ref{datenbank} erw"ahnt wurde sind die Kategorien 
+baumstrukturiert und werden in Form von Verschachtelten Mengen in der
+Datenbank abgelegt.
+Die grafische darstellung eines solchen Baumes und einer solchen Menge
+kann man in Abbildung \ref{katstruktur} sehen. 
+Es ist leicht zu erkennen, dass alle Knoten des Baumes einen linken und
+einen rechten Wert aufweisen. 
+Anhand dieser Werte kann die Mengen- Baumstruktur in der Datenbank nachgebaut und 
+der Baum durchlaufen werden.
+Es ist leicht zu erkennen, dass der rechte Wert eines Knotens gr"o"ser ist als
+alle Werte der Kindknoten und genauso ist der linke Wert kleiner.
+Es gelten noch einige andere n"utzliche Dinge, z.b.  
+k"onnen alle Bl"atter des Baumes sehr leicht indentifiziert werden, da
+bei diesen die Differenz von linkem und rechtem Wert einfach 1 betr"agt.
+
+Wir haben diese Struktur ausgew"ahlt, weil das durchsuchen 
+sehr einfach und schnell geht. 
+Der grosse Nachteil ist das Ver"andern eines solchen Baumes. Damit die Struktur
+in Takt bleibt muss prinzipiell jeder Knoten der ''rechts'' des bearbeiteten Knotens
+liegt angepasst werden. Dies wird bei sehr tiefen B"aumen entsprechend aufwendig.
+
+Das sollte f"ur unseren Anwendungsfall aber kein Problem sein. Die Kategorien  
+werden von Nutzern der "Ubersichtlichkeit halber angelegt und sollten deshalb 
+wohl nicht so tief und stark verzweigen.
+Ausserdem gehen wir davon aus, dass das ver"andern der Kategorien 
+eher selten vorkommen wird. Wenn ein neues Projekt beginnt werden in der Anfangsphase 
+von den Mitgliedern sicher einige Kategorien angelegt, diese 
+werden danach aber auch nahezu unver"andert bleiben.
+
+Auf der anderen Seite muss bei sehr vielen Anfragen der Baum durchsucht werden.
+Allein das Anlegen einer neuen Kategorie hat zur Folge, das jeder Client den
+neuen Kategorienbaum vom Server erfragt.
+Da wir also den Baum sehr oft auslesen m"ussen ist diese Art der Speicherung vorteilhaft.
+Hinzu kommt, das es sehr aufwendig ist einen solchen Baum oder Pfade 
+eines Baumes in einem Index abzulegen.
+Deshalb speichern wir im Index auch nur eine einfache Aufz"ahlung 
+von Kategorien ab. (siehe Abbildung \ref{katstruktur} und Kapitel \ref{docstruktur})
+Diese enth"alt zwar den ganzen Pfad, dennoch l"asst sich dieser nicht
+wiederherstellen, da ja mehrere Pfade in der Aufz"ahlung enthalten sein k"onnen.
+Es entsteht dadurch aber kein Problem. Eine Suchanfrage an den Server ben"otigt trozdem keinen
+Datenbankzugriff, sondern kann mit einer Anfrage an den Index bearbeitet werden.
+(siehe Kapitel \ref{searchrequest}) 
+Das l"asst sich mit dem Zweck unserer Anwendung erkl"aren. 
+Wir stellen eine Suche anhand von Suchbegriffen bereit. Die Kategorien sind nur
+eine Einschr"ankung der Suchergebnisse. 
+Je allgemeiner die Kategorie in einer SuchAnfrage gew"ahlt wird,
+desto mehr Ergebnisse werden gefunden.
+Das erkl"art sich darin, das alle Dokumente, die einer Unterkategorie 
+angeh"oren, auch allen Elternkategorien zugeordnet wurden.
+Dieser einfache Trick erreicht genau unseren Zweck.
+Bei einer Suchanfrage wird ein Dokument in jeder Kategorie, die auf dem Pfad 
+durch den Baum liegt gefunden und sie kann schnell ausgef"uhrt werden.
 
 
 \section{Abl"aufe im Server}
