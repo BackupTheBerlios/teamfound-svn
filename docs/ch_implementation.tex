@@ -1,6 +1,6 @@
-\chapter{Implementation}
-\section{Teamfound-Server}
+\chapter{Teamfound-Server}
 \index{Server}
+\section{Vor"uberlegungen}
 \subsection{Anforderungen}
 
 In der Vorbereitung des Projektes wurde unter anderem auf die Verzweigung von Open Source-Projekten eingegangen: Es soll nicht jedesmal das Rad neu erfunden werden, eine wichtige Herausforderung im Open Source-Entwicklungsmuster ist es einerseits andere geeignete Projekte zu finden und diese dann effektiv in das eigene Projekt zu integrieren. In diesem Sinne war die erste Phase in der TeamFound-Entwicklung von Recherchearbeiten geprägt. Für den TeamFound-Server heisst das: Es muss eine Bibliothek gefunden werden, welche uns die Volltextindexierung von beliebigen Dokumenten möglich macht. Diese Bibliothek muss dann - sofern sie dieses nicht schon selber anbietet - geeignet ans Internet gebracht werden, einerseits um neue Dokumente herunterzuladen und in den Index aufzunehmen, andererseits um Suchanfragen entgegenzunehmen und deren Ergebnisse zurückzugeben.
@@ -16,10 +16,12 @@ Somit war die Wahl der Plattform auf Java gefallen, eine erste mehr als Proof-of
 Daher fiel eine weitere Entscheidung, für eine Java-Servlet-Umsetzung, um die benötigte Umgebung für Anfragen an den Lucene-Index nicht für jedes Request neu zu schaffen. Somit besteht der Server aus einer 100\%igen Java-Umgebung und es entfällt damit die Notwendigkeit für aufwändige und zeit-kostende Wrapper um mehrere Programmiersprachen zu verbinden.
 
 
-\subsection{Kernbibliothek Apache Lucene}
-\label{lucene}
-\subsubsection{Allgemein}
+\section{Bibliotheken} 
 
+\subsection{Apache Lucene}
+\label{lucene}
+
+\subsubsection{Allgemein}
 
 Lucene ist - laut eigener Aussage - der harte Teil einer Suchmaschine. Diese Bibliothek erzeugt und durchsucht einen Volltextindex, kümmert sich aber weder darum wo die Daten herkommen, wie die Ergebnisse präsentiert werden oder wie die Suchanfragen vom Benutzer an den Index kommen. Der Index ist hingegen bietet viele Möglichkeiten die eigenen Daten zu analysieren und in sogenannten Dokumenten in den Index zu speichern. Eigene $Analyzer$ sind mit wenig Aufwand umzusetzen (sofern die mitgelieferten nicht ausreichen), auch aufwändigere Parser sind möglich, wie es zB. für HTML-Seiten notwendig ist.
 Darüberhinaus kann jedes Dokument im Index beliebige $Felder$ enthalten, ein Feld ist als Inhaltselement eines Dokuments zu verstehen (Überschrift, Inhalt, Beschreibung). Dabei können völlig verschiedene Arten von Dokumenten in einem Index gespeichert werden sowie Suchanfragen direkt an ein oder mehrere Felder gestellt werden. Diese starke Erweiterbarkeit ist zum Beispiel bei der Implementierung von Dokumentenkategorien in TeamFound sehr wichtig gewesen (Siehe Kapitel \ref{kategorien})
@@ -35,8 +37,8 @@ Ein Lucene-\texttt{Document} ist die Basisspeichereinheit in einem von Lucene er
 Diese Dokumente bestehen aus einer variablen Anzahl von Feldern (\texttt{Field}).
 Um ein Dokument zu erstellen kann man beliebig Felder definieren. Sinnvollerweise ist 
 mindestens ein Inhaltsfeld definiert. Dieses wird in Token zerlegt und indiziert.
-Es ist sinnvoll weitere Felder zu definieren, die nicht indiziert oder zerlegt,
-sondern als zus"atzliche Information gespeichert werden. Ein eideutiges Schl"usselwort
+Au"serdem ist es zweckm"a"sig weitere Felder zu definieren, die nicht indiziert oder zerlegt,
+sondern als zus"atzliche Information gespeichert werden. Ein eindeutiges Schl"usselwort
 oder eine URL sind typisch, da nur so eine Unterscheidung von Dokumenten m"oglich wird.
 Es k"onnen beliebig weitere Felder angelegt werden z.B. Author, Adresse, Zusammenfassung
 oder Kathegorie. 
@@ -49,12 +51,12 @@ textuell nicht wiederherstellbar, aber jetzt mithilfe von Anfragen durchsuchbar.
 \paragraph{Analyzer}
 
 
-	Der \texttt{Analyzer} ist die Komponente, welche zu indizierende Felder 
-in Tokenstreams umwandelt, damit diese dann ausgewertet werden k"onnen.
+	Der \texttt{Analyzer} zerlegt zu indizierende Felder 
+in Tokenstreams, damit diese dann ausgewertet werden k"onnen.
 Das kann beliebig komplex oder simple sein. Ein Analyzer kann z.B. speziell auf eine 
-bestimmte Sprache ausgelegt sein und Artikel Pronomen etc. direkt ausfiltern oder einfach
-anhand von $Whitespaces$ Token bilden. Als Nutzer von Lucene sind hier beliebig 
-M"oglichkeiten selbst zu Erweiterungen um eigene Anspr"uche zu erf"ullen.  
+bestimmte Sprache ausgelegt sein um Artikel, Pronomen etc. direkt ausfiltern oder einfach
+anhand von $Whitespaces$ Token bilden. Als Nutzer von Lucene bestehen hier beliebig 
+M"oglichkeiten selbst zu erweitern um eigene Anspr"uche zu erf"ullen.  
 
 Genauso ist es m"oglich verschiedene \texttt{Analyzer} zu verbinden 
 um unterschiedliche Felder auf unterschiedliche Weise zu zerlegen.
@@ -93,7 +95,7 @@ HSQLDB kann als Server oder in Programme eingebettet laufen.
 In der derzeitigen Version nutzen wir den eingebetteten Modus, und haben somit eine
 kleine Datenbank f"ur den Teamfoundserver allein.
 Die "ublichen Riten wie Datenbanknutzer anlegen usw. k"onnen wir dadurch im Server selbst automatisiert regeln.
-HSQLDB hat sehr gut Ergebnisse in dem PolePosition benchmark (siehe Literaturverzeichnis PolPos) geliefert und unterst"utzt einen grossteil der ANSI-92 SQL,SQL 99 und 2003 Standards bis hin zu Transaktionen.
+HSQLDB hat sehr gute Ergebnisse in dem PolePosition benchmark (siehe Literaturverzeichnis PolPos) geliefert und unterst"utzt einen grossteil der ANSI-92 SQL, SQL 99 und 2003 Standards bis hin zu Transaktionen.
 Ausserdem wird HSQLDB in einigen bekannten Projekten(z.b. JBoss, Mathematica, OpenOffice)  erfolgereich eingesetzt, was uns ausreichend von der Zuverl"assigkeit "uberzeugt hat.
 
 
@@ -101,16 +103,16 @@ Ausserdem wird HSQLDB in einigen bekannten Projekten(z.b. JBoss, Mathematica, Op
 
 Zur Erzeugung der XML-Antworten (Siehe Kapitel \ref{response}) wird die JDOM-Bibliothek\footnote{http://www.jdom.org} von Jason Hunter benutzt. JDOM ist eine abgewandelte DOM-Implementierung\footnote{Document Object Model} und bietet die Möglichkeit mit einfachen Java-Code sauberes XML zu erzeugen. JDOM wird ebenfalls benutzt um die XML-Dokumente in HTML zu wandeln, sofern der Client dieses wünscht.
 
-\subsection{Architektur}
+\section{Architektur}
 
-\subsubsection{Servlet}
+\subsection{Servlet}
 
 Das Servlet ist der Einstiegspunkt für jegliche Anfragen an TeamFound. Dem Servlet kommt dabei die Rolle eines Wächters zu, welcher überprüft ob notwendige Parameter für die einzelnen Anfragen vorhanden sind. Ist eine Anfrage gültig, wird diese an den sogenannten Controller weitergereicht, welcher die eigentlichen TeamFound-Komponenten steuert. Dieser Controller gibt immer ein Response-Objekt zurück, welches vom Servlet dann zB. als XML oder HTML serialisiert und als Antwort zum Client geschickt wird.
 
-\subsubsection{Controller}
+\subsection{Controller}
 
-Die Hauptaufgabe des Controllers besteht darin, die Teilaufgaben, die sich aus einer 
-Anfrage ergeben koordiniert an Datenbank und Index zu stellen.
+Die Hauptaufgabe des Controllers besteht darin die Teilaufgaben, die sich aus einer 
+Anfrage ergeben, koordiniert an Datenbank und Index zu stellen.
 Ausserdem sorgt er f"ur den Download der zu indezierenden Dokumente.
 
 Die Zugriffe auf den Index werden dabei durch eine Instanz eines Indexers erledigt.
@@ -122,17 +124,18 @@ Der Zugriff auf die Datenbank erfolgt "uber den DBLayer. Dieser stellt
 s"amtliche Funktionalit"at zum lesen und schreiben der Datenbank zur
 Verf"ugung.
 
-Wenn alle Teilaufgaben erf"ullt sind generiert der Controller aus den 
+Wenn alle Teilaufgaben erf"ullt sind (siehe Abl"aufe \ref{request}), generiert der Controller aus den 
 erhaltenen Informationen eine Response und "ubergibt diese dem Servlet.
 
-\subsubsection{Indexer}
+\subsection{Indexer}
 Der Indexer ist f"ur die Arbeit direkt am Lucene-Index verantwortlich. Er f"ugt 
 Dokumente (siehe \ref{lucene}) in den Index ein oder entfernt sie wieder. 
 Ausserdem f"uhrt er Suchanfragen auf dem Index aus.
-Die von uns definierten Dokumente (siehe \ref{}) werden im Indexer aus den 
-gegebenen Informationen erstellt. 
-Zur Indizierung benutzt der Indexer einen eigenen Analyzer (siehe \ref{lucene}), 
-der haupts"achlich ben"otigt wird um das Kategorienfeld korekt zu zerlegen.
+Die von uns definierte Dokumentenstruktur (siehe \ref{docstruktur}) ist bereits im Cotroller bekannt, 
+somit kann der Indexer vorgefertigte Dokument erhalten und als Ergebnis liefern. 
+Zur Indizierung und zur Suche benutzt der Indexer 
+einen eigenen Analyzer (siehe \ref{lucene}), 
+der wird haupts"achlich ben"otigt um das Kategorienfeldi (siehe \ref{docstruktur}) korrekt zu zerlegen.
 
 Die Anfragen werden zu eiem teil durch den QueryParser (siehe \ref{lucene}) und zum 
 anderen vom Indexer generiert. Der Indexer erstellt dabei die Einschr"ankung
@@ -140,20 +143,36 @@ welche Kategorien in der Anfrage g"ultig sind.
 Aus beiden teilen wird die gesammte Anfrage gebildet und an den Index gestellt.
 Die Verarbeitung der Ergebnisse "ubernimmt der Controller.
 
-\subsubsection{Response}
+\subsection{Response}
 
 Antworten werden in TeamFound immer als XML generiert, diese XML\-Repräsentation kann bevor sie zum Client geschickt wird, noch mittels XSLT in eine geeignete HTML\-Fassung gewandelt werden.
 Eine Basisklasse Response übernimmt dabei das Handling des eigentlichen JDOM-Document-Objektes, während die eigentlichen Antwort\-Klassen, wie SearchResponse oder AddPageResponse ihre eigentlichen Inhalte an die Standardelemente einer Antwort anhängen (Siehe dazu mehr im Kapitel Protokoll TODO: LINK).
 
 
-\subsubsection{Datenmodell}
+\section{Datenmodell}
 
-\subsection{Ablauf eines Requests}
+\subsection{Datenbank}
 
+\subsection{Dokumentstruktur}
+\label{docstruktur}
+
+\subsection{Kategorienbaum}
+
+\section{Abl"aufe im Server}
+\label{request}
+
+\subsection{AddpageRequest}
+\label{addpagerequest}
 Komplette Beschreibung, evtl. auch mit Diagramm
 
+\subsection{Ablauf SearchRequest}
+\label{searchrequest}
 
-\section{Protokoll}
+\subsection{Ablauf GetCategoriesRequest}
+\label{getcatrequest}
+
+
+\chapter{Protokoll}
 
 Jeweils Anfrage und Antworten
 
@@ -163,9 +182,9 @@ Jeweils Anfrage und Antworten
 \item Dokumentation (Wie siehts wirklich aus)
 \end{itemize}
 
-\section{Clients}
+\chapter{Clients}
 
-\subsection{Web-Client}
+\section{Web-Client}
 Der Web-Client ist ein einfaches HTML-Formular (\texttt{<form>..</form>}), welches Anfragen an den Server sendet und die Antwort direkt im Browser anzeigt. Dieser Client ist von daher praktisch, da man keine extra Erweiterung f"ur den Browser installieren muss, und von daher unpraktisch, da man die URL einer neu hinzuzuf"ugende Seite immer zuerst manuell kopieren, dann die Seite des Web-Clients laden und schliesslich die URL manuell eintragen muss.
 \begin{figure}[h]
 \epsfig{file=webclient}
@@ -182,7 +201,7 @@ url='+encodeURIComponent(location.href)
 
 Mit diesem einfachen Link, kann das l"astige Kopieren umgangen werden, indem "uber Javascript die URL der aktuell im eigenen Browser angezeigten Seite, durch einen einfachen Click auf diesen Bookmark, direkt an den TeamFound-Server gesendet wird. (Beispiel ist f"ur Milestone 1)
 
-\subsubsection{Implementation}
+\subsection{Implementation}
 Die \textit{extrem einfache} Implementation des Web-Clients f"ur eine Suchanfrage entsprechend Milestone 2 sieht wie folgt aus:
 \begin{verbatim}
 <form action="serverurl">
@@ -195,7 +214,7 @@ Die \textit{extrem einfache} Implementation des Web-Clients f"ur eine Suchanfrag
 \end{verbatim}
 Bei dem Design der TeamFound-Interfaces war diese M"oglichkeit der HTML-Formulare die entscheidende Grundlage. Alle Anfragen an den Server k"onnen mit HTML-Formularen ohne Zus"atze (wie Javascript, Applets, Extensions, etc.) generiert werden.
 
-\subsection{Firefox-Toolbar}
+\section{Firefox-Toolbar}
 Der Mozilla Firefox l"asst sich durch sogenannte \textit{Extensions} sehr einfach erweitern. Als grundlegende Techniken werden daf"ur XUL (XML User Interface Language) und Javascript ben"otigt. Desweiteren gibt es eine exakt vordefinierte Verzeichnisstruktur sowie eine Beschreibungs-Datei (\texttt{install.rdf}) im RDF (Resource Description Framework) Format, umd die Erweiterung automatisiert installierbar in Firefox-Browsern zu machen.
 
 \begin{figure}[h]
@@ -204,7 +223,7 @@ Der Mozilla Firefox l"asst sich durch sogenannte \textit{Extensions} sehr einfac
 \label{fftoolbar}
 \end{figure}
 
-\subsubsection{Dateien}
+\subsection{Dateien}
 Die Verzeichnisstruktur der TeamFound Firefox Extension sowie alle enthaltenen Dateien sind:
 \begin{verbatim}
 chrome.manifest
@@ -243,7 +262,7 @@ Die eigentliche Funktionalit"at steckt dabei in dem Unterverzeichnis content:
 \label{fftoolbarsuchergebnis}
 \end{figure}
 
-\subsubsection{Changelog}
+\subsection{Changelog}
 Das originale Changelog\footnote{\texttt{http://teamfound.berlios.de/\#firefoxchangelog0.7}} (in englischer Sprache):
 \paragraph{Firefox \& Flock toolbar 0.7 (07-DEC-2005)}
 \begin{itemize}
@@ -296,7 +315,7 @@ Das originale Changelog\footnote{\texttt{http://teamfound.berlios.de/\#firefoxch
 \item initial release
 \end{itemize}
 
-\subsection{Internet Explorer-Toolbar}
+\section{Internet Explorer-Toolbar}
 
 Auch beim Internet Explorer stand zunächst die Frage wie dieser überhaupt zu erweitern ist. 
 Google und Yahoo haben mit ihren Toolbar's vorgemacht das es geht, nur das wie war zu lösen.
@@ -309,7 +328,7 @@ für die Entwicklung von BandObjects, also Band Objekten (http://www.codeproject.
 Das mitgelieferte Beispiel funktionierte auf Anhieb 
 und es wurde begonnen die Extension zu implementieren.
 
-\subsubsection{Custom Explorer Bars, Tool Bands, and Desk Bands}
+\subsection{Custom Explorer Bars, Tool Bands, and Desk Bands}
 
 Es gibt verschiedene Möglichkeiten eigene Komponenten in den Internet Explorer zu integrieren. 
 Im folgenden werden einige Konzepte vorgestellt.
@@ -341,14 +360,14 @@ Explorer zu tun. Sie dienen dazu den Desktop um weitere Leisten zu erweitern.
 Berühmtester Vertreter dieser Kategorie ist die Adressleiste. 
 Sie kann ausser im Explorer und Internet Explorer auch in der Taskleiste erscheinen.
 
-\subsubsection{Entwicklung der Band Objekte}
+\subsection{Entwicklung der Band Objekte}
 
 Die Entwicklung dieser Komponenten basiert, wie ein sehr großer Teil der 
 Windowsentwicklung auf COM. Das Component Objekt Model von Microsoft 
 ist eines der ältesten Komponentensysteme und bildet Zusammen mit dem 
 Windows API die Grundlage für die Entwicklung von Windowssoftware.
 
-\subsubsection{COM, Schnittstellen, Klassen, Registry}
+\subsection{COM, Schnittstellen, Klassen, Registry}
 
 Im folgende soll ein kurzer Überblick über COM gegeben werden, 
 der die Schritte auf dem Weg zu Entwicklung der Band Objects erklärt.
@@ -384,7 +403,7 @@ um die Bibliothek zu finden in der die Komponente mit der Schnittstelle implemen
 lädt diese, erzeugt die Komponente und gibt die Schnittstelle zurück.
 Damit das funktioniert, ist jede COM Komponente vor ihrer Benutzung in der Registry einzutragen.
 
-\subsubsection{Band Objekte und COM}
+\subsection{Band Objekte und COM}
 
 Alle Band Objekte sind wiederum COM Komponenten, welche bestimmte Schnittstellen 
 implementieren müssen. Diese Schnittstellen werden vom Internet Explorer erwartet und abgefragt. 
@@ -428,13 +447,13 @@ Schnittstelle um sich selbst in den übergebenen Stream zu serialiasieren oder zu
 Daneben gibt es noch einige weitere Schnittstellen z.B. für Benutzereingaben, 
 auf welche hier jedoch nicht näher eingegangen werden soll.
 
-\subsubsection{Registrierung der Band Objekte}
+\subsection{Registrierung der Band Objekte}
 
 Jedes Band Objekt muss wie bereits erwähnt, als COM Objekt registriert werden. 
 Darüber hinaus muss dem Internet Explorer nocht mitgeteilt werden, das er eine 
 Toolleiste zur Verfügung hat. Dies geschieht ebenfalls über einen Eintrag in der Windows Registry.
 
-\subsubsection{Die BandObject Library}
+\subsection{Die BandObject Library}
 
 Alles was im Abschnitt COM und Band Object Entwicklung beschrieben worden ist, 
 nimmt einem die Band Objekt Library ab. Der ganze ``schmuzige'' COM Teil wird durch 
@@ -444,7 +463,7 @@ welche von der BandObject erbt. Da BandObject selber von UserControl
 erbt, steht einem auch der visuelle Designer zum erstellen der Toolbar zur Verfügung.
 Die Funktionalität der Toolbar kann also bequem in CSharp erfolgen.
 
-\subsubsection{Teamfound Internet Exlorer Toolbar}
+\subsection{Teamfound Internet Explorer Toolbar}
 
 \paragraph{Entwicklung}
 
