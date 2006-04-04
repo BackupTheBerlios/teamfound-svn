@@ -105,6 +105,15 @@ Zur Erzeugung der XML-Antworten (Siehe Kapitel \ref{response}) wird die JDOM-Bib
 
 \section{Architektur}
 
+\begin{figure}[h]
+\includegraphics[width=16cm]{bilder/aufbau2.eps}
+\caption{grobe ServerArchitektur}
+\label{serverarchgrob}
+\end{figure}
+
+
+
+
 \subsection{Servlet}
 
 Das Servlet ist der Einstiegspunkt für jegliche Anfragen an TeamFound. Dem Servlet kommt dabei die Rolle eines Wächters zu, welcher überprüft ob notwendige Parameter für die einzelnen Anfragen vorhanden sind. Ist eine Anfrage gültig, wird diese an den sogenannten Controller weitergereicht, welcher die eigentlichen TeamFound-Komponenten steuert. Dieser Controller gibt immer ein Response-Objekt zurück, welches vom Servlet dann zB. als XML oder HTML serialisiert und als Antwort zum Client geschickt wird.
@@ -153,17 +162,40 @@ Eine Basisklasse Response übernimmt dabei das Handling des eigentlichen JDOM-Doc
 
 \subsection{Datenbank}
 
+\begin{figure}[h]
+\includegraphics[width=16cm]{bilder/db.eps}
+\caption{Datenbank-ERD}
+\label{dberd}
+\end{figure}
+
+
+
+
 \subsection{Dokumentstruktur}
 \label{docstruktur}
 
 \subsection{Kategorienbaum}
+\begin{figure}[h]
+\includegraphics[width=16cm]{bilder/katstruktur.eps}
+\caption{Repr"asentation der Kategorien in DB und Index}
+\label{katstruktur}
+\end{figure}
+
+
+
 
 \section{Abl"aufe im Server}
 \label{request}
 
 \subsection{AddpageRequest}
 \label{addpagerequest}
-Komplette Beschreibung, evtl. auch mit Diagramm
+
+\begin{figure}[h]
+\includegraphics[width=16cm]{bilder/ablaufaddpage1.eps}
+\caption{Indezieren einer neuen URL}
+\label{addpage1}
+\end{figure}
+
 
 \subsection{Ablauf SearchRequest}
 \label{searchrequest}
