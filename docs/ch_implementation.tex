@@ -27,7 +27,7 @@ Lucene ist - laut eigener Aussage - der harte Teil einer Suchmaschine. Diese Bib
 Darüberhinaus kann jedes Dokument im Index beliebige $Felder$ enthalten, ein Feld ist als Inhaltselement eines Dokuments zu verstehen (Überschrift, Inhalt, Beschreibung). Dabei können völlig verschiedene Arten von Dokumenten in einem Index gespeichert werden sowie Suchanfragen direkt an ein oder mehrere Felder gestellt werden. Diese starke Erweiterbarkeit ist zum Beispiel bei der Implementierung von Dokumentenkategorien in TeamFound sehr wichtig gewesen (Siehe Kapitel \ref{kategorien})
 
 \subsubsection{Wichtige Komponenten}
-
+\label{luckomponenten}
 
 \paragraph{Document und Field}
 
@@ -159,6 +159,14 @@ Eine Basisklasse Response übernimmt dabei das Handling des eigentlichen JDOM-Doc
 
 
 \section{Datenmodell}
+In diesem Kapitel soll auf die Datenstrukturen in der
+Datenbank und im Index eingegangen werde.
+
+Ausserdem soll erl"autert werden, warum Daten auf diese Weise zwischen Index und 
+Datenbank verteilt wurden und wo Zusammenh"ange bestehen.
+Dabei wird das Hauptaugenmerk auf die Struktur der Kategorienrepr"asentation gelegt.
+In sp"ateren Versionen von Teamfound wird an dieser Stelle sicherlich auch das Problem
+von Nutzer- und Rechtemanagement zu kl"aren sein.
 
 \subsection{Datenbank}
 
@@ -168,6 +176,51 @@ Eine Basisklasse Response übernimmt dabei das Handling des eigentlichen JDOM-Doc
 \label{dberd}
 \end{figure}
 
+Die Datenbank besteht zur Zeit aus 4 Tabellen (siehe Abbildung \ref{dberd}).
+Die wichtigste Tabelle des derzeitigen Standes ist die $category$-Tabelle.
+Sie beinhaltet die Kategorieb"aume der Projekte eines Servers.
+
+Um die B"aume in der Datenbank zu repr"asentieren haben wir
+Verschachtelte Mengen (nested sets) eingesetzt. 
+Dadurch k"onnen wir mit einfachen \texttt{select}-statements den
+Baum durchsuchen, allerdings ist das einf"ugen oder edititeren des Baumes aufwendig.
+Da wir Serverseitig haupts"achlich Suchvorg"ange zu bedienen haben, wollten wir
+eine Rekursive Tabellenstruktur in der Datenbank vermeiden.
+Die Verschachtelten Mengen boten uns eine gute Variante dies zu umgehen.
+Genauere Informationen hierzu befinden sich im Kapitel \ref{katrep} .
+
+Die Tabelle $categoryversion$ k"onnte prinzipiell zu jeder Kategorie eine
+Versionsnummer mitf"uhren. Derzeit wird dies nur f"ur Wurzelknoten getan.
+Damit hat jeder vom Server verwaltete Kategoriebaum eine Versionsnummer. Diese
+wird benutzt um die Aktualit"at der B"aume zwischen Clienten untereinander 
+und mit dem Server sicherzustellen.
+Es ist durchaus vorstellbar Versionsnummern bei gro"sen Projekten
+auch f"ur Teilb"aume zu verteilen, was derzeit aber nicht geplant ist.
+
+Zu jeder Kategorie k"onnen beliebig viele Urls zugeordnet werden. Diese
+werden in der $indexedurl$ Tabelle gehalten. Jede Url, die indiziert wurde, wird
+mit Datum in dieser Tabelle gespeichert. Somit kann schnell festgestellt werden,
+ob eine Url schon einmal hinzugef"ugt wurde und zu welchen Kategorien sie bisher
+zugeordnet war.
+Da der Index selbst auch doppelte Eintr"age zul"asst, 
+ist es wichtig vor dem Einf"ugen das vorhandensein "uberpr"ufen zu k"onnen. 
+
+Jede Url kann auch beliebig zu Kategorien zugeordnet werden,
+da wir dieselbe Url in verschiedenen Kategorieb"aumen oder 
+auch in verschiedenen Kategorien in ein und demselben Baum zulassen m"ochten.
+Die Nutzer von Teamfound entscheiden in welche Kategorie ein Document 
+geh"ort. Unabh"angig davon w"are eine "Uberpr"ufung, ob solch eine Zuordnung sinnvoll 
+ist, auch kaum umzusetzbar.
+
+Im Index wird allerdings zu jeder Url nur ein einziges Dokument (siehe \ref{luckomponenten}) abgelegt.
+Wichtig ist dabei, dass eine Url, die einer Kategorie hinzugef"ugt wird, 
+auch allen zugeh"origen Elternkategorien zugeordnet wird.
+Das passiert in der Datenbank als auch im Dokument des Indexes.
+Dadurch werden bei einer Suchanfrage innerhalb einer Kategorie automatisch 
+auch alle Urls geliefert, die Kindkategorien dieser Kategorie zugeordnet wurden.
+
+Das Datum in der $indexedurl$ Tabelle  wird genutzt um Urls zu erkennen, welche
+schon lange im Index liegen. Diese werden dementsprechend neu indiziert.
 
 
 
@@ -175,6 +228,8 @@ Eine Basisklasse Response übernimmt dabei das Handling des eigentlichen JDOM-Doc
 \label{docstruktur}
 
 \subsection{Kategorienbaum}
+\label{katrep}
+
 \begin{figure}[h]
 \includegraphics[width=16cm]{bilder/katstruktur.eps}
 \caption{Repr"asentation der Kategorien in DB und Index}
