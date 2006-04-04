@@ -86,8 +86,7 @@ Die Entscheidung keine f"ur Webapplikationen typische Datenbank wie MySQL einzus
 ist leicht erkl"art. Wie schon in Kapitel \ref{platform} beschrieben, sollte eine 
 Java-Umgebung eingesetzt werden.
 Das schr"ankt erstmal nur auf Datenbanken ein, die JDBC kompatibel sind.
-Deshalb ist der Server auch leicht um einen weiteren Datenbanklayer zu erweitern, falls
-andere Datenbanken erw"unscht sind.
+Deshalb ist der Server auch leicht um einen weiteren Datenbanklayer zu erweitern, falls andere Datenbanken erw"unscht sind.
 
 HSQLDB wurde von uns ausgew"ahlt, weil wir sie als kleine Java-Bibliothek einbinden k"onnen
 und es damit den Nutzern unseres Servers ersparen sich extra um einen Datenbankserver zu k"ummern.
@@ -144,7 +143,10 @@ Die von uns definierte Dokumentenstruktur (siehe \ref{docstruktur}) ist bereits 
 somit kann der Indexer vorgefertigte Dokument erhalten und als Ergebnis liefern. 
 Zur Indizierung und zur Suche benutzt der Indexer 
 einen eigenen Analyzer (siehe \ref{lucene}), 
-der wird haupts"achlich ben"otigt um das Kategorienfeldi (siehe \ref{docstruktur}) korrekt zu zerlegen.
+der wird haupts"achlich ben"otigt um das Kategorienfeld (siehe \ref{docstruktur}) korrekt zu zerlegen.
+Ausserdem geh"ort ein einfacher Html-Parser zum Indexer, dieser soll den Text und
+einige zus"atzliche Informationen (z.b. context-type) aus den Html-Seiten extrahieren.
+Weitere Parser z.b. f"ur Postscript oder Pdf-Files sind in zuk"unftigen Versionen denkbar.
 
 Die Anfragen werden zu eiem teil durch den QueryParser (siehe \ref{lucene}) und zum 
 anderen vom Indexer generiert. Der Indexer erstellt dabei die Einschr"ankung
@@ -219,13 +221,62 @@ Das passiert in der Datenbank als auch im Dokument des Indexes.
 Dadurch werden bei einer Suchanfrage innerhalb einer Kategorie automatisch 
 auch alle Urls geliefert, die Kindkategorien dieser Kategorie zugeordnet wurden.
 
-Das Datum in der $indexedurl$ Tabelle  wird genutzt um Urls zu erkennen, welche
+Das Datum in der $indexedurl$ Tabelle wird genutzt um Urls zu erkennen, welche
 schon lange im Index liegen. Diese werden dementsprechend neu indiziert.
 
 
 
-\subsection{Dokumentstruktur}
+\subsection{Index und Dokumentstruktur}
 \label{docstruktur}
+
+Die Bibliothek Lucene macht bestimmte Vorgaben wie die Textdokumente, die von Lucene
+indiziert werden sollen, zu erstellen sind. (siehe \ref{luckomponenten})
+
+In diesem Abschnitt soll kurz der Aufbau eines von Teamfound erstelltem Dokuments
+beschrieben werden. Zur Hilfestellung lohnt es sich Abbildung \ref{katstruktur} 
+anzuschauen.
+
+Jede Html-Seite, die dem Index hinzugef"ugt werden soll, muss erstmal serverseitig heruntergeladen werden.
+Danach wird der Text und weitere Informationen extrahiert.
+Dies alles, sowie die Kategorien zu denen die Seite zugeordnet wurde, wird nun in 
+ein Lucene-Dokument verpackt.
+
+Das erste Feld (siehe \ref{luckomponenten}), welches ein Teamfounddokument 
+enth"alt, ist
+ein Schl"usselwortfeld. In diesem wird die Url zu der dieses Dokument geh"ort
+gespeichert. Dieses Feld wird nicht durch den Teamfound-$Analyser$ (siehe \ref{luckomponenten}) zerlegt, aber durchsuchbar im Index abgespeichert. 
+Die Url wird also zur eindeutigen Identifikation eines Dokumentes ben"otigt. 
+Zus"atzlich ist es m"oglich den Index nach Urls zu durchsuchen.
+
+Als n"achstes speichern wir eine sehr kurze Zusammenfassung. 
+Diese wird weder zerlegt noch indiziert. 
+Sie dient ausschlie"slich als n"ahere Beschreibung eines Suchergebnisses einer Anfrage.
+
+Ein weiteres Feld ist der Titel der Seite. Er wird zerlegt und indiziert.
+Anfragen die Schl"usselw"orter enthalten, die im Titel vorkommen, erhalten
+dadurch eine h"ohere Wertigkeit.
+
+Das wichtigste Feld neben der Url enth"alt den textuellen Inhalt der Seite.
+Dieser wird in Token zerlegt und indiziert.
+Anfragen an den Index durchsuchen grunds"atzlich dieses Feld und das Titelfeld.
+
+Die Ergebnisse solcher Anfragen sollen nun durch Kategoriezugeh"origkeit
+eingeschr"ankt werden. Daf"ur umfassen Teamfounddokumente ein weiteres Feld, dass
+die Kategorien enth"alt denen das Dokument zugeordnet wurde. 
+
+Die Anfrage "uber Inhalt und Titel wird also
+mit einer zweiten Suchanfrage "uber dem Kategorienfeld verkn"upft und eingeschr"ankt.
+Um solche Anfragen zu erm"oglichen muss jedes Token in einem Kategoriefeld eindeutig
+einer Kategorie zuzuordnen sein.
+
+Die einfachste L"osung war die ID einer Kategorie aus der Datenbank als Token 
+zu benutzen, und diese in dem Kategoriefeld zu speichern.
+Damit es m"oglich ist die verschiedenen IDs zu unterscheiden, trennen wir diese mit 
+einem eindeutigen Charakter voneinander ab.
+Den Teamfound-$Analyser$ haben wir dementsprechend angepasst,
+so dass er die Tokens dieses Feldes einfach anhand des Trenncharakters generiert.
+Auf diese Weise k"onnen wir die Anfragen leicht so erweitern, dass sie mithilfe von Kategorien eingeschr"ankt werden k"onnen.
+
 
 \subsection{Kategorienbaum}
 \label{katrep}
