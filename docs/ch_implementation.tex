@@ -114,11 +114,11 @@ Zur Erzeugung der XML-Antworten (Siehe Kapitel \ref{response}) wird die JDOM-Bib
 
 
 \subsection{Servlet}
-
+\label{servlet}
 Das Servlet ist der Einstiegspunkt für jegliche Anfragen an TeamFound. Dem Servlet kommt dabei die Rolle eines Wächters zu, welcher überprüft ob notwendige Parameter für die einzelnen Anfragen vorhanden sind. Ist eine Anfrage gültig, wird diese an den sogenannten Controller weitergereicht, welcher die eigentlichen TeamFound-Komponenten steuert. Dieser Controller gibt immer ein Response-Objekt zurück, welches vom Servlet dann zB. als XML oder HTML serialisiert und als Antwort zum Client geschickt wird.
 
 \subsection{Controller}
-
+\label{controller}
 Die Hauptaufgabe des Controllers besteht darin die Teilaufgaben, die sich aus einer 
 Anfrage ergeben, koordiniert an Datenbank und Index zu stellen.
 Ausserdem sorgt er f"ur den Download der zu indizierenden Dokumente.
@@ -136,6 +136,7 @@ Wenn alle Teilaufgaben erf"ullt sind (siehe Abl"aufe \ref{request}), generiert d
 erhaltenen Informationen eine Response und "ubergibt diese dem Servlet.
 
 \subsection{Indexer}
+\label{indexer}
 Der Indexer ist f"ur die Arbeit direkt am Lucene-Index verantwortlich. Er f"ugt 
 Dokumente (siehe \ref{lucene}) in den Index ein oder entfernt sie wieder. 
 Ausserdem f"uhrt er Suchanfragen auf dem Index aus.
@@ -155,7 +156,7 @@ Aus beiden teilen wird die gesammte Anfrage gebildet und an den Index gestellt.
 Die Verarbeitung der Ergebnisse "ubernimmt der Controller.
 
 \subsection{Response}
-
+\label{response}
 Antworten werden in TeamFound immer als XML generiert, diese XML\-Repräsentation kann bevor sie zum Client geschickt wird, noch mittels XSLT in eine geeignete HTML\-Fassung gewandelt werden.
 Eine Basisklasse Response übernimmt dabei das Handling des eigentlichen JDOM-Document-Objektes, während die eigentlichen Antwort\-Klassen, wie SearchResponse oder AddPageResponse ihre eigentlichen Inhalte an die Standardelemente einer Antwort anhängen (Siehe dazu mehr im Kapitel Protokoll TODO: LINK).
 
@@ -347,6 +348,12 @@ durch den Baum liegt gefunden und sie kann schnell ausgef"uhrt werden.
 
 \section{Abl"aufe im Server}
 \label{request}
+Wie Aufrufe vom Client im Server abgearbeitet werden, soll kurz in diesem Abschnitt 
+behandelt werden.
+Wir haben drei verschiedene Serverdienste ausgew"ahlt. Sie sollen einen Einblick in die
+Interna des Servers bieten und dadurch die Funktionsweise von Teamfound noch
+etwas besser verst"andlich machen.
+
 
 \subsection{AddpageRequest}
 \label{addpagerequest}
@@ -356,6 +363,44 @@ durch den Baum liegt gefunden und sie kann schnell ausgef"uhrt werden.
 \caption{Indizieren einer neuen URL}
 \label{addpage}
 \end{figure}
+
+Die wichtigsten Funktionen von Teamfound sind ohne Zweifel, dass hinzuf"ugen und
+das Suchen. Deshalb soll als erstes ein Einblick in das Hinzuf"ugen von Urls 
+gegeben werden. Hierzu liefert die Abbildung \ref{addpage} einen "Uberblick.
+
+Der Aufruf des Clients wird in $Get$-Variablen in der Url codiert (siehe \ref{interface2})
+und vom Servlet (siehe \ref{servlet}) entgegengenommen. 
+Ist der Aufruf korekt, d.h. er enth"alt die hinzuzuf"ugende Url und mindestens 
+eine Kategorie, wird der Controller (siehe \ref{controller}) mit entsprechendem 
+Auftrag angestossen.
+Bei nicht korekten Aufrufen wird eine \texttt{ErrorResponse} erstellt.
+
+Der Controller erstellt nun eine Verbindung zur Datenbank 
+und einen Indexer (siehe \ref{indexer}).
+Als n"achstes "uberpr"uft er anhand der Datenbank ob die Url schon existiert.
+An dieser Stelle ergeben sich zwei M"oglichkeiten.
+Sollte die Url noch nicht indiziert sein, so muss sie als erstes runtergeladen werden.
+Danach wird ein Dokument erstellt und durch den Indexer dem Index hinzugef"ugt.
+(siehe hierzu Kapitel \ref{docstruktur})
+Als letztes muss noch die Datenbank angeglichen werden. (siehe Kapitel \ref{datenbank})
+
+Die zweite M"oglichkeit ist, dass die Url bereits indiziert wurde.
+Um ein Update der Url im Index durchzuf"uhren, muss zuerst das entsprechende Dokument
+aus dem Index gel"oscht werden. Dabei wird eine Kopie des Dokuments an den Controller
+geliefert. Dieser ersetzt nun das Kategorienfeld (siehe Kapitel \ref{docstruktur}), damit
+die neuen Kategorien auch enthalten sind.
+Danach wird das Dokument dem Index wieder hinzugef"ugt und die entsprechenden neuen
+Assoziationen zwischen Url und Kategorien werden in der Datenbank gesetzt.
+
+Es gibt noch eine dritte M"oglichkeit, die allerdings in Abbildung \ref{addpage} nicht
+dargestellt ist. Die Url ist bereits hinzugef"ugt und es ver"andert sich auch bei
+den Kategorien nichts. Auch diese M"oglichkeit wird anahnd der Datenbank "uberpr"uft.
+Sollte der Fall eintreten passiert gar nichts und die Erfolgsmeldung wird 
+sofort an den Client gesendet. Es ist einfach vorstellbar, dass ein Benutzer ausversehen
+mehrmals das Hinzuf"ugen ausl"ost. In solch einem Fall wollen wir nicht unn"otig den
+Index blockieren.
+Allerdings gibt es auch hier eine Aussnahme. Sollte die Url ein gewisses ''Alter'' 
+"uberschreiten wird sie auf jeden Fall erneut heruntergeladen.
 
 
 \subsection{Ablauf SearchRequest}
@@ -399,6 +444,7 @@ durch den Baum liegt gefunden und sie kann schnell ausgef"uhrt werden.
 \end{description}
 
 \section{Interface Milestone 2}
+\label{interface2}
 \subsection{Allgemein}
 \subsubsection{Tests}
 Zum Testen der Serverseitigen Interface-Implementation existiert folgende Webseite die entsprechende Requests erstellen kann: 
