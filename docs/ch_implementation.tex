@@ -403,7 +403,7 @@ Allerdings gibt es auch hier eine Aussnahme. Sollte die Url ein gewisses ''Alter
 "uberschreiten wird sie auf jeden Fall erneut heruntergeladen.
 
 
-\subsection{Ablauf SearchRequest}
+\subsection{SearchRequest}
 \label{searchrequest}
 
 \begin{figure}
@@ -438,7 +438,7 @@ durch den Controller ausgewertet und eine $Response$ wird erstellt.
 Diese kann dann die HTML- oder XML-Antwort generieren, welche an den Client gesendet wird.
 
 
-\subsection{Ablauf GetCategoriesRequest}
+\subsection{GetCategoriesRequest}
 \label{getcatrequest}
 
 \begin{figure}
@@ -447,8 +447,43 @@ Diese kann dann die HTML- oder XML-Antwort generieren, welche an den Client gese
 \label{getcat}
 \end{figure}
 
+In den vorangegangenen Kapiteln wurden Kategorien schon ziemlich ausgiebig erl"autert.
+An dieser Stelle soll kurz erkl"art werden wie die Kategorien ausgelesen und an den
+Client gesendet werden. Als "Ubersicht hierzu dient die Abbildung \ref{getcat}.
 
+F"ur diese Aufgabe muss der Controller nur zwei Datenbankabfragen machen und kann 
+dann die entsprechende Response f"ullen.
+Als erstes werden daf"ur die vollst"andigen Informationen "uber die Kategorie, deren
+Unterbaum wir erstellen sollen, ausgelesen. Dies kann prinzipiell eine beliebige Kategorie
+sein, aber da wir zum derzeitigen Stand nur die Version von gesammten B"aumen speichern
+(siehe \ref{datenbank}), ist derzeit auch nur eine Abfrage des gesammten Baumes sinnvoll.
+Die Repr"asentation des Baumes in der Datenbank erm"oglicht (siehe \ref{katrep}) es uns den gew"unschten Baum mit einer etwas komplexeren Anfrage auszulesen.
+Die Anfrage:
+\begin{verbatim}
+SELECT a.id, a.left, a.right, a.name, 
+	a.beschreibung,count(*) AS level FROM category AS a, 
+	category AS b WHERE a.root\_id = 1 AND b.root\_id = 1 
+		AND a.left BETWEEN b.left AND b.right GROUP BY a.id, 
+	a.left, a.right, a.name, a.beschreibung ORDER BY a.left
+\end{verbatim}
+ergibt bei dem Kategoriebaum aus Abbildung \ref{katstruktur} folgende Antwort:
 
+\begin{center}
+\begin{tabular}{ccccccc}
+ & id & left & right & name & description & level
+\\ & 1 & 1 & 14 & root & start des baumes & 1
+\\ & 2 & 2 & 9 & Kat2 & ... & 2
+\\ & 3 & 3  & 4 & Kat3 & ... & 3
+\\ & 5 & 5 & 6 & Kat5 & ... & 3
+\\ & 7 & 7 & 8 & Kat7 & ... & 3
+\\ & 4 & 10 & 13 & Kat4 & ... & 2
+\\ & 6 & 11 & 12 & Kat6 & ... & 3
+
+\end{tabular}
+\end{center}
+Diese kann leicht ausgwertet und eine Response erstellt werden.
+
+	
 \chapter{Protokoll}
 Die in unserem Projekt von Anfang wohl grundlegendste Frage war die des Protokolls, also wie unsere Clients mit dem Server kommunizieren sollen. Auf jeden Fall sollte ein Protokoll spezifiziert werden, welches um sp"atere, jetzt noch unbekannte Features, m"oglichst leicht erweiterbar sein sollte. Es sollte ausserdem gut Dokumentiert und eindeutig sein, damit "ahnliche Projekte, die die Idee hinter TeamFound ebenfalls implementieren wollen, \textbf{motiviert werden} dasselbe Protokoll zu benutzen. Somit k"onnten dann Server und Clients aus unterschiedlichen Projekten miteinander funktionieren und arbeiten.
 
