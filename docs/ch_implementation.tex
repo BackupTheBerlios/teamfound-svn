@@ -426,9 +426,28 @@ Allerdings gibt es auch hier eine Aussnahme. Sollte die Url ein gewisses ''Alter
 
 
 \chapter{Protokoll}
+Die in unserem Projekt von Anfang wohl grundlegendste Frage war die des Protokolls, also wie unsere Clients mit dem Server kommunizieren sollen. Auf jeden Fall sollte ein Protokoll spezifiziert werden, welches um sp"atere, jetzt noch unbekannte Features, m"oglichst leicht erweiterbar sein sollte. Es sollte ausserdem gut Dokumentiert und eindeutig sein, damit "ahnliche Projekte, die die Idee hinter TeamFound ebenfalls implementieren wollen, \textbf{motiviert werden} dasselbe Protokoll zu benutzen. Somit k"onnten dann Server und Clients aus unterschiedlichen Projekten miteinander funktionieren und arbeiten.
 
-\section{Zielsetzung und Sinn des Protokolls}
-\section{Umsetzung (Designentscheidungen, Technik,...)}
+Wir sind uns nicht sicher, wie weit wir diese Ziele mit Milestone 2 bereits erreicht haben, aber wir glauben auf dem richtigen Weg zu sein ;-)
+
+\section{Designentscheidungen und verwendete Techniken}
+F"ur unser Protokoll kamen prinzipiell viele verschiedene M"oglichkeiten in Betracht. 
+
+Die erste, und einfachste Designentscheidung war, ein Protokoll zu benutzen, welches auf TCP/IP aufsetzt. Somit k"onnen schonmal alle Computer die "uber einen Internet-Zugang verf"ugen prinzipiell mit unseren Componenten kommunizieren.
+
+Der zweite Schritt war die Festlegung unseres Protokolls nicht direkt auf TCP/IP aufzusetzen, sondern erst auf dem HTTP Protokoll. Diese Entscheidung viel auch sehr schnell und war f"ur uns naheliegend, da wir von Anfang an vorhatten Browser-Plugins zu programmieren, und jeder Internet-Browser HTTP ebenfalls unterst"utzt. 
+
+Als weitere Grundlage f"ur unsere Designentscheidungen war unser Wunsch, die M"oglichkeit einen ganz einfachen Web-Client bereitstellen zu k"onnen, so da"s TeamFound auch ohne Installation einer Browser-Erweiterung ausprobiert und genutzt werden kann. Diese Entscheidung f"uhrte dann auch direkt zu der eigentlichen Basis unseres Protokolls:
+\begin{description}
+\item[HTML-Antworten des Servers] Somit kann jeder Browser die Suchergebnisse unseres Servers direkt anzeigen.
+\item[Anfragen an Server mittels HTTP-GET Variablen] Somit kann ein einfaches HTML-Formular korrekte Suchanfragen an unseren Server stellen.
+\item[XML-Antworten des Servers] Diese M"oglichkeit, konfigurierbar "uber die Suchanfrage, erm"lglicht den Browser-Plugins, und somit dem End-Benutzer, die Darstellung der Suchergebnisse selber zu beeinflussen bzw. komplett anzupassen.
+\end{description}
+
+Die Implementierung des Protokolls, sowie auch alle anderen Komponenten von TeamFound, hatte wir in kleine Schritte unterteilt, unsere Milestones. So hat das Protokoll f"ur Milestone 1 z.B. noch keine Unterst"utzung f"ur XML-Antworten und Kategorien gehabt.
+
+Auf Basis dieser gundlegenden Entscheidungen, haben wir also begonnen sowohl die HTTP-GET Anfragen zu spezifizieren als auch (ab Milestone 2) XML-Tags zu definieren, um die volle Funktionalit"at unserer Implementation nutzen zu k"onnen. 
+
 \section{Interface Milestone 1}
 
 \subsection{Seite hinzufügen}
@@ -440,14 +459,14 @@ Allerdings gibt es auch hier eine Aussnahme. Sollte die Url ein gewisses ''Alter
 \subsection{Suchen}
 \begin{description}
 \item[Request] http://url/search.pl?keyword=zzz
-\item[Antwort] HTML-Seite mit URLs gefundener Übereinstimmungen 
+\item[Antwort] HTML-Seite mit URLs gefundener "Ubereinstimmungen 
 \end{description}
 
 \section{Interface Milestone 2}
 \label{interface2}
 \subsection{Allgemein}
 \subsubsection{Tests}
-Zum Testen der Serverseitigen Interface-Implementation existiert folgende Webseite die entsprechende Requests erstellen kann: 
+Zum Testen der Serverseitigen Interface-Implementation existiert folgende Webseite, die entsprechende Requests erstellen kann: 
 
 \texttt{http://teamfound.berlios.de/test\_the\_server\_interface\_m2.html}
 \\
@@ -464,7 +483,7 @@ Das Skript liegt auch im SVN unter \texttt{teamfound/interface/milestone2/testmi
 
 \subsubsection{Alle Anfragen an den Server}
 
-Alle Anfrage-Parameter werden in Form von HTTP GET oder POST Variablen übertragen. (solange wir Perl-Skripte verwenden die das CGI-Modul verwenden ist das total egal und ändert nicht eine einzige Code-Zeile ;-)
+Alle Anfrage-Parameter werden in Form von HTTP GET oder POST Variablen übertragen. Prinzipiell gibt es eine Unterscheidung, ob f"ur jedes Kommando eine eigene URL verwendet wird, oder ob das Kommando in Form einer weiteren HTTP-GET Variablen mit "ubertragen wird. Unsere Implementation des  Servers verwendet den zus"atzlichen HTTP-GET Parameter \texttt{command}. In diesem Interface haben wir aber beide M"oglichkeiten spezifiziert.
 
 \begin{description}
 \item[want=xml or html] Die zu erwartende Antwort soll in xml oder html-format sein (default soll html werden, da dann einfache Link-Clients möglich sind) 
@@ -601,7 +620,7 @@ siehe Allgemeines zu HTML-Antworten
 \item[command=search] Der Kommando-Name 
 
 \item[search.pl] Der (default) Skriptname der die Anfrage entgegennimmt (dann fällt das Argument command weg). 
-\item[keyword=zzz] Eine durch ' ' (space) getrennte Liste der Suchwörter die alle vorkommen sollen (URL-Codiert mit \"\%20\" getrennt, also eine Suche nach auto und tv wird als keyword=auto\%20tv codiert). Dies beinhaltet eine serverseitig impliziete UND-Verknüpfung aller Suchworte. Fehlt der Parameter so soll ein Fehler zurückgegeben werden. Die genaue Definition einer umfassenderen Suchanfragen-Sprache (wie OR, NOT etc.) ist noch festzulegen, wird aber auf spaetere Interface-Milestones verschoben. 
+\item[keyword=zzz] Eine durch ' ' (space) getrennte Liste der Suchwörter die alle vorkommen sollen (URL-Codiert mit ''\%20'' getrennt, also eine Suche nach auto und tv wird als keyword=auto\%20tv codiert). Dies beinhaltet eine serverseitig impliziete UND-Verknüpfung aller Suchworte. Fehlt der Parameter so soll ein Fehler zurückgegeben werden. Die genaue Definition einer umfassenderen Suchanfragen-Sprache (wie OR, NOT etc.) ist noch festzulegen, wird aber auf spaetere Interface-Milestones verschoben. 
 
 \item[category=5\&category=9\&category=15] Eine Liste aller Kategorien-IDs, jeweils immer wieder neu mit category= durch die die Suche gemacht werden soll. Fehlt der Paramater, so soll alles durchsucht werden. (Grund: HTML-Formulare machen dies bei Listen und ComboBoxen mit Mehrfachauswahl genau so). 
 \end{description}
