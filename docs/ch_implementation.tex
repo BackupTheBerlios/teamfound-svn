@@ -369,14 +369,14 @@ das Suchen. Deshalb soll als erstes ein Einblick in das Hinzuf"ugen von Urls
 gegeben werden. Hierzu liefert die Abbildung \ref{addpage} einen "Uberblick.
 
 Der Aufruf des Clients wird in $Get$-Variablen in der Url codiert (siehe \ref{interface2})
-und vom Servlet (siehe \ref{servlet}) entgegengenommen. 
+und vom Servlet (siehe Kapitel \ref{servlet}) entgegengenommen. 
 Ist der Aufruf korekt, d.h. er enth"alt die hinzuzuf"ugende Url und mindestens 
 eine Kategorie, wird der Controller (siehe \ref{controller}) mit entsprechendem 
 Auftrag angestossen.
 Bei nicht korekten Aufrufen wird eine \texttt{ErrorResponse} erstellt.
 
 Der Controller erstellt nun eine Verbindung zur Datenbank 
-und einen Indexer (siehe \ref{indexer}).
+und einen Indexer (siehe Kapitel \ref{indexer}).
 Als n"achstes "uberpr"uft er anhand der Datenbank ob die Url schon existiert.
 An dieser Stelle ergeben sich zwei M"oglichkeiten.
 Sollte die Url noch nicht indiziert sein, so muss sie als erstes runtergeladen werden.
@@ -412,6 +412,30 @@ Allerdings gibt es auch hier eine Aussnahme. Sollte die Url ein gewisses ''Alter
 \label{search}
 \end{figure}
 
+Der am h"aufigsten ben"otigte Dienst des Servers ist die Suche nach Dokumenten.
+Wie ein Request grunds"atzlich entgegengenommen wird ist bereits in Kapitel
+\ref{addpagerequest} beschrieben.
+Das Servlet (siehe Kapitel \ref{servlet}) erhellt den Request und ruft die entsprechende 
+Funktion des Controllers (siehe \ref{controller}) auf.
+
+Eine "Ubersicht zum Ablauf einer Suchanfrage biete die Abbildung \ref{search}.
+Die Suchanfrage enth"alt zuerst einen vom User eingegebenen Text, der in der
+Lucene $QuerySyntax$ formuliert ist. 
+(siehe \texttt{QueryParser} in Kapitel \ref{luckomponenten})
+Zus"atzlich wird ein Array von Kategorie-IDs "ubergeben. Die Kategorien wurden vom
+Nutzer am Client ausgew"ahlt. Da alle Clients immer ihre Kategorieb"aume 
+aktuell halten, sind die IDs direkt verwendbar.
+Es gibt zur Zeit keine serverseitige "Uberpr"ufung der "ubergebenen Kategorien.
+Das bedeutet, wenn veraltete und somit ''falsche'' IDs in der Anfrage stehen, werden 
+entweder falsche oder keine Dokumente gefunden.
+
+Die weitere Bearbeitung ben"otigt nur eine Anfrage an den Index. Hierzu wird ein
+Indexer (siehe Kapitel \ref{indexer}) erstellt. Dieser baut anhand der Parameter
+eine $Query$ (Kapitel \ref{luckomponenten}), die dann durch Lucene bearbeitet wird.
+Genauere Informationen zum Erstellen der $Query$ befinden sich in Kapitel \ref{docstruktur}.
+Die Dokumente (Kapitel \ref{luckomponenten}) , die der Index als Antwort generiert, werden
+durch den Controller ausgewertet und eine $Response$ wird erstellt. 
+Diese kann dann die HTML- oder XML-Antwort generieren, welche an den Client gesendet wird.
 
 
 \subsection{Ablauf GetCategoriesRequest}

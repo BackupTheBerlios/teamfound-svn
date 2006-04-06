@@ -217,7 +217,7 @@ public class TeamFoundController implements Controller {
 		
 			Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
 			//TODO -> hart den count auf 30 und den Offset auf 0 ??
-			Vector<Document> docvec = tfindexer.query(query, category , 30, 0 ); 
+			Vector<Document> docvec = tfindexer.query(query, category , 50, 0 ); 
 	
 		
 	//2.Antwort bauen
@@ -259,7 +259,7 @@ public class TeamFoundController implements Controller {
 		
 			Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
 			//TODO -> hart den count auf 30 ?
-			Vector<Document> docvec = tfindexer.query(query, category , 30, offset ); 
+			Vector<Document> docvec = tfindexer.query(query, category , 50, offset ); 
 	
 		
 	//2.Antwort bauen
@@ -311,7 +311,8 @@ public class TeamFoundController implements Controller {
 					rootbean.getBeschreibung(),
 					rootbean.getID(),
 					rootbean.getID());
-
+					//null);
+				
 			Iterator it = childvec.iterator();
 			while(it.hasNext())
 			{
