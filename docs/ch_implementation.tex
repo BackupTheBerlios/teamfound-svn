@@ -103,6 +103,9 @@ Ausserdem wird HSQLDB in einigen bekannten Projekten(z.b. JBoss, Mathematica, Op
 Zur Erzeugung der XML-Antworten (Siehe Kapitel \ref{response}) wird die JDOM-Bibliothek\footnote{http://www.jdom.org} von Jason Hunter benutzt. JDOM ist eine abgewandelte DOM-Implementierung\footnote{Document Object Model} und bietet die Möglichkeit mit einfachen Java-Code sauberes XML zu erzeugen. JDOM wird ebenfalls benutzt um die XML-Dokumente in HTML zu wandeln, sofern der Client dieses wünscht.
 
 \section{Architektur}
+In diesem Kapitel soll ein Einblick in den Aufbau des Servers gegeben werden.
+Die Abbildung \ref{serverarchgrob} gibt einen groben "Uberblick "uber Komponenten des Servers.
+In den folgenden Sektionen werden dann einzelne Komponenten n"aher erl"autert.
 
 \begin{figure}
 \includegraphics[width=16cm]{bilder/aufbau2.eps}
@@ -564,7 +567,7 @@ Soll eine vollständige HTML-Seite zurückgeben, die direkt im Browser angezeigt w
 \item[$<$server$>$] Gibt Name und Versionsnummer des Servers an. Der Server der unter der URL https://developer.berlios.de/projects/teamfound entwickelt wird gibt den Namen "TeamFound" zurück. Clones dürfen Ihren eigenen Namen natürlich frei wählen. 
 \item[$<$addpage$>$ $<$search$>$ $<$addcategory$>$ $<$getcategories$>$] Diese Tags beinhalten die Antworten auf die gleichnamigen Anfragen an den Server. Pro Anfrage darf nur eines dieser Tags vorkommen. 
 \item[$<$return-value$>$ $<$return-description$>$] Der Return-Value bzw. Fehler-Code falls etwas schiefging. Die Description wird nicht genauer spezifiziert, sollte aber semantisch mit dem aufgetretenen Fehler übereinstimmen. 
-\item[$<$project-counter$>$] Bei jeder Änderung des Kategorien-Baumes(Graph!) soll der Server einen internen Zähler um eins inkrementieren. Der aktuelle Wert soll bei jeder XML-Antwort mit übertragen werden. (Dann weiss die Toolbar wann sie selber die Kategorien neu vom Server abfragen muss.)Jedes Projekt fuehrt einen Counter, somit muss der Client nur die fuer ihn intressanten Baeume beachten. 
+\item[$<$project-counter$>$] Bei jeder Änderung des Kategorien-Baumes( soll der Server einen internen Zähler um eins inkrementieren. Der aktuelle Wert soll bei jeder XML-Antwort mit übertragen werden. (Dann weiss die Toolbar wann sie selber die Kategorien neu vom Server abfragen muss.)Jedes Projekt fuehrt einen Counter, somit muss der Client nur die fuer ihn intressanten B"aume beachten. 
 \end{description}
 
 \begin{verbatim}
