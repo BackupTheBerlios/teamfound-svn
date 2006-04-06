@@ -888,11 +888,6 @@ Der Mozilla Firefox l"asst sich durch sogenannte \textit{Extensions} sehr einfac
 \label{fftoolbar}
 \end{figure}
 
-\begin{figure}
-\epsfig{file=ffextension-settings}
-\caption{Firefox-Toolbar Settings Dialog (v0.8, Milestone 2)}
-\label{fftoolbar}
-\end{figure}
 
 \subsection{Dateien}
 Die Verzeichnisstruktur der TeamFound Firefox Extension sowie alle enthaltenen Dateien sind:
@@ -927,6 +922,26 @@ Die eigentliche Funktionalit"at steckt dabei in dem Unterverzeichnis content:
 \item[settings.js] Definiert die Funktionalit"at des Einstellungen-Dialogs
 \end{description}
 
+
+\subsection{Implementation}
+\begin{figure}
+\epsfig{file=ffextension-settings}
+\caption{Firefox-Toolbar Settings Dialog (v0.8, Milestone 2)}
+\label{fftoolbar}
+\end{figure}
+
+Die wichtigsten Funktionen der Toolbar sind:
+\begin{description}
+\item[onLoad] Initialisiert die Toolbar: L"adt die gespeicherten lokalen Einstellungen und fragt den Kategorien-Baum vom Server ab. Diese Funktion wird "uber einen Event-Handler automatisch vom Firefox-Browser aufgerufen, sobald dieser geladen wird.
+
+\item[loadCategories] Stellt einen XMLHttpRequest an den Server, und definiert \texttt{onLoadCategoriesFinished} als Callback-Funktion der Anfrage.
+
+\item[onLoadCategoriesFinished] Wird aufgerufen wenn der Server eine Antwort auf das Kommando \texttt{getcategories} gibt. Auf Basis dieser Antwort wird das Kategorien-Men"u gel"oscht und die Basis-Informationen wie der Server-Name aus der XML-Antwort ausgelesen. Danach wird die Funktion \texttt{addCategory} aufgerufen, die rekursiv alle Kategorien durchl"auft und einen entsprechenden Men"u-Baum in der Toolbar aufbaut.
+
+\item[onSettings] Event-Handler wenn auf den 'TF' Button oben links in der Toolbar geklickt wird. Diese Funktion "offnet den Einstellungen-Dialog.
+
+\item[onSearch] Diese Funktion startet eine Suchanfrage, und wird aufgerufen wenn in dem Kategorien-Baum 'Search' oder der 'Go' Button angeklickt werden. Die $<$return$>$-Taste wenn der Fokus auf dem Eingabefeld der Kategorien ist ruft ebenfalls diese Funktion auf. OnSearch "uberpr"uft daraufhin die Einstellungen, und leitet die Suchanfrage entsprechend an die Funktionen \texttt{myGotoUrl} oder an \texttt{myTeamFoundSearch} und \texttt{myExternSearch} weiter. Je nach Einstellung wird das HTML-Template zur Anzeige der Suchergebnisse \texttt{search\_h.html} f"ur eine horizontale Verteilung bzw. \texttt{search\_v.html} f"ur eine vertikale Verteilung der Suchergebnisse geladen.
+\end{description}
 \begin{figure}
 \epsfig{file=screenshot-search-server-0.1-firefox-toolbar-0.4.eps}
 \caption{Firefox-Toolbar Suchergebnis (v0.4, Milestone 1)}
@@ -934,6 +949,7 @@ Die eigentliche Funktionalit"at steckt dabei in dem Unterverzeichnis content:
 \end{figure}
 
 \subsection{Changelog}
+
 Das originale Changelog\footnote{\texttt{http://teamfound.berlios.de/\#firefoxchangelog0.7}} (in englischer Sprache):
 \paragraph{Firefox \& Flock toolbar 0.7 (07-DEC-2005)}
 \begin{itemize}
