@@ -1110,7 +1110,7 @@ public class DBLayerHSQL implements DBLayer
 
 			String search = new String("SELECT a.id, a.left, a.right, a.name, a.beschreibung,count(*) AS level FROM category AS a, category AS b WHERE a.root_id = "+rootbean.getID()+ " AND b.root_id = "+rootbean.getID()+" AND a.left BETWEEN b.left AND b.right GROUP BY a.id, a.left, a.right, a.name, a.beschreibung ORDER BY a.left");
 
-			this.query(conn,search);
+			//this.query(conn,search);
 			
 			ResultSet rsi = st.executeQuery(search);
 			rsi.next();
