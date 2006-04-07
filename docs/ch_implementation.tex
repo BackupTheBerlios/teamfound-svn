@@ -524,6 +524,98 @@ Auf Basis dieser gundlegenden Entscheidungen, haben wir also begonnen sowohl die
 \item[Antwort] HTML-Seite mit URLs gefundener "Ubereinstimmungen 
 \end{description}
 
+\section{Interface Milestone 2}
+Alle Anfrage-Parameter werden in Form von HTTP GET oder POST Variablen übertragen. Prinzipiell gibt es eine Unterscheidung, ob f"ur jedes Kommando eine eigene URL verwendet wird, oder ob das Kommando in Form einer weiteren HTTP-GET Variablen mit "ubertragen wird. Unsere Implementation des  Servers verwendet den zus"atzlichen HTTP-GET Parameter \texttt{command}. In diesem Interface haben wir aber beide M"oglichkeiten spezifiziert.
+
+\begin{description}
+\item[want=xml or html] Die zu erwartende Antwort soll in xml oder html-format sein (default soll html werden, da dann einfache Link-Clients möglich sind) 
+
+\item[version=2] Milestone-Version des Interfaces 
+
+\item[command=search] Das Kommando das ausgeführt werden soll. Dieses Argument kann wegfallen wenn für jedes Kommando eine eigene, gleichnamige Anfrage-URL existiert. 
+\end{description}
+
+\subsubsection{HTML-Antwort}
+Die Clients geben an ob Sie eine HTML oder eine XML Antwort erwarten.
+
+Soll eine vollständige HTML-Seite zurückgeben, die direkt im Browser angezeigt werden kann. Die Return-Values wie bei einer XML-Antwort müssen in diesem Fall nicht zurückgegeben werden, sondern der Text sollte gleich eine entsprechende Meldung beinhalten.
+
+\subsubsection{XML-Antwort}
+\begin{description}
+\item[$<$response$>$] Umschliesst alle anderen xml-tags und gibt die XSD-Datei zum verifizieren der XML-Daten an 
+\item[$<$interface-version$>$] Gibt immer die Interface-Version an, in der die Antwort des Servers formuliert wurde 
+\item[$<$server$>$] Gibt Name und Versionsnummer des Servers an. Der Server der unter der URL https://developer.berlios.de/projects/teamfound entwickelt wird gibt den Namen "TeamFound" zurück. Clones dürfen Ihren eigenen Namen natürlich frei wählen. 
+\item[$<$addpage$>$ $<$search$>$ $<$addcategory$>$ $<$getcategories$>$] Diese Tags beinhalten die Antworten auf die gleichnamigen Anfragen an den Server. Pro Anfrage darf nur eines dieser Tags vorkommen. 
+\item[$<$return-value$>$ $<$return-description$>$] Der Return-Value bzw. Fehler-Code falls etwas schiefging. Die Description wird nicht genauer spezifiziert, sollte aber semantisch mit dem aufgetretenen Fehler übereinstimmen. 
+\item[$<$project-counter$>$] Bei jeder Änderung des Kategorien-Baumes( soll der Server einen internen Zähler um eins inkrementieren. Der aktuelle Wert soll bei jeder XML-Antwort mit übertragen werden. (Dann weiss die Toolbar wann sie selber die Kategorien neu vom Server abfragen muss.)Jedes Projekt fuehrt einen Counter, somit muss der Client nur die fuer ihn intressanten B"aume beachten. 
+\end{description}
+
+\begin{verbatim}
+<response xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="teamfound-interface-milestone2.xsd">
+
+ <interface-version>2</interface-version>
+
+ <return-value>0</return-value>
+ <return-description>OK</return-description>
+
+ <project-counter>
+   <project>
+     <projectID>0</projectID>
+     <count>3</count>
+   </project>
+   <project>
+     <projectID>3</projectID>
+     <count>5</count>
+   </project>
+ </project-counter>
+
+ <category-counter>54</category-counter>
+
+ <server>
+  <name>TeamFound</name>
+  <version>0.2</version>
+ </server>
+
+ <addpage>
+ </addpage>
+
+ <search>
+ </search>
+
+ <addcategory>
+ </addcategory>
+
+ <getcategories>
+ </getcategories>
+ 
+</response>
+\end{verbatim}
+
+\paragraph{Return Codes}
+
+Die Return-Codes stehen immer in den Tags $<$return-value$>$xx$<$/return-value$>$. Die Description ist optional.
+
+\begin{description}
+\item[0] Alles ok 
+
+\item[1] Fehler, konnte URL nicht finden 
+
+\item[2] Ungültige Anfrage (Pflicht-Parameter fehlen oder haben die Länge null) 
+
+\item[3] Inkompatible Interface-Version (die Anfrage hat eine Interface-Version benutzt die der Server nicht unterstützt) 
+
+\item[4] Kategorie existiert schon (beim hinzufuegen einer neuen Kategorie) 
+
+\item[5] Kategorie nicht gefunden (beim suchen nach einer bestimmten Kategorie) 
+
+\item[-1] Anderer Fehler 
+\end{description}
+
+Die Return-Descriptions sind frei wählbar, sollten aber dem Return-Code semantisch entsprechen ;-)\\
+\\
+Die vollst"andige Spezifikation des Interface Milestone 2 befindet sich im Anhang \vref{interface2}.
+
 \chapter{Clients}
 
 \section{Web-Client}
@@ -606,7 +698,14 @@ Die eigentliche Funktionalit"at steckt dabei in dem Unterverzeichnis content:
 \caption{Firefox-Toolbar Settings Dialog (v0.8, Milestone 2)}
 \label{fftoolbar}
 \end{figure}
+\begin{figure}[h]
+\epsfig{file=screenshot-search-server-0.1-firefox-toolbar-0.4.eps}
+\caption{Firefox-Toolbar Suchergebnis (v0.4, Milestone 1)}
+\label{fftoolbarsuchergebnis}
+\end{figure}
 
+Das originale Changelog in englischer Sprache der Firefox-Toolbar befindet sich im Anhang \vref{changelog}.
+\\\\
 Die wichtigsten Funktionen der Toolbar sind:
 \begin{description}
 \item[onLoad] Initialisiert die Toolbar: L"adt die gespeicherten lokalen Einstellungen und fragt den Kategorien-Baum vom Server ab. Diese Funktion wird "uber einen Event-Handler automatisch vom Firefox-Browser aufgerufen, sobald dieser geladen wird.
@@ -619,11 +718,6 @@ Die wichtigsten Funktionen der Toolbar sind:
 
 \item[onSearch] Diese Funktion startet eine Suchanfrage, und wird aufgerufen wenn in dem Kategorien-Baum 'Search' oder der 'Go' Button angeklickt werden. Die $<$return$>$-Taste wenn der Fokus auf dem Eingabefeld der Kategorien ist ruft ebenfalls diese Funktion auf. OnSearch "uberpr"uft daraufhin die Einstellungen, und leitet die Suchanfrage entsprechend an die Funktionen \texttt{myGotoUrl} oder an \texttt{myTeamFoundSearch} und \texttt{myExternSearch} weiter. Je nach Einstellung wird das HTML-Template zur Anzeige der Suchergebnisse \texttt{search\_h.html} f"ur eine horizontale Verteilung bzw. \texttt{search\_v.html} f"ur eine vertikale Verteilung der Suchergebnisse geladen.
 \end{description}
-\begin{figure}
-\epsfig{file=screenshot-search-server-0.1-firefox-toolbar-0.4.eps}
-\caption{Firefox-Toolbar Suchergebnis (v0.4, Milestone 1)}
-\label{fftoolbarsuchergebnis}
-\end{figure}
 
 \section{Internet Explorer-Toolbar}
 
