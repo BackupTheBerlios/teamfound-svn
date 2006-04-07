@@ -31,6 +31,14 @@ var TeamFoundSettings =
 		return true;
 	}, //onSettingsOK
 
+	onLoadCategories: function()
+	{
+		prefs.setCharPref("settings.serverurl", document.getElementById("tf-settings-server").value);
+		return true;
+	}, //onSettingsOK
+
+
+
 	// Settings Cancel-Button
 	onSettingsCancel: function()
 	{

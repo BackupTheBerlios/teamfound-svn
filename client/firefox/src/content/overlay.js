@@ -89,10 +89,8 @@ var TeamFound =
 			if( xmlhttpcat.status == 200)
 			{	// OK
 
-				// Server-Name anzeigen
-				var catmenu = document.getElementById("tf-categories");
-				catmenu.setAttribute("label", xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue);
-
+				catmenu = document.getElementById("tf-categories");
+				
 				// menue loeschen
 				for(var i = catmenu.childNodes.length - 1; i >= 0; i--) 
 				{
@@ -106,11 +104,17 @@ var TeamFound =
 					return;
 				}
 
+				// Server-Name anzeigen
+				//catmenu.setAttribute("label", xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue);
+				catmenu.setAttribute("label", "nyi");
+
+
 				// popup erzeugen
 				var catpopup = document.createElement("menupopup");
 				catmenu.appendChild(catpopup);
 
-				TeamFound.addCategory(xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes, catpopup, xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue, 0);
+				//TeamFound.addCategory(xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes, catpopup, xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue, 0);
+				TeamFound.addCategory(xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes, catpopup, "nyi", 0);
 			}
 			else
 			{
@@ -157,18 +161,18 @@ var TeamFound =
 		{	// layout: divide horizontal
 			content.location = "chrome://teamfound/skin/search_h.html";
 			TeamFound.myTeamFoundSearch(search, category);
-			TeamFound.myGoogleSearch(search);
+			TeamFound.myExternSearch(search);
 		}
 		else if( prefs.getIntPref("settings.layout") == 1)
 		{	// layout: append external results
 			content.location = "chrome://teamfound/skin/search_v.html";
 			TeamFound.myTeamFoundSearch(search, category);
-			TeamFound.myGoogleSearch(search);
+			TeamFound.myExternSearch(search);
 
 		}
 		else if( prefs.getIntPref("settings.layout") == 2)
 		{	// only extern
-			TeamFound.myGoogleSearch(search);
+			TeamFound.myExternSearch(search);
 		}
 		else if( prefs.getIntPref("settings.layout") == 3)
 		{	// only teamfound
@@ -221,9 +225,9 @@ var TeamFound =
 		var pref_serverurl = prefs.getCharPref("settings.serverurl");
 
 		// TeamFound Suche
-		var teamfoundurl = pref_serverurl + "?command=search&keyword=" + searchwithand + "&category=" + category;
+		var teamfoundurl = pref_serverurl + "?command=search&want=xml&version=2&keyword=" + searchwithand + "&category=" + category;
 
-		alert(teamfoundurl);
+		//alert(teamfoundurl);
 
 		// nur layouts 0 und 1 benutzen templates
 		if( prefs.getIntPref("settings.layout") > 1)
@@ -241,7 +245,7 @@ var TeamFound =
 		xmlhttptf.send(null);
 	}, // myTeamFoundSearch
 
-	myGoogleSearch: function(search)
+	myExternSearch: function(search)
 	{
 		var pref_searchurl = prefs.getCharPref("settings.searchurl");
 		var externurl = pref_searchurl + search;
@@ -260,7 +264,7 @@ var TeamFound =
 		xmlhttpext.open("GET", externurl, true); 
 		// Request senden
 		xmlhttpext.send(null);
-	}, // myGoogleSearch
+	}, // myExternSearch
 
 	// Eine neue Seite soll dem Index hinzugefuegt werden
 	onAddPage: function(category) 
@@ -271,7 +275,7 @@ var TeamFound =
 		var pref_serverurl = prefs.getCharPref("settings.serverurl");
 
 		// server-adresse zum hinzufuegen neuer seiten
-		var url = pref_serverurl + "/addpage.pl?url=" + addpageurl + "&category=" + category;
+		var url = pref_serverurl + "?want=xml&version=2&url=" + addpageurl + "&category=" + category;
 
 		// Request erstellen (globale variable)
 		// XMLHttpRequest funktioniert mit Mozilla, Firefox, Safari, und Netscape (nicht mit IE)

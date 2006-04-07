@@ -30,6 +30,7 @@
 	>
 
 	<script src="settings.js"/>
+	<script src="overlay.js"/>
 
 	<vbox>
 		<label id="tf-dialog-heading" value="TeamFound Settings"/>
@@ -38,7 +39,7 @@
 			<vbox>
 				<textbox id="tf-settings-server" cols="100" rows="1"/>
 				<hbox>
-					<button label="get category-tree" oncommand="return TeamFound.loadCategories();"/>
+					<button label="get category-tree" oncommand="TeamFoundSettings.onLoadCategories(); TeamFound.loadCategories();"/>
 				</hbox>
 			</vbox>
 
