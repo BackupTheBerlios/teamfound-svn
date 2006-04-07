@@ -43,7 +43,7 @@ public abstract class BaseServlet extends HttpServlet {
 		commands.put("search", new Integer(1));
 		commands.put("addpage", new Integer(2));
 		commands.put("getcategories", new Integer(3));
-		commands.put("addcategories", new Integer(4));
+		commands.put("addcategory", new Integer(4));
 		commands.put("getprojects", new Integer(5));
 	}
 	
@@ -64,11 +64,11 @@ public abstract class BaseServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		
-		if(!params.containsKey("wants")) {		
+		if(!params.containsKey("want")) {		
 			xmlResponse(response, resp);
 			
 		} else {
-			if(request.getParameter("wants").equals("html")) {
+			if(request.getParameter("want").equals("html")) {
 				htmlResponse(response, resp);
 			} else {
 				xmlResponse(response, resp);
@@ -81,9 +81,9 @@ public abstract class BaseServlet extends HttpServlet {
 		Response r;
 		// parameter validieren
 		Map params = req.getParameterMap();
-		if(!params.containsKey("wants")) {
+		if(!params.containsKey("want")) {
 			r = new ErrorResponse(null);
-			r.returnValue(2, "Need Parameter 'wants'");
+			r.returnValue(2, "Need Parameter 'want'");
 			return r;
 		}
 		
@@ -182,11 +182,15 @@ public abstract class BaseServlet extends HttpServlet {
 		case 3:
 			// getCategories (für eine kategorie)
 			int projectID;
-			if(!params.containsKey("projectID")) {
-				r = new ErrorResponse(null);
-				r.returnValue(2, "Need Parameter 'projectID'");
-				return r;
-			} else {
+			if(!params.containsKey("projectID")) 
+			{
+				//r = new ErrorResponse(null);
+				//r.returnValue(2, "Need Parameter 'projectID'");
+				//return r;
+				projectID=0;
+			} 
+			else 
+			{
 				projectID = Integer.parseInt(req.getParameter("projectID"));
 			}
 			return ctrl.getCategories(projectID);

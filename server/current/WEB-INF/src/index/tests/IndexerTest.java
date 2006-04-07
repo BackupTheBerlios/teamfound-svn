@@ -54,8 +54,8 @@ public class IndexerTest
 		
 		
 		//Index anlegen
-		String pfad = new String("/home/moddin/Uni/OpenSourceSoftEnt/teamfound/server/teamfoundDir");
-
+		String pfad = new String("/home/moddin/build/teamfoundDir");
+/*
 		try
 		{
 			tfindexer.createIndex(pfad);
@@ -67,9 +67,9 @@ public class IndexerTest
 			"\n with message: " + e.getMessage());
 			
 		}
-
+*/
 		//Eintrag in Index ablegen
-		System.out.println("Doc in Index:");
+//		System.out.println("Doc in Index:");
 	
 			//erstmal ein Entry anlegen
 			String url = new String("http://www.Inhalt.htm");
@@ -92,7 +92,7 @@ public class IndexerTest
 
 		try
 		{
-			URL u1 = new URL("http://www.irgentwas.de");
+/*			URL u1 = new URL("http://www.irgentwas.de");
 			
 			//eintrag adden
 			tfindexer.addUrl(tentry,u1);
@@ -101,32 +101,36 @@ public class IndexerTest
 			
 			
 			//verschiedene Suchen aufrufen
+*/			
+			String frage = new String("Black");
 			
-			String frage = new String("Wikipedia");
-			
-			System.out.println("\nRegeln.htm sollte als ergebnis der Suche kommen:");
+//			System.out.println("\nRegeln.htm sollte als ergebnis der Suche kommen:");
+			System.out.println("\nsollte ein ergebnis finden id 1 :");
 			int qid[] = new int[1];
-			qid[0] = 1;
+			qid[0] = 0;
 			printSearch(frage, qid, tfindexer);
 
-			System.out.println("\nInhalt.htm sollte als ergebnis der Suche kommen:");
+//			System.out.println("\nInhalt.htm sollte als ergebnis der Suche kommen:");
+			System.out.println("\nsollte kein ergebnis finden id 2 :");
 			qid[0] = 2;
 			printSearch(frage, qid, tfindexer);
 			
-			System.out.println("\nBeides sollte als ergebnis der Suche kommen:");
+//			System.out.println("\nBeides sollte als ergebnis der Suche kommen:");
+			System.out.println("\nsollte ein ergebnis finden id 1 3 :");
 			int[] qids = new int[2];
+			qids[0] = 1;
+			qids[1] = 3;
+			printSearch(frage, qids, tfindexer);
+		
+//			System.out.println("\nnur Regel.de sollte als ergebnis der Suche kommen:");
+			System.out.println("\nsollte ein ergebnis finden 1 2  :");
 			qids[0] = 1;
 			qids[1] = 2;
 			printSearch(frage, qids, tfindexer);
-		
-			System.out.println("\nnur Regel.de sollte als ergebnis der Suche kommen:");
-			qids[0] = 1;
-			qids[1] = 6;
-			printSearch(frage, qids, tfindexer);
 
-			System.out.println("\ndeleteDoc testen:\n");
-			Document document = tfindexer.delDoc("http://www.Regeln.de");
-			System.out.println(document.toString());
+//			System.out.println("\ndeleteDoc testen:\n");
+//			Document document = tfindexer.delDoc("http://www.Regeln.de");
+//			System.out.println(document.toString());
 			
 		}
 		catch (Exception e)

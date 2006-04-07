@@ -44,11 +44,14 @@ public abstract class Response {
 	 * @return
 	 */
 	public Document getBaseDocument() {
+		
 		Element root = new Element("response");
 		doc = new Document(root);
+		
 		Element interfaceVersion = new Element("interface-version");
 		interfaceVersion.addContent("2");
 		root.addContent(interfaceVersion);
+		
 		Element server = new Element("server");
 		Element name = new Element("name");
 		name.addContent("TeamFound");
@@ -56,6 +59,7 @@ public abstract class Response {
 		Element version = new Element("version");
 		version.addContent("0.2");
 		server.addContent(version);
+		root.addContent(server);
 		
 		// return-values
 		Element retValue = new Element("return-value");

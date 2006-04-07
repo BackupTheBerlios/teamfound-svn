@@ -31,7 +31,7 @@ public class TeamFoundConfig implements Config
 		try 
 		{
 			// runpath/build/teamfound.properties wird gesucht 
-			tfprops.load(new FileInputStream("build/teamfound.properties"));
+			tfprops.load(new FileInputStream("/home/moddin/build/teamfound.properties"));
 		} 
 		catch (IOException e) 
 		{

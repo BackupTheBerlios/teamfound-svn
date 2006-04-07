@@ -23,7 +23,7 @@ public class Testdbconnect
 		{
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 			//conn.setAutoCommit(false);
-			
+		/*	
 			//neuen rootcat anlegen
 			System.out.println("lege neue RootCat an");
 			categoryBean rootcat = new categoryBean();
@@ -251,7 +251,7 @@ public class Testdbconnect
 				System.out.println(temp.toString());
 			System.out.println("\n");
 
-			
+			*/
 			
 // Alles nochmal ausgeben
 			System.out.println("\n");
@@ -261,7 +261,7 @@ public class Testdbconnect
 			
 			
 			conn2 = db.getConnection("tf","tfpass","anyserver","tfdb");
-			
+/*			
 			//Test
 			//erstmal neue cat anlegen
 			newcat.setCategory("KindvonRoot");
@@ -286,11 +286,11 @@ public class Testdbconnect
 			
 			System.out.println("Select fuer die CategoryTree:");
 			db.query(conn2,"SELECT a.id,a.left,a.right,a.name,a.beschreibung,COUNT(*) as level FROM category AS a, category AS b WHERE a.root_id = 0 AND b.root_id = 0 AND a.left BETWEEN b.left AND b.right GROUP BY a.id,a.left,a.right,a.name,a.beschreibung ORDER BY a.left");
-		
-			System.out.println("\n");
-			System.out.println("getCategoryTree Test:");
-			String test = db.getCategoryTree(conn2,rootcat);
-			System.out.println(test);
+*/		
+		//	System.out.println("\n");
+		//	System.out.println("getCategoryTree Test:");
+		//	String test = db.getCategoryTree(conn2,rootcat);
+		//	System.out.println(test);
 			
 			System.out.println("\n");
 			System.out.println("category table:");

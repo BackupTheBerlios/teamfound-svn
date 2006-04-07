@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.util.Vector;
 import java.util.List;
 import java.util.Iterator;
+import java.util.HashSet;
 
 import controller.Download;
 import controller.DownloadFailedException;
@@ -59,6 +60,14 @@ public class TeamFoundController implements Controller {
 	 * 
 	 */
 	public AddPageResponse addToIndex(String url, int category[]) throws DownloadFailedException, IndexAccessException {
+	
+		//TODO dies muss noch besser werden
+		if(!initServer())
+		{
+			IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
+			e.initCause(e);
+		}
+
 		URL adress = null;
 		try {
 			adress = new URL(url);
@@ -100,16 +109,25 @@ public class TeamFoundController implements Controller {
 				System.out.println("habe Url schon indiziert!");
 				//Kategorien vergleichen falls weche Fehlen mit in den Vector aufnehmen
 				Vector<Integer> oldcats = db.getCatsOfUrl(conn,urlbean.getID());
-				Vector<Integer> newcats = new Vector<Integer>();
+				Vector<Integer> newcats = new Vector<Integer>();	
+				Vector<Integer> newcatstoadd = getAllPar(conn,db,category);
+					 
+				
+				
 				boolean updateurl = false;
-				for(int i = 0; i<category.length; i++)
+				
+				Iterator toadd = newcatstoadd.iterator();
+				Integer tmpint;
+				while(toadd.hasNext())
 				{
-					if( !oldcats.contains(new Integer(category[i])) )
+					tmpint = (Integer)toadd.next();
+					if( !oldcats.contains(tmpint))
 					{
 						updateurl=true;
-						newcats.add(new Integer(category[i]));
+						newcats.add(tmpint);
 					}
 				}
+
 				if(!updateurl)
 				{
 					//Erfolgsmeldung liefer
@@ -125,6 +143,8 @@ public class TeamFoundController implements Controller {
 					//1.Doc im index loeschen
 					 Document doc = tfindexer.delDoc(adress.toString());
 					 doc.removeField("cats");
+				
+					
 					 
 					 //2.Doc neu adden mit allen sich ergebenden Kats
 					 String cats = new String();
@@ -162,7 +182,19 @@ public class TeamFoundController implements Controller {
 			System.out.println("habe Url noch nicht indiziert!");
 			// 1. URL herunterladen
 			System.out.println("1. Url herunterladen!");
-			NewIndexEntry entry = loader.downloadFile(adress, category);
+			
+			Vector<Integer>cats = getAllPar(conn,db,category);	
+			
+			int[] categ = new int[cats.size()];
+			Iterator intit = cats.iterator();
+			int i = 0;
+			while(intit.hasNext())
+			{
+				categ[i]= ((Integer)intit.next()).intValue();
+				i=i+1;
+			}
+			
+			NewIndexEntry entry = loader.downloadFile(adress, categ);
 		
 			// 2. Indexieren
 			System.out.println("2. Url in den Index!");
@@ -177,9 +209,9 @@ public class TeamFoundController implements Controller {
 			urltabBean ubean = db.addUrl(conn, ub, catbean);
 			
 			//so category[0] ist drinn nun fehlen noch die anderen
-			for(int i = 1; i<category.length; i++)
+			for(int h = 1; h<category.length; h++)
 			{
-				catbean.setID(new Integer(category[i]));
+				catbean.setID(new Integer(category[h]));
 				db.addCatwithParentsToUrl(conn,ubean,catbean);
 			}
 		
@@ -187,6 +219,9 @@ public class TeamFoundController implements Controller {
 			// hier muss eine addpage-response zurückgegeben werden
 			List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 			AddPageResponse resp = new AddPageResponse(vertup ,adress.toString());
+			
+			conn.close();
+			db.shutdown("anyserver","tfdb");
 			return(resp);
 		}
 		catch(Exception e)
@@ -201,10 +236,46 @@ public class TeamFoundController implements Controller {
 		}
 	}
 
+	//Funktion die zu einem Array mit CatId eins baut mit allen ElternCats
+	private Vector<Integer> getAllPar(Connection conn, DBLayer db, int[] categorys)throws java.sql.SQLException
+	{
+			categoryBean cb = new categoryBean();
+			Vector<Integer> cats = new Vector<Integer>(); 
+			
+			for(int i=0; i<categorys.length;i++)
+			{
+				cb.setID(new Integer(categorys[i]));
+				cats.add(new Integer(categorys[i]));
+				Vector<categoryBean> allids = db.findAllParents(conn, cb); 
+				Iterator allidit = allids.iterator();
+			
+				categoryBean tmpcb = new categoryBean();
+				while(allidit.hasNext())
+				{
+					tmpcb = (categoryBean)allidit.next();
+					
+					if( !cats.contains(tmpcb.getID()) )
+					{
+						cats.add(tmpcb.getID());				
+					}
+					
+				}
+			}
+
+			return(cats);
+	}
+
 	public SearchResponse search(String query, int category[]) throws IndexAccessException 
 	{
 		try
 		{
+//TODO dies muss noch besser werden
+		if(!initServer())
+		{
+			IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
+			e.initCause(e);
+		}
+	
 	// 0. Datenbank nach Kategorienversionen durchsuchen
 			DBLayer db;
 			db = new DBLayerHSQL(conf);
@@ -226,7 +297,8 @@ public class TeamFoundController implements Controller {
 			keywords[0] = query;
 			SearchResponse resp = new SearchResponse(vertup ,keywords);
 			resp.addSearchResults(docvec);
-		
+			
+			conn.close();	
 			return (resp);
 		}
 		catch(Exception e)
@@ -244,6 +316,13 @@ public class TeamFoundController implements Controller {
 	
 	public SearchResponse search(String query, int offset, int category[]) throws IndexAccessException 
 	{
+//TODO dies muss noch besser werden
+		if(!initServer())
+		{
+			IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
+			e.initCause(e);
+		}
+		
 		try
 		{
 	// 0. Datenbank nach Kategorienversionen durchsuchen
@@ -269,6 +348,7 @@ public class TeamFoundController implements Controller {
 			SearchResponse resp = new SearchResponse(vertup ,keywords);
 			resp.addSearchResults(docvec);
 		
+			conn.close();
 			return (resp);
 		}
 		catch(Exception e)
@@ -284,6 +364,12 @@ public class TeamFoundController implements Controller {
 
 	public GetCategoriesResponse getCategories(int rootid) 
 	{
+	//TODO dies muss noch besser werden
+		if(!initServer())
+		{
+			IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
+			e.initCause(e);
+		}	
 		
 		try
 		{
@@ -337,6 +423,7 @@ public class TeamFoundController implements Controller {
 						parent.getID());
 						
 			}
+			conn.close();
 			return(resp);
 			
 		}
@@ -351,6 +438,16 @@ public class TeamFoundController implements Controller {
 
 	public AddCategoriesResponse addCategory(String name, int parentCat, String description) 
 	{
+		
+		//TODO dies muss noch besser werden
+		if(!initServer())
+		{
+			return null;
+			//IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
+			//e.initCause(e);
+		}
+		
+		
 		try
 		{
 		//1. Versionen der KategorieBaeume aus db
@@ -375,6 +472,8 @@ public class TeamFoundController implements Controller {
 					vertup,
 					newcat.getCategory(),
 					newcat.getID());
+			
+			conn.close();
 			return(resp);
 
 		}
@@ -389,6 +488,16 @@ public class TeamFoundController implements Controller {
 	
 	public GetProjectsResponse getProjects()
 	{
+
+//TODO dies muss noch besser werden
+		if(!initServer())
+		{
+			return null;
+			//IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
+			//e.initCause(e);
+		}
+
+
 		try
 		{
 		//1. Versionen der KategorieBaeume und alle RootCats() aus der Datenbank holen
@@ -408,6 +517,7 @@ public class TeamFoundController implements Controller {
 				resp.addProject(cat.getCategory(), cat.getBeschreibung(),cat.getID());
 						
 			}
+			conn.close();
 			return(resp);
 			
 		
@@ -458,7 +568,8 @@ public class TeamFoundController implements Controller {
 			catbean = db.addRootCategory(conn, catbean);
 			//nur zum testen
 			//System.out.println("Id Project: "+ catbean.getID());
-			
+		
+			conn.close();
 			return(true);
 		}
 		catch(Exception e)
