@@ -44,32 +44,35 @@ public class IndexerTest
 	}
 	public static void main(String args[])
 	{
-
-
-		//Indexer anlegen
-		System.out.println("Index anlegen:");
-		Config c = new TeamFoundConfig();
-		sync.ReadWriteSync s = new sync.ReadWriteSync();
-		TeamFoundIndexer tfindexer = new TeamFoundIndexer(c,s);
-		
-		
-		//Index anlegen
-		String pfad = new String("/home/moddin/build/teamfoundDir");
-/*
 		try
 		{
+			java.io.File fp = new java.io.File("/home/build/teamfound.properties");
+
+			java.io.FileInputStream pin = new java.io.FileInputStream(fp);
+
+			java.util.Properties props = new java.util.Properties();
+
+			props.load(pin);
+		
+			Config tfc = new TeamFoundConfig(props);
+			System.out.println(tfc.getConfValue("tfpath"));
+		
+
+			//Indexer anlegen
+			System.out.println("Index anlegen:");
+			sync.ReadWriteSync s = new sync.ReadWriteSync();
+			TeamFoundIndexer tfindexer = new TeamFoundIndexer(tfc,s);
+			
+		
+			//Index anlegen
+			String pfad = new String("/home/moddin/build/teamfoundDir");
+/*
 			tfindexer.createIndex(pfad);
 			System.out.println("IndexCreated!");
-		}
-		catch(Exception e)
-		{
-			System.out.println(" caught a " + e.getClass() +
-			"\n with message: " + e.getMessage());
 			
-		}
 */
 		//Eintrag in Index ablegen
-//		System.out.println("Doc in Index:");
+//			System.out.println("Doc in Index:");
 	
 			//erstmal ein Entry anlegen
 			String url = new String("http://www.Inhalt.htm");
@@ -90,8 +93,6 @@ public class IndexerTest
 			SimpleNewIndexEntry tentry2 = new SimpleNewIndexEntry(url2,f2,headers,id2);
 		
 
-		try
-		{
 /*			URL u1 = new URL("http://www.irgentwas.de");
 			
 			//eintrag adden

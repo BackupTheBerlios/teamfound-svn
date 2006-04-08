@@ -23,22 +23,11 @@ public class TeamFoundConfig implements Config
 	/**
 	 * liest die Konfiguration aus dem file
 	 */
-	public TeamFoundConfig()
+	public TeamFoundConfig(Properties p)
 	{
 		
-		tfprops = new Properties();
-		// Read properties file
-		try 
-		{
-			// runpath/build/teamfound.properties wird gesucht 
-			tfprops.load(new FileInputStream("/home/moddin/build/teamfound.properties"));
-		} 
-		catch (IOException e) 
-		{
-			//TODO Was geben wir nach oben?
-			System.out.println("Could not read teamfound.properties. "+e);
+		tfprops = p;
 		
-		}
 	}
 
 

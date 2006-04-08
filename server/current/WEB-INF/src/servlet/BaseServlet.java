@@ -24,18 +24,43 @@ import controller.response.ErrorResponse;
 import controller.response.Response;
 import controller.teamfound.TeamFoundController;
 
+import java.util.Properties;
+import config.Config;
+import config.teamfound.TeamFoundConfig;
+import java.io.InputStream;
+
+
 public abstract class BaseServlet extends HttpServlet {
 	private static final long serialVersionUID = -2766879274061221595L;
 
 	protected Controller ctrl;
 	protected XMLOutputter xmlout;
 	protected Map<String, Integer> commands;
-	
+	protected config.teamfound.TeamFoundConfig conf;	
 	
 	
 
 	public void init() throws ServletException {
-		ctrl = new TeamFoundController();
+		
+		//conf im Servlet root lesen
+		try 
+		{
+			// Pfad ist relative zu Servlet root /conf/teamfound.properties wird gesucht 
+			InputStream is = getServletContext().getResourceAsStream("/conf/teamfound.properties");
+			Properties tfprops  = new Properties();
+			tfprops.load(is);
+			is.close();
+			conf = new TeamFoundConfig(tfprops);
+			
+			ctrl = new TeamFoundController(conf);
+		}
+		catch (Exception e) 
+		{
+			ServletException a = new ServletException("Could not read Properties!");
+			a.initCause(e);
+			throw(a);
+		}
+			
 		xmlout = new XMLOutputter(Format.getPrettyFormat());
 		
 		commands = new HashMap<String, Integer>();
@@ -45,6 +70,8 @@ public abstract class BaseServlet extends HttpServlet {
 		commands.put("getcategories", new Integer(3));
 		commands.put("addcategory", new Integer(4));
 		commands.put("getprojects", new Integer(5));
+		
+		
 	}
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -54,6 +81,8 @@ public abstract class BaseServlet extends HttpServlet {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException {
+		
+		
 		Map params = request.getParameterMap();
 		Response resp;
 		try {

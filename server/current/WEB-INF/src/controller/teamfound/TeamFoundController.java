@@ -46,9 +46,9 @@ public class TeamFoundController implements Controller {
 	public ReadWriteSync indexSync;
 	public Config conf;
 	
-	public TeamFoundController() 
+	public TeamFoundController(Config c) 
 	{
-		conf = new TeamFoundConfig();
+		conf = c;
 		indexSync = new ReadWriteSync();
 	}
 	
