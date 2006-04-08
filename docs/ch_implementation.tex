@@ -717,6 +717,22 @@ Die wichtigsten Funktionen der Toolbar sind:
 \item[onSettings] Event-Handler wenn auf den 'TF' Button oben links in der Toolbar geklickt wird. Diese Funktion "offnet den Einstellungen-Dialog.
 
 \item[onSearch] Diese Funktion startet eine Suchanfrage, und wird aufgerufen wenn in dem Kategorien-Baum 'Search' oder der 'Go' Button angeklickt werden. Die $<$return$>$-Taste wenn der Fokus auf dem Eingabefeld der Kategorien ist ruft ebenfalls diese Funktion auf. OnSearch "uberpr"uft daraufhin die Einstellungen, und leitet die Suchanfrage entsprechend an die Funktionen \texttt{myGotoUrl} oder an \texttt{myTeamFoundSearch} und \texttt{myExternSearch} weiter. Je nach Einstellung wird das HTML-Template zur Anzeige der Suchergebnisse \texttt{search\_h.html} f"ur eine horizontale Verteilung bzw. \texttt{search\_v.html} f"ur eine vertikale Verteilung der Suchergebnisse geladen.
+
+\item[myGotoUrl] L"adt ganz einfach die angegebene URL im aktiven Tab des Browser.
+
+\item[myTeamFoundSearch] Erstellt einen XMLHttpRequest and den TeamFound Server entsprechend den "ubergebenen Suchw"ortern und registriert \texttt{onTeamFoundSearchFinished} als Callback-Funktion.
+
+\item[myExternSearch] Erstellt einen XMLHttpRequest an eine externe Suchmaschiene entsprechend den "ubergebenen Suchw"ortern und registriert \texttt{onExternSearchFinished} als Callback-Funktion.
+
+\item[onAddPage] Erstellt einen XMLHttpRequest an den TeamFound Server um die aktuell im Browser angezeigte Seite hinzuzuf"ugen und registriert \texttt{onAddPageFinished} als Callback-Funktion.
+
+\item[onAddPageFinished] Wertet die Antwort des Server aus und zeigt dem Benutzer eine entsprechende Meldung an. 
+
+\item[onExternSearchFinished] Such in dem (schon geladenen) Template nach der HTML-Tag-ID ''\texttt{teamfound-result-two}'' und f"ugt an dieser Stelle die Antwort als \texttt{innerHTML} ein.
+
+\item[addCategory] F"ugt an das "ubergebene Menu-Element die Eintr"age ''\texttt{Search}'', ''\texttt{Add}'' und ''\texttt{Select as default}'' f"ur die ebenfalls "ubergebene Kategorie an. F"ur jede existierende Unterkategorie wird ein \texttt{menupopup}-Eintrag erstellt und diese Funktion jeweils rekursiv wieder aufgerufen.
+
+\item[onTeamFoundSearchFinished] Sucht in dem Ergebnis-Template nach der HTML-Tag-ID \texttt{teamfound-result-one} und f"ugt das TeamFound Ergebnis an dieser Stelle als \texttt{innerHTML} ein.
 \end{description}
 
 \section{Internet Explorer-Toolbar}
