@@ -3,17 +3,17 @@
 \section{Vor"uberlegungen}
 \subsection{Anforderungen}
 
-In der Vorbereitung des Projektes wurde unter anderem auf die Verzweigung von Open Source-Projekten eingegangen: Es soll nicht jedesmal das Rad neu erfunden werden, eine wichtige Herausforderung im Open Source-Entwicklungsmuster ist es einerseits andere geeignete Projekte zu finden und diese dann effektiv in das eigene Projekt zu integrieren. In diesem Sinne war die erste Phase in der TeamFound-Entwicklung von Recherchearbeiten geprägt. Für den TeamFound-Server heisst das: Es muss eine Bibliothek gefunden werden, welche uns die Volltextindexierung von beliebigen Dokumenten möglich macht. Diese Bibliothek muss dann - sofern sie dieses nicht schon selber anbietet - geeignet ans Internet gebracht werden, einerseits um neue Dokumente herunterzuladen und in den Index aufzunehmen, andererseits um Suchanfragen entgegenzunehmen und deren Ergebnisse zurückzugeben.
-Diese Bibliothek sollte möglichst erweiterbar sein, um auch die Anforderungen von (relativ) einfachen Dokumentenkategorien umsetzen zu können. Für die Verwaltung der Kategorien würde eine Datenbank benötigt werden, da die Verknüpfung von Kategorien, sowie deren Details, wie Namen und Beschreibung nichts mit der Index-Bibliothek zu tun haben.
+In der Vorbereitung des Projektes wurde unter anderem auf die Verzweigung von \index{Open Source}Open Source-Projekten eingegangen: Es soll nicht jedesmal das Rad neu erfunden werden, eine wichtige Herausforderung im Open Source-Entwicklungsmuster ist es einerseits andere geeignete Projekte zu finden und diese dann effektiv in das eigene Projekt zu integrieren. In diesem Sinne war die erste Phase in der TeamFound-Entwicklung von \index{Recherchearbeiten}Recherchearbeiten geprägt. Für den TeamFound-Server heisst das: Es muss eine \index{Bibliothek}Bibliothek gefunden werden, welche uns die \index{Volltextindexierung}Volltextindexierung von beliebigen Dokumenten möglich macht. Diese \index{Bibliothek}Bibliothek muss dann - sofern sie dieses nicht schon selber anbietet - geeignet ans Internet gebracht werden, einerseits um neue Dokumente herunterzuladen und in den \index{Index}Index aufzunehmen, andererseits um \index{Suchanfragen}Suchanfragen entgegenzunehmen und deren \index{Ergebnisse}Ergebnisse zurückzugeben.
+Diese \index{Bibliothek}Bibliothek sollte möglichst erweiterbar sein, um auch die Anforderungen von (relativ) einfachen \index{Dokumentenkategorien}Dokumentenkategorien umsetzen zu können. Für die Verwaltung der Kategorien würde eine Datenbank benötigt werden, da die Verknüpfung von Kategorien, sowie deren Details, wie Namen und Beschreibung nichts mit der Index-Bibliothek zu tun haben.
 
 \subsection{Plattform}
 \label{platform}
-Die Entscheidung für eine Plattform wurde implizit durch die Entscheidung für eine Bibliothek zum indexieren und durchsuchen von Dokumenten getroffen. Nachdem einige Tage nach derartigen Bibliotheken Ausschau gehalten wurde, ist sehr schnell deutlich geworden, das Lucene \footnote{www.lucene.de} vom Apache-Projekt\footnote{http://www.apache.org} die am weitest entwickelte Bibliothek ist. Ein weiterer Vorteil ist die aktive Community rund um Lucene, so wurde während unserer Entwicklung noch ein Sprung von Version 1.5 auf 1.9 mitgemacht. Andere Bibliotheken, zum Beispiel in Perl oder PHP boten keine ausreichende Dokumentation oder Erweiterbarkeit.
-Die ursprüngliche Lucene-Version ist in Java implementiert, ein weiteres Projekt bemüht sich um dessen Umsetzung in C und mittlerweile (Am Ende des Projekts hat Zend Technologies\footnote{http://www.zend.com} einen PHP-Wrapper\footnote{http://framework.zend.com/manual/en/zend.search.html} für Lucene veröffentlicht.
+Die Entscheidung für eine \index{Plattform}Plattform wurde implizit durch die Entscheidung für eine \index{Bibliothek}Bibliothek zum indexieren und durchsuchen von Dokumenten getroffen. Nachdem einige Tage nach derartigen Bibliotheken Ausschau gehalten wurde, ist sehr schnell deutlich geworden, das \index{Lucene}Lucene \footnote{www.lucene.de} vom \index{Apache-Projekt}Apache-Projekt\footnote{http://www.apache.org} die am weitest entwickelte \index{Bibliothek}Bibliothek ist. Ein weiterer Vorteil ist die aktive Community rund um Lucene, so wurde während unserer Entwicklung noch ein Sprung von Version 1.5 auf 1.9 mitgemacht. Andere Bibliotheken, zum Beispiel in \index{Perl}Perl oder \index{PHP}PHP boten keine ausreichende Dokumentation oder Erweiterbarkeit.
+Die ursprüngliche Lucene-Version ist in \index{Java}Java implementiert, ein weiteres Projekt bemüht sich um dessen Umsetzung in C und mittlerweile (Am Ende des Projekts hat \index{Zend Technologies}Zend Technologies\footnote{http://www.zend.com} einen \index{PHP-Wrapper}PHP-Wrapper\footnote{http://framework.zend.com/manual/en/zend.search.html} für Lucene veröffentlicht.
 
-Somit war die Wahl der Plattform auf Java gefallen, eine erste mehr als Proof-of-Concept anzusehende Version von Teamfound wurde mittels zwei Perl-CGI-Scripten und einem Systemaufruf der Lucene-Bibliothek umgesetzt. Dieses Vorgehen startet bei jeder Anfrage an den Webserver eine neue Java virtuel machine, was natürlich überhaupt nicht effektiv ist. 
+Somit war die Wahl der Plattform auf \index{Java}Java gefallen, eine erste mehr als Proof-of-Concept anzusehende Version von Teamfound wurde mittels zwei \index{Perl-CGI}Perl-CGI-Scripten und einem Systemaufruf der Lucene-Bibliothek umgesetzt. Dieses Vorgehen startet bei jeder Anfrage an den \index{Webserver}Webserver eine neue Java virtuel machine, was natürlich überhaupt nicht effektiv ist. 
 
-Daher fiel eine weitere Entscheidung, für eine Java-Servlet-Umsetzung, um die benötigte Umgebung für Anfragen an den Lucene-Index nicht für jedes Request neu zu schaffen. Somit besteht der Server aus einer 100\%igen Java-Umgebung und es entfällt damit die Notwendigkeit für aufwändige und zeit-kostende Wrapper um mehrere Programmiersprachen zu verbinden.
+Daher fiel eine weitere Entscheidung, für eine \index{Java-Servlet}Java-Servlet-Umsetzung, um die benötigte Umgebung für Anfragen an den Lucene-Index nicht für jedes Request neu zu schaffen. Somit besteht der Server aus einer 100\%igen Java-Umgebung und es entfällt damit die Notwendigkeit für aufwändige und zeit-kostende Wrapper um mehrere Programmiersprachen zu verbinden.
 
 
 \section{Bibliotheken} 
@@ -23,25 +23,24 @@ Daher fiel eine weitere Entscheidung, für eine Java-Servlet-Umsetzung, um die be
 
 \subsubsection{Allgemein}
 
-Lucene ist - laut eigener Aussage - der harte Teil einer Suchmaschine. Diese Bibliothek erzeugt und durchsucht einen Volltextindex, kümmert sich aber weder darum wo die Daten herkommen, wie die Ergebnisse präsentiert werden oder wie die Suchanfragen vom Benutzer an den Index kommen. Der Index ist hingegen bietet viele Möglichkeiten die eigenen Daten zu analysieren und in sogenannten Dokumenten in den Index zu speichern. Eigene $Analyzer$ sind mit wenig Aufwand umzusetzen (sofern die mitgelieferten nicht ausreichen), auch aufwändigere Parser sind möglich, wie es zB. für HTML-Seiten notwendig ist.
-Darüberhinaus kann jedes Dokument im Index beliebige $Felder$ enthalten, ein Feld ist als Inhaltselement eines Dokuments zu verstehen (Überschrift, Inhalt, Beschreibung). Dabei können völlig verschiedene Arten von Dokumenten in einem Index gespeichert werden sowie Suchanfragen direkt an ein oder mehrere Felder gestellt werden. Diese starke Erweiterbarkeit ist zum Beispiel bei der Implementierung von Dokumentenkategorien in TeamFound sehr wichtig gewesen (Siehe Kapitel \ref{kategorien})
+\index{Lucene}Lucene ist - laut eigener Aussage - der harte Teil einer \index{Suchmaschine}Suchmaschine. Diese Bibliothek erzeugt und durchsucht einen \index{Volltextindex}Volltextindex, kümmert sich aber weder darum wo die Daten herkommen, wie die Ergebnisse präsentiert werden oder wie die \index{Suchanfragen}Suchanfragen vom Benutzer an den Index kommen. Der \index{Index}Index ist hingegen bietet viele Möglichkeiten die eigenen Daten zu analysieren und in sogenannten Dokumenten in den Index zu speichern. Eigene $Analyzer$ sind mit wenig Aufwand umzusetzen (sofern die mitgelieferten nicht ausreichen), auch aufwändigere \index{Parser}Parser sind möglich, wie es zB. für \index{HTML-Seiten}HTML-Seiten notwendig ist.
+Darüberhinaus kann jedes Dokument im Index beliebige $Felder$ enthalten, ein Feld ist als Inhaltselement eines Dokuments zu verstehen (Überschrift, Inhalt, Beschreibung). Dabei können völlig verschiedene Arten von Dokumenten in einem Index gespeichert werden sowie Suchanfragen direkt an ein oder mehrere Felder gestellt werden. Diese starke Erweiterbarkeit ist zum Beispiel bei der Implementierung von \index{Dokumentenkategorien}Dokumentenkategorien in TeamFound sehr wichtig gewesen (Siehe Kapitel \ref{kategorien})
 
 \subsubsection{Wichtige Komponenten}
 \label{luckomponenten}
 
 \paragraph{Document und Field}
 
-
-Ein Lucene-\texttt{Document} ist die Basisspeichereinheit in einem von Lucene erstellten Index. Die Argumente bzw. Ergebnisse beim Einf"ugen und Suchen sind immer Lucene-\texttt{Documents}. 
+Ein Lucene-\texttt{Document} ist die \index{Basisspeichereinheit}Basisspeichereinheit in einem von \index{Lucene}Lucene erstellten Index. Die Argumente bzw. Ergebnisse beim Einf"ugen und Suchen sind immer Lucene-\texttt{Documents}. 
 
 Diese Dokumente bestehen aus einer variablen Anzahl von Feldern (\texttt{Field}).
 Um ein Dokument zu erstellen kann man beliebig Felder definieren. Sinnvollerweise ist 
-mindestens ein Inhaltsfeld definiert. Dieses wird in Token zerlegt und indiziert.
+mindestens ein \index{Inhaltsfeld}Inhaltsfeld definiert. Dieses wird in \index{Token}Token zerlegt und indiziert.
 Au"serdem ist es zweckm"a"sig weitere Felder zu definieren, die nicht indiziert oder zerlegt,
 sondern als zus"atzliche Information gespeichert werden. Ein eindeutiges Schl"usselwort
 oder eine URL sind typisch, da nur so eine Unterscheidung von Dokumenten m"oglich wird.
 Es k"onnen beliebig weitere Felder angelegt werden z.B. Author, Adresse, Zusammenfassung
-oder Kathegorie. 
+oder Kategorie. 
 
 Allerdings werden Felder generell uninterpretiert als Text abgelegt.
 Ausser Felder (wie das Inhaltsfeld), die zerlegt und indiziert werden. Diese sind 
@@ -51,59 +50,60 @@ textuell nicht wiederherstellbar, aber jetzt mithilfe von Anfragen durchsuchbar.
 \paragraph{Analyzer}
 
 
-	Der \texttt{Analyzer} zerlegt zu indizierende Felder 
-in Tokenstreams, damit diese dann ausgewertet werden k"onnen.
-Das kann beliebig komplex oder simple sein. Ein Analyzer kann z.B. speziell auf eine 
+Der \index{Analyzer}\texttt{Analyzer} zerlegt zu \index{indizierte Felder}indizierende Felder 
+in \index{Tokenstream}Tokenstreams, damit diese dann ausgewertet werden k"onnen.
+Das kann beliebig komplex oder simple sein. Ein \index{Analyzer}Analyzer kann z.B. speziell auf eine 
 bestimmte Sprache ausgelegt sein um Artikel, Pronomen etc. direkt ausfiltern oder einfach
-anhand von $Whitespaces$ Token bilden. Als Nutzer von Lucene bestehen hier beliebig 
+anhand von $Whitespaces$ Token bilden. Als Nutzer von \index{Lucene}Lucene bestehen hier beliebig 
 M"oglichkeiten selbst zu erweitern um eigene Anspr"uche zu erf"ullen.  
 
 Genauso ist es m"oglich verschiedene \texttt{Analyzer} zu verbinden 
 um unterschiedliche Felder auf unterschiedliche Weise zu zerlegen.
 
 
-\paragraph{Query und QuerryParser}
+\paragraph{Query und QueryParser}
 
 
-Um nun indizierte Felder zu durchsuchen ist die
-Grundeinheit die \texttt{Query}. Der Name ist etwas irref"uhrend, da es sich hierbei noch
+Um nun \index{indizierte Felder}indizierte Felder zu durchsuchen ist die
+Grundeinheit die \index{Query}\texttt{Query}. Der Name ist etwas irref"uhrend, da es sich hierbei noch
 nicht um wirkliche Anfragen handelt. Eine \texttt{Query} besteht erstmal nur aus einem 
-einzelnen Token. Nach diesem k"onnte gesucht werden. Lucene bietet nun verschiedenste
+einzelnen \index{Token}Token. Nach diesem k"onnte gesucht werden. \index{Lucene}Lucene bietet nun verschiedenste
 M"oglichkeiten solche Grundsteine in vielf"altiger Art zu kombinieren um komplexere
 Anfragen zu bilden. Dies ist vorallem sinnvoll f"ur Anfragen, die sich oft wiederholen und
 automatisiert gestellt werden.
 
 Um allerdings nach von Menschen formulierten Anfragen zu suchen,
-bietet Lucene eine Erleichterung. Der \texttt{QuerryParser} stellt eine einfache Syntax zur
-Verf"ugung. Diese wird ausgewertet und liefert die komplexe Anfrage f"ur den Index.
+bietet Lucene eine Erleichterung. Der \index{QueryParser}\texttt{QuerryParser} stellt eine einfache \index{Syntax}Syntax zur
+Verf"ugung. Diese wird ausgewertet und liefert die komplexe Anfrage f"ur den \index{Index}Index.
 Die Syntax ist "ahnlich der von Google oder anderer Suchseiten.
 ( siehe Literaturverzeichnis LucQS )
 
 
 
 \subsection{HSQLDB}
-Die Entscheidung keine f"ur Webapplikationen typische Datenbank wie MySQL einzusetzen 
+Die Entscheidung keine f"ur \index{Webapplikationen}Webapplikationen typische \index{Datenbank}Datenbank wie \index{MySQL}MySQL einzusetzen 
 ist leicht erkl"art. Wie schon in Kapitel \ref{platform} beschrieben, sollte eine 
 Java-Umgebung eingesetzt werden.
-Das schr"ankt erstmal nur auf Datenbanken ein, die JDBC kompatibel sind.
-Deshalb ist der Server auch leicht um einen weiteren Datenbanklayer zu erweitern, falls andere Datenbanken erw"unscht sind.
+Das schr"ankt erstmal nur auf Datenbanken ein, die \index{JDBC}JDBC kompatibel sind.
+Deshalb ist der Server auch leicht um einen weiteren \index{Datenbanklayer}Datenbanklayer zu erweitern, falls andere Datenbanken erw"unscht sind.
 
-HSQLDB wurde von uns ausgew"ahlt, weil wir sie als kleine Java-Bibliothek einbinden k"onnen
-und es damit den Nutzern unseres Servers ersparen sich extra um einen Datenbankserver zu k"ummern.
+\index{HSQLDB}HSQLDB wurde von uns ausgew"ahlt, weil wir sie als kleine \index{Java-Bibliothek}Java-Bibliothek einbinden k"onnen
+und es damit den Nutzern unseres Servers ersparen sich extra um einen \index{Datenbankserver}Datenbankserver zu k"ummern.
 HSQLDB kann als Server oder in Programme eingebettet laufen.
 In der derzeitigen Version nutzen wir den eingebetteten Modus, und haben somit eine
-kleine Datenbank f"ur den Teamfoundserver allein.
+kleine Datenbank f"ur den TeamFound-Server allein.
 Die "ublichen Riten wie Datenbanknutzer anlegen usw. k"onnen wir dadurch im Server selbst automatisiert regeln.
-HSQLDB hat sehr gute Ergebnisse in dem PolePosition benchmark (siehe Literaturverzeichnis PolPos) geliefert und unterst"utzt einen grossteil der ANSI-92 SQL, SQL 99 und 2003 Standards bis hin zu Transaktionen.
+HSQLDB hat sehr gute Ergebnisse in dem \index{PolePosition benchmark}PolePosition benchmark (siehe Literaturverzeichnis PolPos) geliefert und unterst"utzt einen grossteil der \index{ANSI}ANSI-92 \index{SQL}SQL, SQL 99 und 2003 Standards bis hin zu Transaktionen.
 Ausserdem wird HSQLDB in einigen bekannten Projekten(z.b. JBoss, Mathematica, OpenOffice)  erfolgereich eingesetzt, was uns ausreichend von der Zuverl"assigkeit "uberzeugt hat.
 
 
 \subsection{Weitere Bibliotheken}
 
-Zur Erzeugung der XML-Antworten (Siehe Kapitel \ref{response}) wird die JDOM-Bibliothek\footnote{http://www.jdom.org} von Jason Hunter benutzt. JDOM ist eine abgewandelte DOM-Implementierung\footnote{Document Object Model} und bietet die Möglichkeit mit einfachen Java-Code sauberes XML zu erzeugen. JDOM wird ebenfalls benutzt um die XML-Dokumente in HTML zu wandeln, sofern der Client dieses wünscht.
+Zur Erzeugung der \index{XML-Antworten}XML-Antworten (Siehe Kapitel \ref{response}) wird die \index{JDOM-Bibliothek}JDOM-Bibliothek\footnote{http://www.jdom.org} von Jason Hunter benutzt. \index{JDOM}JDOM ist eine abgewandelte \index{DOM}DOM-Implementierung\index{Document Object Model}\footnote{Document Object Model} und bietet die Möglichkeit mit einfachen Java-Code sauberes XML zu erzeugen. JDOM wird ebenfalls benutzt um die XML-Dokumente in HTML zu wandeln, sofern der Client dieses wünscht.
 
 \section{Architektur}
-In diesem Kapitel soll ein Einblick in den Aufbau des Servers gegeben werden.
+\index{Architektur}
+In diesem Kapitel soll ein Einblick in den Aufbau des \index{Server}Servers gegeben werden.
 Die Abbildung \ref{serverarchgrob} gibt einen groben "Uberblick "uber Komponenten des Servers.
 In den folgenden Sektionen werden dann einzelne Komponenten n"aher erl"autert.
 
@@ -114,54 +114,52 @@ In den folgenden Sektionen werden dann einzelne Komponenten n"aher erl"autert.
 \end{figure}
 
 
-
-
 \subsection{Servlet}
 \label{servlet}
-Das Servlet ist der Einstiegspunkt für jegliche Anfragen an TeamFound. Dem Servlet kommt dabei die Rolle eines Wächters zu, welcher überprüft ob notwendige Parameter für die einzelnen Anfragen vorhanden sind. Ist eine Anfrage gültig, wird diese an den sogenannten Controller weitergereicht, welcher die eigentlichen TeamFound-Komponenten steuert. Dieser Controller gibt immer ein Response-Objekt zurück, welches vom Servlet dann zB. als XML oder HTML serialisiert und als Antwort zum Client geschickt wird.
+Das \index{Servlet}Servlet ist der Einstiegspunkt für jegliche Anfragen an TeamFound. Dem Servlet kommt dabei die Rolle eines Wächters zu, welcher überprüft ob notwendige \index{Parameter}Parameter für die einzelnen \index{Anfragen}Anfragen vorhanden sind. Ist eine Anfrage gültig, wird diese an den sogenannten \index{Controller}Controller weitergereicht, welcher die eigentlichen TeamFound-Komponenten steuert. Dieser Controller gibt immer ein \index{Response-Objekt}Response-Objekt zurück, welches vom \index{Servlet}Servlet dann zB. als XML oder HTML serialisiert und als Antwort zum Client geschickt wird.
 
 \subsection{Controller}
 \label{controller}
-Die Hauptaufgabe des Controllers besteht darin die Teilaufgaben, die sich aus einer 
+Die Hauptaufgabe des \index{Controllers}Controllers besteht darin die Teilaufgaben, die sich aus einer 
 Anfrage ergeben, koordiniert an Datenbank und Index zu stellen.
 Ausserdem sorgt er f"ur den Download der zu indizierenden Dokumente.
 
-Die Zugriffe auf den Index werden dabei durch eine Instanz eines Indexers erledigt.
+Die Zugriffe auf den \index{Index}Index werden dabei durch eine Instanz eines \index{Indexer}Indexers erledigt.
 Um die Zugriffe der Indexer auf den Index zu steuern, besitzt der Controller ein
 Semaphorobjekt. Dieses realisiert eine Leser-Schreiber-Kooperation der beauftragten
 Indexer.
 
-Der Zugriff auf die Datenbank erfolgt "uber den DBLayer. Dieser stellt
-s"amtliche Funktionalit"at zum lesen und schreiben der Datenbank zur
+Der Zugriff auf die Datenbank erfolgt "uber den \index{DBLayer}DBLayer. Dieser stellt
+s"amtliche Funktionalit"at zum lesen und schreiben der \index{Datenbank}Datenbank zur
 Verf"ugung.
 
-Wenn alle Teilaufgaben erf"ullt sind (siehe Abl"aufe \ref{request}), generiert der Controller aus den 
-erhaltenen Informationen eine Response und "ubergibt diese dem Servlet.
+Wenn alle Teilaufgaben erf"ullt sind (siehe Abl"aufe \ref{request}), generiert der \index{Controller}Controller aus den 
+erhaltenen Informationen eine \index{Response}Response und "ubergibt diese dem \index{Servlet}Servlet.
 
 \subsection{Indexer}
 \label{indexer}
-Der Indexer ist f"ur die Arbeit direkt am Lucene-Index verantwortlich. Er f"ugt 
+Der \index{Indexer}Indexer ist f"ur die Arbeit direkt am \index{Lucene-Index}Lucene-Index verantwortlich. Er f"ugt 
 Dokumente (siehe \ref{lucene}) in den Index ein oder entfernt sie wieder. 
 Ausserdem f"uhrt er Suchanfragen auf dem Index aus.
-Die von uns definierte Dokumentenstruktur (siehe \ref{docstruktur}) ist bereits im Cotroller bekannt, 
+Die von uns definierte \index{Dokumentenstruktur}Dokumentenstruktur (siehe \ref{docstruktur}) ist bereits im \index{Controller}Controller bekannt, 
 somit kann der Indexer vorgefertigte Dokument erhalten und als Ergebnis liefern. 
 Zur Indizierung und zur Suche benutzt der Indexer 
 einen eigenen Analyzer (siehe \ref{lucene}), 
-der wird haupts"achlich ben"otigt um das Kategorienfeld (siehe \ref{docstruktur}) korrekt zu zerlegen.
-Ausserdem geh"ort ein einfacher Html-Parser zum Indexer, dieser soll den Text und
-einige zus"atzliche Informationen (z.b. context-type) aus den Html-Seiten extrahieren.
-Weitere Parser z.b. f"ur Postscript oder Pdf-Files sind in zuk"unftigen Versionen denkbar.
+der wird haupts"achlich ben"otigt um das \index{Kategorienfeld}Kategorienfeld (siehe \ref{docstruktur}) korrekt zu zerlegen.
+Ausserdem geh"ort ein einfacher \index{HTML-Parser}HTML-Parser zum Indexer, dieser soll den Text und
+einige zus"atzliche Informationen (z.b. context-type) aus den HTML-Seiten extrahieren.
+Weitere Parser z.b. f"ur \index{Postscript}Postscript oder \index{PDF}PDF-Dateien sind in zuk"unftigen Versionen denkbar.
 
-Die Anfragen werden zu eiem teil durch den QueryParser (siehe \ref{lucene}) und zum 
-anderen vom Indexer generiert. Der Indexer erstellt dabei die Einschr"ankung
+Die Anfragen werden zu einem Teil durch den \index{QueryParser}QueryParser (siehe \ref{lucene}) und zum 
+anderen vom \index{Indexer}Indexer generiert. Der Indexer erstellt dabei die Einschr"ankung
 welche Kategorien in der Anfrage g"ultig sind.
-Aus beiden teilen wird die gesammte Anfrage gebildet und an den Index gestellt.
+Aus beiden Teilen wird die gesammte Anfrage gebildet und an den Index gestellt.
 Die Verarbeitung der Ergebnisse "ubernimmt der Controller.
 
 \subsection{Response}
 \label{response}
-Antworten werden in TeamFound immer als XML generiert, diese XML\-Repräsentation kann bevor sie zum Client geschickt wird, noch mittels XSLT in eine geeignete HTML\-Fassung gewandelt werden.
-Eine Basisklasse Response übernimmt dabei das Handling des eigentlichen JDOM-Document-Objektes, während die eigentlichen Antwort\-Klassen, wie SearchResponse oder AddPageResponse ihre eigentlichen Inhalte an die Standardelemente einer Antwort anhängen (Siehe dazu mehr im Kapitel Protokoll TODO: LINK).
+Antworten werden in TeamFound immer als \index{XML}XML generiert, diese XML\-Repräsentation kann bevor sie zum Client geschickt wird, noch mittels \index{XSLT}XSLT in eine geeignete HTML\-Fassung gewandelt werden.
+Eine Basisklasse \index{Response}Response übernimmt dabei das Handling des eigentlichen JDOM-Document-Objektes, während die eigentlichen Antwort\-Klassen, wie \index{SearchResponse}SearchResponse oder \index{AddPageResponse}AddPageResponse ihre eigentlichen Inhalte an die Standardelemente einer Antwort anhängen (Siehe dazu mehr in Kapitel \vref{protokoll}, Protokoll).
 
 
 \section{Datenmodell}
@@ -183,48 +181,48 @@ von Nutzer- und Rechtemanagement zu kl"aren sein.
 \label{dberd}
 \end{figure}
 
-Die Datenbank besteht zur Zeit aus 4 Tabellen (siehe Abbildung \ref{dberd}).
-Die wichtigste Tabelle des derzeitigen Standes ist die $category$-Tabelle.
-Sie beinhaltet die Kategorieb"aume der Projekte eines Servers.
+Die \index{Datenbank}Datenbank besteht zur Zeit aus 4 Tabellen (siehe Abbildung \ref{dberd}).
+Die wichtigste \index{Tabelle}Tabelle des derzeitigen Standes ist die $category$-Tabelle.
+Sie beinhaltet die \index{Kategorieb"aume}Kategorieb"aume der Projekte eines Servers.
 
-Um die B"aume in der Datenbank zu repr"asentieren haben wir
-Verschachtelte Mengen (nested sets) eingesetzt. 
+Um die\index{Baum}B"aume in der \index{Datenbank}Datenbank zu repr"asentieren haben wir
+\index{Verschachtelte Mengen}Verschachtelte Mengen (\index{nested sets}nested sets) eingesetzt. 
 Dadurch k"onnen wir mit einfachen \texttt{select}-statements den
 Baum durchsuchen, allerdings ist das einf"ugen oder edititeren des Baumes aufwendig.
 Da wir Serverseitig haupts"achlich Suchvorg"ange zu bedienen haben, wollten wir
-eine Rekursive Tabellenstruktur in der Datenbank vermeiden.
-Die Verschachtelten Mengen boten uns eine gute Variante dies zu umgehen.
+eine \index{rekursive Tabellenstruktur}rekursive Tabellenstruktur in der Datenbank vermeiden.
+Die \index{verschachtelte Mengen}Verschachtelten Mengen boten uns eine gute Variante dies zu umgehen.
 Genauere Informationen hierzu befinden sich im Kapitel \ref{katrep} .
 
-Die Tabelle $categoryversion$ k"onnte prinzipiell zu jeder Kategorie eine
-Versionsnummer mitf"uhren. Derzeit wird dies nur f"ur Wurzelknoten getan.
-Damit hat jeder vom Server verwaltete Kategoriebaum eine Versionsnummer. Diese
-wird benutzt um die Aktualit"at der B"aume zwischen Clienten untereinander 
+Die \index{Tabelle}Tabelle $categoryversion$ k"onnte prinzipiell zu jeder Kategorie eine
+\index{Versionsnummer}Versionsnummer mitf"uhren. Derzeit wird dies nur f"ur \index{Wurzelknoten}Wurzelknoten getan.
+Damit hat jeder vom Server verwaltete \index{Kategoriebaum}Kategoriebaum eine Versionsnummer. Diese
+wird benutzt um die Aktualit"at der B"aume zwischen den Clients untereinander 
 und mit dem Server sicherzustellen.
 Es ist durchaus vorstellbar Versionsnummern bei gro"sen Projekten
 auch f"ur Teilb"aume zu verteilen, was derzeit aber nicht geplant ist.
 
 Zu jeder Kategorie k"onnen beliebig viele Urls zugeordnet werden. Diese
-werden in der $indexedurl$ Tabelle gehalten. Jede Url, die indiziert wurde, wird
+werden in der $indexedurl$ \index{Tabelle}Tabelle gehalten. Jede Url, die \index{indiziert}indiziert wurde, wird
 mit Datum in dieser Tabelle gespeichert. Somit kann schnell festgestellt werden,
-ob eine Url schon einmal hinzugef"ugt wurde und zu welchen Kategorien sie bisher
+ob eine \index{URL}URL schon einmal hinzugef"ugt wurde und zu welchen Kategorien sie bisher
 zugeordnet war.
-Da der Index selbst auch doppelte Eintr"age zul"asst, 
+Da der \index{Index}Index selbst auch doppelte Eintr"age zul"asst, 
 ist es wichtig vor dem Einf"ugen das vorhandensein "uberpr"ufen zu k"onnen. 
 
 Jede Url kann auch beliebig zu Kategorien zugeordnet werden,
 da wir dieselbe Url in verschiedenen Kategorieb"aumen oder 
-auch in verschiedenen Kategorien in ein und demselben Baum zulassen m"ochten.
+auch in verschiedenen \index{Kategorien}Kategorien in ein und demselben \index{Baum}Baum zulassen m"ochten.
 Die Nutzer von Teamfound entscheiden in welche Kategorie ein Document 
 geh"ort. Unabh"angig davon w"are eine "Uberpr"ufung, ob solch eine Zuordnung sinnvoll 
 ist, auch kaum umzusetzbar.
 
-Im Index wird allerdings zu jeder Url nur ein einziges Dokument (siehe \ref{luckomponenten}) abgelegt.
+Im \index{Index}Index wird allerdings zu jeder \index{URL}URL nur ein einziges Dokument (siehe \ref{luckomponenten}) abgelegt.
 Wichtig ist dabei, dass eine Url, die einer Kategorie hinzugef"ugt wird, 
 auch allen zugeh"origen Elternkategorien zugeordnet wird.
-Das passiert in der Datenbank als auch im Dokument des Indexes.
-Dadurch werden bei einer Suchanfrage innerhalb einer Kategorie automatisch 
-auch alle Urls geliefert, die Kindkategorien dieser Kategorie zugeordnet wurden.
+Das passiert in der \index{Datenbank}Datenbank als auch im Dokument des Indexes.
+Dadurch werden bei einer \index{Suchanfrage}Suchanfrage innerhalb einer Kategorie automatisch 
+auch alle Urls geliefert, die \index{Kindkategorie}Kindkategorien dieser Kategorie zugeordnet wurden.
 
 Das Datum in der $indexedurl$ Tabelle wird genutzt um Urls zu erkennen, welche
 schon lange im Index liegen. Diese werden dementsprechend neu indiziert.
@@ -234,28 +232,28 @@ schon lange im Index liegen. Diese werden dementsprechend neu indiziert.
 \subsection{Index und Dokumentstruktur}
 \label{docstruktur}
 
-Die Bibliothek Lucene macht bestimmte Vorgaben wie die Textdokumente, die von Lucene
-indiziert werden sollen, zu erstellen sind. (siehe \ref{luckomponenten})
+Die \index{Bibliothek}Bibliothek \index{Lucene}Lucene macht bestimmte Vorgaben wie die Textdokumente, die von Lucene
+\index{indiziert}indiziert werden sollen, zu erstellen sind. (siehe \ref{luckomponenten})
 
 In diesem Abschnitt soll kurz der Aufbau eines von Teamfound erstelltem Dokuments
 beschrieben werden. Zur Hilfestellung lohnt es sich Abbildung \ref{katstruktur} 
 anzuschauen.
 
-Jede Html-Seite, die dem Index hinzugef"ugt werden soll, muss erstmal serverseitig heruntergeladen werden.
+Jede Html-Seite, die dem \index{Index}Index hinzugef"ugt werden soll, muss erstmal serverseitig heruntergeladen werden.
 Danach wird der Text und weitere Informationen extrahiert.
 Dies alles, sowie die Kategorien zu denen die Seite zugeordnet wurde, wird nun in 
-ein Lucene-Dokument verpackt.
+ein \index{Lucene-Dokuments}Lucene-Dokument verpackt.
 
 Das erste Feld (siehe \ref{luckomponenten}), welches ein Teamfounddokument 
 enth"alt, ist
-ein Schl"usselwortfeld. In diesem wird die Url zu der dieses Dokument geh"ort
+ein \index{Schl"usselwortfeld}Schl"usselwortfeld. In diesem wird die Url zu der dieses Dokument geh"ort
 gespeichert. Dieses Feld wird nicht durch den Teamfound-$Analyser$ (siehe \ref{luckomponenten}) zerlegt, aber durchsuchbar im Index abgespeichert. 
 Die Url wird also zur eindeutigen Identifikation eines Dokumentes ben"otigt. 
 Zus"atzlich ist es m"oglich den Index nach Urls zu durchsuchen.
 
 Als n"achstes speichern wir eine sehr kurze Zusammenfassung. 
 Diese wird weder zerlegt noch indiziert. 
-Sie dient ausschlie"slich als n"ahere Beschreibung eines Suchergebnisses einer Anfrage.
+Sie dient ausschlie"slich als n"ahere Beschreibung eines \index{Suchergebniss}Suchergebnisses einer Anfrage.
 
 Ein weiteres Feld ist der Titel der Seite. Er wird zerlegt und indiziert.
 Anfragen die Schl"usselw"orter enthalten, die im Titel vorkommen, erhalten
@@ -274,13 +272,13 @@ mit einer zweiten Suchanfrage "uber dem Kategorienfeld verkn"upft und eingeschr"
 Um solche Anfragen zu erm"oglichen muss jedes Token in einem Kategoriefeld eindeutig
 einer Kategorie zuzuordnen sein.
 
-Die einfachste L"osung war die ID einer Kategorie aus der Datenbank als Token 
+Die einfachste L"osung war die ID einer \index{Kategorie}Kategorie aus der Datenbank als \index{Token}Token 
 zu benutzen, und diese in dem Kategoriefeld zu speichern.
 Damit es m"oglich ist die verschiedenen IDs zu unterscheiden, trennen wir diese mit 
 einem eindeutigen Charakter voneinander ab.
 Den Teamfound-$Analyser$ haben wir dementsprechend angepasst,
-so dass er die Tokens dieses Feldes einfach anhand des Trenncharakters generiert.
-Auf diese Weise k"onnen wir die Anfragen leicht so erweitern, dass sie mithilfe von Kategorien eingeschr"ankt werden k"onnen.
+so dass er die \index{Token}Tokens dieses Feldes einfach anhand des Trenncharakters generiert.
+Auf diese Weise k"onnen wir die \index{Anfragen}Anfragen leicht so erweitern, dass sie mithilfe von \index{Kategorien}Kategorien eingeschr"ankt werden k"onnen.
 
 
 \subsection{Repr"asentation der Kategorien}
@@ -292,20 +290,20 @@ Auf diese Weise k"onnen wir die Anfragen leicht so erweitern, dass sie mithilfe 
 \label{katstruktur}
 \end{figure}
 
-Da ein wichtiger Teil des derzeitigen Servers die Verwaltung der Kategorien 
+Da ein wichtiger Teil des derzeitigen Servers die Verwaltung der \index{Kategorien}Kategorien 
 betrifft, soll hier noch einmal etwas genauer auf diese eingegangen werden.
 
 Wie schon in Kapitel \ref{datenbank} erw"ahnt wurde sind die Kategorien 
-baumstrukturiert und werden in Form von Verschachtelten Mengen in der
-Datenbank abgelegt.
-Die grafische darstellung eines solchen Baumes und einer solchen Menge
+\index{baumstrukturiert}baumstrukturiert und werden in Form von \index{verschachtelten Mengen}verschachtelten Mengen in der
+\index{Datenbank}Datenbank abgelegt.
+Die grafische Darstellung eines solchen Baumes und einer solchen Menge
 kann man in Abbildung \ref{katstruktur} sehen. 
 Es ist leicht zu erkennen, dass alle Knoten des Baumes einen linken und
 einen rechten Wert aufweisen. 
-Anhand dieser Werte kann die Mengen- Baumstruktur in der Datenbank nachgebaut und 
+Anhand dieser Werte kann die \index{Mengen-Baumstruktur}Mengen-Baumstruktur in der Datenbank nachgebaut und 
 der Baum durchlaufen werden.
 Es ist leicht zu erkennen, dass der rechte Wert eines Knotens gr"o"ser ist als
-alle Werte der Kindknoten und genauso ist der linke Wert kleiner.
+alle Werte der \index{Kindknoten}Kindknoten und genauso ist der linke Wert kleiner.
 Es gelten noch einige andere n"utzliche Dinge, z.b.  
 k"onnen alle Bl"atter des Baumes sehr leicht indentifiziert werden, da
 bei diesen die Differenz von linkem und rechtem Wert einfach 1 betr"agt.
@@ -324,12 +322,12 @@ eher selten vorkommen wird. Wenn ein neues Projekt beginnt werden in der Anfangs
 von den Mitgliedern sicher einige Kategorien angelegt, diese 
 werden danach aber auch nahezu unver"andert bleiben.
 
-Auf der anderen Seite muss bei sehr vielen Anfragen der Baum durchsucht werden.
-Allein das Anlegen einer neuen Kategorie hat zur Folge, das jeder Client den
-neuen Kategorienbaum vom Server erfragt.
+Auf der anderen Seite muss bei sehr vielen Anfragen der \index{Baum}Baum durchsucht werden.
+Allein das Anlegen einer neuen \index{Kategorie}Kategorie hat zur Folge, das jeder Client den
+neuen \index{Kategorienbaum}Kategorienbaum vom Server erfragt.
 Da wir also den Baum sehr oft auslesen m"ussen ist diese Art der Speicherung vorteilhaft.
-Hinzu kommt, das es sehr aufwendig ist einen solchen Baum oder Pfade 
-eines Baumes in einem Index abzulegen.
+Hinzukommt, das es sehr aufwendig ist einen solchen Baum oder Pfade 
+eines Baumes in einem \index{Index}Index abzulegen.
 Deshalb speichern wir im Index auch nur eine einfache Aufz"ahlung 
 von Kategorien ab. (siehe Abbildung \ref{katstruktur} und Kapitel \ref{docstruktur})
 Diese enth"alt zwar den ganzen Pfad, dennoch l"asst sich dieser nicht
@@ -340,9 +338,9 @@ Datenbankzugriff, sondern kann mit einer Anfrage an den Index bearbeitet werden.
 Das l"asst sich mit dem Zweck unserer Anwendung erkl"aren. 
 Wir stellen eine Suche anhand von Suchbegriffen bereit. Die Kategorien sind nur
 eine Einschr"ankung der Suchergebnisse. 
-Je allgemeiner die Kategorie in einer SuchAnfrage gew"ahlt wird,
+Je allgemeiner die Kategorie in einer Suchanfrage gew"ahlt wird,
 desto mehr Ergebnisse werden gefunden.
-Das erkl"art sich darin, das alle Dokumente, die einer Unterkategorie 
+Das erkl"art sich darin, das alle Dokumente, die einer \index{Unterkategorie}Unterkategorie 
 angeh"oren, auch allen Elternkategorien zugeordnet wurden.
 Dieser einfache Trick erreicht genau unseren Zweck.
 Bei einer Suchanfrage wird ein Dokument in jeder Kategorie, die auf dem Pfad 
@@ -351,7 +349,7 @@ durch den Baum liegt gefunden und sie kann schnell ausgef"uhrt werden.
 
 \section{Abl"aufe im Server}
 \label{request}
-Wie Aufrufe vom Client im Server abgearbeitet werden, soll kurz in diesem Abschnitt 
+Wie Aufrufe vom \index{Client}Client im \index{Server}Server abgearbeitet werden, soll kurz in diesem Abschnitt 
 behandelt werden.
 Wir haben drei verschiedene Serverdienste ausgew"ahlt. Sie sollen einen Einblick in die
 Interna des Servers bieten und dadurch die Funktionsweise von Teamfound noch
@@ -360,7 +358,7 @@ etwas besser verst"andlich machen.
 
 \subsection{AddpageRequest}
 \label{addpagerequest}
-
+\index{AddpageRequest}
 \begin{figure}
 \includegraphics[width=16cm]{bilder/ablaufaddpage1.eps}
 \caption{Indizieren einer neuen URL}
@@ -376,30 +374,30 @@ und vom Servlet (siehe Kapitel \ref{servlet}) entgegengenommen.
 Ist der Aufruf korekt, d.h. er enth"alt die hinzuzuf"ugende Url und mindestens 
 eine Kategorie, wird der Controller (siehe \ref{controller}) mit entsprechendem 
 Auftrag angestossen.
-Bei nicht korekten Aufrufen wird eine \texttt{ErrorResponse} erstellt.
+Bei nicht korekten Aufrufen wird eine \index{ErrorResponse}\texttt{ErrorResponse} erstellt.
 
-Der Controller erstellt nun eine Verbindung zur Datenbank 
+Der \index{Controller}Controller erstellt nun eine Verbindung zur \index{Datenbank}Datenbank 
 und einen Indexer (siehe Kapitel \ref{indexer}).
-Als n"achstes "uberpr"uft er anhand der Datenbank ob die Url schon existiert.
+Als n"achstes "uberpr"uft er anhand der \index{Datenbank}Datenbank ob die Url schon existiert.
 An dieser Stelle ergeben sich zwei M"oglichkeiten.
 Sollte die Url noch nicht indiziert sein, so muss sie als erstes runtergeladen werden.
-Danach wird ein Dokument erstellt und durch den Indexer dem Index hinzugef"ugt.
+Danach wird ein Dokument erstellt und durch den \index{Indexer}Indexer dem \index{Index}Index hinzugef"ugt.
 (siehe hierzu Kapitel \ref{docstruktur})
-Als letztes muss noch die Datenbank angeglichen werden. (siehe Kapitel \ref{datenbank})
+Als letztes muss noch die \index{Datenbank}Datenbank angeglichen werden. (siehe Kapitel \ref{datenbank})
 
 Die zweite M"oglichkeit ist, dass die Url bereits indiziert wurde.
 Um ein Update der Url im Index durchzuf"uhren, muss zuerst das entsprechende Dokument
-aus dem Index gel"oscht werden. Dabei wird eine Kopie des Dokuments an den Controller
+aus dem Index gel"oscht werden. Dabei wird eine Kopie des Dokuments an den \index{Controller}Controller
 geliefert. Dieser ersetzt nun das Kategorienfeld (siehe Kapitel \ref{docstruktur}), damit
 die neuen Kategorien auch enthalten sind.
 Danach wird das Dokument dem Index wieder hinzugef"ugt und die entsprechenden neuen
-Assoziationen zwischen Url und Kategorien werden in der Datenbank gesetzt.
+Assoziationen zwischen Url und \index{Kategorien}Kategorien werden in der \index{Datenbank}Datenbank gesetzt.
 
 Es gibt noch eine dritte M"oglichkeit, die allerdings in Abbildung \ref{addpage} nicht
 dargestellt ist. Die Url ist bereits hinzugef"ugt und es ver"andert sich auch bei
-den Kategorien nichts. Auch diese M"oglichkeit wird anahnd der Datenbank "uberpr"uft.
+den Kategorien nichts. Auch diese M"oglichkeit wird anahnd der \index{Datenbank}Datenbank "uberpr"uft.
 Sollte der Fall eintreten passiert gar nichts und die Erfolgsmeldung wird 
-sofort an den Client gesendet. Es ist einfach vorstellbar, dass ein Benutzer ausversehen
+sofort an den \index{Client}Client gesendet. Es ist einfach vorstellbar, dass ein Benutzer ausversehen
 mehrmals das Hinzuf"ugen ausl"ost. In solch einem Fall wollen wir nicht unn"otig den
 Index blockieren.
 Allerdings gibt es auch hier eine Aussnahme. Sollte die Url ein gewisses ''Alter'' 
@@ -408,60 +406,61 @@ Allerdings gibt es auch hier eine Aussnahme. Sollte die Url ein gewisses ''Alter
 
 \subsection{SearchRequest}
 \label{searchrequest}
-
+\index{SearchRequest}
 \begin{figure}
 \includegraphics[width=14cm]{bilder/search.eps}
 \caption{Suchanfrage an den Server}
 \label{search}
 \end{figure}
 
-Der am h"aufigsten ben"otigte Dienst des Servers ist die Suche nach Dokumenten.
+Der am h"aufigsten ben"otigte Dienst des Servers ist die \index{Suche nach Dokumenten}Suche nach Dokumenten.
 Wie ein Request grunds"atzlich entgegengenommen wird ist bereits in Kapitel
 \ref{addpagerequest} beschrieben.
 Das Servlet (siehe Kapitel \ref{servlet}) erhellt den Request und ruft die entsprechende 
-Funktion des Controllers (siehe \ref{controller}) auf.
+Funktion des \index{Controllers}Controllers (siehe \ref{controller}) auf.
 
-Eine "Ubersicht zum Ablauf einer Suchanfrage biete die Abbildung \ref{search}.
+Eine "Ubersicht zum Ablauf einer \index{Suchanfrage}Suchanfrage biete die Abbildung \ref{search}.
 Die Suchanfrage enth"alt zuerst einen vom User eingegebenen Text, der in der
-Lucene $QuerySyntax$ formuliert ist. 
+\index{Lucene}Lucene $QuerySyntax$ formuliert ist. 
 (siehe \texttt{QueryParser} in Kapitel \ref{luckomponenten})
-Zus"atzlich wird ein Array von Kategorie-IDs "ubergeben. Die Kategorien wurden vom
-Nutzer am Client ausgew"ahlt. Da alle Clients immer ihre Kategorieb"aume 
+Zus"atzlich wird ein Array von \index{Kategorie-ID}Kategorie-IDs "ubergeben. Die \index{Kategorien}Kategorien wurden vom
+Nutzer am Client ausgew"ahlt. Da alle Clients immer ihre \index{Kategorieb"aume}Kategorieb"aume 
 aktuell halten, sind die IDs direkt verwendbar.
 Es gibt zur Zeit keine serverseitige "Uberpr"ufung der "ubergebenen Kategorien.
 Das bedeutet, wenn veraltete und somit ''falsche'' IDs in der Anfrage stehen, werden 
 entweder falsche oder keine Dokumente gefunden.
 
 Die weitere Bearbeitung ben"otigt nur eine Anfrage an den Index. Hierzu wird ein
-Indexer (siehe Kapitel \ref{indexer}) erstellt. Dieser baut anhand der Parameter
-eine $Query$ (Kapitel \ref{luckomponenten}), die dann durch Lucene bearbeitet wird.
+\index{Indexer}Indexer (siehe Kapitel \ref{indexer}) erstellt. Dieser baut anhand der \index{Parameter}Parameter
+eine $Query$ (Kapitel \ref{luckomponenten}), die dann durch \index{Lucene}Lucene bearbeitet wird.
 Genauere Informationen zum Erstellen der $Query$ befinden sich in Kapitel \ref{docstruktur}.
 Die Dokumente (Kapitel \ref{luckomponenten}) , die der Index als Antwort generiert, werden
-durch den Controller ausgewertet und eine $Response$ wird erstellt. 
-Diese kann dann die HTML- oder XML-Antwort generieren, welche an den Client gesendet wird.
+durch den \index{Controller}Controller ausgewertet und eine $Response$ wird erstellt. 
+Diese kann dann die \index{HTML-Antwort}HTML- oder \index{XML-Antwort}XML-Antwort generieren, welche an den Client gesendet wird.
 
 
 \subsection{GetCategoriesRequest}
 \label{getcatrequest}
-
+\index{GetCategoriesRequest}
 \begin{figure}
 \includegraphics[width=14cm]{bilder/getcat.eps}
 \caption{Abfragen der Kategorien}
 \label{getcat}
 \end{figure}
 
-In den vorangegangenen Kapiteln wurden Kategorien schon ziemlich ausgiebig erl"autert.
+In den vorangegangenen Kapiteln wurden \index{Kategorien}Kategorien schon ziemlich ausgiebig erl"autert.
 An dieser Stelle soll kurz erkl"art werden wie die Kategorien ausgelesen und an den
 Client gesendet werden. Als "Ubersicht hierzu dient die Abbildung \ref{getcat}.
 
-F"ur diese Aufgabe muss der Controller nur zwei Datenbankabfragen machen und kann 
+F"ur diese Aufgabe muss der \index{Controller}Controller nur zwei \index{Datenbankabfragen}Datenbankabfragen machen und kann 
 dann die entsprechende Response f"ullen.
-Als erstes werden daf"ur die vollst"andigen Informationen "uber die Kategorie, deren
+Als erstes werden daf"ur die vollst"andigen Informationen "uber die \index{Kategorie,}Kategorie, deren
 Unterbaum wir erstellen sollen, ausgelesen. Dies kann prinzipiell eine beliebige Kategorie
 sein, aber da wir zum derzeitigen Stand nur die Version von gesammten B"aumen speichern
 (siehe \ref{datenbank}), ist derzeit auch nur eine Abfrage des gesammten Baumes sinnvoll.
 Die Repr"asentation des Baumes in der Datenbank erm"oglicht (siehe \ref{katrep}) es uns den gew"unschten Baum mit einer etwas komplexeren Anfrage auszulesen.
 Die Anfrage:
+\index{select statement}
 \begin{verbatim}
 SELECT a.id, a.left, a.right, a.name, 
 	a.beschreibung,count(*) AS level FROM category AS a, 
@@ -469,7 +468,7 @@ SELECT a.id, a.left, a.right, a.name,
 		AND a.left BETWEEN b.left AND b.right GROUP BY a.id, 
 	a.left, a.right, a.name, a.beschreibung ORDER BY a.left
 \end{verbatim}
-ergibt bei dem Kategoriebaum aus Abbildung \ref{katstruktur} folgende Antwort:
+ergibt bei dem \index{Kategoriebaum}Kategoriebaum aus Abbildung \ref{katstruktur} folgende Antwort:
 
 \begin{center}
 \begin{tabular}{ccccccc}
@@ -488,30 +487,35 @@ Diese kann leicht ausgwertet und eine Response erstellt werden.
 
 	
 \chapter{Protokoll}
+\label{protokoll}
+\index{Protokoll}
 Die in unserem Projekt von Anfang wohl grundlegendste Frage war die des Protokolls, also wie unsere Clients mit dem Server kommunizieren sollen. Auf jeden Fall sollte ein Protokoll spezifiziert werden, welches um sp"atere, jetzt noch unbekannte Features, m"oglichst leicht erweiterbar sein sollte. Es sollte ausserdem gut Dokumentiert und eindeutig sein, damit "ahnliche Projekte, die die Idee hinter TeamFound ebenfalls implementieren wollen, \textbf{motiviert werden} dasselbe Protokoll zu benutzen. Somit k"onnten dann Server und Clients aus unterschiedlichen Projekten miteinander funktionieren und arbeiten.
 
 Wir sind uns nicht sicher, wie weit wir diese Ziele mit Milestone 2 bereits erreicht haben, aber wir glauben auf dem richtigen Weg zu sein ;-)
 
 \section{Designentscheidungen und verwendete Techniken}
-F"ur unser Protokoll kamen prinzipiell viele verschiedene M"oglichkeiten in Betracht. 
+F"ur unser \index{Protokoll}Protokoll kamen prinzipiell viele verschiedene M"oglichkeiten in Betracht. 
 
-Die erste, und einfachste Designentscheidung war, ein Protokoll zu benutzen, welches auf TCP/IP aufsetzt. Somit k"onnen schonmal alle Computer die "uber einen Internet-Zugang verf"ugen prinzipiell mit unseren Componenten kommunizieren.
+Die erste, und einfachste Designentscheidung war, ein Protokoll zu benutzen, welches auf \index{TCP/IP}TCP/IP aufsetzt. Somit k"onnen schonmal alle Computer die "uber einen Internet-Zugang verf"ugen prinzipiell mit unseren Componenten kommunizieren.
 
-Der zweite Schritt war die Festlegung unseres Protokolls nicht direkt auf TCP/IP aufzusetzen, sondern erst auf dem HTTP Protokoll. Diese Entscheidung viel auch sehr schnell und war f"ur uns naheliegend, da wir von Anfang an vorhatten Browser-Plugins zu programmieren, und jeder Internet-Browser HTTP ebenfalls unterst"utzt. 
+Der zweite Schritt war die Festlegung unseres Protokolls nicht direkt auf \index{TCP/IP}TCP/IP aufzusetzen, sondern erst auf dem \index{HTTP}HTTP Protokoll. Diese Entscheidung viel auch sehr schnell und war f"ur uns naheliegend, da wir von Anfang an vorhatten \index{Browser-Plugins}Browser-Plugins zu programmieren, und jeder \index{Internet-Browser}Internet-Browser HTTP ebenfalls unterst"utzt. 
 
-Als weitere Grundlage f"ur unsere Designentscheidungen war unser Wunsch, die M"oglichkeit einen ganz einfachen Web-Client bereitstellen zu k"onnen, so da"s TeamFound auch ohne Installation einer Browser-Erweiterung ausprobiert und genutzt werden kann. Diese Entscheidung f"uhrte dann auch direkt zu der eigentlichen Basis unseres Protokolls:
+Als weitere Grundlage f"ur unsere \index{Designentscheidungen}Designentscheidungen war unser Wunsch, die M"oglichkeit einen ganz einfachen \index{Web-Client}Web-Client bereitstellen zu k"onnen, so da"s TeamFound auch ohne Installation einer Browser-Erweiterung ausprobiert und genutzt werden kann. Diese Entscheidung f"uhrte dann auch direkt zu der eigentlichen Basis unseres Protokolls:
+\index{HTML-Antwort}
+\index{HTTP-GET Variablen}
+\index{XML-Antwor}
 \begin{description}
 \item[HTML-Antworten des Servers] Somit kann jeder Browser die Suchergebnisse unseres Servers direkt anzeigen.
 \item[Anfragen an Server mittels HTTP-GET Variablen] Somit kann ein einfaches HTML-Formular korrekte Suchanfragen an unseren Server stellen.
 \item[XML-Antworten des Servers] Diese M"oglichkeit, konfigurierbar "uber die Suchanfrage, erm"lglicht den Browser-Plugins, und somit dem End-Benutzer, die Darstellung der Suchergebnisse selber zu beeinflussen bzw. komplett anzupassen.
 \end{description}
 
-Die Implementierung des Protokolls, sowie auch alle anderen Komponenten von TeamFound, hatte wir in kleine Schritte unterteilt, unsere Milestones. So hat das Protokoll f"ur Milestone 1 z.B. noch keine Unterst"utzung f"ur XML-Antworten und Kategorien gehabt.
+Die \index{Implementierung}Implementierung des \index{Protokolls}Protokolls, sowie auch alle anderen Komponenten von TeamFound, hatte wir in kleine Schritte unterteilt, unsere Milestones. So hat das Protokoll f"ur Milestone 1 z.B. noch keine Unterst"utzung f"ur XML-Antworten und Kategorien gehabt.
 
-Auf Basis dieser gundlegenden Entscheidungen, haben wir also begonnen sowohl die HTTP-GET Anfragen zu spezifizieren als auch (ab Milestone 2) XML-Tags zu definieren, um die volle Funktionalit"at unserer Implementation nutzen zu k"onnen. 
+Auf Basis dieser gundlegenden Entscheidungen, haben wir also begonnen sowohl die \index{HTTP-GET}HTTP-GET Anfragen zu spezifizieren als auch (ab Milestone 2) \index{XML-Tags}XML-Tags zu definieren, um die volle Funktionalit"at unserer Implementation nutzen zu k"onnen. 
 
 \section{Interface Milestone 1}
-
+\index{Interface Milestone 1}
 \subsection{Seite hinzufügen}
 \begin{description}
 \item[Request] http://url/addpage.pl?url=http://yy.org/blabla.html
@@ -525,7 +529,8 @@ Auf Basis dieser gundlegenden Entscheidungen, haben wir also begonnen sowohl die
 \end{description}
 
 \section{Interface Milestone 2}
-Alle Anfrage-Parameter werden in Form von HTTP GET oder POST Variablen übertragen. Prinzipiell gibt es eine Unterscheidung, ob f"ur jedes Kommando eine eigene URL verwendet wird, oder ob das Kommando in Form einer weiteren HTTP-GET Variablen mit "ubertragen wird. Unsere Implementation des  Servers verwendet den zus"atzlichen HTTP-GET Parameter \texttt{command}. In diesem Interface haben wir aber beide M"oglichkeiten spezifiziert.
+\index{Interface Milestone 2}
+Alle Anfrage-Parameter werden in Form von \index{HTTP GET}HTTP \index{GET}GET oder \index{POST}\index{HTTP POST}POST Variablen übertragen. Prinzipiell gibt es eine Unterscheidung, ob f"ur jedes Kommando eine eigene URL verwendet wird, oder ob das Kommando in Form einer weiteren HTTP-GET Variablen mit "ubertragen wird. Unsere Implementation des  Servers verwendet den zus"atzlichen HTTP-GET Parameter \texttt{command}. In diesem \index{Interface}Interface haben wir aber beide M"oglichkeiten spezifiziert.
 
 \begin{description}
 \item[want=xml or html] Die zu erwartende Antwort soll in xml oder html-format sein (default soll html werden, da dann einfache Link-Clients möglich sind) 
@@ -536,11 +541,13 @@ Alle Anfrage-Parameter werden in Form von HTTP GET oder POST Variablen übertrage
 \end{description}
 
 \subsubsection{HTML-Antwort}
+\index{HTML-Antwort}
 Die Clients geben an ob Sie eine HTML oder eine XML Antwort erwarten.
 
 Soll eine vollständige HTML-Seite zurückgeben, die direkt im Browser angezeigt werden kann. Die Return-Values wie bei einer XML-Antwort müssen in diesem Fall nicht zurückgegeben werden, sondern der Text sollte gleich eine entsprechende Meldung beinhalten.
 
 \subsubsection{XML-Antwort}
+\index{XML-Antwort}
 \begin{description}
 \item[$<$response$>$] Umschliesst alle anderen xml-tags und gibt die XSD-Datei zum verifizieren der XML-Daten an 
 \item[$<$interface-version$>$] Gibt immer die Interface-Version an, in der die Antwort des Servers formuliert wurde 
@@ -594,7 +601,7 @@ xsi:noNamespaceSchemaLocation="teamfound-interface-milestone2.xsd">
 
 \paragraph{Return Codes}
 
-Die Return-Codes stehen immer in den Tags $<$return-value$>$xx$<$/return-value$>$. Die Description ist optional.
+Die \index{Return-Codes}Return-Codes stehen immer in den Tags $<$return-value$>$xx$<$/return-value$>$. Die Description ist optional.
 
 \begin{description}
 \item[0] Alles ok 
@@ -619,7 +626,9 @@ Die vollst"andige Spezifikation des Interface Milestone 2 befindet sich im Anhan
 \chapter{Clients}
 
 \section{Web-Client}
-Der Web-Client ist ein einfaches HTML-Formular (\texttt{$<$form$>$..$<$/form$>$}), welches Anfragen an den Server sendet und die Antwort direkt im Browser anzeigt. Dieser Client ist von daher praktisch, da man keine extra Erweiterung f"ur den Browser installieren muss, und von daher unpraktisch, da man die URL einer neu hinzuzuf"ugende Seite immer zuerst manuell kopieren, dann die Seite des Web-Clients laden und schliesslich die URL manuell eintragen muss.
+\index{Web-Client}
+\index{Client}
+Der Web-Client ist ein einfaches \index{HTML-Formular}HTML-Formular (\texttt{$<$form$>$..$<$/form$>$}), welches Anfragen an den Server sendet und die Antwort direkt im Browser anzeigt. Dieser Client ist von daher praktisch, da man keine extra Erweiterung f"ur den Browser installieren muss, und von daher unpraktisch, da man die URL einer neu hinzuzuf"ugende Seite immer zuerst manuell kopieren, dann die Seite des Web-Clients laden und schliesslich die URL manuell eintragen muss.
 \begin{figure}
 \epsfig{file=webclient}
 \caption{Web-Client Screenshot}
@@ -633,10 +642,10 @@ javascript:location.href='http://serverurl/addpage.pl?
 url='+encodeURIComponent(location.href)
 \end{verbatim}
 
-Mit diesem einfachen Link, kann das l"astige Kopieren umgangen werden, indem "uber Javascript die URL der aktuell im eigenen Browser angezeigten Seite, durch einen einfachen Click auf diesen Bookmark, direkt an den TeamFound-Server gesendet wird. (Beispiel ist f"ur Milestone 1)
+Mit diesem einfachen \index{Link}Link, kann das l"astige Kopieren umgangen werden, indem "uber \index{Javascript}Javascript die URL der aktuell im eigenen \index{Browser}Browser angezeigten Seite, durch einen einfachen Click auf diesen \index{Bookmark,}Bookmark, direkt an den TeamFound-Server gesendet wird. (Beispiel ist f"ur Milestone 1)
 
 \subsection{Implementation}
-Die \textit{extrem einfache} Implementation des Web-Clients f"ur eine Suchanfrage entsprechend Milestone 2 sieht wie folgt aus:
+Die \textit{extrem einfache} Implementation des Web-Clients f"ur eine \index{Suchanfrage}Suchanfrage entsprechend Milestone 2 sieht wie folgt aus:
 \begin{verbatim}
 <form action="serverurl">
 	search: <input type="text" name="keyword">
@@ -646,10 +655,11 @@ Die \textit{extrem einfache} Implementation des Web-Clients f"ur eine Suchanfrag
 	<input type="submit">
 </form>
 \end{verbatim}
-Bei dem Design der TeamFound-Interfaces war diese M"oglichkeit der HTML-Formulare die entscheidende Grundlage. Alle Anfragen an den Server k"onnen mit HTML-Formularen ohne Zus"atze (wie Javascript, Applets, Extensions, etc.) generiert werden.
+Bei dem Design der \index{TeamFound-Interfaces}TeamFound-Interfaces war diese M"oglichkeit der \index{HTML-Formulare}HTML-Formulare die entscheidende Grundlage. Alle Anfragen an den Server k"onnen mit HTML-Formularen ohne Zus"atze (wie \index{Javascript}Javascript, \index{Applets}Applets, \index{Extension}Extensions, etc.) generiert werden.
 
 \section{Firefox-Toolbar}
-Der Mozilla Firefox l"asst sich durch sogenannte \textit{Extensions} sehr einfach erweitern. Als grundlegende Techniken werden daf"ur XUL (XML User Interface Language) und Javascript ben"otigt. Desweiteren gibt es eine exakt vordefinierte Verzeichnisstruktur sowie eine Beschreibungs-Datei (\texttt{install.rdf}) im RDF (Resource Description Framework) Format, umd die Erweiterung automatisiert installierbar in Firefox-Browsern zu machen.
+\index{Firefox Toolbar}
+Der \index{Mozilla Firefox}Mozilla Firefox l"asst sich durch sogenannte \textit{Extensions} sehr einfach erweitern. Als grundlegende Techniken werden daf"ur \index{XUL}XUL (\index{XML User Interfaces Language}XML User Interface Language) und \index{Javascript}Javascript ben"otigt. Desweiteren gibt es eine exakt vordefinierte Verzeichnisstruktur sowie eine Beschreibungs-Datei (\texttt{install.rdf}) im \index{RDF}RDF (\index{Resource Description Framework}Resource Description Framework) Format, umd die Erweiterung automatisiert installierbar in Firefox-Browsern zu machen.
 
 \begin{figure}
 \epsfig{file=ffextension-kategorien}
@@ -659,7 +669,7 @@ Der Mozilla Firefox l"asst sich durch sogenannte \textit{Extensions} sehr einfac
 
 
 \subsection{Dateien}
-Die Verzeichnisstruktur der TeamFound Firefox Extension sowie alle enthaltenen Dateien sind:
+Die \index{Firefox Toolbar!Verzeichnisstruktur}Verzeichnisstruktur der TeamFound Firefox Extension sowie alle enthaltenen Dateien sind:
 \begin{verbatim}
 chrome.manifest
 install.rdf
@@ -684,10 +694,14 @@ skin/
 \end{verbatim}
 
 Die eigentliche Funktionalit"at steckt dabei in dem Unterverzeichnis content:
+\index{Firefox Toolbar!overlay.xul}
+\index{Firefox Toolbar!overlay.js}
+\index{Firefox Toolbar!settings.xul}
+\index{Firefox Toolbar!settings.js}
 \begin{description}
-\item[overlay.xul] Definiert das Aussehen der Toolbar
+\item[overlay.xul] Definiert das Aussehen der \index{Toolbar}Toolbar
 \item[overlay.js] Definiert die Funktionalit"at der Toolbar
-\item[settings.xul] Definiert das Aussehen des Einstellungen-Dialogs
+\item[settings.xul] Definiert das Aussehen des \index{Einstellungen-Dialog}Einstellungen-Dialogs
 \item[settings.js] Definiert die Funktionalit"at des Einstellungen-Dialogs
 \end{description}
 
@@ -704,47 +718,48 @@ Die eigentliche Funktionalit"at steckt dabei in dem Unterverzeichnis content:
 \label{fftoolbarsuchergebnis}
 \end{figure}
 
-Das originale Changelog in englischer Sprache der Firefox-Toolbar befindet sich im Anhang \vref{changelog}.
+Das originale \index{Changelog}Changelog in englischer Sprache der Firefox-Toolbar befindet sich im Anhang \vref{changelog}.
 \\\\
-Die wichtigsten Funktionen der Toolbar sind:
+Die wichtigsten Funktionen der \index{Toolbar}Toolbar sind:
 \begin{description}
+\index{Firefox Toolbar!onLoad}
 \item[onLoad] Initialisiert die Toolbar: L"adt die gespeicherten lokalen Einstellungen und fragt den Kategorien-Baum vom Server ab. Diese Funktion wird "uber einen Event-Handler automatisch vom Firefox-Browser aufgerufen, sobald dieser geladen wird.
-
+\index{Firefox Toolbar!loadCategories}
 \item[loadCategories] Stellt einen XMLHttpRequest an den Server, und definiert \texttt{onLoadCategoriesFinished} als Callback-Funktion der Anfrage.
-
+\index{Firefox Toolbar!onLoadCategoriesFinished}
 \item[onLoadCategoriesFinished] Wird aufgerufen wenn der Server eine Antwort auf das Kommando \texttt{getcategories} gibt. Auf Basis dieser Antwort wird das Kategorien-Men"u gel"oscht und die Basis-Informationen wie der Server-Name aus der XML-Antwort ausgelesen. Danach wird die Funktion \texttt{addCategory} aufgerufen, die rekursiv alle Kategorien durchl"auft und einen entsprechenden Men"u-Baum in der Toolbar aufbaut.
-
+\index{Firefox Toolbar!onSettings}
 \item[onSettings] Event-Handler wenn auf den 'TF' Button oben links in der Toolbar geklickt wird. Diese Funktion "offnet den Einstellungen-Dialog.
-
+\index{Firefox Toolbar!onSearch}
 \item[onSearch] Diese Funktion startet eine Suchanfrage, und wird aufgerufen wenn in dem Kategorien-Baum 'Search' oder der 'Go' Button angeklickt werden. Die $<$return$>$-Taste wenn der Fokus auf dem Eingabefeld der Kategorien ist ruft ebenfalls diese Funktion auf. OnSearch "uberpr"uft daraufhin die Einstellungen, und leitet die Suchanfrage entsprechend an die Funktionen \texttt{myGotoUrl} oder an \texttt{myTeamFoundSearch} und \texttt{myExternSearch} weiter. Je nach Einstellung wird das HTML-Template zur Anzeige der Suchergebnisse \texttt{search\_h.html} f"ur eine horizontale Verteilung bzw. \texttt{search\_v.html} f"ur eine vertikale Verteilung der Suchergebnisse geladen.
-
+\index{Firefox Toolbar!myGotoUrl}
 \item[myGotoUrl] L"adt ganz einfach die angegebene URL im aktiven Tab des Browser.
-
+\index{Firefox Toolbar!myTeamFoundSearch}
 \item[myTeamFoundSearch] Erstellt einen XMLHttpRequest and den TeamFound Server entsprechend den "ubergebenen Suchw"ortern und registriert \texttt{onTeamFoundSearchFinished} als Callback-Funktion.
-
+\index{Firefox Toolbar!myExternSearch}
 \item[myExternSearch] Erstellt einen XMLHttpRequest an eine externe Suchmaschiene entsprechend den "ubergebenen Suchw"ortern und registriert \texttt{onExternSearchFinished} als Callback-Funktion.
-
+\index{Firefox Toolbar!onAddPage}
 \item[onAddPage] Erstellt einen XMLHttpRequest an den TeamFound Server um die aktuell im Browser angezeigte Seite hinzuzuf"ugen und registriert \texttt{onAddPageFinished} als Callback-Funktion.
-
+\index{Firefox Toolbar!onAddPageFinished}
 \item[onAddPageFinished] Wertet die Antwort des Server aus und zeigt dem Benutzer eine entsprechende Meldung an. 
-
+\index{Firefox Toolbar!onExternSearchFinished}
 \item[onExternSearchFinished] Such in dem (schon geladenen) Template nach der HTML-Tag-ID ''\texttt{teamfound-result-two}'' und f"ugt an dieser Stelle die Antwort als \texttt{innerHTML} ein.
-
+\index{Firefox Toolbar!addCategory}
 \item[addCategory] F"ugt an das "ubergebene Menu-Element die Eintr"age ''\texttt{Search}'', ''\texttt{Add}'' und ''\texttt{Select as default}'' f"ur die ebenfalls "ubergebene Kategorie an. F"ur jede existierende Unterkategorie wird ein \texttt{menupopup}-Eintrag erstellt und diese Funktion jeweils rekursiv wieder aufgerufen.
-
+\index{Firefox Toolbar!onTeamFoundSearchFinished}
 \item[onTeamFoundSearchFinished] Sucht in dem Ergebnis-Template nach der HTML-Tag-ID \texttt{teamfound-result-one} und f"ugt das TeamFound Ergebnis an dieser Stelle als \texttt{innerHTML} ein.
 \end{description}
 
 \section{Internet Explorer-Toolbar}
-
-Auch beim Internet Explorer stand zunächst die Frage wie dieser überhaupt zu erweitern ist. 
+\index{Internet Explorer Toolbar}
+Auch beim \index{Internet Explorer}Internet Explorer stand zunächst die Frage wie dieser überhaupt zu erweitern ist. 
 Google und Yahoo haben mit ihren Toolbar's vorgemacht das es geht, nur das wie war zu lösen.
 
 Erste Anlaufstelle um der Problemlösung näher zu kommen 
-war CodeProject (www.codeproject.com). 
+war \index{CodeProject}CodeProject (www.codeproject.com). 
 Mit 2,8 Mio Mitgliedern ist sie die größte Community Seite für die Windows Entwicklung. 
-Eine Suche nach ``IE Toolbar'' führte zu einer .NET basierten Bibliothek 
-für die Entwicklung von BandObjects, also Band Objekten (http://www.codeproject.com/csharp/dotnetbandobjects.asp).
+Eine Suche nach ``IE Toolbar'' führte zu einer \index{.NET}.NET basierten Bibliothek 
+für die Entwicklung von \index{BandObjects}BandObjects, also Band Objekten (http://www.codeproject.com/csharp/dotnetbandobjects.asp).
 Das mitgelieferte Beispiel funktionierte auf Anhieb 
 und es wurde begonnen die Extension zu implementieren.
 
@@ -755,46 +770,46 @@ Im folgenden werden einige Konzepte vorgestellt.
 
 \paragraph{Explorer Bars}
 
-Ein zentrales Konzept zur Erweiterung des Internet Explorers, sind Explorer Bars. 
+Ein zentrales Konzept zur Erweiterung des \index{Internet Explorer}Internet Explorers, sind \index{Explorer Bars}Explorer Bars. 
 Explorer Bars sind Teilbereiche der Oberfläche des Explorers, 
 welche nicht zur Renderfläche der HTML Seite gehören.
 Explorer Bars wurden erstmalig mit dem Internet Explorer 4.0 eingeführt 
 und bieten eine sehr flexible Möglichkeit den Explorer zu erweitern. 
 Derzeit werden Funktionen wie Favorieten und die Suche innerhalb einer 
-Explorer Bar dargestellt. Die Darstellung von Explorer Bars kann entweder Horizontal 
-oder Vertikal erfolgen und sie werden über den Menu Ansicht -> Explorerleisten ein- und ausgeblendet.
+Explorer Bar dargestellt. Die Darstellung von Explorer Bars kann entweder horizontal 
+oder vertikal erfolgen und sie werden über den Menu Ansicht -> Explorerleisten ein- und ausgeblendet.
 
 \paragraph{Tool Bands}
 
-Die Werkzeugleiste des Internet Explorers ist eine sogenannte ``Rebar'', 
-also ein Container der wiederum mehrere Werkzeugleisten enthalten kann. 
+Die \index{Werkzeugleiste}Werkzeugleiste des Internet Explorers ist eine sogenannte ``Rebar'', 
+also ein \index{Container}Container der wiederum mehrere Werkzeugleisten enthalten kann. 
 Diese Werkzeugleisten werden Toolbands genannt. Erstmalig wurde das Konzept 
-mit dem Internet Explorer 5.0 eingeführt um die Radio Leiste zu realisieren. 
+mit dem \index{Internet Explorer}Internet Explorer 5.0 eingeführt um die Radio Leiste zu realisieren. 
 Mittlerweile gibt es verschiedene Toolbands wie die Adressleiste und auch 
 Fremdanbieter wie Google und Yahoo nutzen das Konzept.
 
 \paragraph{Deskbands}
-
+\index{Deskbands}
 Diese Komponenten verfolgen den selben Ansatz, haben aber primär nichts mit dem Internet 
 Explorer zu tun. Sie dienen dazu den Desktop um weitere Leisten zu erweitern. 
 Berühmtester Vertreter dieser Kategorie ist die Adressleiste. 
-Sie kann ausser im Explorer und Internet Explorer auch in der Taskleiste erscheinen.
+Sie kann ausser im Explorer und \index{Internet Explorer}Internet Explorer auch in der \index{Taskleiste}Taskleiste erscheinen.
 
 \subsection{Entwicklung der Band Objekte}
 
 Die Entwicklung dieser Komponenten basiert, wie ein sehr großer Teil der 
-Windowsentwicklung auf COM. Das Component Objekt Model von Microsoft 
+Windowsentwicklung auf \index{COM}COM. Das \index{Component Object Model}Component Object Model von \index{Microsoft}Microsoft 
 ist eines der ältesten Komponentensysteme und bildet Zusammen mit dem 
-Windows API die Grundlage für die Entwicklung von Windowssoftware.
+\index{Windows API}Windows API die Grundlage für die Entwicklung von Windowssoftware.
 
 \subsection{COM, Schnittstellen, Klassen, Registry}
 
-Im folgende soll ein kurzer Überblick über COM gegeben werden, 
-der die Schritte auf dem Weg zu Entwicklung der Band Objects erklärt.
+Im folgende soll ein kurzer Überblick über \index{COM}COM gegeben werden, 
+der die Schritte auf dem Weg zu Entwicklung der \index{Band Object}Band Objects erklärt.
 
 \paragraph{COM Schnittstellen}
-
-Zentrales Konzept von COM ist das Interface. In der COM Terminologie
+\index{COM Schnittstellen}
+Zentrales Konzept von \index{COM}COM ist das Interface. In der COM Terminologie
  ist eine Schnittstelle, eine nach der COM Spezifikation aufgebauten, 
  Struktur mit Platzhaltern für Funktionszeiger. 
 Diese Erklärung macht bereits deutlich auf welchem Level COM 
@@ -808,14 +823,14 @@ Jede Schnittstelle wird eindeutig über einen GUID - Global Unique Identifier - i
   
 \paragraph{COM Komponenten}
 
-Eine Komponente in der COM Terminologie ist eine abgeschlosse binäre Einheit, 
+Eine Komponente in der \index{COM}COM Terminologie ist eine abgeschlosse binäre Einheit, 
 welche Funktionalität über eine Schnittstelle bereitstellt. 
-Komponenten sind also in Programmen (Executables) oder Bibliotheken (Dynamic Link Libraries) enthalten.
+Komponenten sind also in Programmen (Executables) oder Bibliotheken (\index{Dynamic Link Library}Dynamic Link Libraries) enthalten.
 
 \paragraph{Registry}
-
+\index{Registry}
 Normalerweise, auch wenn das problemlos möglich wäre, 
-wird eine COM Bibliothek nicht direkt referenziert und geladen. 
+wird eine \index{COM}COM Bibliothek nicht direkt referenziert und geladen. 
 Stattdessen nutz man Funktionen der COM API um eine Instanz einer Komponente mit einer 
 bestimmten Schnittstelle zu erhalten. Dazu übergibt man der Funktion die GUID der 
 Schnittstelle welche man nutzen möchte. Diese Funktion bemüht die Windows Registry 
@@ -825,21 +840,21 @@ Damit das funktioniert, ist jede COM Komponente vor ihrer Benutzung in der Regis
 
 \subsection{Band Objekte und COM}
 
-Alle Band Objekte sind wiederum COM Komponenten, welche bestimmte Schnittstellen 
-implementieren müssen. Diese Schnittstellen werden vom Internet Explorer erwartet und abgefragt. 
-Für die Entwicklung von Band Objekten müssen in jedem Fall die folgenden Schnittstellen implementiert werden:
+Alle \index{Band Objekte}Band Objekte sind wiederum \index{COM}COM Komponenten, welche bestimmte Schnittstellen 
+implementieren müssen. Diese Schnittstellen werden vom \index{Internet Explorer}Internet Explorer erwartet und abgefragt. 
+Für die Entwicklung von \index{Band Objekte}Band Objekten müssen in jedem Fall die folgenden Schnittstellen implementiert werden:
 
 \paragraph{IUnknown}
-
-Das ist die Basisschnittstelle welche jedes COM Objekt implementieren muss. 
-Sie bietet Funktionen zum Abrufen weiterer Schnittstellen sowie zur Referenzzählung.
+\index{IE Toolbar!IUnknown}
+Das ist die Basisschnittstelle welche jedes \index{COM}COM Objekt implementieren muss. 
+Sie bietet Funktionen zum Abrufen weiterer Schnittstellen sowie zur \index{Referenzzählung}Referenzzählung.
 
 \paragraph{IClassFactory}
-
+\index{IE Toolbar!IClassFactory}
 Bietet Funktionen zum Erzeugen neuer Instanzen von COM Klassen.
 
 \paragraph{IDeskBand}
-
+\index{IE Toolbar!IDeskBank}
 Das ist die Basisschnittstelle für alle Band Objekte. IDeskBand erbt von 
 IDockingWindow welches wiederum von IOleWindow erbt. Anhand der Namen der 
 Schnittstellen lassen sich ungefähr die Funktionen ableiten.
@@ -851,7 +866,7 @@ Mit Hilfe von GetBandInfo kann der Internet Explorer ermitteln wie
 die Leiste heist, wie sie dargestellt werden soll und welche Größen sie haben darf.
 
 \paragraph{IObjectWithSite}
-
+\index{IE Toolbar!IObjectWithSite}
 Über diese Schnisttelle hat man die Möglichkeit mit dem Container 
 - also mit dem Internet Explorer zum Beispiel - des Band Objektes zu 
 kommunizieren. Der Internet Explorer ist selbst ebenfalls ein COM Objekt 
@@ -859,7 +874,7 @@ welches diverse Schnittstellen implementiert. Über die SetSite Funktion
 weist er dem Band Objekt die eigene IUnknown Schnittstelle zu.
 
 \paragraph{IPersistStream}
-
+\index{IE Toolbar!IPersistStream}
 Diese Schnittstelle wird vom Container verwendet um den Zustand des Band 
 Objekts zu speichern oder zu laden. Das Band Objekt implementiert diese 
 Schnittstelle um sich selbst in den übergebenen Stream zu serialiasieren oder zu deserialisieren
@@ -868,16 +883,16 @@ Daneben gibt es noch einige weitere Schnittstellen z.B. für Benutzereingaben,
 auf welche hier jedoch nicht näher eingegangen werden soll.
 
 \subsection{Registrierung der Band Objekte}
-
+\index{IE Toolbar!Band Objekte}
 Jedes Band Objekt muss wie bereits erwähnt, als COM Objekt registriert werden. 
 Darüber hinaus muss dem Internet Explorer nocht mitgeteilt werden, das er eine 
 Toolleiste zur Verfügung hat. Dies geschieht ebenfalls über einen Eintrag in der Windows Registry.
 
 \subsection{Die BandObject Library}
 
-Alles was im Abschnitt COM und Band Object Entwicklung beschrieben worden ist, 
+Alles was im Abschnitt \index{COM}COM und \index{Band Object}Band Object Entwicklung beschrieben worden ist, 
 nimmt einem die Band Objekt Library ab. Der ganze ``schmuzige'' COM Teil wird durch 
-eine CSharp Klasse gekapselt welche von UserControll erbt und all die Schnittstellen implementiert. 
+eine \index{CSharp Klasse}CSharp Klasse gekapselt welche von \index{UserControl}UserControl erbt und all die Schnittstellen implementiert. 
 Was dem Entwickler der Toolbar bleibt ist eine Klasse zu erstellen 
 welche von der BandObject erbt. Da BandObject selber von UserControl 
 erbt, steht einem auch der visuelle Designer zum erstellen der Toolbar zur Verfügung.
@@ -886,16 +901,13 @@ Die Funktionalität der Toolbar kann also bequem in CSharp erfolgen.
 \subsection{Teamfound Internet Explorer Toolbar}
 
 \paragraph{Entwicklung}
+\index{Installation}Installation
 
+Für die Installation auf einem \index{Client}Client PC kopiert man alle im Paket enthaltenen \index{Quellen}Quellen in einen Ordner.
+Die \index{Toolbar}Toolbar lässt dann einfach mit dem \index{Install.cmd}Install.cmd installieren. Im wesentlichen passiert dabei folgendes:
 
-Installation
+Die Bibliotheken \index{IE Toolbar!BandObject.dll}BandObject.dll und \index{IE Toolbar!Teamfound.IE.dll}Teamfound.IE.dll werden als COM Objekt registriert und im globalen Assembly Cache registriert. 
 
-Für die Installation auf einem Client PC kopiert man alle im Paket enthaltenen Quellen in einen Ordner.
-Die Toolbar lässt dann einfach mit dem Install.cmd installieren. Im wesentlichen passiert dabei folgendes:
-
-Die Bibliotheken BandObject.dll und Teamfound.IE.dll werden als COM Objekt registriert und im globalen Assembly Cache registriert. 
-
-Alle anderen Bibliotheken werden ebenfalls im globalen Assemblycache registriert.
-
+Alle anderen Bibliotheken werden ebenfalls im globalen \index{Assemblycache}Assemblycache registriert.
 
 

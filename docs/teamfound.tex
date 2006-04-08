@@ -4,7 +4,8 @@
 \documentclass[12pt,a4paper]{report}
 %
 \usepackage{german}
-\usepackage{graphicx,makeidx,showidx}
+\usepackage{graphicx,makeidx,showidx,index}
+\newindex{default}{idx}{ind}{Schlagwortverzeichnis}
 \usepackage{epsfig}
 \usepackage[german]{varioref}
 \usepackage[latin1]{inputenc}
@@ -16,7 +17,7 @@
 %\setcounter{minitocdepth}{3}
 %\PassOptionsToPackage{german}{minitoc}
 %\include{german.mld}
-\makeindex
+%\makeindex
 %
 \pagestyle{headings}
 %
@@ -47,7 +48,7 @@
 \include{ch_anhang}
 %
 \clearpage
-\addcontentsline{toc}{chapter}{Index}
+\addcontentsline{toc}{chapter}{Schlagwortverzeichnis}
 \printindex
 \end{appendix}
 %
