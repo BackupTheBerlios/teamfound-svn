@@ -3,7 +3,8 @@
 %	
 %
 \documentclass[landscape]{slides}
-\usepackage{color,german,graphics}
+\usepackage{color,german}
+\usepackage{graphicx}
 %
 \begin{document}
 %
@@ -21,7 +22,7 @@
 Idee, Zielsetzung, Architektur-"Uberblick, Interface
 
 \textbf{2. Implementation Server}\\
-xx, yy
+Architektur, Request/Response , Datenstruktur 
 
 \textbf{3. Implementation Clients}\\
 Web-Client, Firefox Toolbar, IE Toolbar
@@ -41,8 +42,63 @@ TeamFound ist ..
 %
 %
 %
-\begin{slide}{2.1 Implementation Server}\\
-Der Server ist ..
+\begin{slide}{2.1 Architektur des Servers}\\
+\begin{center}
+\includegraphics{bilder/aufbau2.eps}
+\end{center}
+\end{slide}
+%
+\begin{slide}{2.2 Request/Response }\\
+\begin{itemize}
+\item Anfrage-Parameter werden in Form von HTTP GET Variablen "ubertragen
+\item Antworten vom Server
+\begin{itemize}
+\item HTML-Seite: die direkt im Browser angezeigt wird
+\item XML-File: wird von der Toolbar interpretiert
+\end{itemize}	
+\end{itemize}
+\end{slide}
+%
+\begin{slide}{2.2 Beispiel Request}\\
+\begin{verbatim}
+http://62.75.187.241:8080/tf/tf?keyword=teamfound
+&want=xml&version=2&command=search&category=1
+\end{verbatim}
+\end{slide}
+\begin{slide}{2.2 Beispiel Response }\\
+\begin{verbatim}
+<response>
+	.
+	.
+	<search>	
+		<result>
+			<found>
+				<url>http://teamfound.berlios.de</url>
+				<title>TeamFound - share your search results</title>
+				<incategory>0</incategory>
+			</found>
+		</result>
+	</search>
+</response>
+\end{verbatim}
+\end{slide}
+%
+\begin{slide}{2.3 Lucene Index}\\
+\begin{itemize}
+\item Wichtige Komponenten von Apache Lucene:
+\begin{itemize}
+\item Document und Field
+\item Analyzer
+\item Query
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+%	
+\begin{slide}{2.4 Datenstruktur}\\
+\begin{center}
+\includegraphics[width=17cm]{bilder/katstruktur.eps}
+\end{center}
 \end{slide}
 %
 %
