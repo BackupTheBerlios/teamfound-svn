@@ -17,345 +17,67 @@
 %%
 \begin{slide}{Gliederung}
 
-\textbf{1. Prozess-Adre"sraum - Logisch}\\
-1.1 Adre"sraum\\
-1.2 Prozessdeskriptor\\
-1.3 Memory-Descriptor\\
-1.4 Memory-Regions
+\textbf{1. Einf"uhrung}\\
+Idee, Zielsetzung, Architektur-"Uberblick, Interface
 
-\textbf{2. Logische Adressen $\to$ Physikalische Adressen i386}\\
-2.1 Speicher Addressierung\\
-2.2 Zugriffsrechte Page-Tables
+\textbf{2. Implementation Server}\\
+xx, yy
 
-\textbf{3. Prozess-Adre"sraum auf dem i386}\\
-3.1 Memory-Region $\to$ Page-Table\\
-3.2 Zugriffsrechte\\
-3.3 Page-Fault-Exception-Handler\\
-3.4 Paging-Technologien
-\end{slide}
-%
-\begin{slide}{Gliederung}
+\textbf{3. Implementation Clients}\\
+Web-Client, Firefox Toolbar, IE Toolbar
 
-\textbf{4. Swapping}\\
-4.1 Was ist Swapping?\\
-4.2 Welche Art von Speicher wird ausgelagert\\
-4.3 Wie werden ausgelagerte Seiten gespeichert\\
-4.4 Welche Speicherseiten werden tats"achlich ausgelagert\\
-4.5 Wann (zeitlich) wird ausgelagert
+\textbf{4. Ablauf}\\
+Beginn, 2005, 2006, Aktueller Stand
+
+\textbf{5. Pr"asentation}
 \end{slide}
 %
 %
 %
-\begin{slide}{1.1 Der Adressraum eines Prozesses}
-\begin{itemize}
-\item beinhaltet alle Adressr"aume die der Prozess benutzen darf.
-\item jeder Prozess hat genau einen Memory-Descriptor (\texttt{mm\_struct}).
-\item Jedes Intervall linearer Adressen wird in einer Memory-Region beschrieben (\texttt{vm\_area\_struct}).
-\end{itemize}
+%
+\begin{slide}{1.1 Einf"uhrung}\\
+TeamFound ist ..
 \end{slide}
 %
 %
 %
-\begin{slide}{1.2 Prozess Deskriptor $\to$ Memory Deskriptor}
+\begin{slide}{2.1 Implementation Server}\\
+Der Server ist ..
+\end{slide}
+%
+%
+%
+\begin{slide}{3.1 Web-Client}\\
 
-\fbox{\texttt{task\_struct}} $\to$ \fbox{\texttt{mm\_struct}} $\to$ \fbox{\texttt{vm\_area\_struct}} $\to$ \fbox{Speicher}
-\begin{verbatim}
-struct task_struct
-{  
-   ...
-   struct mm_struct *mm;
-   struct mm_struct *active_mm;
-   ...
-};
-\end{verbatim}
-linux-2.4.14/include/sched.h:281
-\end{slide}
-%
-%
-%
-\begin{slide}{1.3.1 Memory Deskriptor $\to$ Memory Region}
+Web-Client ..
 
-\fbox{\texttt{task\_struct}} $\to$ \fbox{\texttt{mm\_struct}} $\to$ \fbox{\texttt{vm\_area\_struct}} $\to$ \fbox{Speicher}
-\begin{verbatim}
-struct mm_struct
-{  ...
-   struct vm_area_struct * mmap;
-   struct vm_area_struct * mmap_cache;
-   ...
-};
-\end{verbatim}
-linux-2.2.14/include/linux/sched.h:204
 \end{slide}
 %
-\begin{slide}{1.3.2 Der Memory-Descriptor \texttt{mm\_struct}}
-\begin{itemize}
-\item Zeiger auf \texttt{Page Global Directory} des Prozesses\\
-\texttt{pgd\_t * pgd;}
-\item Gr"osse des vom Prozess belegten Speichers insgesamt\\
-\texttt{unsigned long total\_vm;}
-\item Anzahl der Prozesse die diesen Memory-Deskriptor benutzen\\
-\texttt{atomic\_t mm\_users; atomic\_t mm\_count;}
-\end{itemize}
+\begin{slide}{3.2 Firefox Toolbar}\\
+FF-Toolbar ..
 \end{slide}
 %
 %
 %
-\begin{slide}{1.4.1 Memory Region $\to$ Speicher}
-
-\fbox{\texttt{task\_struct}} $\to$ \fbox{\texttt{mm\_struct}} $\to$ \fbox{\texttt{vm\_area\_struct}} $\to$ \fbox{Speicher}
-\begin{verbatim}
-struct vm_area_struct
-{
-   struct mm_struct * vm_mm;	
-   unsigned long vm_start;	
-   unsigned long vm_end;
-   ...
-   struct vm_area_struct *vm_next;
-};
-\end{verbatim}
-linux-2.4.14/include/linux/mm.h
+\begin{slide}{3.3 Internet Explorer Toolbar}\\
+IE Toolbar ..
 \end{slide}
 %%
 %%
 %
-\begin{slide}{1.4.2 Memory Regions \texttt{vm\_area\_struct}}
-\begin{itemize}
-\item beschreibt jeweils ein lineares Adress-Intervall
-\item "uberlappen sich \textbf{niemals} gegenseitig
-\item speichert Anfangsadresse und Endadresse des Intervalls\\
-		  \texttt{unsigned long vm\_start, vm\_end;}
-\item Zugriffsberechtigungen\\ (\texttt{VM\_READ, VM\_WRITE, VM\_SHARED, VM\_EXECUTABLE, ...})
-\end{itemize}
+\begin{slide}{4.1 Projektverlauf}\\
+Das Projekt hat damit begonnen, ..
 \end{slide}
 %
 %
 %
-\begin{slide}{1.4.3 Verwaltung von Memory Regions}
-\begin{itemize}
-\item Linux versucht Memory-Regions eines Prozesses mit gleichen Zugriffsrechten so gut wie m"oglich zusammenzufassen.
-\item Wenn neuer Speicher reserviert werden soll, wird zuerst versucht eine vorhandene Memory Region zu vergr"ossern. Erst danach wird eine neue Region angelegt.
-\end{itemize}
-\end{slide}
-%
-%
-\begin{slide}{1.4.4 Memory Regions - Adresse suchen}
-\begin{itemize}
-\item Da die Verkettung der Regions nach Adressen aufsteigend sortiert ist und die meisten Prozesse nur sehr wenige Regions ($<$30) ben"otigen ist die Suche nach einer bestimmten Adresse relativ schnell.
-\item Wenn ein Prozess jedoch viel fragmentierten Speicher besitzt, d.h. mehr als 32 Regions wird eine weitere Verkettung durch \textbf{AVL trees} realisiert die dann eine wesentlich schnellere Suche erm"oglicht.
-\end{itemize}
-\end{slide}
-%
-%
-%
-\begin{slide}{1.4.5 Memory Mappings - Beispiel 1/4}
-\small{
-\begin{verbatim}
-int main(int argc, char* argv[])
-{	int x;
-}
-\end{verbatim}
-}
-\normalsize{\texttt{cat /proc/<PID>/maps}}
-\small{
-\begin{verbatim}
-08048000-08049000 r-xp 00000000 08:03 467006     /home/jan/eigene/linuxinternals/c/d
-08049000-0804a000 rw-p 00000000 08:03 467006     /home/jan/eigene/linuxinternals/c/d
-40000000-40014000 r-xp 00000000 08:06 212273     /lib/ld-2.2.4.so
-40014000-40015000 rw-p 00013000 08:06 212273     /lib/ld-2.2.4.so
-40015000-40016000 rwxp 00000000 00:00 0
-40016000-40017000 rw-p 00000000 00:00 0
-40090000-401a8000 r-xp 00000000 08:06 212286     /lib/libc-2.2.4.so
-401a8000-401ae000 rw-p 00117000 08:06 212286     /lib/libc-2.2.4.so
-401ae000-401b4000 rw-p 00000000 00:00 0
-bfffe000-c0000000 rwxp fffff000 00:00 0
-\end{verbatim}
-}
-\end{slide}
-%
-%
-%
-\begin{slide}{1.4.5 Memory Mappings - Beispiel 2/4}
-
-\normalsize{\texttt{void main()\{\\const int max = 5000000;\\char* a1 = new(char[max]);}}\\
-\small{
-\begin{verbatim}
-08048000-08049000 r-xp 00000000 08:03 467000     /home/jan/eigene/linuxinternals/c/x
-08049000-0804b000 rw-p 00000000 08:03 467000     /home/jan/eigene/linuxinternals/c/x
-401ae000-40679000 rw-p 00000000 00:00 0
-\end{verbatim}
-}
-size = \texttt{5.025.792}
-
-\normalsize{\texttt{char* a2 = new(char[max]);}}
-\small{
-\begin{verbatim}
-08048000-08049000 r-xp 00000000 08:03 467000     /home/jan/eigene/linuxinternals/c/x
-08049000-0804b000 rw-p 00000000 08:03 467000     /home/jan/eigene/linuxinternals/c/x
-401ae000-40b3e000 rw-p 00000000 00:00 0
-\end{verbatim}
-}
-size = \texttt{10.027.008}
-\end{slide}
-%
-%
-%
-\begin{slide}{1.4.5 Memory Mappings - Beispiel 3/4}
-\small{
-\begin{verbatim}
-08048000-08049000 r-xp 00000000 08:03 467000     /home/jan/eigene/linuxinternals/c/x
-08049000-0804b000 rw-p 00000000 08:03 467000     /home/jan/eigene/linuxinternals/c/x
-401ae000-40b3e000 rw-p 00000000 00:00 0
-\end{verbatim}
-}
-size = \texttt{10.027.008}
-
-\normalsize{
-		  \texttt{char* a3 = new(char[max]);}\\
-		  \texttt{char* a4 = new(char[max]);}\\
-		  \texttt{char* a5 = new(char[max]);}
-}
-\small{
-\begin{verbatim}
-08048000-08049000 r-xp 00000000 08:03 467000     /home/jan/eigene/linuxinternals/c/x
-08049000-0804b000 rw-p 00000000 08:03 467000     /home/jan/eigene/linuxinternals/c/x
-401ae000-4198d000 rw-p 00000000 00:00 0
-\end{verbatim}
-}
-size = \texttt{25.030.656}
-\end{slide}
-%
-%
-\begin{slide}{1.4.5 Memory Mappings - Beispiel 4/4}
-\small{
-\begin{verbatim}
-08048000-08049000 r-xp 00000000 08:03 467000     /home/jan/eigene/linuxinternals/c/x
-08049000-0804b000 rw-p 00000000 08:03 467000     /home/jan/eigene/linuxinternals/c/x
-401ae000-4198d000 rw-p 00000000 00:00 0
-\end{verbatim}
-}
-size = \texttt{25.030.656}
-
-\normalsize{
-		  \texttt{delete[] a2;}\\
-		  \texttt{delete[] a4;}\\
-}
-\small{
-\begin{verbatim}
-08048000-08049000 r-xp 00000000 08:03 467000     /home/jan/eigene/linuxinternals/c/x
-08049000-0804b000 rw-p 00000000 08:03 467000     /home/jan/eigene/linuxinternals/c/x
-401ae000-40679000 rw-p 00000000 00:00 0
-40b3e000-41003000 rw-p 00990000 00:00 0
-414c8000-4198d000 rw-p 0131a000 00:00 0
-\end{verbatim}
-}
-size1 = \texttt{5.025.792}\\
-size2 = \texttt{5.001.216}\\
-size3 = \texttt{5.001.216}
+\begin{slide}{5.1 Pr"asentation}\\
+Pr"asentation
 \end{slide}
 %
 %
 %
 %
-\begin{slide}{2.1 Initialisierung der Page-Tables}
-
-Die Eintr"age der Page Tables haben bestimmte Flags f"ur die Zugriffsbeschr"ankung
-\begin{itemize}
-\item Read/Write
-\item User/Supervisor
-\item Present
-\end{itemize}
-Linux f"ur Intel-Architekturen: Lese-Recht impliziert Ausf"uhrungs-Recht, Schreib-Recht impliziert Lese-Recht
-\end{slide}
-%
-%
-%
-\begin{slide}{3.3 Page Fault Exception Handler}
-
-Wenn ein Page-Fault auftritt wird die Interrupt-Routine \texttt{do\_page\_fault()} aufgerufen. (arch/i386/mm/fault.c)
-\begin{itemize}
-\item greift "uber das \texttt{current} Makro auf die task\_struct des Prozesses zu der den Fehler ausgel"ost hat
-\item entscheidet anhand des Memory-Deskriptors und den Memory-Regions das weitere vorgehen 
-\end{itemize}
-\end{slide}
-%
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%
-%     S  W  A  P  P  I  N  G
-%
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-\begin{slide}{Gliederung - 2. Teil}
-
-\textbf{4. Swapping}\\
-4.1 Was ist Swapping?\\
-4.2 Welche Art von Speicher wird ausgelagert\\
-4.3 Wie werden ausgelagerte Seiten gespeichert\\
-4.4 Welche Speicherseiten werden tats"achlich ausgelagert\\
-4.5 Wann (zeitlich) wird ausgelagert
-\end{slide}
-
-%
-\begin{slide}{4.1 Swapping / Auslagern - Was ist das?}
-\begin{itemize}
-\item vergr"o"sert virtuell den Physikalischen Speicher
-\item transparent f"ur Prozesse
-\item es werden Page-Tables auf die Festplatte geschrieben um den schnellen physikalischen Speicher f"ur andere Zwecke freizugeben
-\end{itemize}
-\end{slide}
-%
-%
-%
-\begin{slide}{4.2 Welche Art von Speicher wird ausgelagert}
-
-Generell k"onnen alle Pages ausgelagert werden.
-
-Ausnahmen aber sind:
-\begin{itemize}
-\item Kernel-Pages
-\item File-Mappings (der beste Ort um File-Mappings auszulagern sind die Dateien selber)
-\end{itemize}
-\end{slide}
-%
-%
-\begin{slide}{4.3 Wie werden ausgelagerte Seiten gespeichert}
-
-\begin{itemize}
-\item Die Swap-Area wird in slots unterteilt
-\item Jeder Slot ist genauso gro"s wie eine Page (4096)                         \item Der Kernel versucht beim swappen die Pages in aufeinanderfolgenden slots zu speichern. (performance) 
-\end{itemize}
-\end{slide}
-%
-%
-%
-\begin{slide}{4.4 Welche Speicher-Seiten werden tats"achlich ausgelagert}
-\begin{itemize}
-\item Generell werden immer Seiten von den Prozessen ausgelagert die am wenigsten Page-Faults haben. (In Linux 2.2 wurden Seiten von Prozessen die gerade die h"ochste Anzahl an Speicherseiten im RAM belegen ausgelagert).
-\item Linux verwendet zus"atzlich das \textit{accessed} flag aus dem Page Table Directory welches automatisch vom Prozessor bei einem Zugriff gesetzt wird um m"oglichst selten benutzte Seiten zuerst auszulagern.
-\end{itemize}
-\end{slide}
-%
-%
-%
-\begin{slide}{4.5 Wann wird geswappt}
-\begin{itemize}
-\item \texttt{kswapd} wird sobald die Anzahl der freien Seiten unter eine bestimmte Grenze f"allt jede Sekunde einmal ausgef"uhrt
-\end{itemize}
-\end{slide}
-%
-%
-%
-\begin{slide}{4.6 Auswirkungen auf die Page Tables}
-\begin{itemize}
-\item Das \texttt{present} Flag wird gel"oscht.
-\item Dadurch wird bei jedem Zugriff der Page Fault Exception Handler aufgerufen um die Seite wieder laden zu k"onnen.
-\end{itemize}
-\end{slide}
-%%
-%
-
 \begin{slide}{}
 The End
 \end{slide}
