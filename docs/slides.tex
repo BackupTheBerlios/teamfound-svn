@@ -237,13 +237,37 @@ http://62.75.187.241:8080/tf/tf?keyword=teamfound
 \end{itemize}
 \end{slide}
 %
+
+\begin{slide}{4. Client Implemantationen}
+\end{slide}
 %
-\begin{slide}{4.1 Web-Client}
+\begin{slide}{4.1 Web-Client}\\
+\\
 \includegraphics{webclient.eps}
+\begin{verbatim}
+javascript:location.href='http://serverurl/addpage.pl?
+url='+encodeURIComponent(location.href)
+
+<form action="serverurl">
+	search: <input type="text" name="keyword">
+	<input type="hidden" name="want" value="html">
+	<input type="hidden" name="version" value="2">
+	<input type="hidden" name="command" value="search">
+	<input type="submit">
+</form>
+\end{verbatim}
+
 \end{slide}
 %
 \begin{slide}{4.2 Firefox Toolbar}\\
-FF-Toolbar ..
+\\
+\includegraphics{ffextension-kategorien}
+\end{slide}
+%
+%
+\begin{slide}{4.3 Firefox Toolbar}\\
+\\
+\includegraphics{ffextension-settings}
 \end{slide}
 %
 %
@@ -254,8 +278,7 @@ IE Toolbar ..
 %%
 %%
 %
-\begin{slide}{5.1 Pr"asentation}\\
-Pr"asentation
+\begin{slide}{5.1 Pr"asentation}
 \end{slide}
 %
 %

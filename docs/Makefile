@@ -7,3 +7,4 @@ all:
 slides:
 	latex slides.tex
 	dvi2ps -o landscape slides.dvi > slides.ps
+	ps2pdf slides.ps
