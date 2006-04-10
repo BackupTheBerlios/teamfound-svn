@@ -23,7 +23,7 @@
 Idee, Zielsetzung, Architektur-"Uberblick, Interface
 
 \textbf{2. Implementation Server}\\
-Architektur, Request/Response , Datenstruktur 
+Architektur, Lucene, Datenstrukturen, Interner Ablauf 
 
 \textbf{3. Organisation / Verlauf}\\
 Kommunikation, Treffen, Ablauf
@@ -83,16 +83,8 @@ Denkbar auch f"ur:
 \end{itemize}
 \end{slide}
 
-%
-%
-%
-\begin{slide}{2.1 Architektur des Servers}\\
-\begin{center}
-\includegraphics{bilder/aufbau2}
-\end{center}
-\end{slide}
-%
-\begin{slide}{2.2 Request/Response }\\
+%mit zu 1. ?
+\begin{slide}{1.x Request/Response }\\
 \begin{itemize}
 \item Anfrage-Parameter werden in Form von HTTP GET Variablen "ubertragen
 \item Antworten vom Server
@@ -103,13 +95,13 @@ Denkbar auch f"ur:
 \end{itemize}
 \end{slide}
 %
-\begin{slide}{2.2 Beispiel Request}\\
+\begin{slide}{1.x Beispiel Request}\\
 \begin{verbatim}
 http://62.75.187.241:8080/tf/tf?keyword=teamfound
 &want=xml&version=2&command=search&category=1
 \end{verbatim}
 \end{slide}
-\begin{slide}{2.2 Beispiel Response }\\
+\begin{slide}{1.x Beispiel Response }\\
 \begin{verbatim}
 <response>
 	.
@@ -127,7 +119,15 @@ http://62.75.187.241:8080/tf/tf?keyword=teamfound
 \end{verbatim}
 \end{slide}
 %
-\begin{slide}{2.3 Lucene Index}\\
+%
+%
+\begin{slide}{2.1 Architektur des Servers}\\
+\begin{center}
+\includegraphics{bilder/aufbau2.eps}
+\end{center}
+\end{slide}
+%
+\begin{slide}{2.2 Lucene Index}\\
 \begin{itemize}
 \item Wichtige Komponenten von Apache Lucene:
 \begin{itemize}
@@ -137,12 +137,28 @@ http://62.75.187.241:8080/tf/tf?keyword=teamfound
 \end{itemize}
 \end{itemize}
 \end{slide}
-
+%
+\begin{slide}{2.3 Datenbank}\\
+\begin{center}
+\includegraphics{bilder/db.eps}
+\end{center}
+\end{slide}
 %	
-\begin{slide}{2.4 Datenstruktur}\\
+\begin{slide}{2.4 Datenstrukturen}\\
 \begin{center}
 \includegraphics{bilder/katstruktur}
 \end{center}
+\end{slide}
+%
+\begin{slide}{2.5 Hinzuf"ugen einer Seite}\\
+\begin{itemize}
+\item Url auf vorhandensein "Uberpr"ufen :
+\begin{enumerate}
+\item Url existiert nicht: Download, Indexeintrag, Datenbankeintrag  
+\item Url existiert : Dokument auslesen, Dokument l"oschen, 
+aktualisiertes Dokument erstellen und hinzuf"ugen, Datenbankeintrag
+\end{enumerate}
+\end{itemize}
 \end{slide}
 %
 %
