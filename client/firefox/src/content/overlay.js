@@ -105,16 +105,14 @@ var TeamFound =
 				}
 
 				// Server-Name anzeigen
-				//catmenu.setAttribute("label", xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue);
-				catmenu.setAttribute("label", "nyi");
+				catmenu.setAttribute("label", xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue);
 
 
 				// popup erzeugen
 				var catpopup = document.createElement("menupopup");
 				catmenu.appendChild(catpopup);
 
-				//TeamFound.addCategory(xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes, catpopup, xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue, 0);
-				TeamFound.addCategory(xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes, catpopup, "nyi", 0);
+				TeamFound.addCategory(xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes, catpopup, xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue, 0);
 			}
 			else
 			{
@@ -275,7 +273,8 @@ var TeamFound =
 		var pref_serverurl = prefs.getCharPref("settings.serverurl");
 
 		// server-adresse zum hinzufuegen neuer seiten
-		var url = pref_serverurl + "?want=xml&version=2&url=" + addpageurl + "&category=" + category;
+		var url = pref_serverurl + "?command=addpage&want=xml&version=2&url=" + addpageurl + "&category=" + category;
+		//alert(url);
 
 		// Request erstellen (globale variable)
 		// XMLHttpRequest funktioniert mit Mozilla, Firefox, Safari, und Netscape (nicht mit IE)
@@ -428,7 +427,7 @@ var TeamFound =
 	onTeamFoundSearchFinished: function()
 	{
 		// nur etwas machen falls der request schon fertig ist
-		if( xmlhttptf.readyState >= 3)  
+		if( xmlhttptf.readyState == 4)  
 		{
 			var doc = window._content.document;
 			var tfrone = doc.getElementById("teamfound-result-one");
@@ -438,7 +437,33 @@ var TeamFound =
 			{	// OK
 				if( tfrone != null)
 				{
-					tfrone.innerHTML = xmlhttptf.responseText;
+					//tfrone.innerHTML = xmlhttptf.responseText;
+					// let's analize the xml
+					var tf_found = xmlhttptf.responseXML.getElementsByTagName("search")[0].getElementsByTagName("result")[0].getElementsByTagName("found");
+					//alert(tf_found.length);
+					var tf_html = "";
+					if( !tf_found)
+					{
+						tfrone.innerHTML = "TeamFound - no results found";
+						return;
+					}
+					if( tf_found.length == 0)
+					{
+						tfrone.innerHTML = "TeamFound - no results found";
+						return;
+
+					}
+
+					tf_html = '<b>TeamFound results:</b><br><br>';
+						
+					for( var i = 0; i < tf_found.length; i++)
+					{
+						var tf_res_url = tf_found[i].getElementsByTagName("url")[0].firstChild.nodeValue;
+						var tf_res_title = tf_found[i].getElementsByTagName("title")[0].firstChild.nodeValue;
+						tf_html += '<a href="' + tf_res_url + '">' + tf_res_title + '</a><br><font size="-1" color="#008000">' + tf_res_url + '</font><br><br>';
+					}
+					tfrone.innerHTML = tf_html;
+					
 				}
 			}
 			else
