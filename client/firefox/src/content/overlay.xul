@@ -48,7 +48,7 @@
 				</menupopup>
 			</menu>
 
-			<toolbarbutton id="tf-buttonAddPage" tooltiptext="Adds the current page to your TeamFound index" label="Add page" oncommand="TeamFound.onAddPage(0);" />
+			<toolbarbutton id="tf-buttonAddPage" tooltiptext="Adds the current page to your TeamFound index" label="Add page" oncommand="TeamFound.onAddPage(-1);" />
 
 			<toolbaritem>
 				<textbox id="tf-input" 
@@ -62,13 +62,15 @@
 					 showcommentcolumn="true"
 					 enablehistory="true"
 					 maxrows="30"
-					 onkeypress="if(event.which == 13) { return TeamFound.onSearch(0, 0);}"
-					 ontextentered="TeamFound.onSearch(0, 0);"
+					 ontextentered="TeamFound.onSearch(0, -1);"
 					 >
 				</textbox>
 			</toolbaritem>
 
-			<toolbarbutton id="tf-buttonSearch" tooltiptext="search or go to (automatically guesses whether to search or to visit url)" label="Go" oncommand="TeamFound.onSearch(event, 0);" />
+					 <!--onkeypress="if(event.which == 13) { return TeamFound.onSearch(0, -1);}"-->
+
+			<toolbarbutton id="tf-buttonSearch" tooltiptext="search or go to (automatically guesses whether to search or to visit url)" label="Go" oncommand="TeamFound.onSearch(event, -1);" />
+
 		</toolbar>
 	</toolbox>
 </overlay>

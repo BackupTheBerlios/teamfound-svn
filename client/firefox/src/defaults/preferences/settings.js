@@ -19,7 +19,7 @@
 *	Default-Settings for TeamFound Firefox Extension
 */
 
-pref("extensions.teamfound.settings.serverurl", "http://hqpm.dyndns.org/tf");
+pref("extensions.teamfound.settings.serverurl", "http://teamfound.dyndns.org:8080/tf/tf");
 pref("extensions.teamfound.settings.searchurl", "http://google.com/search?q=");
 pref("extensions.teamfound.settings.layout", 1);
 

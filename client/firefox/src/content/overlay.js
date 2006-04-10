@@ -56,6 +56,8 @@ var TeamFound =
 				getService(Components.interfaces.nsIPrefBranch).
 				getBranch("extensions.teamfound.");
 
+			tf_default_category = 0;
+			tf_default_menuitem = 0;
 			TeamFound.loadCategories();
 		}
 
@@ -104,15 +106,34 @@ var TeamFound =
 					return;
 				}
 
-				// Server-Name anzeigen
-				catmenu.setAttribute("label", xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue);
+				// -------- SPECIAL MODDIN ---------
 
+				// Server-Name anzeigen
+				//catmenu.setAttribute("label", xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue);
 
 				// popup erzeugen
 				var catpopup = document.createElement("menupopup");
 				catmenu.appendChild(catpopup);
 
-				TeamFound.addCategory(xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes, catpopup, xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue, 0);
+				//TeamFound.addCategory(xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes, catpopup, xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue, 0);
+
+				var firstcategory = xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes;
+
+				var m_catname = firstcategory.item(1).getElementsByTagName("name")[0].firstChild.nodeValue;
+				catmenu.setAttribute("label", m_catname);
+
+				var childnodes = firstcategory;
+
+				if( childnodes.item(1).getElementsByTagName("subcategories")[0])
+				{	// more subcategories exist
+					TeamFound.addCategory( childnodes.item(1).getElementsByTagName("subcategories")[0].childNodes, catpopup, childnodes.item(1).getElementsByTagName("name")[0].firstChild.nodeValue, 0);
+				}
+				else
+				{	// no more subcategories
+					TeamFound.addCategory( false, catpopup, childnodes.item(1).getElementsByTagName("name")[0].firstChild.nodeValue, 0);
+				}
+
+				// ------------ END MODDIN --------
 			}
 			else
 			{
@@ -222,6 +243,10 @@ var TeamFound =
 
 		var pref_serverurl = prefs.getCharPref("settings.serverurl");
 
+		if( category == -1)
+		{
+			category = tf_default_category;
+		}
 		// TeamFound Suche
 		var teamfoundurl = pref_serverurl + "?command=search&want=xml&version=2&keyword=" + searchwithand + "&category=" + category;
 
@@ -272,6 +297,11 @@ var TeamFound =
 
 		var pref_serverurl = prefs.getCharPref("settings.serverurl");
 
+		if( category == -1)
+		{
+			category = tf_default_category;
+		}
+
 		// server-adresse zum hinzufuegen neuer seiten
 		var url = pref_serverurl + "?command=addpage&want=xml&version=2&url=" + addpageurl + "&category=" + category;
 		//alert(url);
@@ -309,7 +339,6 @@ var TeamFound =
 					addpageurl + 
 					"'\nkonnte dem Index nicht hinzugefuegt werden.\n" +
 					"\n" +
-					"Anfrage: '" + url + "'\n" + 
 					"Antwort: " + xmlhttp.status + " - " + xmlhttp.statusText);
 			}
 		}
@@ -367,59 +396,77 @@ var TeamFound =
 
 	}, // onExternSearchFinished
 
-	addCategory: function(childnodes, menup, desc, id)
+	onSelectAsDefault: function(c_category, c_menuitem)
+    {
+		tf_default_category = c_category;
+		if( tf_default_menuitem != 0)
+		{
+			document.getElementById(tf_default_menuitem).setAttribute("checked", false);
+		}
+		tf_default_menuitem = c_menuitem;
+		document.getElementById(tf_default_menuitem).setAttribute("checked", true);
+		var x = document.getElementById(tf_default_menuitem).label.match(/.*'(.*)'.*/);
+		catmenu.setAttribute("label", x[1]);
+
+    }, //onSelectAsDefault
+
+	addCategory: function(ac_childnodes, ac_menup, ac_desc, ac_id)
 	{
 		// create search, add and select menu-items
-		var sep = document.createElement("menuseparator");
+		var ac_sep = document.createElement("menuseparator");
 
-		var s = document.createElement("menuitem");
-		s.setAttribute("label", "Search '" + desc + "'");
-		s.setAttribute("oncommand", "TeamFound.onSearch(0, " + id + ");", false);
+		var ac_s = document.createElement("menuitem");
+		ac_s.setAttribute("label", "Search '" + ac_desc + "'");
+		ac_s.setAttribute("oncommand", "TeamFound.onSearch(0, " + ac_id + ");", false);
 
-		var a = document.createElement("menuitem");
-		a.setAttribute("label", "Add page to '" + desc + "'");
-		a.setAttribute("oncommand", "TeamFound.onAddPage(" + id + ");", false);
+		var ac_a = document.createElement("menuitem");
+		ac_a.setAttribute("label", "Add page to '" + ac_desc + "'");
+		ac_a.setAttribute("oncommand", "TeamFound.onAddPage(" + ac_id + ");", false);
 
-		var std = document.createElement("menuitem");
-		std.setAttribute("label", "Select '" + desc + "' as default");
+		var ac_std = document.createElement("menuitem");
+		ac_std.setAttribute("label", "Select '" + ac_desc + "' as default");
+		ac_std.setAttribute("id", "tfselectasdefault"+ac_id);
+		ac_std.setAttribute("oncommand", "TeamFound.onSelectAsDefault(" + ac_id + ", \"tfselectasdefault"+ac_id+"\");", false);
 
-
-		menup.appendChild(s);
-		menup.appendChild(a);
-		menup.appendChild(std);
 
 		// foreach sub-category
-		if( childnodes != false)
+		if( ac_childnodes != false)
 		{
-			menup.appendChild(sep);
-			for( var i = 0; i <  childnodes.length; i++)
+			for( var i = 0; i <  ac_childnodes.length; i++)
 			{
-				if( childnodes.item(i).nodeName == "category")
+				if( ac_childnodes.item(i).nodeName == "category")
 				{
 					// category values
-					var catid = childnodes.item(i).getElementsByTagName("id")[0].firstChild.nodeValue;
-					var catname = childnodes.item(i).getElementsByTagName("name")[0].firstChild.nodeValue;
+					var ac_catid = ac_childnodes.item(i).getElementsByTagName("id")[0].firstChild.nodeValue;
+					var ac_catname = ac_childnodes.item(i).getElementsByTagName("name")[0].firstChild.nodeValue;
 					//var catdesc = childnodes.item(i).getElementsByTagName("description")[0].firstChild.nodeValue;
 
-					var item1 = document.createElement("menu");
-					item1.setAttribute("label", catname);
-					menup.appendChild(item1);
+					var ac_item1 = document.createElement("menu");
+					ac_item1.setAttribute("label", ac_catname);
+					ac_menup.appendChild(ac_item1);
 
-					var item2 = document.createElement("menupopup");
-					item1.appendChild(item2);
+					var ac_item2 = document.createElement("menupopup");
+					ac_item1.appendChild(ac_item2);
 
 					
-					if( childnodes.item(i).getElementsByTagName("subcategories")[0])
+					if( ac_childnodes.item(i).getElementsByTagName("subcategories")[0])
 					{	// more subcategories exist
-						TeamFound.addCategory( childnodes.item(i).getElementsByTagName("subcategories")[0].childNodes, item2, childnodes.item(i).getElementsByTagName("name")[0].firstChild.nodeValue, catid);
+						TeamFound.addCategory( ac_childnodes.item(i).getElementsByTagName("subcategories")[0].childNodes, ac_item2, ac_childnodes.item(i).getElementsByTagName("name")[0].firstChild.nodeValue, ac_catid);
 					}
 					else
 					{	// no more subcategories
-						TeamFound.addCategory( false, item2, childnodes.item(i).getElementsByTagName("name")[0].firstChild.nodeValue, catid);
+						TeamFound.addCategory( false, ac_item2, ac_childnodes.item(i).getElementsByTagName("name")[0].firstChild.nodeValue, ac_catid);
 					}
 				}
 			}
+
+			ac_menup.appendChild(ac_sep);
 		}
+
+		ac_menup.appendChild(ac_s);
+		ac_menup.appendChild(ac_a);
+		ac_menup.appendChild(ac_std);
+
 	},
 
 
