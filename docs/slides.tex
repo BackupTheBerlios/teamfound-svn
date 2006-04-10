@@ -4,8 +4,7 @@
 %
 \documentclass[landscape]{slides}
 \usepackage{color,german}
-\usepackage{graphics}
-\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
 %
 \begin{document}
 %
@@ -22,14 +21,14 @@
 \textbf{1. Einf"uhrung}\\
 Idee, Zielsetzung, Architektur-"Uberblick, Interface
 
-\textbf{2. Server}\\
-Architektur, Lucene, Datenstrukturen, Interner Ablauf 
+\textbf{2. Implementation Server}\\
+Architektur, Request/Response , Datenstruktur 
 
-\textbf{3. Organisation / Verlauf}\\
-Kommunikation, Treffen, Ablauf
-
-\textbf{4. Implementation Clients}\\
+\textbf{3. Implementation Clients}\\
 Web-Client, Firefox Toolbar, IE Toolbar
+
+\textbf{4. Ablauf}\\
+Beginn, 2005, 2006, Aktueller Stand
 
 \textbf{5. Pr"asentation}
 \end{slide}
@@ -76,17 +75,60 @@ Denkbar auch f"ur:
 \begin{slide}{1.4 Wie funktioniert TeamFound?}\\
 
 \begin{itemize}
-\item TeamFound bietet Integrationen f"ur Internet-Explorer und Firefox
-\item TeamFound zeigt eigene + Google-Ergebnisse
-\item TeamFound kann auch wie andere Suchmaschinen "uber eine Webseite benutzt werden
-\item Neue Seiten k"onnen mit wenigen Klicks hinzugef"ugt werden
+\item Der TeamFound-Server definiert nur ein einfaches Protokoll
+
+\item Anfrage-Parameter werden in Form von HTTP GET Variablen "ubertragen
 \end{itemize}
+\begin{verbatim}
+http://teamfound:8080/tf/tf?keyword=teamfound
+&want=xml&version=2&command=search&category=1
+\end{verbatim}
+
+
 \end{slide}
 
-%mit zu 1. ?
-\begin{slide}{1.x Request/Response }\\
+\begin{slide}{1.4 Wie funktioniert TeamFound? (2)}\\
+
+Beispiel Antwort
+\begin{verbatim}
+<response>
+  	<interface-version>2</interface-version>
+  	<return-value>0</return-value>
+  	<return-description>OK</return-description>
+  	<search>
+    		<keywords>
+      			<word>teamfound</word>
+    		</keywords>
+\end{verbatim}
+\end{slide}
+
+\begin{slide}{1.4 Wie funktioniert TeamFound? (3)}\\
+
+\begin{verbatim}
+    		<result>
+      			<count>30</count>
+      			<found>
+        			<url>http://teamfound.berlios.de</url>
+        			<title>TeamFound - share your search results</title>
+        			<incategory>0</incategory>
+      			</found>
+    		</result>
+  	</search>
+</response>
+\end{verbatim}
+\end{slide}
+
+%
+%
+%
+\begin{slide}{2.1 Architektur des Servers}\\
+\begin{center}
+\includegraphics{bilder/aufbau2.eps}
+\end{center}
+\end{slide}
+%
+\begin{slide}{2.2 Request/Response }\\
 \begin{itemize}
-\item Anfrage-Parameter werden in Form von HTTP GET Variablen "ubertragen
 \item Antworten vom Server
 \begin{itemize}
 \item HTML-Seite: die direkt im Browser angezeigt wird
@@ -95,42 +137,10 @@ Denkbar auch f"ur:
 \end{itemize}
 \end{slide}
 %
-\begin{slide}{1.x Beispiel Request}\\
-\begin{verbatim}
-http://62.75.187.241:8080/tf/tf?keyword=teamfound
-&want=xml&version=2&command=search&category=1
-\end{verbatim}
-\end{slide}
-\begin{slide}{1.x Beispiel Response }\\
-\begin{verbatim}
-<response>
-	.
-	.
-	<search>	
-		<result>
-			<found>
-				<url>http://teamfound.berlios.de</url>
-				<title>TeamFound - share your search results</title>
-				<incategory>0</incategory>
-			</found>
-		</result>
-	</search>
-</response>
-\end{verbatim}
+\begin{slide}{2.2 Beispiel Request}\\
 \end{slide}
 %
-%
-%
-\begin{slide}{2 Server}\\
-\end{slide}
-%
-\begin{slide}{2.1 Architektur des Servers}\\
-\begin{center}
-\includegraphics{bilder/aufbau2.eps}
-\end{center}
-\end{slide}
-%
-\begin{slide}{2.2 Lucene Index}
+\begin{slide}{2.3 Lucene Index}\\
 \begin{itemize}
 \item Wichtige Komponenten von Apache Lucene:
 \begin{itemize}
@@ -140,161 +150,42 @@ http://62.75.187.241:8080/tf/tf?keyword=teamfound
 \end{itemize}
 \end{itemize}
 \end{slide}
-%
-\begin{slide}{2.3 Datenstrukturen}\\
-\begin{center}
-\includegraphics{bilder/db.eps}
-\end{center}
-\end{slide}
+
 %	
-\begin{slide}
+\begin{slide}{2.4 Datenstruktur}\\
 \begin{center}
-\includegraphics{bilder/katstruktur}
+\includegraphics[width=17cm]{bilder/katstruktur.eps}
 \end{center}
 \end{slide}
 %
-\begin{slide}{2.5 Hinzuf"ugen einer Seite}
-\begin{itemize}
-\item Url auf vorhandensein "Uberpr"ufen :
-\begin{enumerate}
-\item Url existiert nicht: Download, Indexeintrag, Datenbankeintrag  
-\item Url existiert : Dokument auslesen, Dokument l"oschen, 
-aktualisiertes Dokument erstellen und hinzuf"ugen, Datenbankeintrag
-\end{enumerate}
-\item Response erstellen
-\end{itemize}
-\end{slide}
-%
-\begin{slide}{2.6 Suchen einer Seite}
-\begin{itemize}
-\item Query erstellen
-\item Anfrage an Index 
-\item Response erstellen
-\end{itemize}
-\end{slide}
 %
 %
-%
-\begin{slide}{3. Organisation}\\
-\end{slide}
-%
-%
-%
-\begin{slide}{3.1 Kommunikation}
-\begin{itemize}
-\item MediaWiki f"ur Entwicklungs-Arbeit (Standards, Interfaces, Realisierungen) \texttt{http://wiki.jonasheese.de/index.php/TeamFound}
+\begin{slide}{3.1 Web-Client}\\
 
-\item TeamFound - Mailingliste \texttt{teamfound-development@lists.berlios.de}
-
-\item OSSI - Mailingliste \texttt{ossi@insel.cs.tu-berlin.de} 
-
-\item Chat - QuakeNet \#teamfound 
-
-\item Source-Code Verwaltung - BerliOS (SVN, Web-Server, Bug-Track, Feature-Request)
-\end{itemize}
-\end{slide}
-%
-%
-%
-\begin{slide}{3.2 Teilprojekte}
-\begin{itemize}
-\item Milestones
-\item Toolbar Firefox, Toolbar Internet Explorer, Web-Client
-\item Server
-\item Interface-Spezifikation
-\item Präsentation
-\item Kategorien
-\end{itemize}
-\end{slide}
-%
-%
-%
-\begin{slide}{3.3 Milestone 1}
-\begin{enumerate}
-\item Lauffähige Versionen der Toolbars und des Servers
-\item Über Toolbar einzelne HTML-Seiten hinzufügen
-\item Server soll diese HTML-Seiten indizieren und durchsuchbar machen
-\item Über Toolbar soll der Server zum durchsuchen der indizierten Seiten nach Schlüsselwörtern gebracht werden und ein Liste der Links als Web-Seite zurückliefern 
-\end{enumerate}
-\begin{verbatim}
-[ Hinzufuegen-Button ] [<--   textfeld   -->] [ Suchen-Button ]
-\end{verbatim}
-\end{slide}
-%
-%
-%
-\begin{slide}{3.4 Milestone 2}
-\begin{itemize}
-\item Kategorien-System
-\item Konfigurations-Dialog in Toolbars für Server-Adresse
-\item Zusätzlich das Suchergebnis von google mit den gleichen Key-Wörtern anzeigen
-\item Interface-Version Milestone 2 implementieren
-\item XML oder HTML als Antwort von Server anfordern 
-\end{itemize}
-\end{slide}
-%
-%
-%
-\begin{slide}{3.5 Milestone 3}
-\begin{itemize}
-\item User-Management
-\item Rating Mechanismen 
-\end{itemize}
-\end{slide}
-%
-%
-%
-\begin{slide}{3.6 Ideen f"ur zuk"unftige Versionen}
-\begin{itemize}
-\item Mehrere Server in Toolbar einstellbar
-\item Mehrere Server über Toolbar in einem rutsch durchsuchen und die Ergebnisse kombinieren
-\item Web-Interface für Server (und Server-Administration)
-\item mehrere Sprachen unterstützen
-\end{itemize}
-\end{slide}
-%
-
-\begin{slide}{4. Client Implementationen}
-\end{slide}
-%
-\begin{slide}{4.1 Web-Client}\\
-\\
-\includegraphics{webclient.eps}
-\begin{verbatim}
-javascript:location.href='http://serverurl/addpage.pl?
-url='+encodeURIComponent(location.href)
-
-<form action="serverurl">
-	search: <input type="text" name="keyword">
-	<input type="hidden" name="want" value="html">
-	<input type="hidden" name="version" value="2">
-	<input type="hidden" name="command" value="search">
-	<input type="submit">
-</form>
-\end{verbatim}
+Web-Client ..
 
 \end{slide}
 %
-\begin{slide}{4.2.1 Firefox Toolbar}\\
-\\
-\includegraphics{ffextension-kategorien}
-\end{slide}
-%
-%
-\begin{slide}{4.2.2 Firefox Toolbar}\\
-\\
-\includegraphics{ffextension-settings}
+\begin{slide}{3.2 Firefox Toolbar}\\
+FF-Toolbar ..
 \end{slide}
 %
 %
 %
-\begin{slide}{4.3 Internet Explorer Toolbar}\\
+\begin{slide}{3.3 Internet Explorer Toolbar}\\
 IE Toolbar ..
 \end{slide}
 %%
 %%
 %
-\begin{slide}{5. Pr"asentation}
+\begin{slide}{4.1 Projektverlauf}\\
+Das Projekt hat damit begonnen, ..
+\end{slide}
+%
+%
+%
+\begin{slide}{5.1 Pr"asentation}\\
+Pr"asentation
 \end{slide}
 %
 %
