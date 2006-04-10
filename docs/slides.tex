@@ -5,6 +5,7 @@
 \documentclass[landscape]{slides}
 \usepackage{color,german}
 \usepackage{graphicx}
+\usepackage[latin1]{inputenc}
 %
 \begin{document}
 %
@@ -147,10 +148,93 @@ http://62.75.187.241:8080/tf/tf?keyword=teamfound
 %
 %
 %
-\begin{slide}{3.1 Organisation}\\
-Das Projekt hat damit begonnen, ..
+\begin{slide}{3. Organisation}\\
 \end{slide}
 %
+%
+%
+\begin{slide}{3.1 Kommunikation}
+\begin{itemize}
+\item MediaWiki f"ur Entwicklungs-Arbeit (Standards, Interfaces, Realisierungen) \texttt{http://wiki.jonasheese.de/index.php/TeamFound}
+
+\item TeamFound - Mailingliste \texttt{teamfound-development@lists.berlios.de}
+
+\item OSSI - Mailingliste \texttt{ossi@insel.cs.tu-berlin.de} 
+
+\item Chat - QuakeNet \#teamfound 
+\end{itemize}
+
+
+\end{slide}
+%
+%
+%
+\begin{slide}{3.2 Source-Code Verwaltung}
+\begin{itemize}
+\item BerliOS Developer
+\item Project page  \texttt{https://developer.berlios.de/projects/teamfound}
+\item SVN server \texttt{svn.berlios.de}
+\item Web server \texttt{http://teamfound.berlios.de}
+\end{itemize}
+\end{slide}
+%
+%
+%
+\begin{slide}{3.3 Teilprojekte}
+\begin{itemize}
+\item Milestones
+\item Toolbar Firefox, Toolbar Internet Explorer, Web-Client
+\item Server
+\item Interface-Spezifikation
+\item Präsentation
+\item Kategorien
+\end{itemize}
+\end{slide}
+%
+%
+%
+\begin{slide}{3.4 Milestone 1}
+\begin{enumerate}
+\item Lauffähige Versionen der Toolbars und des Servers
+\item Über Toolbar einzelne HTML-Seiten hinzufügen
+\item Server soll diese HTML-Seiten indizieren und durchsuchbar machen
+\item Über Toolbar soll der Server zum durchsuchen der indizierten Seiten nach Schlüsselwörtern gebracht werden und ein Liste der Links als Web-Seite zurückliefern 
+\end{enumerate}
+\begin{verbatim}
+[ Hinzufuegen-Button ] [<--   textfeld   -->] [ Suchen-Button ]
+\end{verbatim}
+\end{slide}
+%
+%
+%
+\begin{slide}{3.5 Milestone 2}
+\begin{itemize}
+\item Kategorien-System
+\item Konfigurations-Dialog in Toolbars für Server-Adresse
+\item Zusätzlich das Suchergebnis von google mit den gleichen Key-Wörtern anzeigen
+\item Interface-Version Milestone 2 implementieren
+\item XML oder HTML als Antwort von Server anfordern 
+\end{itemize}
+\end{slide}
+%
+%
+%
+\begin{slide}{3.6 Milestone 3}
+\begin{itemize}
+\item User-Management
+\item Rating Mechanismen 
+\end{itemize}
+\end{slide}
+%
+%
+%
+\begin{slide}{Ideen f"ur zuk"unftige Versionen}
+\begin{itemize}
+\item Mehrere Server in Toolbar einstellbar
+\item Mehrere Server über Toolbar in einem rutsch durchsuchen und die Ergebnisse kombinieren
+\item Web-Interface für Server (und Server-Administration)
+\item mehrere Sprachen unterstützen
+\end{itemize}
 %
 %
 \begin{slide}{4.1 Web-Client}\\
