@@ -756,10 +756,11 @@ Auch beim \index{Internet Explorer}Internet Explorer stand zunächst die Frage wi
 Google und Yahoo haben mit ihren Toolbar's vorgemacht das es geht, nur das wie war zu lösen.
 
 Erste Anlaufstelle um der Problemlösung näher zu kommen 
-war \index{CodeProject}CodeProject (www.codeproject.com). 
+war \index{CodeProject}CodeProject \footnote{www.codeproject.com}. 
 Mit 2,8 Mio Mitgliedern ist sie die größte Community Seite für die Windows Entwicklung. 
 Eine Suche nach ``IE Toolbar'' führte zu einer \index{.NET}.NET basierten Bibliothek 
-für die Entwicklung von \index{BandObjects}BandObjects, also Band Objekten (http://www.codeproject.com/csharp/dotnetbandobjects.asp).
+für die Entwicklung von \index{BandObjects}BandObjects, also Band Objekten 
+\footnote{http://www.codeproject.com/csharp/dotnetbandobjects.asp}.
 Das mitgelieferte Beispiel funktionierte auf Anhieb 
 und es wurde begonnen die Extension zu implementieren.
 
@@ -777,7 +778,7 @@ Explorer Bars wurden erstmalig mit dem Internet Explorer 4.0 eingeführt
 und bieten eine sehr flexible Möglichkeit den Explorer zu erweitern. 
 Derzeit werden Funktionen wie Favorieten und die Suche innerhalb einer 
 Explorer Bar dargestellt. Die Darstellung von Explorer Bars kann entweder horizontal 
-oder vertikal erfolgen und sie werden über den Menu Ansicht -> Explorerleisten ein- und ausgeblendet.
+oder vertikal erfolgen und sie werden über den Menu Ansicht - Explorerleisten ein- und ausgeblendet.
 
 \paragraph{Tool Bands}
 
@@ -799,9 +800,10 @@ Sie kann ausser im Explorer und \index{Internet Explorer}Internet Explorer auch 
 
 Die Entwicklung dieser Komponenten basiert, wie ein sehr großer Teil der 
 Windowsentwicklung auf \index{COM}COM. Das \index{Component Object Model}Component Object Model von \index{Microsoft}Microsoft 
-ist eines der ältesten Komponentensysteme und bildet Zusammen mit dem 
+ist eines der ältesten Komponentensysteme und bildet zusammen mit dem 
 \index{Windows API}Windows API die Grundlage für die Entwicklung von Windowssoftware.
-
+Da die Toolbar aus solchen Bandobjekten besteht, müssen also COM Objekte geschrieben werden.
+ 
 \subsection{COM, Schnittstellen, Klassen, Registry}
 
 Im folgende soll ein kurzer Überblick über \index{COM}COM gegeben werden, 
@@ -818,7 +820,7 @@ Schnittstellen können von Komponenten erfragt werden, und anschließend über
 die Methodenzeiger entsprechende Funktionen aufgerufen werden. 
 In einer einfachen - praktisch puren - COM Application muss man das 
 Aussehen der Schnittstellen genau kennen. Später kam ein Feature mit dem 
-Namen ``OLE Automatisierung'' hinzu, welches ähnliche Konzepte wie Java Reflection bietet.
+Namen ``OLE Automatisierung'' hinzu, welches ähnliche Konzepte wie Java Reflection bietet und somit den Scriptsprachen den Zugang zu COM ebenete.
 Jede Schnittstelle wird eindeutig über einen GUID - Global Unique Identifier - indentifiziert.
   
 \paragraph{COM Komponenten}
@@ -898,16 +900,92 @@ welche von der BandObject erbt. Da BandObject selber von UserControl
 erbt, steht einem auch der visuelle Designer zum erstellen der Toolbar zur Verfügung.
 Die Funktionalität der Toolbar kann also bequem in CSharp erfolgen.
 
-\subsection{Teamfound Internet Explorer Toolbar}
-
-\paragraph{Entwicklung}
+\subsection{Installation}
 \index{Installation}Installation
 
-Für die Installation auf einem \index{Client}Client PC kopiert man alle im Paket enthaltenen \index{Quellen}Quellen in einen Ordner.
-Die \index{Toolbar}Toolbar lässt dann einfach mit dem \index{Install.cmd}Install.cmd installieren. Im wesentlichen passiert dabei folgendes:
+Im die Internet Explorer Toolbar zu verwenden, wird der Internet Explorer benötigt (mindestens v5.0) sowie das .NET Framework in der Version 2.0.
 
-Die Bibliotheken \index{IE Toolbar!BandObject.dll}BandObject.dll und \index{IE Toolbar!Teamfound.IE.dll}Teamfound.IE.dll werden als COM Objekt registriert und im globalen Assembly Cache registriert. 
+Für die Installation auf einem Client PC kopiert man alle im Paket enthaltenen Quellen in einen Ordner.
+Die Toolbar lässt dann einfach mit dem Install.cmd installieren. Im wesentlichen passiert dabei folgendes:
 
 Alle anderen Bibliotheken werden ebenfalls im globalen \index{Assemblycache}Assemblycache registriert.
 
+Die Bibliotheken BandObject.dll und Teamfound.IE.dll werden als COM Objekt registriert und im globalen Assembly Cache registriert.  
+Alle anderen Bibliotheken werden ebenfalls im globalen Assemblycache registriert.
 
+
+\subsection{Entwicklung}
+
+\paragraph{Dateien}
+Folgende Dateien sind im Projekt enthalten:
+
+Interna für die Verwaltung der Daten
+
+\begin{verbatim}
+AssemblyInfo.cs
+Category.cs
+Win32.cs
+ComInterop.cs
+Configuration.cs
+Controller.cs
+Event/CategorySelectEventArgs.cs
+Event/SearchEventArgs.cs
+\end{verbatim}
+
+Darstellung - Formulare und Controls
+
+\begin{verbatim}
+CategoryTreeView.cs
+CategoryTreeView.Designer.cs
+FrmAddCategory.cs
+FrmAddCategory.Designer.cs
+FrmAddPage.cs
+FrmAddPage.Designer.cs
+FrmSettings.cs
+TeamFoundBar.cs
+TeamFoundResultBar.cs
+TeamFoundResultBar.Designer.cs
+\end{verbatim}
+
+Die Toolbar ist nach dem Modell View Controller Pattern aufgebaut. Es gibt einen View - oder besser zwei Views, ein Modell - also Datenklassen welche die Daten für den Client halten und einen Controller der die Logik enthält.
+
+\paragraph{Views}
+
+Es gibt zwei Views. Einen für die Eingabe der Suchdaten, dies ist die eigentliche Toolbar, und einen für die Darstellung der Ergebnisse. 
+
+\begin{figure}
+\begin{center}
+\epsfig{file=bilder/ietoolbar, width=12cm}
+\end{center}
+\caption{Internet Explorer Toolbar (v0.2)}
+\label{ietoolbar}
+\end{figure}
+
+Die Buttons auf der Toolbar rufen vier verschiedene Funktionen im Controller auf.
+
+\paragraph{Controller}
+
+Der Controller enthält die Logik des Clients bzw. delegiert die Aufrufe an den Server, welcher wiederum Logik enthält.
+Es gibt vier wesentliche Funktion im Controller. Man könnte auch von Anwendungsfällen reden.
+
+\begin{description}
+\item[Search] Ruft den Server mit den übergebenen Suchworten und den Kategorien auf. Sobald das Suchergebniss verfügbar ist, wird ein Ereignis ausgelöst. Der View für die Suchergebnisse, reagiert darauf und stellt diese dar.
+\item[AddPage] Diese Funktion zeigt ein Fenster zur Auswahl einer Kategorie und zur eingabe einer URL an. Wird dieses Fenster erfolgreich geschlossen, also mit OK statt mit Abbrechen oder dem X, wird das addpage Kommando auf dem Server aufgerufen und so die Seite dem Index hinzugefügt.
+\item[AddCategorie] Ruft das addcategorie Kommando auf dem Server auf, und legt damit eine neue Kategorie an.
+\item[EditSettings] Zeit ein Fenster zur Bearbeitung der Server URL an. Bei Erfolg, wird das Ergebniss in der Registry gespeichert.
+\end{description}
+
+\paragraph{Modell}
+
+Das Modell besteht aus der Klasse Category. Ein Category Objekt kann selber wieder Kategorie Objekte enthalten. Somit können die Kategorien vom Server abgeholt und im Speicher gehalten werden. Die Views können über die Eigenschaft Categories, des Controllers auf die Kategorien zugreifen und Anzeigen. Der Controller wiederum aktualisiert die Kategorien wenn es erforderlich ist.
+
+
+\subsection{Fazit Internetexplorer Erweiterung}
+
+Es war sehr spannend zu sehen wie unterschiedlich die Entwicklung der Erweiterungen für den Firefox und den Internet Explorer war. Während die eine Extension mit einem einfachen Editor entwickelt werden konnte, wurde für die andere Visual Studio 2005 verwendet. 
+
+Beide Varianten haben ihre eindeutigen Vorteile. Beim Firefox liegen die in der einfachen Entwicklung und der einfachen Installation. Man brauch keine besonderen Werkzeuge um den Browser zu erweitern. 
+
+Bei der Internet Explorer Variante liegen die Vorteile in der Flexibilität. Da ich an keine Sprache gebunden bin um die Erweiterung zu entwickeln, kann ich auch beliebe Features realisieren. Auch habe ich Zugriff auf die gesamte Umgebung, innerhalb und ausserhalb der Browsers. Somit ergeben sich natürlich noch viel mehr Möglichkeiten.
+
+Ein weiterer Vorteil liegt in der besseren Fehlersuche. Mit Visual Studio steht mir ein umfangreicher Debugger zur Verfügung, der auch vor dem IE nicht halt macht. Fehler können so natürlich schneller gefunden werden.
