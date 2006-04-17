@@ -454,7 +454,7 @@ Client gesendet werden. Als "Ubersicht hierzu dient die Abbildung \ref{getcat}.
 
 F"ur diese Aufgabe muss der \index{Controller}Controller nur zwei \index{Datenbankabfragen}Datenbankabfragen machen und kann 
 dann die entsprechende Response f"ullen.
-Als erstes werden daf"ur die vollst"andigen Informationen "uber die \index{Kategorie,}Kategorie, deren
+Als erstes werden daf"ur die vollst"andigen Informationen "uber die \index{Kategorie}Kategorie, deren
 Unterbaum wir erstellen sollen, ausgelesen. Dies kann prinzipiell eine beliebige Kategorie
 sein, aber da wir zum derzeitigen Stand nur die Version von gesammten B"aumen speichern
 (siehe \ref{datenbank}), ist derzeit auch nur eine Abfrage des gesammten Baumes sinnvoll.
@@ -697,7 +697,7 @@ javascript:location.href='http://serverurl/addpage.pl?
 url='+encodeURIComponent(location.href)
 \end{verbatim}
 
-Mit diesem einfachen \index{Link}Link, kann das l"astige Kopieren umgangen werden, indem "uber \index{Javascript}Javascript die URL der aktuell im eigenen \index{Browser}Browser angezeigten Seite, durch einen einfachen Click auf diesen \index{Bookmark,}Bookmark, direkt an den TeamFound-Server gesendet wird. (Beispiel ist f"ur Milestone 1)
+Mit diesem einfachen \index{Link}Link, kann das l"astige Kopieren umgangen werden, indem "uber \index{Javascript}Javascript die URL der aktuell im eigenen \index{Browser}Browser angezeigten Seite, durch einen einfachen Click auf diesen \index{Bookmark}Bookmark, direkt an den TeamFound-Server gesendet wird. (Beispiel ist f"ur Milestone 1)
 
 \subsection{Implementation}
 Die \textit{extrem einfache} Implementation des Web-Clients f"ur eine \index{Suchanfrage}Suchanfrage entsprechend Milestone 2 sieht wie folgt aus:
@@ -1006,7 +1006,7 @@ Die Toolbar ist nach dem Modell View Controller Pattern aufgebaut. Es gibt einen
 
 \paragraph{Views}
 
-Es gibt zwei Views. Einen für die Eingabe der Suchdaten, dies ist die eigentliche Toolbar, und einen für die Darstellung der Ergebnisse. 
+Es gibt zwei \index{Views}Views. Einen für die Eingabe der Suchdaten, dies ist die eigentliche Toolbar, und einen für die Darstellung der Ergebnisse. 
 
 \begin{figure}
 \begin{center}
@@ -1016,11 +1016,11 @@ Es gibt zwei Views. Einen für die Eingabe der Suchdaten, dies ist die eigentlich
 \label{ietoolbar}
 \end{figure}
 
-Die Buttons auf der Toolbar rufen vier verschiedene Funktionen im Controller auf.
+Die Buttons auf der Toolbar rufen vier verschiedene Funktionen im \index{Controller}Controller auf.
 
 \paragraph{Controller}
 
-Der Controller enthält die Logik des Clients bzw. delegiert die Aufrufe an den Server, welcher wiederum Logik enthält.
+Der \index{Controller}Controller enthält die Logik des Clients bzw. delegiert die Aufrufe an den Server, welcher wiederum Logik enthält.
 Es gibt vier wesentliche Funktion im Controller. Man könnte auch von Anwendungsfällen reden.
 
 \begin{description}
@@ -1032,7 +1032,7 @@ Es gibt vier wesentliche Funktion im Controller. Man könnte auch von Anwendungsf
 
 \paragraph{Modell}
 
-Das Modell besteht aus der Klasse Category. Ein Category Objekt kann selber wieder Kategorie Objekte enthalten. Somit können die Kategorien vom Server abgeholt und im Speicher gehalten werden. Die Views können über die Eigenschaft Categories, des Controllers auf die Kategorien zugreifen und Anzeigen. Der Controller wiederum aktualisiert die Kategorien wenn es erforderlich ist.
+Das \index{Modell}Modell besteht aus der Klasse \index{Category}Category. Ein Category Objekt kann selber wieder Kategorie Objekte enthalten. Somit können die Kategorien vom Server abgeholt und im Speicher gehalten werden. Die Views können über die Eigenschaft Categories, des Controllers auf die Kategorien zugreifen und Anzeigen. Der Controller wiederum aktualisiert die Kategorien wenn es erforderlich ist.
 
 
 \subsection{Fazit Internetexplorer Erweiterung}
