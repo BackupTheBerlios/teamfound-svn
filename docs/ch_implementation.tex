@@ -485,7 +485,62 @@ ergibt bei dem \index{Kategoriebaum}Kategoriebaum aus Abbildung \ref{katstruktur
 \end{center}
 Diese kann leicht ausgwertet und eine Response erstellt werden.
 
+\section{M"ogliche Verbesserungen im derzeitigen Server}
+\begin{enumerate}
+\item Update indizierter Seiten ohne den Index lahmzulegen.
+
+	Da lesender und schreibender Zugriff exklusiv voneinander getrennt ablaufen, kann ein 
+	Update zu einer langen Blockierung des Servers f"uhren.
+	Es gibt eine M"oglichkeit dies zu umgehen. Lucene kann verschiedene Segmente anlegen
+	wenn der Index vergr"ossert wird. Es ist m"oglich den lesenden Zugriff auf 
+	ein ''altes'' Segment zu gew"ahren, w"ahrend ein neues Segment mit den aktualisierten
+	Dokumenten angelegt wird. Der lesende Zugriff muss auf diese Weise nur blockiert werden,
+	wenn die Segmente wieder Zusammengef"uhrt werden.
+\item Indizierung anhand der Sprache.
+Man k"onnte bei Webseiten den Analyzer anhand der 
+	gelieferten Sprachinformation aus dem HTTP-Header w"ahlen und somit verhindern 
+	unn"utze Worte wie z.B. Artikel zu indizieren.
+\item Bessere Implementierung der Download Instanz.
+Wir nutzen zur Zeit eine eigene Klasse, 
+		die angeforderte Adressen herunterl"ad. Deshalb gibt es z.B. Probleme mit Frames.
+		Die Implementierung muss verbessert werden oder es muss eine geeignete Bibliothek 
+		gefunden werden.
+\item Finden einer geeigneten L"osung f"ur gleiche Seiten mit unterschiedlicher URL.
+
+	Man betrachte zum Beispiel die Adressen \texttt{http://xzy.de} und\\ \texttt{http://xzy.de/index.html}. Diese sind 
+	wahrscheinlich genau dieselbe Seite. Sollten solche Adressen an den Server "ubergeben
+	werden, w"urde er diese als zwei verschiedene Seiten behandeln. Auf diese 
+	Weise k"onnen redundante Dokumente entstehen. 
 	
+	Ein Ansatz dies zu verhindern w"are es
+	Hashwerte zu indizierten Seiten zu erstellen und zu speichern. Anhand von vergleichen der
+	Hashwerte bei gleichem URL-Stamm k"onnte man das Problem umgehen. 
+\end{enumerate}
+
+\section{Probleme}
+W"ahrend der Entwicklung des Servers sind keine grossen Probleme entstanden. 
+Dennoch k"onnen vielleicht ein paar kleinere genannt werden.
+
+\begin{itemize}
+\item Versionskonflikte beim Java Environment
+	
+	W"ahrend der Entwicklung stellten wir unerwartet fest, dass einer von uns mit J2SE 1.4.2
+	und der andere mit J2SE 5.0 arbeitet. Daraufhin diskutierten wir kurz mit allen
+	ob es sinnvoll w"are Kompatibilit"at zu 1.4.2 zu erhalten. Die Entscheidung 
+	viel schnell darauf auf 5.0 Basis weiterzumachen. Erstens h"atte sonst Code umge"andert
+	werden m"ussen und zweitens einigten wir uns das es Release 5.0 inzwischen schon 
+	lange genug gibt.
+\item Milestone 2
+
+	Milestone 2 brachte eine v"ollige Umstellung auf Java und Tomcat. Hinzu kam die
+   	Erweiterung um eine Datenbank und tiefere Einarbeitung in Lucene. 
+	Es waren also erstens viele neue
+	Techniken zu lernen und zweitens noch eine ganze Menge Probleme zu l"osen.
+	Hinzu kamen Pr"ufungen und vorlesungsfreie Zeit. Dadurch kam es zu einem
+	kleinerem Motivationstief, was erst mit n"aherr"ucken des Vortragtermins "uberwunden 
+	wurde.
+\end{itemize}
+
 \chapter{Protokoll}
 \label{protokoll}
 \index{Protokoll}
