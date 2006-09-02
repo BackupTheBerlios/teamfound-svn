@@ -5,7 +5,7 @@ xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
 	<Description about="urn:mozilla:install-manifest">
 		<em:id>{818f085f-a8e5-4576-bcc5-16d92bdff65d}</em:id>
-		<em:version>0.8</em:version>
+		<em:version>0.9</em:version>
 		<em:type>2</em:type>
 
 		<!-- Firefox -->
