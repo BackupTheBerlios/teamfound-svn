@@ -580,7 +580,56 @@ public class TeamFoundController implements Controller {
 		}
 		
 	}
+	/**
+	 * Eine Kategoie umbennen oder iher Description veraendern
+	 * 
+	 * @param catid id der Kat
+	 * @param catname neuer Name, wenn catname = null oder leer, dann gleichlassen
+	 * @param description neue Desc, wenn description = null dann gleichlassen, wenn string der laenge 0 dann loeschen
+	 * 
+	 */
+	public void editCategory(int catid, String catname, String description) 
+	{
+	//TODO dies muss noch besser werden
+		if(!initServer())
+		{
+			IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
+			e.initCause(e);
+		}	
+		
+		try
+		{
+		//0. DatenBAnk verbindung		
+			DBLayer db;
+			db = new DBLayerHSQL(conf);
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-	
+		// TODO ueberpruefen ob clients Version vom Categorytree akatuell
+			
+		//1. Datenbank eintraege zur Kategorie aendern
+			// erstmal alte zustand auslesen			
+			categoryBean catbean = db.getCatByID(conn,catid);
+			if((catname != null)&&(catname.length() > 0)) 
+			{
+				catbean.setCategory(catname);
+			}
+			if(description != null)
+			{
+				catbean.setBeschreibung(description);
+			}
+		
+		//2. Versionsnummer erhoehen
+			
+		//3. response fuellen
+			
+		}
+		catch(Exception e)
+		{
+			//TODO Exceptions richtig machen
+ 			System.out.println("TeamFoundController : addCategory)"+e);
+		}
+		
+	}
 
 }

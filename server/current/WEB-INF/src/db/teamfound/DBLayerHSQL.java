@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 import java.util.Vector;
 import java.util.List;
@@ -115,27 +116,38 @@ public class DBLayerHSQL implements DBLayer
 			if(!update(c,cuser))
 					System.out.println("error bei create User ");
 			
+			//create Table tfuser fuer Usermanagement
+			String sqlcreate = "CREATE TABLE tfuser (id INTEGER IDENTITY,username VARCHAR, pass VARCHAR,sessionkey VARCHAR, lastaction DATETIME, serveradmin BOOLEAN)";
+			if(!update(c,sqlcreate))
+				System.out.println("error in Statement "+ sqlcreate);
+
 			//create Category table
-			String sqlcreate = new String("CREATE TABLE category (id INTEGER IDENTITY,root_id INTEGER, left INTEGER, right INTEGER, name VARCHAR,beschreibung VARCHAR)");			
+			sqlcreate = new String("CREATE TABLE category (id INTEGER IDENTITY,root_id INTEGER, left INTEGER, right INTEGER, name VARCHAR,beschreibung VARCHAR, owner INTEGER, FOREIGN KEY(owner) REFERENCES tfuser(id))");			
 			if(!update(c,sqlcreate))
 				System.out.println("error in Statement "+ sqlcreate);
 
 			//create URL table
-			sqlcreate = "CREATE TABLE indexedurls (id INTEGER IDENTITY,url VARCHAR,indexdate DATE)";
+			sqlcreate = "CREATE TABLE indexedurls (id INTEGER IDENTITY,url VARCHAR,indexdate DATE, rating INTEGER)";
 			if(!update(c,sqlcreate))
 				System.out.println("error in Statement "+ sqlcreate);
 
 			//create ForeignKeyTable Url <-> Category
-			sqlcreate = "CREATE TABLE urltocategory (id INTEGER IDENTITY,url INTEGER,category INTEGER, FOREIGN KEY (category) REFERENCES category(id), FOREIGN KEY (url) REFERENCES indexedurls(id))";
+			sqlcreate = "CREATE TABLE urltocategory (id INTEGER IDENTITY,url INTEGER,category INTEGER,rating INTEGER, FOREIGN KEY (category) REFERENCES category(id), FOREIGN KEY (url) REFERENCES indexedurls(id))";
 			if(!update(c,sqlcreate))
 				System.out.println("error in Statement "+ sqlcreate);
 
-			//create ForeignKeyTable Url <-> Category
+			//Project-Daten
 			//nicht jede Category sondern nur jede root Cat braucht eine Version
-			sqlcreate = "CREATE TABLE categoryversion (id INTEGER IDENTITY,rootid INTEGER,version INTEGER, FOREIGN KEY (rootid) REFERENCES category(id))";
+			sqlcreate = "CREATE TABLE projectdata(id INTEGER IDENTITY,rootid INTEGER,version INTEGER, useruseradd BOOLEAN, userurledit BOOLEAN, usercatedit BOOLEAN, useraddurl BOOLEAN, useraddcat BOOLEAN, guestread BOOLEAN, guesturledit BOOLEAN, guestcatedit BOOLEAN, guestaddurl BOOLEAN, guestaddcat BOOLEAN,FOREIGN KEY (rootid) REFERENCES category(id))";
 			if(!update(c,sqlcreate))
 				System.out.println("error in Statement "+ sqlcreate);
 			
+		
+			//create Table Projectadmin
+			sqlcreate = "CREATE TABLE projectadmin (id INTEGER IDENTITY,userid INTEGER, rootid INTEGER, FOREIGN KEY (userid) REFERENCES tfuser(id), FOREIGN KEY (rootid) REFERENCES category(id))";
+			if(!update(c,sqlcreate))
+				System.out.println("error in Statement "+ sqlcreate);
+
 			
 			//Grant rights to user
 			
@@ -151,10 +163,19 @@ public class DBLayerHSQL implements DBLayer
 			if(!update(c,cuser))
 				System.out.println("error bei grant to User ");
 
-			cuser=("GRANT ALL ON categoryversion TO " +user);
+			cuser=("GRANT ALL ON projectdata TO " +user);
 			if(!update(c,cuser))
 				System.out.println("error bei grant to User ");
-			
+
+			cuser=("GRANT ALL ON tfuser TO " +user);
+			if(!update(c,cuser))
+				System.out.println("error bei grant to User ");
+
+			cuser=("GRANT ALL ON projectadmin TO " +user);
+			if(!update(c,cuser))
+				System.out.println("error bei grant to User ");
+
+
 			c.commit();
 	
 		}
@@ -331,8 +352,8 @@ public class DBLayerHSQL implements DBLayer
 			rsi.next();
 			int identity = rsi.getInt(1);
 
-			//update der categoryversion
-			String updateCatVersion = new String("UPDATE categoryversion SET version = version+1 WHERE rootid = "+rootid);
+			//update der projectdata
+			String updateCatVersion = new String("UPDATE projectdata SET version = version+1 WHERE rootid = "+rootid);
 			st.executeUpdate(updateCatVersion);	
 			
 			conn.commit();
@@ -355,6 +376,38 @@ public class DBLayerHSQL implements DBLayer
 		
 	}
 
+	
+	/**
+	 * Ersetzt Name und Beschreibung der Category
+	 */
+	public void updateCat(Connection conn, categoryBean catbean) throws SQLException
+	{
+		PreparedStatement st = null;
+		Statement stc = conn.createStatement();
+		st = conn.prepareStatement("UPDATE category set name = ?, beschreibung = ? where id = ?");    // erstelle statements
+		try
+		{	
+			st.setString(1, catbean.getCategory());
+			st.setString(2, catbean.getBeschreibung());
+			st.setInt(3, catbean.getID());
+
+			//ausfuehren der Updates und des Inserts
+			st.executeUpdate();	
+			
+			//update der projectdata
+			String updateCatVersion = new String("UPDATE projectdata SET version = version+1 WHERE rootid = "+catbean.getRootID());
+			stc.executeUpdate(updateCatVersion);	
+			
+		}
+		catch(SQLException e)
+		{
+			//logging machen
+			System.out.println("UpdateCategory :"+e);
+			throw(e);
+		}
+	}
+
+	
 	/**
 	 * Einfuegen einer rootCategory ins Set ..
 	 *
@@ -399,7 +452,7 @@ public class DBLayerHSQL implements DBLayer
 			st.executeUpdate(upd);			
 
 			//neuer Eintrag in CategoryVersionTabelle
-			insert = new String("INSERT INTO categoryversion(rootid,version) VALUES("+identity+",1)");
+			insert = new String("INSERT INTO projectdata(rootid,version) VALUES("+identity+",1)");
 			st.executeUpdate(insert);			
 			
 			conn.commit();
@@ -968,7 +1021,9 @@ public class DBLayerHSQL implements DBLayer
 						rsi.getString("name"),
 						rsi.getString("beschreibung"),
 						rsi.getInt("left"),
-						rsi.getInt("right"));
+						rsi.getInt("right"),
+						rsi.getInt("owner")
+						);
 				return(re);
 			}
 			else
@@ -1221,7 +1276,7 @@ public class DBLayerHSQL implements DBLayer
 		
 		try
 		{
-			String search = new String("SELECT version FROM categoryversion WHERE rootid = "+rootbean.getID());
+			String search = new String("SELECT version FROM projectdata WHERE rootid = "+rootbean.getID());
 			ResultSet rsi = st.executeQuery(search);
 			
 			if(rsi.next())
@@ -1251,7 +1306,7 @@ public class DBLayerHSQL implements DBLayer
 		
 		try
 		{
-			String search = new String("SELECT rootid,version FROM categoryversion");
+			String search = new String("SELECT rootid,version FROM projectdata");
 			ResultSet rsi = st.executeQuery(search);
 			Tuple<Integer,Integer> versiontuple;
 			List<Tuple<Integer,Integer>> versionlist = new LinkedList<Tuple<Integer,Integer>>();
@@ -1295,7 +1350,8 @@ public class DBLayerHSQL implements DBLayer
 						rsi.getString(5),
 						rsi.getString(6),
 						rsi.getInt(3),
-						rsi.getInt(4));
+						rsi.getInt(4),
+						rsi.getInt("owner"));
 				result.add(cat);
 			}
 			return(result);
@@ -1386,7 +1442,8 @@ public class DBLayerHSQL implements DBLayer
 						rsi.getString("name"),
 						rsi.getString("beschreibung"),
 						rsi.getInt("left"),
-						rsi.getInt("right"));
+						rsi.getInt("right"),
+						rsi.getInt("owner"));
 				return(re);
 			}
 			else

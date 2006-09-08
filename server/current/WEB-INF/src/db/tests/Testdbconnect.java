@@ -13,7 +13,7 @@ public class Testdbconnect
 	{
 		try
 		{
-			java.io.File f = new java.io.File("/home/build/teamfound.properties");
+			java.io.File f = new java.io.File("/home/moddin/build/teamfound.properties");
 
 			java.io.FileInputStream pin = new java.io.FileInputStream(f);
 
@@ -35,7 +35,7 @@ public class Testdbconnect
 			{
 				conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 				//conn.setAutoCommit(false);
-			/*	
+				
 				//neuen rootcat anlegen
 				System.out.println("lege neue RootCat an");
 				categoryBean rootcat = new categoryBean();
@@ -60,7 +60,35 @@ public class Testdbconnect
 				oldcat.printAll();
 
 				System.out.println("\n");
+					
+				System.out.println("Zustand der DB :\n");
+				System.out.println("category table:");
+				db.query(conn,"SELECT * FROM category");
 				
+				System.out.println("url table :");
+				db.query(conn,"SELECT * FROM indexedurls");
+
+				System.out.println("urltocategory :");
+				db.query(conn,"SELECT * FROM urltocategory");
+
+				System.out.println("projectdata:");
+				db.query(conn,"SELECT * FROM projectdata");
+				
+				System.out.println("tfuser:");
+				db.query(conn,"SELECT * FROM tfuser");
+				
+				System.out.println("projectadmin:");
+				db.query(conn,"SELECT * FROM projectadmin");
+
+				//cat umbenennen
+				System.out.println("Kat umbennen\n");
+				oldcat.setCategory("Umbenannte Kat");
+				db.updateCat(conn,oldcat);
+				System.out.println("category table:");
+				db.query(conn,"SELECT * FROM category");
+				
+
+			/*	
 				//neue cat anlegen
 				System.out.println("lege neue Cat an");
 				categoryBean newcat = new categoryBean();
@@ -314,8 +342,14 @@ public class Testdbconnect
 				System.out.println("urltocategory :");
 				db.query(conn2,"SELECT * FROM urltocategory");
 
-				System.out.println("categoryversion :");
-				db.query(conn2,"SELECT * FROM categoryversion");
+				System.out.println("projectdata:");
+				db.query(conn2,"SELECT * FROM projectdata");
+				
+				System.out.println("tfuser:");
+				db.query(conn2,"SELECT * FROM tfuser");
+				
+				System.out.println("projectadmin:");
+				db.query(conn2,"SELECT * FROM projectadmin");
 				conn2.close();
 			}
 			catch (Exception e)

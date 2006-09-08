@@ -260,7 +260,12 @@ public interface DBLayer
 	 */
 	public categoryBean getCatByID(Connection conn, int id) throws SQLException;
 
-	
+	/**
+	 * Ersetzt Name und Beschreibung der Category
+	 */
+	public void updateCat(Connection conn, categoryBean catbean) throws SQLException;
+
+
 	/**
 	 * Liefert die Versionsnummer fuer den Baum der zu diesem RootKnoten gehoert.
 	 * 

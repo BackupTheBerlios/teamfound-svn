@@ -17,8 +17,9 @@ public class categoryBean implements Serializable
 	private String beschreibung;
 	private Integer left;
 	private Integer right;
+	private Integer owner;
 
-	public categoryBean(Integer i, Integer r_id, String cat, String be, Integer l, Integer r)
+	public categoryBean(Integer i, Integer r_id, String cat, String be, Integer l, Integer r, Integer o)
 	{
 		id=i;
 		root_id=r_id;
@@ -26,6 +27,7 @@ public class categoryBean implements Serializable
 		beschreibung=be;
 		left=l;
 		right=r;
+		owner=o;
 	
 	
 	}
@@ -86,6 +88,15 @@ public class categoryBean implements Serializable
 	{
 		id=i;
 	}
+	public Integer getOwner()
+	{
+		return(owner);
+	}
+	public void setOwner(Integer i)
+	{
+		owner=i;
+	}
+
 	public void printAll()
 	{
 		System.out.println("id "+id);
