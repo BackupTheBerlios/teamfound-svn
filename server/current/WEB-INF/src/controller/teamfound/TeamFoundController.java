@@ -170,7 +170,7 @@ public class TeamFoundController implements Controller {
 						db.addCatwithParentsToUrl(conn,urlbean,catbean);
 					}
 					
-					//4.Erfolgsmeldung liefern
+					//4.Erfolgsmeldung liefern (liste von (projectid, katbaumversion)
 					List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 					AddPageResponse resp = new AddPageResponse(vertup ,adress.toString());
 					return(resp);
@@ -542,7 +542,7 @@ public class TeamFoundController implements Controller {
 		{
 		// Da noch keine Admin schnittstelle wird diese Funktion einfach aufgerufen
 		// prueft ob was existiert und wenn nicht legt es die noetigen sachen an ...
-		//TODO Admin innerface und diese ueberfluessige Ueberpruefung raus!
+		//TODO Admin install interface und diese ueberfluessige Ueberpruefung raus!
 		
 		//0. kucken ob schon was existiert
 			DBLayer db;
@@ -575,7 +575,7 @@ public class TeamFoundController implements Controller {
 		catch(Exception e)
 		{
 			//TODO Exceptions richtig machen
- 			System.out.println("TeamFoundController : initDB"+e);
+ 			System.out.println("TeamFoundController : initServer"+e);
 			return false;
 		}
 		
