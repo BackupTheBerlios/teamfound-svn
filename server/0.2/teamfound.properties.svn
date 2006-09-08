@@ -1,0 +1,22 @@
+#
+# Server Einstellungen Teamfound
+# ------------------------------
+#
+# 
+
+
+#
+# Teamfound benoetigt einen Pfad im System mit schreibberechtigung 
+# an dem die Datenbank,der Index sowie temporaere Html-Daten abgelegt werden
+# koennen.
+#
+# Systempath for the Index, DB and tmporary files. Needs write access.
+# 
+# hier ist es grad runpath und dann teamfound
+tfpath = teamfoundDir
+
+#Bezeichnung und Beschreibung des Projekts oder teams oder der beliebigen 
+#Gruppe die diesen Teamfoundserver benutzt
+
+project = Ossi-Teamfound
+description = Ein Projekt der TU-Berlin. Ziel ist eine Team-Suchmaschiene.		 	
