@@ -139,9 +139,9 @@ public class SearchResponse extends Response {
 		
 		
 		org.jdom.Document doc = super.getBaseDocument();
-		Element root = doc.getRootElement();
+		//Element root = doc.getRootElement();
 		
-		root.addContent(search);
+		teamfound.addContent(search);
 		
 		return doc;
 	}

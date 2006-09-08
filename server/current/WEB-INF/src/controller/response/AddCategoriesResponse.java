@@ -24,11 +24,11 @@ public class AddCategoriesResponse extends Response {
 	
 	public Document getXML() {
 		Document d = super.getBaseDocument();
-		Element xmlroot = d.getRootElement();
+		//Element xmlroot = d.getRootElement();
 		
 		// unterbaum aufbauen
 		Element add = new Element("addcategory");
-		xmlroot.addContent(add);
+		teamfound.addContent(add);
 		Element name = new Element("name");
 		add.addContent(name);
 		Element gotid = new Element("gotid");

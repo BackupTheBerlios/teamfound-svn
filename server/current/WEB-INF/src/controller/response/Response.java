@@ -5,9 +5,12 @@ package controller.response;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.HashMap;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.ProcessingInstruction;
+
 
 import tools.Tuple;
 
@@ -28,6 +31,9 @@ import tools.Tuple;
 public abstract class Response {
 	
 	protected Document doc;
+	protected Element teamfound; // damit die subklassen direkt darauf zugreifen koennen
+	protected Element server; // damit die subklassen direkt darauf zugreifen koennen
+	protected Element session; // damit die subklassen direkt darauf zugreifen koennen
 	
 	protected int returnStatus = 0;
 	protected String returnDescription;
@@ -48,30 +54,46 @@ public abstract class Response {
 		Element root = new Element("response");
 		doc = new Document(root);
 		
-		Element interfaceVersion = new Element("interface-version");
-		interfaceVersion.addContent("2");
-		root.addContent(interfaceVersion);
-		
-		Element server = new Element("server");
+		// Add XSLT-Reference
+		HashMap piMap = new HashMap( 2 );
+		piMap.put( "type", "text/xsl" );
+		piMap.put( "href", "transform.xsl" );
+		ProcessingInstruction pi = new ProcessingInstruction( "xml-stylesheet", piMap );
+		doc.getContent().add( 0, pi );
+				
+		// Create First-Level-Nodes
+		server = new Element("server");
+		root.addContent(server);
+		session = new Element("session");
+		root.addContent(session);
+		teamfound = new Element("teamfound");
+		root.addContent(teamfound);
+
+		// SERVER-BLOCK
+
 		Element name = new Element("name");
 		name.addContent("TeamFound");
 		server.addContent(name);
 		Element version = new Element("version");
-		version.addContent("0.2");
+		version.addContent("0.3");
 		server.addContent(version);
-		root.addContent(server);
-		
+		Element interfaceVersion = new Element("interface-version");
+		interfaceVersion.addContent("3");
+		server.addContent(interfaceVersion);
+
+		// TEAMFOUND-BLOCK
+				
 		// return-values
 		Element retValue = new Element("return-value");
 		retValue.addContent(Integer.toString(returnStatus));
-		root.addContent(retValue);
+		teamfound.addContent(retValue);
 		
 		// projectCounter
 		if(pCounters != null) {
 			Element pc = new Element("project-counter");
 			Iterator<Tuple<Integer, Integer>> i = pCounters.iterator();
 			
-			root.addContent(pc);
+			teamfound.addContent(pc);
 			
 			Element project, projectID, projectC;
 			Tuple<Integer, Integer> t;
@@ -97,10 +119,9 @@ public abstract class Response {
 		} else {
 			retDescr.addContent(returnDescription);
 		}
-		root.addContent(retDescr);
+		teamfound.addContent(retDescr);
 		
 		return doc;
-		
 	}
 	
 	public void returnValue(int code, String description) {

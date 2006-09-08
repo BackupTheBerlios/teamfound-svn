@@ -53,9 +53,9 @@ public class GetProjectsResponse extends Response {
 			projects.addContent(li.next());
 		}
 		
-		Element root = d.getRootElement();
+		//Element root = d.getRootElement();
 		
-		root.addContent(projects);
+		teamfound.addContent(projects);
 		
 		return d;
 	}

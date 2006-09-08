@@ -33,9 +33,9 @@ public class GetCategoriesResponse extends Response {
 	 */	
 	public Document getXML() {
 		Document d = super.getBaseDocument();
-		Element xmlroot = d.getRootElement();
+		//Element xmlroot = d.getRootElement();
 		Element getcat = new Element("getcategories");
-		xmlroot.addContent(getcat);
+		teamfound.addContent(getcat);
 		
 		// hole root
 		Element root = this.root;
