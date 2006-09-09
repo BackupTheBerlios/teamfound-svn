@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.jdom.Document;
+import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
@@ -32,13 +33,14 @@ import java.io.InputStream;
 
 public abstract class BaseServlet extends HttpServlet {
 	private static final long serialVersionUID = -2766879274061221595L;
+	public static final String interfaceversion = "3";
 
 	protected Controller ctrl;
 	protected XMLOutputter xmlout;
 	protected Map<String, Integer> commands;
 	protected config.teamfound.TeamFoundConfig conf;	
-	
-	
+
+	private String xsltpassthrough;//TODO muss woanders hin soll immer genau fuer eine Anfrage gueltig sein also als sessionvariabel speichern
 
 	public void init() throws ServletException {
 		
@@ -92,6 +94,12 @@ public abstract class BaseServlet extends HttpServlet {
 			resp.returnValue(-1, "Internal Error: "+e.getClass());
 			e.printStackTrace();
 		}
+
+		if(params.containsKey("pt"))
+		{
+			xsltpassthrough = request.getParameter("pt");
+		}
+
 		
 		if(!params.containsKey("want")) {		
 			xmlResponse(response, resp);
@@ -103,6 +111,7 @@ public abstract class BaseServlet extends HttpServlet {
 				xmlResponse(response, resp);
 			}
 		}
+
 	}
 		
 		
@@ -121,7 +130,7 @@ public abstract class BaseServlet extends HttpServlet {
 			r.returnValue(2, "Need Parameter 'version'");
 			return r;
 		} else {
-			if(!req.getParameter("version").equals("2")) {
+			if(!req.getParameter("version").equals(interfaceversion)) {
 				r = new ErrorResponse(null);
 				r.returnValue(3, "Incompatible Interface Version");
 				return r;
@@ -265,14 +274,19 @@ public abstract class BaseServlet extends HttpServlet {
 		r.returnValue(-1, "Unknown command");
 		return r;
 		
-		
-			
-		
 	}
 	
 	
-	protected void xmlResponse(HttpServletResponse response, Response tfResponse) throws IOException {
+	protected void xmlResponse(HttpServletResponse response, Response tfResponse) throws IOException 
+	{
 		Document d = tfResponse.getXML();
+		if( xsltpassthrough != null)
+		{
+			Element root = d.getRootElement();
+			Element epassthrough = new Element("xsltpassthrough");
+			epassthrough.addContent(xsltpassthrough);
+			root.addContent(epassthrough);
+		}
 		response.setContentType("application/xml");
 		PrintWriter out = response.getWriter();
 		out.println(xmlout.outputString(d));

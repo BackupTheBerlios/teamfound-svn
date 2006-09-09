@@ -285,7 +285,76 @@ public interface DBLayer
 	 */
 	public Vector<categoryBean> getAllRootCats(Connection conn) throws SQLException;
 
-		
+	//////////////////////////////
+	//
+	//        N E U
+	//
+	//////////////////////////////
+
+	/**
+	 * Adminprojekte des Users
+	 * @return Liste der projectadminBeans des users
+	 * @param userid des Users
+	 */ 
+//	public Vector<projectadminBean> getAdminProjectsForUser(Connection conn, Integer userid) throws SQLException;
+
+	/**
+	 * User by ID
+	 * @return tfuserBean des Users
+	 * @param userid des Users
+	 */ 
+//	public tfuserBean getUserByID(Connection conn, Integer userid) throws SQLException;
+
+	/**
+	 * User by Sessionkey
+	 * @return tfuserBean des Users
+	 * @param sessionkey 
+	 */ 
+//	public tfuserBean getUserBySessionkey(Connection conn, Integer sessionkey) throws SQLException;
+
+	/**
+	 * Aktualisiere lastaction (setzt lastaction auf jetzige Zeit/Datum
+	 * @return tfuserBean des Users
+	 * @param sessionkey 
+	 */ 
+//	public void updateLastActionForUserID(Connection conn, Integer userid) throws SQLException;
+
+	/**
+	 * Erzeuge einen neuen Sessionkey fuer einen user und speichert diesen in die Datenbank
+	 * @return neuer sessionkey
+	 * @param userid
+	 */ 
+	//public String generateNewSessionkey(Connection conn, Integer userid) throws SQLException;
+
+	/**
+	 * Erzeuge einen neuen User
+	 * @return tfuserBean mit neu vergebener ID aus Datenbank
+	 * @param tfuserBean
+	 */ 
+	//public tfuserBean createNewUser(Connection conn, tfuserBean tfuser) throws SQLException;
+
+	/**
+	 * Fuege einem Projekt einen neuen Admin hinzu
+	 * @param userid
+	 * @param rootid 
+	 */ 
+	//public void addUserToAdminsOfProject(Connection conn, Integer userid, Integer rootid) throws SQLException;
+
+	/**
+	 * Setzt die Rechte fuer ein Project neu
+	 * @param projectdataBean
+	 */ 
+	//public void setProjectdata(Connection conn, projectdataBean projectdata) throws SQLException;
+
+	/**
+	 * Gibt die Rechte fuer ein Project zurueck
+	 * @param rootid
+	 */ 
+	//public void getProjectdata(Connection conn, Integer rootid) throws SQLException;
+
+
+
+	
 //TODO Was man noch so braucht
 
 

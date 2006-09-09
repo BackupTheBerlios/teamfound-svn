@@ -21,7 +21,7 @@ public class AddPageResponse extends Response {
 	}
 	
 	public Document getXML() {
-		//Document d = super.getBaseDocument();
+		Document d = super.getBaseDocument();
 		
 		//Element root = d.getRootElement();
 		
@@ -32,8 +32,8 @@ public class AddPageResponse extends Response {
 		url.addContent(this.url);
 		
 		addPage.addContent(url);
-		
-		return getBaseDocument();	
+
+		return d;
 	}
 
 	@Override
