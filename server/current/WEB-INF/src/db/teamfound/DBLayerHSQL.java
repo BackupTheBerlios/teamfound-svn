@@ -1631,16 +1631,17 @@ public class DBLayerHSQL implements DBLayer
 	 * das jetzige Serverdatum
 	 * 
 	 */ 
-	public void refreshIndexDate(Connection conn) throws SQLException
+	public void refreshIndexDate(Connection conn, Integer id) throws SQLException
 	{
 		java.sql.Date dat = new java.sql.Date(new java.util.Date().getTime());
 		
 
 		PreparedStatement st = null;
-		st = conn.prepareStatement("UPDATE indexedurls SET indexdate = ?");   
+		st = conn.prepareStatement("UPDATE indexedurls SET indexdate = ? where id = ?");   
 		try
 		{	
 			st.setDate(1, dat);
+			st.setInt(2, id.intValue());
 
 			//ausfuehren der Updates 
 			st.executeUpdate();	

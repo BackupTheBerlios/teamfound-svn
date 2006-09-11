@@ -305,7 +305,7 @@ public interface DBLayer
 	 * das jetzige Serverdatum
 	 * 
 	 */ 
-	public void refreshIndexDate(Connection conn) throws SQLException;
+	public void refreshIndexDate(Connection conn, Integer id) throws SQLException;
 	
 	
 	/**
