@@ -14,6 +14,7 @@ public class urltabBean implements Serializable
 	private Integer id;
 	private String url;
 	private Date datum;
+	private Integer rating;
 
 	public urltabBean()
 	{};

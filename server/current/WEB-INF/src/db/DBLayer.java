@@ -287,23 +287,40 @@ public interface DBLayer
 
 	//////////////////////////////
 	//
-	//        N E U
+	//        N E U    MIlestone 3
 	//
 	//////////////////////////////
+	
+	/**
+	 * Liefert alle indizierten Dokumente, deren Indizierung
+	 * laenger her ist als das uebergebene Datum
+	 *
+	 * @return Vector<urltabBean> die indizierten URLs
+	 * @param Date Datum 
+	 */ 
+	public Vector<urltabBean> getOlderDocs(Connection conn, java.util.Date datum) throws SQLException;
 
+	/**
+	 * Setz das Datum eines Eintrages in der indexedUrls Tabelle auf
+	 * das jetzige Serverdatum
+	 * 
+	 */ 
+	public void refreshIndexDate(Connection conn) throws SQLException;
+	
+	
 	/**
 	 * Adminprojekte des Users
 	 * @return Liste der projectadminBeans des users
 	 * @param userid des Users
 	 */ 
-//	public Vector<projectadminBean> getAdminProjectsForUser(Connection conn, Integer userid) throws SQLException;
+	public Vector<projectadminBean> getAdminProjectsForUser(Connection conn, Integer userid) throws SQLException;
 
 	/**
 	 * User by ID
 	 * @return tfuserBean des Users
 	 * @param userid des Users
 	 */ 
-//	public tfuserBean getUserByID(Connection conn, Integer userid) throws SQLException;
+	public tfuserBean getUserByID(Connection conn, Integer userid) throws SQLException;
 
 	/**
 	 * User by Sessionkey

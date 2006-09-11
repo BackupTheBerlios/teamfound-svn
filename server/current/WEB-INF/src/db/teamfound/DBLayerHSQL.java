@@ -585,7 +585,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 			conn.rollback();
 			//logging machen
-			System.out.println("deleteLeafCategory :"+e);
+			System.out.println("deletepartialTree :"+e);
 			throw(e); 
 		}
 		
@@ -1486,4 +1486,223 @@ public class DBLayerHSQL implements DBLayer
 			throw(e);
 		}
 	}
+
+	//////////////////////////////
+	//
+	//        N E U Milestone 3
+	//
+	//////////////////////////////
+
+	/**
+	 * Adminprojekte des Users
+	 * @return Liste der projectadminBeans des users
+	 * @param userid des Users
+	 */ 
+	public Vector<projectadminBean> getAdminProjectsForUser(Connection conn, Integer userid) throws SQLException
+	{
+		PreparedStatement st = null;
+		st = conn.prepareStatement("Select * from projectadmin where userid = ?");   
+		try
+		{	
+			st.setInt(1, userid.intValue());
+
+			ResultSet rsi = st.executeQuery();	
+			
+			java.util.Vector<projectadminBean> revec = new java.util.Vector<projectadminBean>();
+
+			//results in Return Array schreiben
+			while(rsi.next())
+			{
+				projectadminBean re = new projectadminBean();
+				
+				re.setID(rsi.getInt("id"));
+				
+				re.setRootID(rsi.getInt("rootid"));
+				
+				re.setUserID(rsi.getInt("userid"));
+				
+				if(!revec.add(re))
+					System.out.println("an Vector adden fehlgeschlagen!");
+			}
+			
+			return(revec);
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("getAdminProjectsforUser: "+ e);
+			throw(e);
+		}
+	
+	
+	}
+
+	/**
+	 * User by ID
+	 * @return tfuserBean des Users
+	 * @param userid des Users
+	 */ 
+	public tfuserBean getUserByID(Connection conn, Integer userid) throws SQLException
+	{
+		PreparedStatement st = null;
+		st = conn.prepareStatement("Select * from tfuser where id = ?");   
+		try
+		{	
+			st.setInt(1, userid.intValue());
+
+			ResultSet rsi = st.executeQuery();	
+			
+			tfuserBean re = new tfuserBean();
+			
+			if(rsi.first())
+			{
+				re.setID(rsi.getInt("id"));
+				re.setUsername(rsi.getString("username"));
+				re.setPass(rsi.getString("pass"));
+				re.setSessionkey(rsi.getString("sessionkey"));
+				re.setServeradmin(rsi.getBoolean("serveradmin"));
+				re.setLastaction(rsi.getTimestamp("lastaction"));
+			}	
+			return(re);
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("getUserByID: "+ e);
+			throw(e);
+		}
+
+	}
+	
+	/**
+	 * Liefert alle indizierten Dokumente, deren Indizierung
+	 * laenger her ist als das uebergebene Datum
+	 *
+	 * @return Vector<urltabBean> die indizierten URLs
+	 * @param Date Datum 
+	 */ 
+	public Vector<urltabBean> getOlderDocs(Connection conn, java.util.Date datum) throws SQLException
+	{
+		java.sql.Date dat = new java.sql.Date(datum.getTime());
+		
+
+		PreparedStatement st = null;
+		st = conn.prepareStatement("Select * from indexedurls where indexdate < ?");   
+		try
+		{	
+			st.setDate(1, dat);
+
+			ResultSet rsi = st.executeQuery();	
+			
+			java.util.Vector<urltabBean> revec = new java.util.Vector<urltabBean>();
+
+			//results in Return Array schreiben
+			while(rsi.next())
+			{
+				urltabBean re = new urltabBean();
+				
+				re.setID(rsi.getInt("id"));
+				
+				re.setUrl(rsi.getString("url"));
+				re.setDate(rsi.getDate("indexdate"));
+				
+				
+				if(!revec.add(re))
+					System.out.println("an Vector adden fehlgeschlagen!");
+			}
+			
+			return(revec);
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("getOlderDocs: "+ e);
+			throw(e);
+		}
+
+	}
+
+	
+	/**
+	 * Setz das Datum eines Eintrages in der indexedUrls Tabelle auf
+	 * das jetzige Serverdatum
+	 * 
+	 */ 
+	public void refreshIndexDate(Connection conn) throws SQLException
+	{
+		java.sql.Date dat = new java.sql.Date(new java.util.Date().getTime());
+		
+
+		PreparedStatement st = null;
+		st = conn.prepareStatement("UPDATE indexedurls SET indexdate = ?");   
+		try
+		{	
+			st.setDate(1, dat);
+
+			//ausfuehren der Updates 
+			st.executeUpdate();	
+			
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("refreshIndexDate: "+ e);
+			throw(e);
+		}
+
+	}
+
+
+	/**
+	 * User by Sessionkey
+	 * @return tfuserBean des Users
+	 * @param sessionkey 
+	 */ 
+//	public tfuserBean getUserBySessionkey(Connection conn, Integer sessionkey) throws SQLException;
+
+	/**
+	 * Aktualisiere lastaction (setzt lastaction auf jetzige Zeit/Datum
+	 * @return tfuserBean des Users
+	 * @param sessionkey 
+	 */ 
+//	public void updateLastActionForUserID(Connection conn, Integer userid) throws SQLException;
+
+	/**
+	 * Erzeuge einen neuen Sessionkey fuer einen user und speichert diesen in die Datenbank
+	 * @return neuer sessionkey
+	 * @param userid
+	 */ 
+	//public String generateNewSessionkey(Connection conn, Integer userid) throws SQLException;
+
+	/**
+	 * Erzeuge einen neuen User
+	 * @return tfuserBean mit neu vergebener ID aus Datenbank
+	 * @param tfuserBean
+	 */ 
+	//public tfuserBean createNewUser(Connection conn, tfuserBean tfuser) throws SQLException;
+
+	/**
+	 * Fuege einem Projekt einen neuen Admin hinzu
+	 * @param userid
+	 * @param rootid 
+	 */ 
+	//public void addUserToAdminsOfProject(Connection conn, Integer userid, Integer rootid) throws SQLException;
+
+	/**
+	 * Setzt die Rechte fuer ein Project neu
+	 * @param projectdataBean
+	 */ 
+	//public void setProjectdata(Connection conn, projectdataBean projectdata) throws SQLException;
+
+	/**
+	 * Gibt die Rechte fuer ein Project zurueck
+	 * @param rootid
+	 */ 
+	//public void getProjectdata(Connection conn, Integer rootid) throws SQLException;
+
+
 }

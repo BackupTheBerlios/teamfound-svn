@@ -31,7 +31,15 @@ public class tfuserBean implements Serializable
 
 	public tfuserBean()
 	{};
-
+	
+	public Boolean getServeradmin()
+	{
+		return(serveradmin);
+	}
+	public void setServeradmin(Boolean _serveradmin)
+	{
+		serveradmin=_serveradmin;
+	}
 	public String getUsername()
 	{
 		return(username);
