@@ -133,7 +133,7 @@ public class projectdataBean implements Serializable
 	{
 		return(guesturledit);
 	}
-	public void setGuestUrlEdit(Boolean _b)
+	public void setGuestUrledit(Boolean _b)
 	{
 		guesturledit=_b;
 	}	

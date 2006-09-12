@@ -117,11 +117,13 @@ public interface DBLayer
 	* Ist es ueberhaupt in unserem Prog erlaubt ?
 	* Methode bisher nicht implementiert ...!!!
 	* 
+	* not implemented
+	* 
 	* @param conn  Connection
 	* @param catbean  categoryBean
 	*
 	*/
-	public void deleteCategory(Connection conn, categoryBean catbean) throws SQLException;
+	//public void deleteCategory(Connection conn, categoryBean catbean) throws SQLException;
 
 	/**
 	 * Hinzufuegen einer Url(nur Url in der Bean benoetigt) 
@@ -133,6 +135,7 @@ public interface DBLayer
 	 *
 	 * Bitte die Funktion mit Kathegorie verwenden und zumindestens die RootKathegorie
 	 * mitangeben!
+	 * 
 	 * DEPRECATED 
 	 * 
 	 * @param conn  Connection
@@ -159,7 +162,7 @@ public interface DBLayer
 	public Vector<categoryBean> findAllParents(Connection conn, categoryBean catbean) throws SQLException;
 
 	/**
-	 *	Parent zur Category finden 
+	 *	direkten Parent zur Category finden 
 	 * 	in der CategoryBean wird nur die ID benoetigt 
 	 */ 
 	public categoryBean findParent(Connection conn, categoryBean catbean) throws SQLException;
@@ -177,10 +180,11 @@ public interface DBLayer
 	public void addCatToUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException;
 
 	/**
-	 * Hinzufuegen einer Category zu einer Url
+	 * Hinzufuegen einer Url zu einer Category
 	 * Es werden auch alle ElternCategorien mit zugeordnet
 	 *
 	 * Die IDs von Category und Url reichen aus ...
+	 * Achtung : addUrl zum anlegen einer URL benutzen
 	 */ 
 	public void addCatwithParentsToUrl(Connection conn, urltabBean urlbean, categoryBean catbean) throws SQLException;
 	
@@ -273,7 +277,7 @@ public interface DBLayer
 	 */
 	public Integer getVersionNumber(Connection conn,categoryBean rootbean) throws SQLException;
 	/**
-	 * Liefert Tuple <Integer,Integer> 
+	 * Liefert alle Tuple <Integer,Integer> 
 	 * der erste int ist die ID der RootCAT der Zweite ist die Version des Baumes
 	 * 
 	 */
@@ -331,13 +335,13 @@ public interface DBLayer
 
 	/**
 	 * Aktualisiere lastaction (setzt lastaction auf jetzige Zeit/Datum
-	 * @return tfuserBean des Users
 	 * @param sessionkey 
 	 */ 
-//	public void updateLastActionForUserID(Connection conn, Integer userid) throws SQLException;
+	public void updateLastActionForUserID(Connection conn, Integer userid) throws SQLException;
 
 	/**
 	 * Erzeuge einen neuen Sessionkey fuer einen user und speichert diesen in die Datenbank
+	 * 
 	 * @return neuer sessionkey
 	 * @param userid
 	 */ 
@@ -348,31 +352,32 @@ public interface DBLayer
 	 * @return tfuserBean mit neu vergebener ID aus Datenbank
 	 * @param tfuserBean
 	 */ 
-	//public tfuserBean createNewUser(Connection conn, tfuserBean tfuser) throws SQLException;
+	public tfuserBean createNewUser(Connection conn, tfuserBean tfuser) throws SQLException;
 
 	/**
 	 * Fuege einem Projekt einen neuen Admin hinzu
 	 * @param userid
 	 * @param rootid 
 	 */ 
-	//public void addUserToAdminsOfProject(Connection conn, Integer userid, Integer rootid) throws SQLException;
+	public void addUserToAdminsOfProject(Connection conn, Integer userid, Integer rootid) throws SQLException;
 
 	/**
 	 * Setzt die Rechte fuer ein Project neu
+	 *  
 	 * @param projectdataBean
 	 */ 
-	//public void setProjectdata(Connection conn, projectdataBean projectdata) throws SQLException;
+	public void setProjectdata(Connection conn, projectdataBean projectdata) throws SQLException;
 
 	/**
 	 * Gibt die Rechte fuer ein Project zurueck
 	 * @param rootid
+	 * @return projectdataBean
 	 */ 
-	//public void getProjectdata(Connection conn, Integer rootid) throws SQLException;
+	public projectdataBean getProjectdata(Connection conn, Integer rootid) throws SQLException;
 
 
 
 	
-//TODO Was man noch so braucht
 
 
 	

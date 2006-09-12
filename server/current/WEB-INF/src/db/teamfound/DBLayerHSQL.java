@@ -611,6 +611,8 @@ public class DBLayerHSQL implements DBLayer
 	 * ohne zugehoerige Category
 	 * liefert bean mit der ID und dem erzeugten Datum zurueck
 	 * Achtung: keine Ueberpruefung ob URL bereits existiert!
+	 *
+	 * Deprecated! addUrl mit Category benutzen
 	 * 
 	 * @param conn  Connection
 	 * @param urlbean urltabBean
@@ -1667,11 +1669,34 @@ public class DBLayerHSQL implements DBLayer
 
 	/**
 	 * Aktualisiere lastaction (setzt lastaction auf jetzige Zeit/Datum
-	 * @return tfuserBean des Users
 	 * @param sessionkey 
 	 */ 
-//	public void updateLastActionForUserID(Connection conn, Integer userid) throws SQLException;
+	public void updateLastActionForUserID(Connection conn, Integer userid) throws SQLException
+	{
+		java.sql.Timestamp dat = new java.sql.Timestamp(new java.util.Date().getTime());
+		
 
+		PreparedStatement st = null;
+		st = conn.prepareStatement("UPDATE tfuser SET lastaction = ? where id = ?");   
+		try
+		{	
+			st.setTimestamp(1, dat);
+			st.setInt(2, userid.intValue());
+
+			//ausfuehren der Updates 
+			st.executeUpdate();	
+			
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("updateLastActionForUserID: "+ e);
+			throw(e);
+		}
+
+	}
+	
 	/**
 	 * Erzeuge einen neuen Sessionkey fuer einen user und speichert diesen in die Datenbank
 	 * @return neuer sessionkey
@@ -1684,26 +1709,186 @@ public class DBLayerHSQL implements DBLayer
 	 * @return tfuserBean mit neu vergebener ID aus Datenbank
 	 * @param tfuserBean
 	 */ 
-	//public tfuserBean createNewUser(Connection conn, tfuserBean tfuser) throws SQLException;
+	public tfuserBean createNewUser(Connection conn, tfuserBean tfuser) throws SQLException
+	{
+		//TODO existenz der Usernamen pruefen
+		PreparedStatement pst = null;
+		pst = conn.prepareStatement("INSERT INTO tfuser (username,pass,serveradmin) values (?,?,?)");   
+		Statement st = null;
+		st = conn.createStatement();
+
+		try
+		{	
+			pst.setString(1, tfuser.getUsername());
+			pst.setString(2, tfuser.getPass());
+			if(tfuser.getServeradmin() != null)
+			{	
+				pst.setBoolean(3,tfuser.getServeradmin().booleanValue());
+			}
+			else
+			{
+				pst.setBoolean(3,false);
+			}
+			//ausfuehren der Updates 
+			pst.executeUpdate();	
+			ResultSet rs = st.executeQuery("CALL IDENTITY()");
+			rs.next();
+			int identity = rs.getInt(1);
+			tfuser.setID(identity);
+			
+			conn.commit();
+			return(tfuser);
+			
+		}
+		catch(SQLException e)
+		{
+			conn.rollback();
+			//TODO LoggMessage statt print
+			System.out.println("updateLastActionForUserID: "+ e);
+			throw(e);
+		}
+
+
+
+	}
 
 	/**
 	 * Fuege einem Projekt einen neuen Admin hinzu
 	 * @param userid
 	 * @param rootid 
 	 */ 
-	//public void addUserToAdminsOfProject(Connection conn, Integer userid, Integer rootid) throws SQLException;
+	public void addUserToAdminsOfProject(Connection conn, Integer userid, Integer rootid) throws SQLException
+	{
+		PreparedStatement pst = null;
+		pst = conn.prepareStatement("INSERT INTO projectadmin (userid,rootid) values (?,?)");   
+		PreparedStatement check = null;
+		check = conn.prepareStatement("SELECT COUNT(userid) FROM projectadmin WHERE userid = ? AND rootid = ?");
+
+		try
+		{
+			//Values in statements
+			pst.setInt(1, userid.intValue());
+			pst.setInt(2, rootid.intValue());
+
+			check.setInt(1, userid.intValue());
+			check.setInt(2, rootid.intValue());
+			
+			//ueberpruefen ob der User schon admin ist
+			ResultSet rsi = check.executeQuery();	
+			if (rsi.first())
+			{
+							
+				if(rsi.getInt(1) > 0)
+				{
+					//der User ist schon Admin dieses Projekts
+					return;
+				}
+				
+			}
+			
+			//ausfuehren der Updates 
+			pst.executeUpdate();	
+			
+			conn.commit();
+			return;
+			
+		}
+		catch(SQLException e)
+		{
+			conn.rollback();
+			//TODO LoggMessage statt print
+			System.out.println("addUserToAdminsOfProject: "+ e);
+			throw(e);
+		}
+
+
+	}
 
 	/**
 	 * Setzt die Rechte fuer ein Project neu
+	 * 
 	 * @param projectdataBean
 	 */ 
-	//public void setProjectdata(Connection conn, projectdataBean projectdata) throws SQLException;
+	public void setProjectdata(Connection conn, projectdataBean projectdata) throws SQLException
+	{
+
+		PreparedStatement st = null;
+		st = conn.prepareStatement("UPDATE projectdata SET useruseradd =?, userurledit =?, usercatedit =?, useraddurl =?, useraddcat =?, guestread =?, guesturledit =?, guestcatedit =?, guestaddurl = ?, guestaddcat = ?  where rootid = ?");   
+		try
+		{	
+			st.setBoolean(1,projectdata.getUserUseradd().booleanValue());
+			st.setBoolean(2,projectdata.getUserUrledit().booleanValue());
+			st.setBoolean(3,projectdata.getUserCatedit().booleanValue());
+			st.setBoolean(4,projectdata.getUserAddurl().booleanValue());
+			st.setBoolean(5,projectdata.getUserAddcat().booleanValue());
+			st.setBoolean(6,projectdata.getGuestRead().booleanValue());
+			st.setBoolean(7,projectdata.getGuestUrledit().booleanValue());
+			st.setBoolean(8,projectdata.getGuestCatedit().booleanValue());
+			st.setBoolean(9,projectdata.getGuestAddurl().booleanValue());
+			st.setBoolean(10,projectdata.getGuestAddcat().booleanValue());
+			st.setInt(11,projectdata.getRootID().intValue());
+
+			//ausfuehren der Updates 
+			st.executeUpdate();	
+			
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("setProjectdata: "+ e);
+			throw(e);
+		}
+
+
+	}
 
 	/**
 	 * Gibt die Rechte fuer ein Project zurueck
+	 * 
 	 * @param rootid
+	 * @return projectdataBean
 	 */ 
-	//public void getProjectdata(Connection conn, Integer rootid) throws SQLException;
+	public projectdataBean getProjectdata(Connection conn, Integer rootid) throws SQLException
+	{
+		PreparedStatement st = null;
+		st = conn.prepareStatement("Select * from projectdata where rootid = ?");   
+		try
+		{	
+			st.setInt(1, rootid.intValue());
+
+			ResultSet rsi = st.executeQuery();	
+			
+			projectdataBean re = new projectdataBean();
+			if(rsi.first())
+			{
+				re.setRootID(rootid);	
+				re.setID(new Integer(rsi.getInt("id")));
+				re.setVersion(new Integer(rsi.getInt("version")));	
+				re.setUserUseradd(new Boolean(rsi.getBoolean("useruseradd")));	
+				re.setUserUrledit(new Boolean(rsi.getBoolean("userurledit")));	
+				re.setUserCatedit(new Boolean(rsi.getBoolean("usercatedit")));	
+				re.setUserAddurl(new Boolean(rsi.getBoolean("useraddurl")));	
+				re.setUserAddcat(new Boolean(rsi.getBoolean("useraddcat")));	
+				re.setGuestRead(new Boolean(rsi.getBoolean("guestread")));	
+				re.setGuestUrledit(new Boolean(rsi.getBoolean("guesturledit")));	
+				re.setGuestCatedit(new Boolean(rsi.getBoolean("guestcatedit")));	
+				re.setGuestAddurl(new Boolean(rsi.getBoolean("guestaddurl")));	
+				re.setGuestAddcat(new Boolean(rsi.getBoolean("guestaddcat")));	
+			}
+			
+			return(re);
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("getProjectdata: "+ e);
+			throw(e);
+		}
+
+
+	}
 
 
 }
