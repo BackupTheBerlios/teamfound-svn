@@ -3,14 +3,18 @@
  */
 package controller.teamfound;
 
-import controller.Controller;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
+import controller.DBAccessException;
+import controller.ServerInitFailedException;
+
+import controller.Controller;
 import controller.response.AddCategoriesResponse;
 import controller.response.AddPageResponse;
 import controller.response.GetCategoriesResponse;
 import controller.response.GetProjectsResponse;
 import controller.response.SearchResponse;
+import controller.response.NewUserResponse;
 
 public class TestController implements Controller {
 	public AddPageResponse addToIndex(String url, int category[])
@@ -47,5 +51,9 @@ public class TestController implements Controller {
     public boolean initServer()
 	{
 		return true;
+	}
+	public NewUserResponse newUser(String user, String pass) throws DBAccessException, ServerInitFailedException
+	{
+		return null;
 	}
 }

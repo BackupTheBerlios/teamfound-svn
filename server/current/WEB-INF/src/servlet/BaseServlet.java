@@ -1,5 +1,10 @@
 /*
  * Created on Mar 27, 2006
+ *
+ * extendet Milestone 3 13.9.06
+ *
+ * @author Jonas Heese
+ * @author Martin Klink
  */
 package servlet;
 
@@ -21,6 +26,8 @@ import org.jdom.output.XMLOutputter;
 import controller.Controller;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
+import controller.ServerInitFailedException;
+import controller.DBAccessException;
 import controller.response.ErrorResponse;
 import controller.response.Response;
 import controller.teamfound.TeamFoundController;
@@ -73,7 +80,10 @@ public abstract class BaseServlet extends HttpServlet {
 		commands.put("addcategory", new Integer(4));
 		commands.put("getprojects", new Integer(5));
 		
-		
+		/*------------------------------
+		 * Neue Kommandos Milestone3
+		 * -----------------------------*/
+		commands.put("register", new Integer(6));
 	}
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -115,7 +125,7 @@ public abstract class BaseServlet extends HttpServlet {
 	}
 		
 		
-	protected Response launchCommand(HttpServletRequest req) throws IndexAccessException, DownloadFailedException {
+	protected Response launchCommand(HttpServletRequest req) throws IndexAccessException, DownloadFailedException, ServerInitFailedException, DBAccessException {
 		Response r;
 		// parameter validieren
 		Map params = req.getParameterMap();
@@ -266,7 +276,26 @@ public abstract class BaseServlet extends HttpServlet {
 		case 5:
 			return ctrl.getProjects();
 			
+		case 6:
+			String user, pass;
+			if(!params.containsKey("user")) {
+				r = new ErrorResponse(null);
+				r.returnValue(2, "Need Parameter 'user'");
+				return r;
+			} else {
+				user = req.getParameter("user");
+			}			
+
+			if(!params.containsKey("pass")) {
+				r = new ErrorResponse(null);
+				r.returnValue(2, "Need Parameter 'pass'");
+				return r;
+			} else {
+				pass = req.getParameter("pass");
+			}			
 			
+			return ctrl.newUser(user, pass);
+
 			
 		}
 		

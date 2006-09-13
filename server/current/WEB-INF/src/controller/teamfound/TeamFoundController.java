@@ -20,12 +20,15 @@ import java.util.HashSet;
 import controller.Download;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
+import controller.DBAccessException;
+import controller.ServerInitFailedException;
 import controller.Controller;
 import controller.response.AddCategoriesResponse;
 import controller.response.AddPageResponse;
 import controller.response.GetCategoriesResponse;
 import controller.response.GetProjectsResponse;
 import controller.response.SearchResponse;
+import controller.response.NewUserResponse;
 
 import config.Config;
 import config.teamfound.TeamFoundConfig;
@@ -59,13 +62,14 @@ public class TeamFoundController implements Controller {
 	 * @param category[] die Kategorien in die die URL gehoert (eigentlich mindestens die root Kategorie des Projekts ... normalerweise 0
 	 * 
 	 */
-	public AddPageResponse addToIndex(String url, int category[]) throws DownloadFailedException, IndexAccessException {
+	public AddPageResponse addToIndex(String url, int category[]) throws DownloadFailedException, IndexAccessException, ServerInitFailedException {
 	
 		//TODO dies muss noch besser werden
 		if(!initServer())
 		{
-			IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
+			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
 			e.initCause(e);
+			throw(e);
 		}
 
 		URL adress = null;
@@ -265,17 +269,19 @@ public class TeamFoundController implements Controller {
 			return(cats);
 	}
 
-	public SearchResponse search(String query, int category[]) throws IndexAccessException 
+	public SearchResponse search(String query, int category[]) throws IndexAccessException, ServerInitFailedException
+
 	{
-		try
-		{
 //TODO dies muss noch besser werden
+		
 		if(!initServer())
 		{
-			IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
+			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
 			e.initCause(e);
+			throw(e);
 		}
-	
+		try
+		{
 	// 0. Datenbank nach Kategorienversionen durchsuchen
 			DBLayer db;
 			db = new DBLayerHSQL(conf);
@@ -314,15 +320,17 @@ public class TeamFoundController implements Controller {
 	}
 
 	
-	public SearchResponse search(String query, int offset, int category[]) throws IndexAccessException 
+	public SearchResponse search(String query, int offset, int category[]) throws IndexAccessException, ServerInitFailedException
+
 	{
 //TODO dies muss noch besser werden
+		
 		if(!initServer())
 		{
-			IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
+			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
 			e.initCause(e);
+			throw(e);
 		}
-		
 		try
 		{
 	// 0. Datenbank nach Kategorienversionen durchsuchen
@@ -362,15 +370,16 @@ public class TeamFoundController implements Controller {
 
 	}
 
-	public GetCategoriesResponse getCategories(int rootid) 
+	public GetCategoriesResponse getCategories(int rootid) throws ServerInitFailedException 
 	{
 	//TODO dies muss noch besser werden
+			
 		if(!initServer())
 		{
-			IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
+			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
 			e.initCause(e);
-		}	
-		
+			throw(e);
+		}
 		try
 		{
 		//0. DatenBAnk verbindung		
@@ -436,17 +445,16 @@ public class TeamFoundController implements Controller {
 		
 	}
 
-	public AddCategoriesResponse addCategory(String name, int parentCat, String description) 
+	public AddCategoriesResponse addCategory(String name, int parentCat, String description) throws ServerInitFailedException 
 	{
 		
 		//TODO dies muss noch besser werden
 		if(!initServer())
 		{
-			return null;
-			//IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
-			//e.initCause(e);
+			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
+			e.initCause(e);
+			throw(e);
 		}
-		
 		
 		try
 		{
@@ -486,17 +494,16 @@ public class TeamFoundController implements Controller {
 			
 	}
 	
-	public GetProjectsResponse getProjects()
+	public GetProjectsResponse getProjects() throws ServerInitFailedException
 	{
 
 //TODO dies muss noch besser werden
 		if(!initServer())
 		{
-			return null;
-			//IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
-			//e.initCause(e);
+			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
+			e.initCause(e);
+			throw(e);
 		}
-
 
 		try
 		{
@@ -580,6 +587,11 @@ public class TeamFoundController implements Controller {
 		}
 		
 	}
+
+	/*------------------------------------------
+	 *Neu Milestone 3
+	 *----------------------------------------*/
+	
 	/**
 	 * Eine Kategoie umbennen oder iher Description veraendern
 	 * 
@@ -588,15 +600,15 @@ public class TeamFoundController implements Controller {
 	 * @param description neue Desc, wenn description = null dann gleichlassen, wenn string der laenge 0 dann loeschen
 	 * 
 	 */
-	public void editCategory(int catid, String catname, String description) 
+	public void editCategory(int catid, String catname, String description) throws DBAccessException, ServerInitFailedException
 	{
 	//TODO dies muss noch besser werden
 		if(!initServer())
 		{
-			IndexAccessException e = new IndexAccessException("nested Exception Conf oder INdex oder Datenbank");
+			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
 			e.initCause(e);
-		}	
-		
+			throw(e);
+		}
 		try
 		{
 		//0. DatenBAnk verbindung		
@@ -631,5 +643,60 @@ public class TeamFoundController implements Controller {
 		}
 		
 	}
+	
+	
+	/**
+	 * Einen neuen User anlegen
+	 *
+	 * @param name Username
+	 * @param pass passwort
+	 */
+	public NewUserResponse newUser(String user, String pass) throws DBAccessException, ServerInitFailedException
+	{	
+	
+		if(!initServer())
+		{
+			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
+			e.initCause(e);
+			throw(e);
+		}
+		
+		try
+		{
+		//1. Establish connection
+			DBLayer db;
+			db = new DBLayerHSQL(conf);
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
+
+		//2. user in db adden
+			tfuserBean newuser = new tfuserBean();
+			newuser.setUsername(user);
+			newuser.setPass(pass);
+			
+			newuser = db.createNewUser(conn, newuser);
+		
+		//3.response liefern		
+			List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+			NewUserResponse	resp = new NewUserResponse(
+					vertup,
+					newuser.getUsername());
+			
+			conn.close();
+			return(resp);
+
+		}
+		catch(Exception e)
+		{
+ 			System.out.println("TeamFoundController : newuser)"+e);
+			DBAccessException dbe = new DBAccessException("NewUser SQLException");
+			dbe.initCause(dbe);
+			throw(dbe);
+
+		}
+
+
+
+	}
 }
