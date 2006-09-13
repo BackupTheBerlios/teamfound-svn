@@ -445,7 +445,7 @@ public class DBLayerHSQL implements DBLayer
 			
 			//returnbean fuellen
 			re.setID(identity);
-		    re.setRootID(identity);	
+		    re.setRootID(identity);
 			
 			//update von root_id
 			String upd = new String("UPDATE category SET root_id = " +identity+ " WHERE id =" +identity);

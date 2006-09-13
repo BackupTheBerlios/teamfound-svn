@@ -562,20 +562,47 @@ public class TeamFoundController implements Controller {
 			
 		//1. Konfiguration auslesen 
 			String tfpath = conf.getConfValue("tfpath");
-			String project = conf.getConfValue("project"); 
+			String project = conf.getConfValue("project");
 			String description = conf.getConfValue("description");
+			String adminname = conf.getConfValue("name");
+			String adminpass = conf.getConfValue("pass");
 			
 		//2. Index anlegen
 			Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
 			tfindexer.createIndex(tfpath);
 			
-		//2. DB initialiesieren
+		//3. DB initialiesieren
 			categoryBean catbean = new categoryBean(project);
 			catbean.setBeschreibung(description);
 			catbean = db.addRootCategory(conn, catbean);
-			//nur zum testen
-			//System.out.println("Id Project: "+ catbean.getID());
-		
+			
+			tfuserBean admin = new tfuserBean();
+			admin.setServeradmin(new Boolean(true));
+			admin.setUsername(adminname);
+			admin.setPass(adminpass);
+			admin = db.createNewUser(conn, admin);
+			db.addUserToAdminsOfProject(conn, admin.getID(), catbean.getRootID());
+			
+			projectdataBean pdata = new projectdataBean(catbean.getRootID(),
+														new Boolean(false),
+														new Boolean(false),
+														new Boolean(false),
+														new Boolean(true),
+														new Boolean(true),
+														new Boolean(true),
+														new Boolean(false),
+														new Boolean(false),
+														new Boolean(false),
+														new Boolean(false));
+			db.setProjectdata(conn, pdata);
+
+			//damit sich niemand als Gast registrieren kann
+			tfuserBean guest = new tfuserBean();
+			guest.setServeradmin(new Boolean(false));
+			guest.setUsername("guest");
+			guest.setPass("none");
+			guest = db.createNewUser(conn, guest);
+
 			conn.close();
 			return(true);
 		}

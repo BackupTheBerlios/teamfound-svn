@@ -17,6 +17,14 @@ tfpath = teamfoundDir
 
 #Bezeichnung und Beschreibung des Projekts oder teams oder der beliebigen 
 #Gruppe die diesen Teamfoundserver benutzt
+#
+# Initial Projekt and Description for the Server
 
 project = Ossi-Teamfound
 description = Ein Projekt der TU-Berlin. Ziel ist eine Team-Suchmaschiene.		 	
+
+# Der AdminUser fuer das Initiale Projekt.
+# Admin used for Initial Project. 
+name = Hans
+pass = ry12HI
+

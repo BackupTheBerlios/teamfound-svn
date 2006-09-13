@@ -52,6 +52,30 @@ public class projectdataBean implements Serializable
 		guestaddcat= _guestaddcat;
 
 	}
+	public projectdataBean(Integer r_id, Boolean _useruseradd, 
+		Boolean _userurledit,
+		Boolean _usercatedit,
+		Boolean _useraddurl,
+		Boolean _useraddcat,
+		Boolean _guestread,
+		Boolean _guesturledit,
+		Boolean _guestcatedit,
+		Boolean _guestaddurl,
+		Boolean _guestaddcat )
+	{
+		root_id=r_id;
+		useruseradd= _useruseradd;
+		userurledit= _userurledit;
+		usercatedit= _usercatedit;
+		useraddurl= _useraddurl;
+		useraddcat= _useraddcat;
+		guestread= _guestread;
+		guesturledit= _guestread;
+		guestcatedit= _guestcatedit;
+		guestaddurl= _guestaddurl;
+		guestaddcat= _guestaddcat;
+
+	}
 
 	public projectdataBean()
 	{};
