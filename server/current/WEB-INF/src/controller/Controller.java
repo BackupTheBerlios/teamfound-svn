@@ -13,7 +13,9 @@ import controller.response.GetCategoriesResponse;
 import controller.response.GetProjectsResponse;
 import controller.response.SearchResponse;
 import controller.response.NewUserResponse;
+import controller.response.LoginResponse;
 
+import java.util.Date;
 
 /**
  * Interface für einen Controller nach Milestone3-Spezifikation
@@ -74,5 +76,34 @@ public interface Controller {
 	 */
 	public NewUserResponse newUser(String user, String pass) throws DBAccessException, ServerInitFailedException;
 	
+	/**
+	 * Ueberpruefen ob User existiert und passwort stimmt
+	 *
+	 * @param name Username
+	 * @param pass passwort
+	 * @return boolean
+	 */
+	public boolean checkUser(String user, String pass) throws DBAccessException, ServerInitFailedException;
 	
+	/**
+	 * Antwort erstellen die Anmeldewunsch des Users zurueckweist!
+	 *
+	 * @param name Username
+	 * @return LoginResponse
+	 */
+	public LoginResponse rejectUser(String user) throws DBAccessException, ServerInitFailedException;
+	
+	/**
+	 * User einloggen
+	 *
+	 * @param String user
+	 * @param String pass 
+	 * @param String sessionkey
+	 * @param String last (time when accessed)
+	 * @return LoginResponse
+	 */
+	public LoginResponse loginUser(String user, String pass, String sessionkey,Date last) throws DBAccessException, ServerInitFailedException;
+	
+
+
 }

@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
 import java.util.List;
+import java.util.Date;
 
 import db.dbbeans.*;
 import tools.Tuple;
@@ -338,7 +339,7 @@ public interface DBLayer
 	 * @return tfuserBean des Users
 	 * @param sessionkey 
 	 */ 
-//	public tfuserBean getUserBySessionkey(Connection conn, Integer sessionkey) throws SQLException;
+	public tfuserBean getUserBySessionkey(Connection conn, String sessionkey) throws SQLException;
 
 	/**
 	 * Aktualisiere lastaction (setzt lastaction auf jetzige Zeit/Datum
@@ -347,12 +348,11 @@ public interface DBLayer
 	public void updateLastActionForUserID(Connection conn, Integer userid) throws SQLException;
 
 	/**
-	 * Erzeuge einen neuen Sessionkey fuer einen user und speichert diesen in die Datenbank
+	 * beim anlegen neuer Session anlegen 
+	 * Sessionkey, lastaccessed fuer einen user in die Datenbank
 	 * 
-	 * @return neuer sessionkey
-	 * @param userid
 	 */ 
-	//public String generateNewSessionkey(Connection conn, Integer userid) throws SQLException;
+	public void newSession(Connection conn,String user, String pass, String sessionkey, Date last) throws SQLException;
 
 	/**
 	 * Erzeuge einen neuen User

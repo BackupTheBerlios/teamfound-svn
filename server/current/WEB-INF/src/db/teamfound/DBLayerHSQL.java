@@ -26,6 +26,7 @@ import java.util.Vector;
 import java.util.List;
 import java.util.AbstractList;
 import java.util.LinkedList;
+import java.util.Date; 
 
 import config.Config;
 
@@ -147,6 +148,12 @@ public class DBLayerHSQL implements DBLayer
 			sqlcreate = "CREATE TABLE projectadmin (id INTEGER IDENTITY,userid INTEGER, rootid INTEGER, FOREIGN KEY (userid) REFERENCES tfuser(id), FOREIGN KEY (rootid) REFERENCES category(id))";
 			if(!update(c,sqlcreate))
 				System.out.println("error in Statement "+ sqlcreate);
+			
+			//create ForeignKeyTable User <-> Project
+			sqlcreate = "CREATE TABLE tfusertoproject (id INTEGER IDENTITY,userid INTEGER, rootid INTEGER,FOREIGN KEY (userid) REFERENCES tfuser(id), FOREIGN KEY (rootid) REFERENCES projectdata(rootid))";
+			if(!update(c,sqlcreate))
+				System.out.println("error in Statement "+ sqlcreate);
+
 
 			
 			//Grant rights to user
@@ -172,6 +179,10 @@ public class DBLayerHSQL implements DBLayer
 				System.out.println("error bei grant to User ");
 
 			cuser=("GRANT ALL ON projectadmin TO " +user);
+			if(!update(c,cuser))
+				System.out.println("error bei grant to User ");
+
+			cuser=("GRANT ALL ON tfusertoproject TO " +user);
 			if(!update(c,cuser))
 				System.out.println("error bei grant to User ");
 
@@ -1706,7 +1717,39 @@ public class DBLayerHSQL implements DBLayer
 	 * @return tfuserBean des Users
 	 * @param sessionkey 
 	 */ 
-//	public tfuserBean getUserBySessionkey(Connection conn, Integer sessionkey) throws SQLException;
+	public tfuserBean getUserBySessionkey(Connection conn, String sessionkey) throws SQLException
+	{
+		
+		PreparedStatement st = null;
+		st = conn.prepareStatement("Select * from tfuser where sessionkey = ?");   
+		try
+		{	
+			st.setString(1,sessionkey );
+
+			ResultSet rsi = st.executeQuery();	
+			
+			tfuserBean re = new tfuserBean();
+			
+			if(rsi.first())
+			{
+				re.setID(rsi.getInt("id"));
+				re.setUsername(rsi.getString("username"));
+				re.setPass(rsi.getString("pass"));
+				re.setSessionkey(rsi.getString("sessionkey"));
+				re.setServeradmin(rsi.getBoolean("serveradmin"));
+				re.setLastaction(rsi.getTimestamp("lastaction"));
+			}	
+			return(re);
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("getUserByID: "+ e);
+			throw(e);
+		}
+
+	}
 
 	/**
 	 * Aktualisiere lastaction (setzt lastaction auf jetzige Zeit/Datum
@@ -1739,11 +1782,36 @@ public class DBLayerHSQL implements DBLayer
 	}
 	
 	/**
-	 * Erzeuge einen neuen Sessionkey fuer einen user und speichert diesen in die Datenbank
-	 * @return neuer sessionkey
-	 * @param userid
+	 * beim anlegen neuer Session anlegen 
+	 * Sessionkey, lastaccessed fuer einen user in die Datenbank
+	 * 
 	 */ 
-	//public String generateNewSessionkey(Connection conn, Integer userid) throws SQLException;
+	public void newSession(Connection conn,String user, String pass, String sessionkey, Date last) throws SQLException
+	{
+		java.sql.Timestamp dat = new java.sql.Timestamp(last.getTime());
+		
+
+		PreparedStatement st = null;
+		st = conn.prepareStatement("UPDATE tfuser SET sessionkey = ?,lastaction = ? where username = ? and pass = ?");   
+		try
+		{
+			st.setString(1,sessionkey);
+			st.setTimestamp(2, dat);
+			st.setString(3, user);
+			st.setString(4, pass);
+
+			//ausfuehren der Updates 
+			st.executeUpdate();	
+			
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("updateLastActionForUserID: "+ e);
+			throw(e);
+		}
+	}
 
 	/**
 	 * Erzeuge einen neuen User

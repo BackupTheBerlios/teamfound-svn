@@ -16,6 +16,7 @@ import java.util.Vector;
 import java.util.List;
 import java.util.Iterator;
 import java.util.HashSet;
+import java.util.Date;
 
 import controller.Download;
 import controller.DownloadFailedException;
@@ -29,6 +30,7 @@ import controller.response.GetCategoriesResponse;
 import controller.response.GetProjectsResponse;
 import controller.response.SearchResponse;
 import controller.response.NewUserResponse;
+import controller.response.LoginResponse;
 
 import config.Config;
 import config.teamfound.TeamFoundConfig;
@@ -645,6 +647,7 @@ public class TeamFoundController implements Controller {
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
 		// TODO ueberpruefen ob clients Version vom Categorytree akatuell
+		// Rechte ueberpruefen?
 			
 		//1. Datenbank eintraege zur Kategorie aendern
 			// erstmal alte zustand auslesen			
@@ -743,8 +746,151 @@ public class TeamFoundController implements Controller {
 			throw(dbe);
 
 		}
+	}
+
+	/**
+	 * Ueberpruefen ob User existiert und passwort stimmt
+	 *
+	 * @param name Username
+	 * @param pass passwort
+	 * @return boolean
+	 */
+	public boolean checkUser(String user, String pass) throws DBAccessException, ServerInitFailedException
+	{	
+	
+		if(!initServer())
+		{
+			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
+			e.initCause(e);
+			throw(e);
+		}
+		
+		try
+		{
+		//1. Establish connection
+			DBLayer db;
+			db = new DBLayerHSQL(conf);
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
 
+		//2. in DB nachschauen
+			tfuserBean tf = db.getUserByName(conn,user);
+			if(tf != null)
+			{
+				if(pass == tf.getPass())
+				{
+					return(true);
+				}
+			}
+			
+			return false;
+		}
+		catch(Exception e)
+		{
+ 			System.out.println("TeamFoundController : checkuser)"+e);
+			DBAccessException dbe = new DBAccessException("checkUser SQLException");
+			dbe.initCause(dbe);
+			throw(dbe);
+
+		}
 
 	}
+
+	/**
+	 * Antwort erstellen die Anmeldewunsch des Users zurueckweist!
+	 *
+	 * @param name Username
+	 * @return LoginResponse
+	 */
+	public LoginResponse rejectUser(String user) throws DBAccessException, ServerInitFailedException
+	{	
+	
+		if(!initServer())
+		{
+			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
+			e.initCause(e);
+			throw(e);
+		}
+		
+		try
+		{
+		//1. Establish connection
+			DBLayer db;
+			db = new DBLayerHSQL(conf);
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+			List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+			conn.close();
+		//2. antwort erstellen
+
+			LoginResponse resp = new LoginResponse(
+					vertup,
+					user);
+			resp.tfReturnValue(new Integer(8));	
+			return(resp);
+
+		}
+		catch(Exception e)
+		{
+ 			System.out.println("TeamFoundController : rejectUser)"+e);
+			DBAccessException dbe = new DBAccessException("rejectUser SQLException");
+			dbe.initCause(dbe);
+			throw(dbe);
+
+		}
+	}
+
+	/**
+	 * User einloggen
+	 *
+	 * @param String user
+	 * @param String pass 
+	 * @param String sessionkey
+	 * @param String last (time when accessed)
+	 * @return LoginResponse
+	 */
+	public LoginResponse loginUser(String user, String pass, String sessionkey,Date last) throws DBAccessException, ServerInitFailedException
+	{	
+	
+		if(!initServer())
+		{
+			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
+			e.initCause(e);
+			throw(e);
+		}
+		
+		try
+		{
+		//1. Establish connection
+			DBLayer db;
+			db = new DBLayerHSQL(conf);
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+			List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+			conn.close();
+
+		//2.Session info speichern
+			db.newSession(conn, user, pass, sessionkey, last);
+
+		//3. antwort erstellen
+
+			LoginResponse resp = new LoginResponse(
+					vertup,
+					user);
+			return(resp);
+
+		}
+		catch(Exception e)
+		{
+ 			System.out.println("TeamFoundController : loginUser)"+e);
+			DBAccessException dbe = new DBAccessException("loginUser SQLException");
+			dbe.initCause(dbe);
+			throw(dbe);
+
+		}
+	}
+
 }

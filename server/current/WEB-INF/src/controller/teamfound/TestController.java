@@ -15,6 +15,9 @@ import controller.response.GetCategoriesResponse;
 import controller.response.GetProjectsResponse;
 import controller.response.SearchResponse;
 import controller.response.NewUserResponse;
+import controller.response.LoginResponse;
+
+import java.util.Date;
 
 public class TestController implements Controller {
 	public AddPageResponse addToIndex(String url, int category[])
@@ -56,4 +59,21 @@ public class TestController implements Controller {
 	{
 		return null;
 	}
+
+	public LoginResponse rejectUser(String user) throws DBAccessException, ServerInitFailedException
+	{
+		return null;
+	}
+	public boolean checkUser(String user, String pass) throws DBAccessException, ServerInitFailedException
+	{
+		return true;
+	}
+
+	public LoginResponse loginUser(String user, String pass, String sessionkey,Date last) throws DBAccessException, ServerInitFailedException
+	{
+		return null;
+	}
+
+
+
 }

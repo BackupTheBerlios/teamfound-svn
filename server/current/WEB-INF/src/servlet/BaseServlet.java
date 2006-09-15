@@ -12,11 +12,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -30,6 +32,7 @@ import controller.ServerInitFailedException;
 import controller.DBAccessException;
 import controller.response.ErrorResponse;
 import controller.response.Response;
+import controller.response.LoginResponse;
 import controller.teamfound.TeamFoundController;
 
 import java.util.Properties;
@@ -84,6 +87,7 @@ public abstract class BaseServlet extends HttpServlet {
 		 * Neue Kommandos Milestone3
 		 * -----------------------------*/
 		commands.put("register", new Integer(6));
+		commands.put("login", new Integer(7));
 	}
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -295,6 +299,51 @@ public abstract class BaseServlet extends HttpServlet {
 			}			
 			
 			return ctrl.newUser(user, pass);
+		
+		case 7:
+			String uniforgeuser;
+			if(!params.containsKey("user")) {
+				r = new ErrorResponse(null);
+				r.serverReturnValue(2, "Need Parameter 'user'");
+				return r;
+			} else {
+				user = req.getParameter("user");
+			}			
+
+			if(!params.containsKey("pass")) {
+				r = new ErrorResponse(null);
+				r.serverReturnValue(2, "Need Parameter 'pass'");
+				return r;
+			} else {
+				pass = req.getParameter("pass");
+			}
+			
+			if(!params.containsKey("uniforgeuser")) {
+				r = new ErrorResponse(null);
+				r.serverReturnValue(2, "Need Parameter 'uniforgeuser'");
+				return r;
+			} else {
+				uniforgeuser = req.getParameter("uniforgeuser");
+			}
+
+			if (uniforgeuser == "yes")
+			{
+				//TODO Abfrage Uniforge oder wie auch immer
+			}
+			if(ctrl.checkUser(user, pass)) //will nur eine Session anlegen wenn alles stimmt
+			{
+				//1. Session anlegen
+				HttpSession session  = req.getSession();
+				String sessionkey = session.getId();
+				Date last = new Date(session.getLastAccessedTime());
+				
+				//2. Response schicken
+				return ctrl.loginUser(user, pass, sessionkey, last);
+			}
+			else
+			{
+				return ctrl.rejectUser(user);
+			}
 
 			
 		}
