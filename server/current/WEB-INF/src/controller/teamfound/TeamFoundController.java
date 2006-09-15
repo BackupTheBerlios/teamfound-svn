@@ -696,16 +696,37 @@ public class TeamFoundController implements Controller {
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
+			List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 
 		//2. user in db adden
+			
+
 			tfuserBean newuser = new tfuserBean();
 			newuser.setUsername(user);
 			newuser.setPass(pass);
+
+			//Username zu kurz ?
+			if(user.length() < 4)
+			{
+				NewUserResponse re = new NewUserResponse(vertup, newuser.getUsername());
+				//7 ist ReturnCode fuer Username zu kurz
+				re.tfReturnValue(new Integer(7));
+				return(re);
+
+			}
 			
-			newuser = db.createNewUser(conn, newuser);
+			//Username schon vergeben ?
+			if(db.getUserByName(conn,newuser.getUsername()) != null)
+			{
+				NewUserResponse re = new NewUserResponse(vertup, newuser.getUsername());
+				//6 ist ReturnCode fuer User existiert (siehe spezifikation
+				re.tfReturnValue(new Integer(6));
+				return(re);
+			}
 		
+			newuser = db.createNewUser(conn, newuser);
+
 		//3.response liefern		
-			List<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 			NewUserResponse	resp = new NewUserResponse(
 					vertup,
 					newuser.getUsername());

@@ -1579,6 +1579,47 @@ public class DBLayerHSQL implements DBLayer
 	}
 	
 	/**
+	 * User by name
+	 * @return tfuserBean des Users
+	 * @param String name  des Users
+	 */ 
+	public tfuserBean getUserByName(Connection conn, String name) throws SQLException
+	{
+		PreparedStatement st = null;
+		st = conn.prepareStatement("Select * from tfuser where name = ?");   
+		try
+		{	
+			st.setString(1, name);
+
+			ResultSet rsi = st.executeQuery();	
+			
+			tfuserBean re = new tfuserBean();
+			
+			if(rsi.first())
+			{
+				re.setID(rsi.getInt("id"));
+				re.setUsername(rsi.getString("username"));
+				re.setPass(rsi.getString("pass"));
+				re.setSessionkey(rsi.getString("sessionkey"));
+				re.setServeradmin(rsi.getBoolean("serveradmin"));
+				re.setLastaction(rsi.getTimestamp("lastaction"));
+				return(re);
+			}	
+			else
+				return null;
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("getUserByName: "+ e);
+			throw(e);
+		}
+
+	}
+
+
+	/**
 	 * Liefert alle indizierten Dokumente, deren Indizierung
 	 * laenger her ist als das uebergebene Datum
 	 *

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.ProcessingInstruction;
-
+import controller.response.ReturnCodes;
 
 import tools.Tuple;
 
@@ -35,8 +35,12 @@ public abstract class Response {
 	protected Element server; // damit die subklassen direkt darauf zugreifen koennen
 	protected Element session; // damit die subklassen direkt darauf zugreifen koennen
 	
-	protected int returnStatus = 0;
-	protected String returnDescription;
+	protected Integer ServerStatus = new Integer(0);
+	protected Integer SessionStatus = new Integer(0);
+	protected Integer TFStatus = new Integer(0);
+	protected String ServerDescription = "OK";
+	protected String SessionDescription = "OK";
+	protected String TFDescription = "OK";
 	
 	protected List<Tuple<Integer, Integer>> pCounters;
 	
@@ -80,14 +84,28 @@ public abstract class Response {
 		Element interfaceVersion = new Element("interface-version");
 		interfaceVersion.addContent("3");
 		server.addContent(interfaceVersion);
+		
+		Element serverstatus = new Element("return-value");
+		serverstatus.addContent(ServerStatus.toString());
+		server.addContent(serverstatus);
+		
+		Element serverdesc = new Element("return-description");
+		serverdesc.addContent(ServerDescription);
+		server.addContent(serverdesc);
+
+
 
 		// TEAMFOUND-BLOCK
 				
 		// return-values
 		Element retValue = new Element("return-value");
-		retValue.addContent(Integer.toString(returnStatus));
+		retValue.addContent(TFStatus.toString());
 		teamfound.addContent(retValue);
 		
+		Element retDescr = new Element("return-description");
+		retDescr.addContent(TFDescription);
+		teamfound.addContent(retDescr);
+
 		// projectCounter
 		if(pCounters != null) {
 			Element pc = new Element("project-counter");
@@ -113,22 +131,22 @@ public abstract class Response {
 			}
 		}
 		
-		Element retDescr = new Element("return-description");
-		if(returnDescription == null) {
-			retDescr.addContent("OK");
-		} else {
-			retDescr.addContent(returnDescription);
-		}
-		teamfound.addContent(retDescr);
-		
+				
 		return doc;
 	}
 	
-	public void returnValue(int code, String description) {
-		returnStatus = code;
-		returnDescription = description;
+	public void serverReturnValue(Integer code, String desc) {
+		ServerStatus = code;
+		ServerDescription= desc; 
 	}
-	
+	public void sessionReturnValue(Integer code) {
+		SessionStatus = code;
+		SessionDescription= ReturnCodes.getDescription(code);
+	}
+	public void tfReturnValue(Integer code) {
+		TFStatus= code;
+		TFDescription= ReturnCodes.getDescription(code);
+	}
 	public abstract Document getXML();
 
 	public abstract String getHTML();

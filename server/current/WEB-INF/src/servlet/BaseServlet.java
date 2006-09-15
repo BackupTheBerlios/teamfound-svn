@@ -101,7 +101,7 @@ public abstract class BaseServlet extends HttpServlet {
 			resp = launchCommand(request);
 		} catch(Exception e) {
 			resp = new ErrorResponse(null);
-			resp.returnValue(-1, "Internal Error: "+e.getClass());
+			resp.serverReturnValue(-1, "Internal Error: "+e.getClass());
 			e.printStackTrace();
 		}
 
@@ -131,25 +131,25 @@ public abstract class BaseServlet extends HttpServlet {
 		Map params = req.getParameterMap();
 		if(!params.containsKey("want")) {
 			r = new ErrorResponse(null);
-			r.returnValue(2, "Need Parameter 'want'");
+			r.serverReturnValue(2, "Need Parameter 'want'");
 			return r;
 		}
 		
 		if(!params.containsKey("version")) {
 			r = new ErrorResponse(null);
-			r.returnValue(2, "Need Parameter 'version'");
+			r.serverReturnValue(2, "Need Parameter 'version'");
 			return r;
 		} else {
 			if(!req.getParameter("version").equals(interfaceversion)) {
 				r = new ErrorResponse(null);
-				r.returnValue(3, "Incompatible Interface Version");
+				r.serverReturnValue(3, "Incompatible Interface Version");
 				return r;
 			}
 		}
 		
 		if(!params.containsKey("command")) {
 			r = new ErrorResponse(null);
-			r.returnValue(2, "Need Parameter 'command'");
+			r.serverReturnValue(2, "Need Parameter 'command'");
 			return r;
 		}
 		
@@ -159,7 +159,7 @@ public abstract class BaseServlet extends HttpServlet {
 		// kommando existent?
 		if(!commands.containsKey(cmd)) {
 			r = new ErrorResponse(null);
-			r.returnValue(-1, "Command not found");
+			r.serverReturnValue(-1, "Command not found");
 			return r;
 		}
 		Integer i = commands.get(cmd);
@@ -171,7 +171,7 @@ public abstract class BaseServlet extends HttpServlet {
 			// suche, es müssen die parameter keyword und offset da sein
 			if(!params.containsKey("keyword")) {
 				r = new ErrorResponse(null);
-				r.returnValue(2, "Need Parameter 'keyword'");
+				r.serverReturnValue(2, "Need Parameter 'keyword'");
 				return r;
 			} else {
 				query = req.getParameter("keyword");
@@ -185,7 +185,7 @@ public abstract class BaseServlet extends HttpServlet {
 			String[] rawcat;
 			if(!params.containsKey("category")) {
 				r = new ErrorResponse(null);
-				r.returnValue(2, "Need Parameter 'category'");
+				r.serverReturnValue(2, "Need Parameter 'category'");
 				return r;		
 			} else {
 				rawcat = req.getParameterValues("category");
@@ -204,7 +204,7 @@ public abstract class BaseServlet extends HttpServlet {
 			// suche, es müssen die parameter category und url da sein
 			if(!params.containsKey("url")) {
 				r = new ErrorResponse(null);
-				r.returnValue(2, "Need Parameter 'url'");
+				r.serverReturnValue(2, "Need Parameter 'url'");
 				return r;
 			} else {
 				url = req.getParameter("url");
@@ -213,7 +213,7 @@ public abstract class BaseServlet extends HttpServlet {
 			String[] rawcat2;
 			if(!params.containsKey("category")) {
 				r = new ErrorResponse(null);
-				r.returnValue(2, "Need Parameter 'category'");
+				r.serverReturnValue(2, "Need Parameter 'category'");
 				return r;		
 			} else {
 				rawcat2 = req.getParameterValues("category");
@@ -233,7 +233,7 @@ public abstract class BaseServlet extends HttpServlet {
 			if(!params.containsKey("projectID")) 
 			{
 				//r = new ErrorResponse(null);
-				//r.returnValue(2, "Need Parameter 'projectID'");
+				//r.serverReturnValue(2, "Need Parameter 'projectID'");
 				//return r;
 				projectID=0;
 			} 
@@ -249,7 +249,7 @@ public abstract class BaseServlet extends HttpServlet {
 			// addCategories
 			if(!params.containsKey("name")) {
 				r = new ErrorResponse(null);
-				r.returnValue(2, "Need Parameter 'name'");
+				r.serverReturnValue(2, "Need Parameter 'name'");
 				return r;
 			} else {
 				name = req.getParameter("name");
@@ -257,7 +257,7 @@ public abstract class BaseServlet extends HttpServlet {
 
 			if(!params.containsKey("description")) {
 				r = new ErrorResponse(null);
-				r.returnValue(2, "Need Parameter 'description'");
+				r.serverReturnValue(2, "Need Parameter 'description'");
 				return r;
 			} else {
 				description = req.getParameter("description");
@@ -265,7 +265,7 @@ public abstract class BaseServlet extends HttpServlet {
 			
 			if(!params.containsKey("subcategoryof")) {
 				r = new ErrorResponse(null);
-				r.returnValue(2, "Need Parameter 'subcategoryof'");
+				r.serverReturnValue(2, "Need Parameter 'subcategoryof'");
 				return r;
 			} else {
 				parentID = Integer.parseInt(req.getParameter("subcategoryof"));
@@ -280,7 +280,7 @@ public abstract class BaseServlet extends HttpServlet {
 			String user, pass;
 			if(!params.containsKey("user")) {
 				r = new ErrorResponse(null);
-				r.returnValue(2, "Need Parameter 'user'");
+				r.serverReturnValue(2, "Need Parameter 'user'");
 				return r;
 			} else {
 				user = req.getParameter("user");
@@ -288,7 +288,7 @@ public abstract class BaseServlet extends HttpServlet {
 
 			if(!params.containsKey("pass")) {
 				r = new ErrorResponse(null);
-				r.returnValue(2, "Need Parameter 'pass'");
+				r.serverReturnValue(2, "Need Parameter 'pass'");
 				return r;
 			} else {
 				pass = req.getParameter("pass");
@@ -300,7 +300,7 @@ public abstract class BaseServlet extends HttpServlet {
 		}
 		
 		r = new ErrorResponse(null);
-		r.returnValue(-1, "Unknown command");
+		r.serverReturnValue(-1, "Unknown command");
 		return r;
 		
 	}

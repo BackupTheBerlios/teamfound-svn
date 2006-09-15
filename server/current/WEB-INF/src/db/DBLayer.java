@@ -325,6 +325,13 @@ public interface DBLayer
 	 * @param userid des Users
 	 */ 
 	public tfuserBean getUserByID(Connection conn, Integer userid) throws SQLException;
+	
+	/**
+	 * User by name
+	 * @return tfuserBean des Users
+	 * @param String name  des Users
+	 */ 
+	public tfuserBean getUserByName(Connection conn, String name) throws SQLException;
 
 	/**
 	 * User by Sessionkey
