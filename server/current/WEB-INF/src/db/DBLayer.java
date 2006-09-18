@@ -12,7 +12,7 @@ package db;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Date;
 
 import db.dbbeans.*;
@@ -282,7 +282,7 @@ public interface DBLayer
 	 * der erste int ist die ID der RootCAT der Zweite ist die Version des Baumes
 	 * 
 	 */
-	public List<Tuple<Integer,Integer>> getAllVersions(Connection conn) throws SQLException;
+	public HashSet<Tuple<Integer,Integer>> getAllVersions(Connection conn) throws SQLException;
 
 	/**
 	 * Liest alle WurzelKategorien aus.
@@ -362,7 +362,15 @@ public interface DBLayer
 	public tfuserBean createNewUser(Connection conn, tfuserBean tfuser) throws SQLException;
 
 	/**
-	 * Fuege einem Projekt einen neuen Admin hinzu
+	 * Einen Nutzer dem Projekt zuordnen
+	 * @param userid
+	 * @param rootid 
+	 */ 
+	public void addUserToProject(Connection conn, Integer userid, Integer rootid) throws SQLException;
+	
+	/**
+	 *
+	 * Gib einem Nutzer adminrechte fuer ein Projekt (vorausgesetzt er ist dem Project zugeordnet)
 	 * @param userid
 	 * @param rootid 
 	 */ 
@@ -381,6 +389,32 @@ public interface DBLayer
 	 * @return projectdataBean
 	 */ 
 	public projectdataBean getProjectdata(Connection conn, Integer rootid) throws SQLException;
+
+	/**
+	 * Sortiert alle Kategorien aus auf die kein ReadAccess besteht
+	 * sessionkey = null falls keine session besteht
+	 */ 
+	public int[] checkCatReadAccess(Connection conn, int[]category, Integer userid) throws SQLException;
+	
+	/**
+	 * Alle Rechte eines Users auslesen
+	 * Achtung : Admin und User werden in der UserRightBean getrennt behandelt
+	 * d.h. wenn man Admin ist, ist man nciht mehr als User gelistet
+	 *
+	 * @param userid
+	 * @return
+	 */
+	public userRightBean getRights(Connection conn, Integer userid) throws SQLException;
+
+	/**
+	 * projectdata zu einer Kategorie holen 
+	 * (nicht zu einem Project !)
+	 * @param catid
+	 * @return projectdataBean
+	 */
+	public projectdataBean getProjectDataToCat(Connection conn, Integer catid) throws SQLException;
+
+
 
 
 

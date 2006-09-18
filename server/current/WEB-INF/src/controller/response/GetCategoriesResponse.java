@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -23,7 +24,7 @@ public class GetCategoriesResponse extends Response {
 
 	private Integer rootID;
 	
-	public GetCategoriesResponse(List<Tuple<Integer,Integer>> projectCounters) {
+	public GetCategoriesResponse(HashSet<Tuple<Integer,Integer>> projectCounters) {
 		super(projectCounters);
 		categories = new HashMap<Integer, List<Tuple<Integer, Element>>>();
 	}

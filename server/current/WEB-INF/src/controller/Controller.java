@@ -40,7 +40,7 @@ public interface Controller {
 	 * @todo Das Ergebnis müsste genauer spezifiziert werden, siehe Interface SearchResult
 	 * @see controller.SearchResponse
 	 */
-	public SearchResponse search(String query, int offset, int category[]) throws IndexAccessException, ServerInitFailedException;
+	public SearchResponse search(String query, int offset, int category[], String sessionkey) throws IndexAccessException, ServerInitFailedException, DBAccessException;
 
 	public GetCategoriesResponse getCategories(int rootid) throws ServerInitFailedException;
 	

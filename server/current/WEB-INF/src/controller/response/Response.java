@@ -4,7 +4,7 @@
 package controller.response;
 
 import java.util.Iterator;
-import java.util.List;
+import java.util.HashSet;
 import java.util.HashMap;
 
 import org.jdom.Document;
@@ -42,9 +42,12 @@ public abstract class Response {
 	protected String SessionDescription = "OK";
 	protected String TFDescription = "OK";
 	
-	protected List<Tuple<Integer, Integer>> pCounters;
+	protected String username = "guest";
+	protected String sessionkey;
 	
-	public Response(List<Tuple<Integer,Integer>> projectCounters) {
+	protected HashSet<Tuple<Integer, Integer>> pCounters;
+	
+	public Response(HashSet<Tuple<Integer,Integer>> projectCounters) {
 		pCounters = projectCounters;
 	}
 	
@@ -130,7 +133,28 @@ public abstract class Response {
 				pc.addContent(project);
 			}
 		}
+
+		//SESSION BLOCK
+		Element sessvalue = new Element("return-value");
+		sessvalue.addContent(SessionStatus.toString());
+		session.addContent(sessvalue);
 		
+		Element sessDescr = new Element("return-description");
+		sessDescr.addContent(SessionDescription);
+		session.addContent(sessDescr);
+
+		Element uname = new Element("name");
+		name.addContent(username);
+		session.addContent(uname);
+	
+		if(sessionkey != null)
+		{
+			Element sesskey  = new Element("sessionkey");
+			sesskey.addContent(sessionkey);
+			session.addContent(sesskey);
+		}
+
+
 				
 		return doc;
 	}
@@ -147,6 +171,14 @@ public abstract class Response {
 		TFStatus= code;
 		TFDescription= ReturnCodes.getDescription(code);
 	}
+	public void setSessionUserName(String n) {
+		username = n;
+	}
+	public void setSessionKey(String s) {
+		sessionkey = s;
+	}
+
+
 	public abstract Document getXML();
 
 	public abstract String getHTML();

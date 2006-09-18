@@ -24,9 +24,11 @@ import java.sql.PreparedStatement;
 
 import java.util.Vector;
 import java.util.List;
+import java.util.HashSet;
 import java.util.AbstractList;
 import java.util.LinkedList;
 import java.util.Date; 
+import java.util.HashMap; 
 
 import config.Config;
 
@@ -143,14 +145,9 @@ public class DBLayerHSQL implements DBLayer
 			if(!update(c,sqlcreate))
 				System.out.println("error in Statement "+ sqlcreate);
 			
-		
-			//create Table Projectadmin
-			sqlcreate = "CREATE TABLE projectadmin (id INTEGER IDENTITY,userid INTEGER, rootid INTEGER, FOREIGN KEY (userid) REFERENCES tfuser(id), FOREIGN KEY (rootid) REFERENCES category(id))";
-			if(!update(c,sqlcreate))
-				System.out.println("error in Statement "+ sqlcreate);
 			
 			//create ForeignKeyTable User <-> Project
-			sqlcreate = "CREATE TABLE tfusertoproject (id INTEGER IDENTITY,userid INTEGER, rootid INTEGER,FOREIGN KEY (userid) REFERENCES tfuser(id), FOREIGN KEY (rootid) REFERENCES projectdata(rootid))";
+			sqlcreate = "CREATE TABLE tfusertoproject (id INTEGER IDENTITY,userid INTEGER, rootid INTEGER, isadmin BOOLEAN, FOREIGN KEY (userid) REFERENCES tfuser(id), FOREIGN KEY (rootid) REFERENCES projectdata(rootid))";
 			if(!update(c,sqlcreate))
 				System.out.println("error in Statement "+ sqlcreate);
 
@@ -175,10 +172,6 @@ public class DBLayerHSQL implements DBLayer
 				System.out.println("error bei grant to User ");
 
 			cuser=("GRANT ALL ON tfuser TO " +user);
-			if(!update(c,cuser))
-				System.out.println("error bei grant to User ");
-
-			cuser=("GRANT ALL ON projectadmin TO " +user);
 			if(!update(c,cuser))
 				System.out.println("error bei grant to User ");
 
@@ -1312,22 +1305,30 @@ public class DBLayerHSQL implements DBLayer
 	 * der erste int ist die ID der RootCAT der Zweite ist die Version des Baumes
 	 * 
 	 */
-	public List<Tuple<Integer,Integer>> getAllVersions(Connection conn) throws SQLException
+	public HashSet<Tuple<Integer,Integer>> getAllVersions(Connection conn) throws SQLException
 	{
-		Statement st = null;
-		st = conn.createStatement();    // erstelle statements
-		
+		PreparedStatement st = null;
+		st = conn.prepareStatement("SELECT rootid,version FROM projectdata WHERE guest-read = ?");    // erstelle statements
+		st.setBoolean(1,true);
 		try
 		{
-			String search = new String("SELECT rootid,version FROM projectdata");
-			ResultSet rsi = st.executeQuery(search);
+			ResultSet rsi = st.executeQuery();
+
 			Tuple<Integer,Integer> versiontuple;
-			List<Tuple<Integer,Integer>> versionlist = new LinkedList<Tuple<Integer,Integer>>();
+			HashSet<Tuple<Integer,Integer>> versionlist = new HashSet<Tuple<Integer,Integer>>();
 			if(rsi.next())
 			{
 				versiontuple = new Tuple<Integer,Integer>(rsi.getInt(1), rsi.getInt(2));
 				versionlist.add(versiontuple);
 			}
+		/*	
+			if(userid != null)
+			{
+				
+
+			}
+
+		*/
 			return(versionlist);
 									
 		}
@@ -1514,10 +1515,11 @@ public class DBLayerHSQL implements DBLayer
 	public Vector<projectadminBean> getAdminProjectsForUser(Connection conn, Integer userid) throws SQLException
 	{
 		PreparedStatement st = null;
-		st = conn.prepareStatement("Select * from projectadmin where userid = ?");   
+		st = conn.prepareStatement("Select * from projectadmin where userid = ? AND isadmin = ?");   
 		try
 		{	
 			st.setInt(1, userid.intValue());
+			st.setBoolean(2, true);
 
 			ResultSet rsi = st.executeQuery();	
 			
@@ -1713,7 +1715,7 @@ public class DBLayerHSQL implements DBLayer
 
 
 	/**
-	 * User by Sessionkey
+	 * User by Sessionkey (null if sessionkey is not found)
 	 * @return tfuserBean des Users
 	 * @param sessionkey 
 	 */ 
@@ -1738,8 +1740,10 @@ public class DBLayerHSQL implements DBLayer
 				re.setSessionkey(rsi.getString("sessionkey"));
 				re.setServeradmin(rsi.getBoolean("serveradmin"));
 				re.setLastaction(rsi.getTimestamp("lastaction"));
+				return(re);
 			}	
-			return(re);
+			else
+				return(null);
 			
 		}
 		catch(SQLException e)
@@ -1825,7 +1829,8 @@ public class DBLayerHSQL implements DBLayer
 		pst = conn.prepareStatement("INSERT INTO tfuser (username,pass,serveradmin) values (?,?,?)");   
 		Statement st = null;
 		st = conn.createStatement();
-
+				
+		conn.setSavepoint("createnewuser");
 		try
 		{	
 			pst.setString(1, tfuser.getUsername());
@@ -1862,39 +1867,20 @@ public class DBLayerHSQL implements DBLayer
 	}
 
 	/**
-	 * Fuege einem Projekt einen neuen Admin hinzu
+	 * Gib einem Nutzer adminrechte fuer ein Projekt
 	 * @param userid
 	 * @param rootid 
 	 */ 
 	public void addUserToAdminsOfProject(Connection conn, Integer userid, Integer rootid) throws SQLException
 	{
 		PreparedStatement pst = null;
-		pst = conn.prepareStatement("INSERT INTO projectadmin (userid,rootid) values (?,?)");   
-		PreparedStatement check = null;
-		check = conn.prepareStatement("SELECT COUNT(userid) FROM projectadmin WHERE userid = ? AND rootid = ?");
+		pst = conn.prepareStatement("UPDATE tfusertoproject SET isadmin = true WHERE userid = ? AND rootid = ?");   
 
 		try
 		{
 			//Values in statements
 			pst.setInt(1, userid.intValue());
 			pst.setInt(2, rootid.intValue());
-
-			check.setInt(1, userid.intValue());
-			check.setInt(2, rootid.intValue());
-			
-			//ueberpruefen ob der User schon admin ist
-			ResultSet rsi = check.executeQuery();	
-			if (rsi.first())
-			{
-							
-				if(rsi.getInt(1) > 0)
-				{
-					//der User ist schon Admin dieses Projekts
-					return;
-				}
-				
-			}
-			
 			//ausfuehren der Updates 
 			pst.executeUpdate();	
 			
@@ -1904,9 +1890,54 @@ public class DBLayerHSQL implements DBLayer
 		}
 		catch(SQLException e)
 		{
-			conn.rollback();
 			//TODO LoggMessage statt print
 			System.out.println("addUserToAdminsOfProject: "+ e);
+			throw(e);
+		}
+
+
+	}
+
+	/**
+	 * Einen Nutzer dem Projekt zuordnen
+	 * @param userid
+	 * @param rootid 
+	 */ 
+	public void addUserToProject(Connection conn, Integer userid, Integer rootid) throws SQLException
+	{
+		PreparedStatement check = null;
+		check = conn.prepareStatement("SELECT count(*) FROM tfusertoproject WHERE userid = ? AND rootid = ?");
+		check.setInt(1, userid.intValue());
+		check.setInt(2, rootid.intValue());
+
+
+		PreparedStatement pst = null;
+		pst = conn.prepareStatement("INSERT INTO tfusertoproject (userid,rootid,isadmin) VALUES(?,?,?)");   
+			pst.setInt(1, userid.intValue());
+			pst.setInt(2, rootid.intValue());
+			pst.setBoolean(3, false);
+
+		try
+		{
+			int count = 0;
+			ResultSet rsi = check.executeQuery();	
+			if(rsi.first())
+			{
+				count =	rsi.getInt(1);
+			}
+			if(count < 1)
+			{
+				pst.executeUpdate();
+			}
+			conn.commit();
+			return;
+			
+		}
+		catch(SQLException e)
+		{
+
+			//TODO LoggMessage statt print
+			System.out.println("addUserToProject: "+ e);
 			throw(e);
 		}
 
@@ -1998,6 +2029,187 @@ public class DBLayerHSQL implements DBLayer
 
 
 	}
+	/**
+	 * Alle Rechte eines Users auslesen
+	 * Achtung : Admin und User werden in der UserRightBean getrennt behandelt
+	 * d.h. wenn man Admin ist, ist man nciht mehr als User gelistet
+	 *
+	 * @param userid
+	 * @return
+	 */
+	public userRightBean getRights(Connection conn, Integer userid) throws SQLException
+	{
+		PreparedStatement stuser = null;
+		stuser = conn.prepareStatement("Select * from projectdata where rootid = (SELECT rootid FROM tfusertoproject WHERE userid = ? AND isadmin =?)");
+		stuser.setInt(1, userid.intValue());
+		stuser.setBoolean(2, false);
+
+		PreparedStatement stadmin = null;
+		stadmin = conn.prepareStatement("SELECT * FROM projectdata WHERE rootid = (SELECT rootid FROM tfusertoproject WHERE userid = ? AND isadmin =?)");
+		stadmin.setInt(1, userid.intValue());
+		stadmin.setBoolean(2, true);
+
+		try
+		{	
+			ResultSet rsi = stuser.executeQuery();	
+			
+			projectdataBean re = new projectdataBean();
+			HashMap<Integer,projectdataBean> pmap= new HashMap<Integer,projectdataBean>();
+			while(rsi.next())
+			{
+				re.setRootID(new Integer(rsi.getInt("rootid")));	
+				re.setID(new Integer(rsi.getInt("id")));
+				re.setVersion(new Integer(rsi.getInt("version")));	
+				re.setUserUseradd(new Boolean(rsi.getBoolean("useruseradd")));	
+				re.setUserUrledit(new Boolean(rsi.getBoolean("userurledit")));	
+				re.setUserCatedit(new Boolean(rsi.getBoolean("usercatedit")));	
+				re.setUserAddurl(new Boolean(rsi.getBoolean("useraddurl")));	
+				re.setUserAddcat(new Boolean(rsi.getBoolean("useraddcat")));	
+				re.setGuestRead(new Boolean(rsi.getBoolean("guestread")));	
+				re.setGuestUrledit(new Boolean(rsi.getBoolean("guesturledit")));	
+				re.setGuestCatedit(new Boolean(rsi.getBoolean("guestcatedit")));	
+				re.setGuestAddurl(new Boolean(rsi.getBoolean("guestaddurl")));	
+				re.setGuestAddcat(new Boolean(rsi.getBoolean("guestaddcat")));	
+				pmap.put(re.getRootID(),re);
+			}
+			
+			rsi = stadmin.executeQuery();
+			HashMap<Integer,projectdataBean> adminmap= new HashMap<Integer,projectdataBean>();
+			while(rsi.next())
+			{
+				re.setRootID(new Integer(rsi.getInt("rootid")));	
+				re.setID(new Integer(rsi.getInt("id")));
+				re.setVersion(new Integer(rsi.getInt("version")));	
+				re.setUserUseradd(new Boolean(rsi.getBoolean("useruseradd")));	
+				re.setUserUrledit(new Boolean(rsi.getBoolean("userurledit")));	
+				re.setUserCatedit(new Boolean(rsi.getBoolean("usercatedit")));	
+				re.setUserAddurl(new Boolean(rsi.getBoolean("useraddurl")));	
+				re.setUserAddcat(new Boolean(rsi.getBoolean("useraddcat")));	
+				re.setGuestRead(new Boolean(rsi.getBoolean("guestread")));	
+				re.setGuestUrledit(new Boolean(rsi.getBoolean("guesturledit")));	
+				re.setGuestCatedit(new Boolean(rsi.getBoolean("guestcatedit")));	
+				re.setGuestAddurl(new Boolean(rsi.getBoolean("guestaddurl")));	
+				re.setGuestAddcat(new Boolean(rsi.getBoolean("guestaddcat")));	
+				adminmap.put(re.getRootID(),re);
+			}
+			userRightBean rbean = new userRightBean(pmap,adminmap);
+			
+			return(rbean);
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("getRights: "+ e);
+			throw(e);
+		}
+
+
+
+	}
+
+	/**
+	 * projectdata zu einer Kategorie holen 
+	 * (nicht zu einem Project !)
+	 * @param catid
+	 * @return projectdataBean
+	 */
+	public projectdataBean getProjectDataToCat(Connection conn, Integer catid) throws SQLException
+	{
+		PreparedStatement st = null;
+		st = conn.prepareStatement("SELECT * FROM projectdata WHERE rootid = (SELECT root_id FROM category WHERE id = ?)");
+		st.setInt(1,catid.intValue());
+	try
+		{	
+
+			ResultSet rsi = st.executeQuery();	
+			
+			projectdataBean re = new projectdataBean();
+			if(rsi.first())
+			{
+				re.setRootID(new Integer(rsi.getInt("rootid")));	
+				re.setID(new Integer(rsi.getInt("id")));
+				re.setVersion(new Integer(rsi.getInt("version")));	
+				re.setUserUseradd(new Boolean(rsi.getBoolean("useruseradd")));	
+				re.setUserUrledit(new Boolean(rsi.getBoolean("userurledit")));	
+				re.setUserCatedit(new Boolean(rsi.getBoolean("usercatedit")));	
+				re.setUserAddurl(new Boolean(rsi.getBoolean("useraddurl")));	
+				re.setUserAddcat(new Boolean(rsi.getBoolean("useraddcat")));	
+				re.setGuestRead(new Boolean(rsi.getBoolean("guestread")));	
+				re.setGuestUrledit(new Boolean(rsi.getBoolean("guesturledit")));	
+				re.setGuestCatedit(new Boolean(rsi.getBoolean("guestcatedit")));	
+				re.setGuestAddurl(new Boolean(rsi.getBoolean("guestaddurl")));	
+				re.setGuestAddcat(new Boolean(rsi.getBoolean("guestaddcat")));	
+			}
+			
+			return(re);
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("getProjectdataToCat: "+ e);
+			throw(e);
+		}
+
+	}
+
+
+	/**
+	 * Sortiert alle Kategorien aus auf die kein ReadAccess besteht
+	 * userid = null -> er ist nur gast
+	 * liefert ein array mit den Elementen auf die ReadAccess besteht
+	 */
+	
+	public int[] checkCatReadAccess(Connection conn, int[] category, Integer userid) throws SQLException
+	{
+		try
+		{
+			userRightBean userright = null;
+			if(userid != null)
+				userright = getRights(conn, userid);
+
+
+			HashSet<Integer> setint = new HashSet<Integer>();
+			projectdataBean pbean;
+		
+			for(int i=0; i<category.length; i++)
+			{
+				//auf GuestRead pruefen
+				pbean = getProjectDataToCat(conn,category[i]);
+				if(pbean.getGuestRead().booleanValue())
+					setint.add(category[i]);
+
+				//auf User pruefen
+				if(userid != null)
+				{
+					categoryBean catbean = getCatByID(conn,category[i]);
+					Integer projectid = catbean.getRootID();
+					if(userright.isUser(projectid))
+						setint.add(category[i]);
+					if(userright.isAdmin(projectid))
+						setint.add(category[i]);
+				}
+			}	
+			Integer[] iarray = new Integer[setint.size()] ;
+			setint.toArray(iarray);
+			int[] returnarray = new int[iarray.length];
+			for(int i=0; i<iarray.length; i++)
+			{
+				returnarray[i] = iarray[i].intValue();
+			}
+			return(returnarray);	
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("checkCatReadAccess : "+ e);
+			throw(e);
+		}
+
+
+	}
+
 
 
 }

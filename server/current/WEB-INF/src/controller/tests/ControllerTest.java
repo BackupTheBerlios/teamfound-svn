@@ -89,17 +89,17 @@ public class ControllerTest {
 			System.out.println("\n\n");
 			System.out.println("-------Search Test--------");
 			cats[0] = 2;
-			try
-			{
-				SearchResponse r5 = ctrl.search("Black",0,cats);
-				printdoc(r5);
-				r5 = ctrl.search("Produkte",0,cats);
-				printdoc(r5);
-			}
-			catch (Exception e)
-			{
-				System.out.println(e);
-			}
+//			try
+//			{
+				//SearchResponse r5 = ctrl.search("Black",0,cats);
+				//printdoc(r5);
+				//r5 = ctrl.search("Produkte",0,cats);
+				//printdoc(r5);
+//			}
+//			catch (Exception e)
+//			{
+//				System.out.println(e);
+//			}
 		//	System.out.println("\n\n");
 		//	System.out.println("-------GetCategories Test--------");
 		//	r3 = ctrl.getCategories(0);

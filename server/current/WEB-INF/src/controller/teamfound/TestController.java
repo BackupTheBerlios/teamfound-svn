@@ -26,7 +26,7 @@ public class TestController implements Controller {
 		return r;
 	}
 
-	public SearchResponse search(String query, int offset, int category[])
+	public SearchResponse search(String query, int offset, int category[],String sessionkey)
 			throws IndexAccessException {
 		String[] keywords = {"hello"};
 		SearchResponse r = new SearchResponse(null, keywords);

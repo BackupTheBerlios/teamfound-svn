@@ -3,7 +3,7 @@
  */
 package controller.response;
 
-import java.util.List;
+import java.util.HashSet;
 
 import org.jdom.Document;
 
@@ -12,7 +12,7 @@ import tools.Tuple;
 
 public class ErrorResponse extends Response {
 
-	public ErrorResponse(List<Tuple<Integer, Integer>> projectCounters) {
+	public ErrorResponse(HashSet<Tuple<Integer, Integer>> projectCounters) {
 		super(projectCounters);
 	}
 

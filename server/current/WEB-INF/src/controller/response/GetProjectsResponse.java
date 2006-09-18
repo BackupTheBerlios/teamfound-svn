@@ -6,6 +6,7 @@ package controller.response;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.HashSet;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -16,7 +17,7 @@ public class GetProjectsResponse extends Response {
 
 	protected List<Element> projects;
 	
-	public GetProjectsResponse(List<Tuple<Integer,Integer>> projectCounters) {
+	public GetProjectsResponse(HashSet<Tuple<Integer,Integer>> projectCounters) {
 		super(projectCounters);
 		projects = new LinkedList<Element>();
 	}

@@ -11,15 +11,13 @@ import org.jdom.Element;
 import tools.Tuple;
 
 
-public class AddCategoriesResponse extends Response {
+public class NewUserResponse extends Response {
 	
-	protected String name;
-	protected Integer ID;
+	protected String username;
 	
-	public AddCategoriesResponse(HashSet<Tuple<Integer,Integer>> projectCounters, String name, Integer newID) {
+	public NewUserResponse(HashSet<Tuple<Integer,Integer>> projectCounters, String name ) {
 		super(projectCounters);
-		this.name = name;
-		this.ID = newID;
+		this.username = name;
 	}
 	
 	public Document getXML() {
@@ -27,16 +25,13 @@ public class AddCategoriesResponse extends Response {
 		//Element xmlroot = d.getRootElement();
 		
 		// unterbaum aufbauen
-		Element add = new Element("addcategory");
+		Element add = new Element("registeruser");
 		teamfound.addContent(add);
-		Element name = new Element("name");
+		Element name = new Element("user");
 		add.addContent(name);
-		Element gotid = new Element("gotid");
-		add.addContent(gotid);
 		
 		// inhalte hinzufügen
-		name.addContent(this.name);
-		gotid.addContent(ID.toString());
+		name.addContent(this.username);
 		
 		// fertig
 		return d;

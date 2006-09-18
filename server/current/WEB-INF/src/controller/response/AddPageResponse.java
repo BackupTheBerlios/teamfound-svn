@@ -3,7 +3,7 @@
  */
 package controller.response;
 
-import java.util.List;
+import java.util.HashSet;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -15,7 +15,7 @@ public class AddPageResponse extends Response {
 	
 	protected String url;
 	
-	public AddPageResponse(List<Tuple<Integer,Integer>> projectCounters, String url) {
+	public AddPageResponse(HashSet<Tuple<Integer,Integer>> projectCounters, String url) {
 		super(projectCounters);
 		this.url = url;
 	}

@@ -10,7 +10,7 @@ import org.jdom.Element;
 
 import tools.Tuple;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Vector;
 import java.util.Iterator;
 
@@ -28,7 +28,7 @@ public class SearchResponse extends Response {
 	
 	protected Element result;
 	
-	public SearchResponse(List<Tuple<Integer,Integer>> projectCounters, String[] keywords) {
+	public SearchResponse(HashSet<Tuple<Integer,Integer>> projectCounters, String[] keywords) {
 		super(projectCounters);
 		this.keywords = keywords;
 		
@@ -36,7 +36,7 @@ public class SearchResponse extends Response {
 		createResultElement();
 	}
 	
-	public SearchResponse(List<Tuple<Integer,Integer>> projectCounters, String[] keywords, int offset, int number) {
+	public SearchResponse(HashSet<Tuple<Integer,Integer>> projectCounters, String[] keywords, int offset, int number) {
 		super(projectCounters);
 		this.keywords = keywords;
 		this.offset = offset;

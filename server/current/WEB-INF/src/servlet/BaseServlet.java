@@ -167,7 +167,10 @@ public abstract class BaseServlet extends HttpServlet {
 			return r;
 		}
 		Integer i = commands.get(cmd);
-		
+	
+		//Session auslesen falls eine existiert
+		HttpSession session = req.getSession(false);
+
 		switch(i.intValue()) {
 		case 1:
 			String query;
@@ -198,7 +201,14 @@ public abstract class BaseServlet extends HttpServlet {
 				for(int h = 0; h < rawcat.length; h++) {
 					categories[h] = Integer.parseInt(rawcat[h]);
 				}
-				return ctrl.search(query, offset, categories);
+				if(session !=null)
+				{
+					return ctrl.search(query, offset, categories, session.getId());
+				}
+				else
+				{
+					return ctrl.search(query, offset, categories, null);
+				}
 			}			
 
 			
@@ -333,7 +343,7 @@ public abstract class BaseServlet extends HttpServlet {
 			if(ctrl.checkUser(user, pass)) //will nur eine Session anlegen wenn alles stimmt
 			{
 				//1. Session anlegen
-				HttpSession session  = req.getSession();
+				session  = req.getSession();
 				String sessionkey = session.getId();
 				Date last = new Date(session.getLastAccessedTime());
 				
