@@ -29,6 +29,7 @@ import java.util.AbstractList;
 import java.util.LinkedList;
 import java.util.Date; 
 import java.util.HashMap; 
+import java.util.Iterator; 
 
 import config.Config;
 
@@ -1321,14 +1322,38 @@ public class DBLayerHSQL implements DBLayer
 				versiontuple = new Tuple<Integer,Integer>(rsi.getInt(1), rsi.getInt(2));
 				versionlist.add(versiontuple);
 			}
-		/*	
+			//TODO hier soll mal richtig uebergeben werden
+			Integer userid = null;
 			if(userid != null)
 			{
-				
+				userRightBean ubean = getRights(conn,userid);
+				HashMap uproj = ubean.getUserProjects();
+				HashMap aproj = ubean.getAdminProjects();
+
+				java.util.Collection  projvec = uproj.values();
+				Iterator vecit = projvec.iterator();
+				projectdataBean db;
+				while(vecit.hasNext())
+				{
+					db = (projectdataBean)vecit.next();
+					versiontuple = new Tuple<Integer,Integer>(db.getRootID(),db.getVersion());
+					versionlist.add(versiontuple);
+
+				}
+
+				java.util.Collection  projcol = aproj.values();
+				Iterator colit = projcol.iterator();
+				while(colit.hasNext())
+				{
+					db = (projectdataBean)colit.next();
+					versiontuple = new Tuple<Integer,Integer>(db.getRootID(),db.getVersion());
+					versionlist.add(versiontuple);
+
+				}
 
 			}
 
-		*/
+		
 			return(versionlist);
 									
 		}

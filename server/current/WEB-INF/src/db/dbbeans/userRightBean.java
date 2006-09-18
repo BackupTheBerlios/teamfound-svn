@@ -26,7 +26,14 @@ public class userRightBean implements Serializable
 	
 	}
 
-	
+	public HashMap<Integer,projectdataBean> getUserProjects()
+	{
+		return userprojects;
+	}
+	public HashMap<Integer,projectdataBean> getAdminProjects()
+	{
+		return adminprojects;
+	}
 	public boolean isAdmin(Integer projectid)
 	{
 		return(adminprojects.containsKey(projectid));
