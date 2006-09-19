@@ -139,7 +139,6 @@ public class DBLayerHSQL implements DBLayer
 
 			//Project-Daten
 			//nicht jede Category sondern nur jede root Cat braucht eine Version
-			//sqlcreate = "CREATE TABLE projectdata(id INTEGER IDENTITY,rootid INTEGER,version INTEGER, useruseradd BOOLEAN, userurledit BOOLEAN, usercatedit BOOLEAN, useraddurl BOOLEAN, useraddcat BOOLEAN, guestread BOOLEAN, guesturledit BOOLEAN, guestcatedit BOOLEAN, guestaddurl BOOLEAN, guestaddcat BOOLEAN,FOREIGN KEY (rootid) REFERENCES category(root_id))";
 			sqlcreate = "CREATE TABLE projectdata(id INTEGER IDENTITY,rootid INTEGER,version INTEGER, useruseradd BOOLEAN, userurledit BOOLEAN, usercatedit BOOLEAN, useraddurl BOOLEAN, useraddcat BOOLEAN, guestread BOOLEAN, guesturledit BOOLEAN, guestcatedit BOOLEAN, guestaddurl BOOLEAN, guestaddcat BOOLEAN)";//,FOREIGN KEY (rootid) REFERENCES category(root_id))";
 
 			if(!update(c,sqlcreate))

@@ -337,7 +337,19 @@ public class TeamFoundController implements Controller {
 				// root-cat der cat auslesen
 				categoryBean cb = db.getCatByID(conn, category[i]);
 
-				if( !tfsession.urb.isUser(cb.getRootID()) && !tfsession.urb.isAdmin(cb.getRootID()))
+				if( cb == null)
+				{	// category not found
+					resp.tfReturnValue(new Integer(5));
+					return(resp);
+				}
+				if( SessionData.projectdata == null)
+				{
+					System.out.println("NO PROJECTDATA");
+					resp.tfReturnValue(new Integer(-1));
+					return(resp);
+				}
+
+				if( tfsession == null || (!tfsession.urb.isUser(cb.getRootID()) && !tfsession.urb.isAdmin(cb.getRootID())))
 				{
 					// GAST
 					if( SessionData.projectdata.get(cb.getRootID()).getGuestRead().booleanValue() == false)
@@ -373,6 +385,8 @@ public class TeamFoundController implements Controller {
 		{
 			//TODO Exceptions richtig machen
  			System.out.println("TeamFoundController : search)"+e);
+			System.out.println("INDEX FEHLER");
+			e.printStackTrace();
             IndexAccessException a = new IndexAccessException("nested Exception");
 			a.initCause(e);
 			throw a;
