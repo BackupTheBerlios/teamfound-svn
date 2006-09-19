@@ -144,7 +144,7 @@ public abstract class Response {
 		session.addContent(sessDescr);
 
 		Element uname = new Element("name");
-		name.addContent(username);
+		uname.addContent(username);
 		session.addContent(uname);
 	
 		if(sessionkey != null)
