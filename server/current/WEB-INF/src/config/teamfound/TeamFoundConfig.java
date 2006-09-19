@@ -16,20 +16,17 @@ import java.util.Properties;
 import java.io.IOException;
 import java.io.FileInputStream;
 
-public class TeamFoundConfig implements Config
+public class TeamFoundConfig 
 {
-	protected Properties tfprops;
-	
+	protected static Properties tfprops;
+
 	/**
 	 * liest die Konfiguration aus dem file
 	 */
-	public TeamFoundConfig(Properties p)
+	public static void  initstatic(Properties p)
 	{
-		
 		tfprops = p;
-		
 	}
-
 
 	/**
 	 * Konfigurationsfile auslesen und Value zu Key liefern
@@ -37,7 +34,7 @@ public class TeamFoundConfig implements Config
 	 * @param name Name des Schluessels bsp. "pfad" fuer den dateipfad 
 	 *
 	 */ 
-	public String getConfValue(String name)
+	public static String getConfValue(String name)
 	{
 		return(tfprops.getProperty(name));
 	}

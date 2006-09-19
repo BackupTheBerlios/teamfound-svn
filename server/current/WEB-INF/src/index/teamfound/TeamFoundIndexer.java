@@ -13,9 +13,7 @@ import index.Indexer;
 import index.NewIndexEntry;
 import index.teamfound.TeamFoundAnalyzer;
 
-
-import config.Config;
-
+import config.teamfound.TeamFoundConfig;
 import sync.*;
 
 import org.apache.lucene.index.IndexWriter;
@@ -47,12 +45,10 @@ import org.apache.lucene.index.TermDocs;
 public class TeamFoundIndexer implements Indexer {
 
 	//der Indexer braucht zugang zur Konfiguration damit er den Index findet
-	private Config tfconfig;
 	private ReadWriteSync indexsync; 
 	
-	public TeamFoundIndexer(Config c, ReadWriteSync s )
+	public TeamFoundIndexer(ReadWriteSync s )
 	{
-		tfconfig = c;
 		indexsync = s;
 	}
 	
@@ -89,7 +85,7 @@ public class TeamFoundIndexer implements Indexer {
 	public void addUrl(Document doc) throws IndexAccessException
 	{
 		//teamfound BasePfad erfragen und indexPfad bauen 
-		String path = tfconfig.getConfValue("tfpath");
+		String path = TeamFoundConfig.getConfValue("tfpath");
 		String indexpath = (path+"/index");
 		
 		try
@@ -144,7 +140,7 @@ public class TeamFoundIndexer implements Indexer {
 	public void addUrl(NewIndexEntry entry, URL adress) throws IndexAccessException
 	{
 		//teamfound BasePfad erfragen und indexPfad bauen 
-		String path = tfconfig.getConfValue("tfpath");
+		String path = TeamFoundConfig.getConfValue("tfpath");
 		String indexpath = (path+"/index");
 		
 		try
@@ -202,7 +198,7 @@ public class TeamFoundIndexer implements Indexer {
 	public Vector<Document> query(String query, int[] categorys, int count , int offset ) throws IndexAccessException
 	{
  		
-		String path = tfconfig.getConfValue("tfpath");
+		String path = TeamFoundConfig.getConfValue("tfpath");
 		String indexpath = (path+"/index");		
 		try
 		{
@@ -352,7 +348,7 @@ public class TeamFoundIndexer implements Indexer {
 	public Document delDoc(String url) throws IndexAccessException
 	{
 		//teamfound BasePfad erfragen und indexPfad bauen 
-		String path = tfconfig.getConfValue("tfpath");
+		String path = TeamFoundConfig.getConfValue("tfpath");
 		String indexpath = (path+"/index");
 		
 		try

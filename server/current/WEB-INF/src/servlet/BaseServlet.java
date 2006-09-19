@@ -36,7 +36,6 @@ import controller.response.LoginResponse;
 import controller.teamfound.TeamFoundController;
 
 import java.util.Properties;
-import config.Config;
 import config.teamfound.TeamFoundConfig;
 import java.io.InputStream;
 
@@ -48,7 +47,6 @@ public abstract class BaseServlet extends HttpServlet {
 	protected Controller ctrl;
 	protected XMLOutputter xmlout;
 	protected Map<String, Integer> commands;
-	protected config.teamfound.TeamFoundConfig conf;	
 
 	private String xsltpassthrough;//TODO muss woanders hin soll immer genau fuer eine Anfrage gueltig sein also als sessionvariabel speichern
 
@@ -62,9 +60,8 @@ public abstract class BaseServlet extends HttpServlet {
 			Properties tfprops  = new Properties();
 			tfprops.load(is);
 			is.close();
-			conf = new TeamFoundConfig(tfprops);
-			
-			ctrl = new TeamFoundController(conf);
+			TeamFoundConfig.initstatic(tfprops);
+			ctrl = new TeamFoundController();
 		}
 		catch (Exception e) 
 		{

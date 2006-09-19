@@ -6,6 +6,7 @@ package config.tests;
 
 import config.*;
 import config.teamfound.*;
+import config.teamfound.TeamFoundConfig;
 
 public class ConfigTest
 {
@@ -20,9 +21,9 @@ public class ConfigTest
 			java.util.Properties props = new java.util.Properties();
 
 			props.load(pin);
-		
-			Config tfc = new TeamFoundConfig(props);
-			System.out.println(tfc.getConfValue("tfpath"));
+	
+			TeamFoundConfig.initstatic(props);
+			System.out.println(TeamFoundConfig.getConfValue("tfpath"));
 		
 		}
 		catch(Exception ex)

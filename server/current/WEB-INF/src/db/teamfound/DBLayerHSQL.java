@@ -30,17 +30,14 @@ import java.util.LinkedList;
 import java.util.Date; 
 import java.util.HashMap; 
 import java.util.Iterator; 
-
-import config.Config;
+import config.teamfound.TeamFoundConfig;
 
 public class DBLayerHSQL implements DBLayer
 {
 
-	private Config tfconfig;
 	
-	public DBLayerHSQL(Config c)
+	public DBLayerHSQL()
 	{
-		tfconfig = c;
 	}
 	
 	/** 
@@ -61,7 +58,7 @@ public class DBLayerHSQL implements DBLayer
 		// Zurzeit wuerde die Datenbank(name im String database) unter
 		// xxxx/db/ landen (xxxx stammt aus properties file)
 		// Vorschlag ein teamfound folder fuer index und db ..
-		String dblocation = new String("jdbc:hsqldb:file:"+tfconfig.getConfValue("tfpath")+"/db/"+database+";ifexists=true");
+		String dblocation = new String("jdbc:hsqldb:file:"+TeamFoundConfig.getConfValue("tfpath")+"/db/"+database+";ifexists=true");
 	
 		
 		//get JDBC Driver
@@ -96,7 +93,7 @@ public class DBLayerHSQL implements DBLayer
 				java.lang.IllegalAccessException,
 				java.sql.SQLException
 	{
-		String dblocation = new String("jdbc:hsqldb:file:"+tfconfig.getConfValue("tfpath")+"/db/"+database);
+		String dblocation = new String("jdbc:hsqldb:file:"+TeamFoundConfig.getConfValue("tfpath")+"/db/"+database);
 	
 		
 		//get JDBC Driver

@@ -33,7 +33,6 @@ import controller.response.SearchResponse;
 import controller.response.NewUserResponse;
 import controller.response.LoginResponse;
 
-import config.Config;
 import config.teamfound.TeamFoundConfig;
 
 import db.teamfound.DBLayerHSQL;
@@ -50,11 +49,9 @@ public class TeamFoundController implements Controller {
 
 	Download loader = new Download();
 	public ReadWriteSync indexSync;
-	public Config conf;
 	
-	public TeamFoundController(Config c) 
+	public TeamFoundController() 
 	{
-		conf = c;
 		indexSync = new ReadWriteSync();
 	}
 	
@@ -99,11 +96,11 @@ public class TeamFoundController implements Controller {
 		
 		//DBVerbindung fuer die Funktion erstellen
 		 DBLayer db;
-		 db = new DBLayerHSQL(conf);
+		 db = new DBLayerHSQL();
 		 Connection conn;
 		
 		//Indexer erstellen
-		Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
+		Indexer tfindexer = new TeamFoundIndexer(indexSync);
 		
 		try
 		{
@@ -287,7 +284,7 @@ public class TeamFoundController implements Controller {
 		{
 	// 0. Datenbank nach Kategorienversionen durchsuchen
 			DBLayer db;
-			db = new DBLayerHSQL(conf);
+			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -295,7 +292,7 @@ public class TeamFoundController implements Controller {
 		
 	// 1. Im Index Suchen
 		
-			Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
+			Indexer tfindexer = new TeamFoundIndexer(indexSync);
 			//TODO -> hart den count auf 30 und den Offset auf 0 ??
 			Vector<Document> docvec = tfindexer.query(query, category , 50, 0 ); 
 	
@@ -339,7 +336,7 @@ public class TeamFoundController implements Controller {
 	// 0. Datenbank nach Kategorienversionen durchsuchen
 		
 			DBLayer db;
-			db = new DBLayerHSQL(conf);
+			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -361,7 +358,7 @@ public class TeamFoundController implements Controller {
 		
 	// 1. Im Index Suchen
 		
-			Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
+			Indexer tfindexer = new TeamFoundIndexer(indexSync);
 			//TODO -> hart den count auf 30 ?
 			Vector<Document> docvec = tfindexer.query(query, cat , 50, offset ); 
 	
@@ -408,7 +405,7 @@ public class TeamFoundController implements Controller {
 		{
 		//0. DatenBAnk verbindung		
 			DBLayer db;
-			db = new DBLayerHSQL(conf);
+			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -484,7 +481,7 @@ public class TeamFoundController implements Controller {
 		{
 		//1. Versionen der KategorieBaeume aus db
 			DBLayer db;
-			db = new DBLayerHSQL(conf);
+			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -533,7 +530,7 @@ public class TeamFoundController implements Controller {
 		{
 		//1. Versionen der KategorieBaeume und alle RootCats() aus der Datenbank holen
 			DBLayer db;
-			db = new DBLayerHSQL(conf);
+			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -577,7 +574,7 @@ public class TeamFoundController implements Controller {
 		
 		//0. kucken ob schon was existiert
 			DBLayer db;
-			db = new DBLayerHSQL(conf);
+			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 			if(db.initialized(conn))
@@ -585,14 +582,14 @@ public class TeamFoundController implements Controller {
 
 			
 		//1. Konfiguration auslesen 
-			String tfpath = conf.getConfValue("tfpath");
-			String project = conf.getConfValue("project");
-			String description = conf.getConfValue("description");
-			String adminname = conf.getConfValue("name");
-			String adminpass = conf.getConfValue("pass");
+			String tfpath = TeamFoundConfig.getConfValue("tfpath");
+			String project = TeamFoundConfig.getConfValue("project");
+			String description = TeamFoundConfig.getConfValue("description");
+			String adminname = TeamFoundConfig.getConfValue("name");
+			String adminpass = TeamFoundConfig.getConfValue("pass");
 			
 		//2. Index anlegen
-			Indexer tfindexer = new TeamFoundIndexer(conf,indexSync);
+			Indexer tfindexer = new TeamFoundIndexer(indexSync);
 			tfindexer.createIndex(tfpath);
 			
 		//3. DB initialiesieren
@@ -664,7 +661,7 @@ public class TeamFoundController implements Controller {
 		{
 		//0. DatenBAnk verbindung		
 			DBLayer db;
-			db = new DBLayerHSQL(conf);
+			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -717,7 +714,7 @@ public class TeamFoundController implements Controller {
 		{
 		//1. Establish connection
 			DBLayer db;
-			db = new DBLayerHSQL(conf);
+			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -791,7 +788,7 @@ public class TeamFoundController implements Controller {
 		{
 		//1. Establish connection
 			DBLayer db;
-			db = new DBLayerHSQL(conf);
+			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -839,7 +836,7 @@ public class TeamFoundController implements Controller {
 		{
 		//1. Establish connection
 			DBLayer db;
-			db = new DBLayerHSQL(conf);
+			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -888,7 +885,7 @@ public class TeamFoundController implements Controller {
 		{
 		//1. Establish connection
 			DBLayer db;
-			db = new DBLayerHSQL(conf);
+			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 

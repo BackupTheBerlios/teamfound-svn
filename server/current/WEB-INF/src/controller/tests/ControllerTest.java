@@ -10,6 +10,7 @@ import org.jdom.output.XMLOutputter;
 import controller.response.*;
 import controller.teamfound.*;
 import controller.*;
+import config.teamfound.TeamFoundConfig;
 
 public class ControllerTest {
 	public static void main(String[] args) 
@@ -27,9 +28,9 @@ public class ControllerTest {
 
 			props.load(pin);
 		
-			config.Config tfc = new config.teamfound.TeamFoundConfig(props);
+			TeamFoundConfig.initstatic(props);
 		
-			Controller ctrl = new TeamFoundController(tfc);
+			Controller ctrl = new TeamFoundController();
 		
 			
 			System.out.println("Server initializieren!");

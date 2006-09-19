@@ -54,14 +54,14 @@ public class IndexerTest
 
 			props.load(pin);
 		
-			Config tfc = new TeamFoundConfig(props);
-			System.out.println(tfc.getConfValue("tfpath"));
+			TeamFoundConfig.initstatic(props);
+			System.out.println(TeamFoundConfig.getConfValue("tfpath"));
 		
 
 			//Indexer anlegen
 			System.out.println("Index anlegen:");
 			sync.ReadWriteSync s = new sync.ReadWriteSync();
-			TeamFoundIndexer tfindexer = new TeamFoundIndexer(tfc,s);
+			TeamFoundIndexer tfindexer = new TeamFoundIndexer(s);
 			
 		
 			//Index anlegen

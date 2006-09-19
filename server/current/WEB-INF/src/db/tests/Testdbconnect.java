@@ -21,13 +21,13 @@ public class Testdbconnect
 
 			props.load(pin);
 		
-			Config tfc = new TeamFoundConfig(props);
+			TeamFoundConfig.initstatic(props);
 		
 		
 		
 			DBLayer db;
-			db = new DBLayerHSQL(tfc);
-			DBLayer db2 = new DBLayerHSQL(tfc);
+			db = new DBLayerHSQL();
+			DBLayer db2 = new DBLayerHSQL();
 
 			Connection conn;
 			Connection conn2;
