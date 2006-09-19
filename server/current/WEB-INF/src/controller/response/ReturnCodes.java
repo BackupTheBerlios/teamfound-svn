@@ -26,8 +26,9 @@ public class ReturnCodes
 			case 6:return("Username exists");
 			case 7:return("Username to short");
 			case 8:return("Login failed");
+			case 9:return("Not authorized!");
 
-			default :return("Some weird Error");
+			default :return("Some wierd Error");
 		}
 
 	}

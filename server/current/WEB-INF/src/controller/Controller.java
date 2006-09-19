@@ -14,6 +14,7 @@ import controller.response.GetProjectsResponse;
 import controller.response.SearchResponse;
 import controller.response.NewUserResponse;
 import controller.response.LoginResponse;
+import controller.SessionData;
 
 import java.util.Date;
 
@@ -40,7 +41,7 @@ public interface Controller {
 	 * @todo Das Ergebnis müsste genauer spezifiziert werden, siehe Interface SearchResult
 	 * @see controller.SearchResponse
 	 */
-	public SearchResponse search(String query, int offset, int category[], String sessionkey) throws IndexAccessException, ServerInitFailedException, DBAccessException;
+	public SearchResponse search(String query, int offset, int category[],SessionData tfsession) throws IndexAccessException, ServerInitFailedException, DBAccessException;
 
 	public GetCategoriesResponse getCategories(int rootid) throws ServerInitFailedException;
 	

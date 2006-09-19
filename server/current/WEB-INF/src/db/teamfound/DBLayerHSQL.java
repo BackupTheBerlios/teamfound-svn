@@ -2233,5 +2233,50 @@ public class DBLayerHSQL implements DBLayer
 	}
 
 
+	public java.util.concurrent.ConcurrentHashMap<Integer, projectdataBean> getAllProjectData(Connection conn) throws SQLException
+	{
+		java.util.concurrent.ConcurrentHashMap<Integer, projectdataBean> retmap = new java.util.concurrent.ConcurrentHashMap<Integer, projectdataBean>();
+		PreparedStatement st = null;
+		st = conn.prepareStatement("SELECT * FROM projectdata");
+		try
+		{	
+
+			ResultSet rsi = st.executeQuery();	
+			
+			projectdataBean re = new projectdataBean();
+			while(rsi.next())
+			{
+				re.setRootID(new Integer(rsi.getInt("rootid")));	
+				re.setID(new Integer(rsi.getInt("id")));
+				re.setVersion(new Integer(rsi.getInt("version")));	
+				re.setUserUseradd(new Boolean(rsi.getBoolean("useruseradd")));	
+				re.setUserUrledit(new Boolean(rsi.getBoolean("userurledit")));	
+				re.setUserCatedit(new Boolean(rsi.getBoolean("usercatedit")));	
+				re.setUserAddurl(new Boolean(rsi.getBoolean("useraddurl")));	
+				re.setUserAddcat(new Boolean(rsi.getBoolean("useraddcat")));	
+				re.setGuestRead(new Boolean(rsi.getBoolean("guestread")));	
+				re.setGuestUrledit(new Boolean(rsi.getBoolean("guesturledit")));	
+				re.setGuestCatedit(new Boolean(rsi.getBoolean("guestcatedit")));	
+				re.setGuestAddurl(new Boolean(rsi.getBoolean("guestaddurl")));	
+				re.setGuestAddcat(new Boolean(rsi.getBoolean("guestaddcat")));	
+
+				retmap.put(re.getRootID(),re);
+			}
+			
+			return(retmap);
+			
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("getProjectdataToCat: "+ e);
+			throw(e);
+		}
+
+
+
+
+	}
+
 
 }

@@ -32,6 +32,7 @@ import controller.response.GetProjectsResponse;
 import controller.response.SearchResponse;
 import controller.response.NewUserResponse;
 import controller.response.LoginResponse;
+import controller.SessionData;
 
 import config.teamfound.TeamFoundConfig;
 
@@ -53,8 +54,25 @@ public class TeamFoundController implements Controller {
 	public TeamFoundController() 
 	{
 		indexSync = new ReadWriteSync();
+		if(initServer()) //TODO Logg falls nciht
+		{	
+			try{
+				// 0. Datenbank nach Kategorienversionen durchsuchen
+				DBLayer db;
+				db = new DBLayerHSQL();
+				Connection conn;
+				conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+				SessionData.projectdata = db.getAllProjectData(conn);
+
+			}catch(Exception e)
+			{
+				//Todo logg
+				System.out.println(e);
+			}
+		}
 	}
-	
+
+
 	/**
 	 * Eine URL zum Index hinzufügen
 	 * 
@@ -64,59 +82,38 @@ public class TeamFoundController implements Controller {
 	 */
 	public AddPageResponse addToIndex(String url, int category[]) throws DownloadFailedException, IndexAccessException, ServerInitFailedException {
 	
-		//TODO dies muss noch besser werden
-		if(!initServer())
-		{
-			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
-			e.initCause(e);
-			throw(e);
-		}
 
 		URL adress = null;
 		try {
 			adress = new URL(url);
-			/*System.out.println(adress.toString());
-			System.out.println(adress.toExternalForm());
-			System.out.println(adress.hashCode());
-			System.out.println(adress.getPort());
-			System.out.println(adress.getPath());
-			System.out.println(adress.getHost());
-			System.out.println(adress.getFile());
-			System.out.println(adress.getProtocol());
-			System.out.println(adress.getRef());
-			System.out.println(adress.getQuery());
-			System.out.println(adress.getUserInfo());
-			//System.out.println(adress.getContent());
-			System.out.println(adress.getAuthority());*/
-			
+		
 		} catch (MalformedURLException e) {
 			DownloadFailedException e2 = new DownloadFailedException("nested MalformedURLException");
 			e2.initCause(e);
 		}
 		
 		//DBVerbindung fuer die Funktion erstellen
-		 DBLayer db;
-		 db = new DBLayerHSQL();
-		 Connection conn;
+		DBLayer db;
+		db = new DBLayerHSQL();
+		Connection conn;
+
 		
 		//Indexer erstellen
 		Indexer tfindexer = new TeamFoundIndexer(indexSync);
 		
 		try
 		{
-		 	conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 		
 			// 0. Datenbank auf Existenz der URL checken
 			urltabBean urlbean = db.getUrl(conn,adress.toString());
 			if(urlbean != null)
 			{
 				System.out.println("habe Url schon indiziert!");
-				//Kategorien vergleichen falls weche Fehlen mit in den Vector aufnehmen
+				//Kategorien vergleichen falls welche Fehlen mit in den Vector aufnehmen
 				Vector<Integer> oldcats = db.getCatsOfUrl(conn,urlbean.getID());
 				Vector<Integer> newcats = new Vector<Integer>();	
 				Vector<Integer> newcatstoadd = getAllPar(conn,db,category);
-					 
-				
 				
 				boolean updateurl = false;
 				
@@ -134,7 +131,7 @@ public class TeamFoundController implements Controller {
 
 				if(!updateurl)
 				{
-					//Erfolgsmeldung liefer
+					//brauchen nichts erneueren
 					System.out.println("Nichts an der URL hat sich geaendert!");
 					HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 					AddPageResponse resp = new AddPageResponse(vertup ,adress.toString());
@@ -148,8 +145,6 @@ public class TeamFoundController implements Controller {
 					 Document doc = tfindexer.delDoc(adress.toString());
 					 doc.removeField("cats");
 				
-					
-					 
 					 //2.Doc neu adden mit allen sich ergebenden Kats
 					 String cats = new String();
 					 Vector<Integer> allcats = new Vector<Integer>();
@@ -183,9 +178,11 @@ public class TeamFoundController implements Controller {
 
 			}
 	
-			System.out.println("habe Url noch nicht indiziert!");
+			/*Url muss heruntergeladen und neu Indiziert werden*/
+			//System.out.println("habe Url noch nicht indiziert!");
+			
 			// 1. URL herunterladen
-			System.out.println("1. Url herunterladen!");
+			//System.out.println("1. Url herunterladen!");
 			
 			Vector<Integer>cats = getAllPar(conn,db,category);	
 			
@@ -272,16 +269,8 @@ public class TeamFoundController implements Controller {
 	public SearchResponse search(String query, int category[]) throws IndexAccessException, ServerInitFailedException
 
 	{
-//TODO dies muss noch besser werden
 		
-		if(!initServer())
-		{
-			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
-			e.initCause(e);
-			throw(e);
-		}
-		try
-		{
+		try{
 	// 0. Datenbank nach Kategorienversionen durchsuchen
 			DBLayer db;
 			db = new DBLayerHSQL();
@@ -320,54 +309,54 @@ public class TeamFoundController implements Controller {
 	}
 
 	
-	public SearchResponse search(String query, int offset, int category[], String sessionkey) throws IndexAccessException, ServerInitFailedException, DBAccessException
+	public SearchResponse search(String query, int offset, int category[], SessionData tfsession) throws IndexAccessException, ServerInitFailedException, DBAccessException
 
 	{
-//TODO dies muss noch besser werden
 		
-		if(!initServer())
-		{
-			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
-			e.initCause(e);
-			throw(e);
-		}
 		try
 		{
-	// 0. Datenbank nach Kategorienversionen durchsuchen
+	// 0. Datenbank 
 		
 			DBLayer db;
 			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
+	// Basis-Antwort bauen
+		//TODO keywords ?
+			String[] keywords = new String[1];
+			keywords[0] = query;
+			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+			SearchResponse resp = new SearchResponse(vertup ,keywords);
+
 	// 0.1. Userrechte ueberpruefen (seit Milestone 3)
-			tfuserBean ubean = null;
-			Integer userid = null;
-			if(sessionkey != null)
+			
+			// alle categorien ueberpruefen
+			for( int i = 0; i < category.length; i++)
 			{
-				ubean = db.getUserBySessionkey(conn, sessionkey);
-				if(ubean !=null)
+				// root-cat der cat auslesen
+				categoryBean cb = db.getCatByID(conn, category[i]);
+
+				if( !tfsession.urb.isUser(cb.getRootID()) && !tfsession.urb.isAdmin(cb.getRootID()))
 				{
-					userid = ubean.getID();
+					// GAST
+					if( SessionData.projectdata.get(cb.getRootID()).getGuestRead().booleanValue() == false)
+					{
+						resp.tfReturnValue(new Integer(9));
+						return(resp);
+					}
 				}
 			}
-			//Kategorien mit Leserechten raussuchen 
-			int cat[] = db.checkCatReadAccess(conn, category, userid);
-
-			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+			
 		
 	// 1. Im Index Suchen
 		
 			Indexer tfindexer = new TeamFoundIndexer(indexSync);
 			//TODO -> hart den count auf 30 ?
-			Vector<Document> docvec = tfindexer.query(query, cat , 50, offset ); 
+			Vector<Document> docvec = tfindexer.query(query, category , 50, offset ); 
 	
 		
-	//2.Antwort bauen
-		//TODO keywords ?
-			String[] keywords = new String[1];
-			keywords[0] = query;
-			SearchResponse resp = new SearchResponse(vertup ,keywords);
+	//2.Suchergebnisse in Antwort einbauen
 			resp.addSearchResults(docvec);
 		
 			conn.close();
@@ -393,14 +382,7 @@ public class TeamFoundController implements Controller {
 
 	public GetCategoriesResponse getCategories(int rootid) throws ServerInitFailedException 
 	{
-	//TODO dies muss noch besser werden
 			
-		if(!initServer())
-		{
-			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
-			e.initCause(e);
-			throw(e);
-		}
 		try
 		{
 		//0. DatenBAnk verbindung		
@@ -468,15 +450,6 @@ public class TeamFoundController implements Controller {
 
 	public AddCategoriesResponse addCategory(String name, int parentCat, String description) throws ServerInitFailedException 
 	{
-		
-		//TODO dies muss noch besser werden
-		if(!initServer())
-		{
-			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
-			e.initCause(e);
-			throw(e);
-		}
-		
 		try
 		{
 		//1. Versionen der KategorieBaeume aus db
@@ -517,15 +490,6 @@ public class TeamFoundController implements Controller {
 	
 	public GetProjectsResponse getProjects() throws ServerInitFailedException
 	{
-
-//TODO dies muss noch besser werden
-		if(!initServer())
-		{
-			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
-			e.initCause(e);
-			throw(e);
-		}
-
 		try
 		{
 		//1. Versionen der KategorieBaeume und alle RootCats() aus der Datenbank holen
@@ -650,13 +614,6 @@ public class TeamFoundController implements Controller {
 	 */
 	public void editCategory(int catid, String catname, String description) throws DBAccessException, ServerInitFailedException
 	{
-	//TODO dies muss noch besser werden
-		if(!initServer())
-		{
-			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
-			e.initCause(e);
-			throw(e);
-		}
 		try
 		{
 		//0. DatenBAnk verbindung		
@@ -702,14 +659,6 @@ public class TeamFoundController implements Controller {
 	 */
 	public NewUserResponse newUser(String user, String pass) throws DBAccessException, ServerInitFailedException
 	{	
-	
-		if(!initServer())
-		{
-			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
-			e.initCause(e);
-			throw(e);
-		}
-		
 		try
 		{
 		//1. Establish connection
@@ -776,14 +725,6 @@ public class TeamFoundController implements Controller {
 	 */
 	public boolean checkUser(String user, String pass) throws DBAccessException, ServerInitFailedException
 	{	
-	
-		if(!initServer())
-		{
-			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
-			e.initCause(e);
-			throw(e);
-		}
-		
 		try
 		{
 		//1. Establish connection
@@ -824,14 +765,6 @@ public class TeamFoundController implements Controller {
 	 */
 	public LoginResponse rejectUser(String user) throws DBAccessException, ServerInitFailedException
 	{	
-	
-		if(!initServer())
-		{
-			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
-			e.initCause(e);
-			throw(e);
-		}
-		
 		try
 		{
 		//1. Establish connection
@@ -873,14 +806,6 @@ public class TeamFoundController implements Controller {
 	 */
 	public LoginResponse loginUser(String user, String pass, String sessionkey,Date last) throws DBAccessException, ServerInitFailedException
 	{	
-	
-		if(!initServer())
-		{
-			ServerInitFailedException e = new ServerInitFailedException("Reading Config, Creating Index or initialize DB failed!");
-			e.initCause(e);
-			throw(e);
-		}
-		
 		try
 		{
 		//1. Establish connection
@@ -890,11 +815,15 @@ public class TeamFoundController implements Controller {
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
 			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
-			conn.close();
 
 		//2.Session info speichern
-			db.newSession(conn, user, pass, sessionkey, last);
-
+			if(SessionData.getSessionData(sessionkey) == null)
+			{
+				tfuserBean tfun = db.getUserByName(conn,user);
+				userRightBean uright = db.getRights(conn,tfun.getID());
+				SessionData.addSession(sessionkey,uright,tfun);
+			}
+			conn.close();
 		//3. antwort erstellen
 
 			LoginResponse resp = new LoginResponse(

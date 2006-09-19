@@ -34,6 +34,7 @@ import controller.response.ErrorResponse;
 import controller.response.Response;
 import controller.response.LoginResponse;
 import controller.teamfound.TeamFoundController;
+import controller.SessionData;
 
 import java.util.Properties;
 import config.teamfound.TeamFoundConfig;
@@ -48,11 +49,8 @@ public abstract class BaseServlet extends HttpServlet {
 	protected XMLOutputter xmlout;
 	protected Map<String, Integer> commands;
 
-	private String xsltpassthrough;//TODO muss woanders hin soll immer genau fuer eine Anfrage gueltig sein also als sessionvariabel speichern
-
 	public void init() throws ServletException {
 		
-		//conf im Servlet root lesen
 		try 
 		{
 			// Pfad ist relative zu Servlet root /conf/teamfound.properties wird gesucht 
@@ -106,20 +104,16 @@ public abstract class BaseServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		if(params.containsKey("pt"))
-		{
-			xsltpassthrough = request.getParameter("pt");
-		}
 
 		
 		if(!params.containsKey("want")) {		
-			xmlResponse(response, resp);
+			xmlResponse(response, resp ,request.getParameter("pt"));
 			
 		} else {
 			if(request.getParameter("want").equals("html")) {
 				htmlResponse(response, resp);
 			} else {
-				xmlResponse(response, resp);
+				xmlResponse(response, resp , request.getParameter("pt"));
 			}
 		}
 
@@ -167,6 +161,10 @@ public abstract class BaseServlet extends HttpServlet {
 	
 		//Session auslesen falls eine existiert
 		HttpSession session = req.getSession(false);
+		//wenn sessin existiert SessionData auslesen
+		SessionData tfsession = null;
+		if(session != null)
+			tfsession = SessionData.getSessionData(session.getId());
 
 		switch(i.intValue()) {
 		case 1:
@@ -198,14 +196,7 @@ public abstract class BaseServlet extends HttpServlet {
 				for(int h = 0; h < rawcat.length; h++) {
 					categories[h] = Integer.parseInt(rawcat[h]);
 				}
-				if(session !=null)
-				{
-					return ctrl.search(query, offset, categories, session.getId());
-				}
-				else
-				{
-					return ctrl.search(query, offset, categories, null);
-				}
+					return ctrl.search(query, offset, categories, tfsession);
 			}			
 
 			
@@ -362,9 +353,10 @@ public abstract class BaseServlet extends HttpServlet {
 	}
 	
 	
-	protected void xmlResponse(HttpServletResponse response, Response tfResponse) throws IOException 
+	protected void xmlResponse(HttpServletResponse response, Response tfResponse, String xsltpassthrough) throws IOException 
 	{
 		Document d = tfResponse.getXML();
+
 		if( xsltpassthrough != null)
 		{
 			Element root = d.getRootElement();

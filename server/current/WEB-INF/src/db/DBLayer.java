@@ -414,12 +414,6 @@ public interface DBLayer
 	 */
 	public projectdataBean getProjectDataToCat(Connection conn, Integer catid) throws SQLException;
 
+	public java.util.concurrent.ConcurrentHashMap<Integer, projectdataBean> getAllProjectData(Connection conn) throws SQLException;
 
-
-
-
-	
-
-
-	
 }

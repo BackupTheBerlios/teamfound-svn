@@ -16,6 +16,7 @@ import controller.response.GetProjectsResponse;
 import controller.response.SearchResponse;
 import controller.response.NewUserResponse;
 import controller.response.LoginResponse;
+import controller.SessionData;
 
 import java.util.Date;
 
@@ -26,7 +27,7 @@ public class TestController implements Controller {
 		return r;
 	}
 
-	public SearchResponse search(String query, int offset, int category[],String sessionkey)
+	public SearchResponse search(String query, int offset, int category[],SessionData sessionkey)
 			throws IndexAccessException {
 		String[] keywords = {"hello"};
 		SearchResponse r = new SearchResponse(null, keywords);
