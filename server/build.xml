@@ -107,7 +107,7 @@ project Teamfound
   <property name="app.path"      value="/tf"/>
   <property name="app.version"   value="0.1-dev"/>
   <property name="build.home"    value="${basedir}/build"/>
-  <property name="catalina.home" value="/home/moddin/Uni/OpenSourceSoftEnt/tomcat/tomcat50-jwsdp"/> 
+  <property name="catalina.home" value="linktotomcat"/> 
   <property name="dist.home"     value="${basedir}/dist"/>
   <property name="docs.home"     value="${basedir}/docs"/>
   <property name="manager.url"   value="http://localhost:8080/manager"/>
@@ -192,11 +192,11 @@ project Teamfound
 
 <!--Apache Project lucene for indexing is needed in teamfound and we need hsql as db -->
   <property name="lucene.jar"
-           value="/home/moddin/Uni/OpenSourceSoftEnt/teamfound/server/current/WEB-INF/lib/"/>
+           value="current/WEB-INF/lib/"/>
 	<property name="hsql"
-		value="/home/moddin/Uni/OpenSourceSoftEnt/hsql/hsqldb/lib/"/>
+		value="linktohsqldb/lib"/>
 	<property name="jdom.jar"
-           value="/home/moddin/Uni/OpenSourceSoftEnt/teamfound/server/current/WEB-INF/lib/"/>
+           value="current/WEB-INF/lib/"/>
 <!-- ==================== Compilation Classpath =========================== -->
 
 <!--

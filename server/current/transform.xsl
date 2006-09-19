@@ -42,7 +42,7 @@ Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Versio
 	</xsl:variable>
 
 <p>
-	<xsl:if test="/response/xsltpassthrough = 'search'">
+	<xsl:if test="/response/xsltpassthrough = 'search' or count(/response/xsltpassthrough) = 0">
 		<b>Search</b>
 	</xsl:if>
 	<xsl:if test="/response/xsltpassthrough != 'search'">
@@ -57,7 +57,7 @@ Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Versio
 	<xsl:if test="/response/xsltpassthrough = 'addpage'">
 		<b>Add page</b>
 	</xsl:if>
-	<xsl:if test="/response/xsltpassthrough != 'addpage'">
+	<xsl:if test="/response/xsltpassthrough != 'addpage' or count(/response/xsltpassthrough) = 0">
 		<a> 
 			<xsl:attribute name="href">
 				?pt=addpage&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
@@ -69,7 +69,7 @@ Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Versio
 	<xsl:if test="/response/xsltpassthrough = 'browsecats'">
 		<b>Browse categories</b>
 	</xsl:if>
-	<xsl:if test="/response/xsltpassthrough != 'browsecats'">
+	<xsl:if test="/response/xsltpassthrough != 'browsecats' or count(/response/xsltpassthrough) = 0">
 		<a> 
 			<xsl:attribute name="href">
 				?pt=browsecats&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
@@ -81,7 +81,7 @@ Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Versio
 	<xsl:if test="/response/xsltpassthrough = 'login'">
 		<b>Login</b>
 	</xsl:if>
-	<xsl:if test="/response/xsltpassthrough != 'login'">
+	<xsl:if test="/response/xsltpassthrough != 'login' or count(/response/xsltpassthrough) = 0">
 		<a> 
 			<xsl:attribute name="href">
 				?pt=login&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
@@ -93,7 +93,7 @@ Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Versio
 </xsl:template>
 
 <xsl:template name="pageselector">
-	<xsl:if test="/response/xsltpassthrough = 'search'">
+	<xsl:if test="/response/xsltpassthrough = 'search' or count(/response/xsltpassthrough) = 0">
 		<xsl:call-template name="search"/>
 	</xsl:if>
 	<xsl:if test="/response/xsltpassthrough = 'addpage'">
