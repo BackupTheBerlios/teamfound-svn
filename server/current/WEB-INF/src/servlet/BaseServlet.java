@@ -104,19 +104,7 @@ public abstract class BaseServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 
-
-		
-		if(!params.containsKey("want")) {		
-			xmlResponse(response, resp ,request.getParameter("pt"));
-			
-		} else {
-			if(request.getParameter("want").equals("html")) {
-				htmlResponse(response, resp);
-			} else {
-				xmlResponse(response, resp , request.getParameter("pt"));
-			}
-		}
-
+		xmlResponse(response, resp, request.getParameter("pt"));
 	}
 		
 		
@@ -124,11 +112,11 @@ public abstract class BaseServlet extends HttpServlet {
 		Response r;
 		// parameter validieren
 		Map params = req.getParameterMap();
-		if(!params.containsKey("want")) {
+		/*if(!params.containsKey("want")) {
 			r = new ErrorResponse(null);
 			r.serverReturnValue(2, "Need Parameter 'want'");
 			return r;
-		}
+		}*/
 		
 		if(!params.containsKey("version")) {
 			r = new ErrorResponse(null);
