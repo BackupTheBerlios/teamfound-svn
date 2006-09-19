@@ -1308,7 +1308,7 @@ public class DBLayerHSQL implements DBLayer
 	public HashSet<Tuple<Integer,Integer>> getAllVersions(Connection conn) throws SQLException
 	{
 		PreparedStatement st = null;
-		st = conn.prepareStatement("SELECT rootid,version FROM projectdata WHERE guest-read = ?");    // erstelle statements
+		st = conn.prepareStatement("SELECT rootid,version FROM projectdata WHERE guestread = ?");    // erstelle statements
 		st.setBoolean(1,true);
 		try
 		{

@@ -23,7 +23,7 @@ public class userRightBean implements Serializable
 	{
 		this.userprojects = m;
 		this.adminprojects = ad;
-	
+		
 	}
 
 	public HashMap<Integer,projectdataBean> getUserProjects()
@@ -83,7 +83,7 @@ public class userRightBean implements Serializable
 		return(pd.getUserAddurl().booleanValue());
 	}
 	
-	public boolean addCat(String right,Integer projectid)
+	public boolean addCat(Integer projectid)
 	{
 		if(isAdmin(projectid))
 			return(true);
