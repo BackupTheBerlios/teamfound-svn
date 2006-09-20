@@ -264,7 +264,7 @@ public abstract class BaseServlet extends HttpServlet {
 		case 4:
 			String name, description;
 			int parentID;
-			// addCategories
+			// addCategory
 			if(!params.containsKey("name")) {
 				r = new ErrorResponse(null);
 				r.serverReturnValue(2, "Need Parameter 'name'");
@@ -289,7 +289,7 @@ public abstract class BaseServlet extends HttpServlet {
 				parentID = Integer.parseInt(req.getParameter("subcategoryof"));
 			}			
 			
-			return ctrl.addCategory(name, parentID, description);
+			return ctrl.addCategory(name, parentID, description, tfsession);
 			
 		case 5:
 			return ctrl.getProjects();

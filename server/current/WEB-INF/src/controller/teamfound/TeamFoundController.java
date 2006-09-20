@@ -418,13 +418,13 @@ public class TeamFoundController implements Controller {
 		catch(Exception e)
 		{
 			//TODO Exceptions richtig machen
- 			System.out.println("TeamFoundController : addCategory)"+e);
+ 			System.out.println("TeamFoundController : getCategories)"+e);
 			return null;
 		}
 		
 	}
 
-	public AddCategoriesResponse addCategory(String name, int parentCat, String description) throws ServerInitFailedException 
+	public AddCategoriesResponse addCategory(String name, int parentCat, String description, SessionData tfsession) throws ServerInitFailedException 
 	{
 		try
 		{
