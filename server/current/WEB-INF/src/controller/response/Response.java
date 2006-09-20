@@ -31,24 +31,33 @@ import tools.Tuple;
 public abstract class Response {
 	
 	protected Document doc;
+	protected Element root;
+
 	protected Element teamfound; // damit die subklassen direkt darauf zugreifen koennen
 	protected Element server; // damit die subklassen direkt darauf zugreifen koennen
-	protected Element session; // damit die subklassen direkt darauf zugreifen koennen
 	
 	protected Integer ServerStatus = new Integer(0);
-	protected Integer SessionStatus = new Integer(0);
+//	protected Integer SessionStatus = new Integer(0);
 	protected Integer TFStatus = new Integer(0);
 	protected String ServerDescription = "OK";
-	protected String SessionDescription = "OK";
+//	protected String SessionDescription = "OK";
 	protected String TFDescription = "OK";
 	
-	protected String username = "guest";
-	protected String sessionkey;
+	//protected String username = "guest";
+	//protected String sessionkey;
 	
 	protected HashSet<Tuple<Integer, Integer>> pCounters;
 	
 	public Response(HashSet<Tuple<Integer,Integer>> projectCounters) {
 		pCounters = projectCounters;
+
+		root = new Element("response");
+		doc = new Document(root);
+	}
+
+	public void addElementToRoot(Element xml)
+	{
+		root.addContent(xml);
 	}
 	
 	
@@ -58,9 +67,7 @@ public abstract class Response {
 	 */
 	public Document getBaseDocument() {
 		
-		Element root = new Element("response");
-		doc = new Document(root);
-		
+				
 		// Add XSLT-Reference
 		HashMap piMap = new HashMap( 2 );
 		piMap.put( "type", "text/xsl" );
@@ -71,8 +78,6 @@ public abstract class Response {
 		// Create First-Level-Nodes
 		server = new Element("server");
 		root.addContent(server);
-		session = new Element("session");
-		root.addContent(session);
 		teamfound = new Element("teamfound");
 		root.addContent(teamfound);
 
@@ -95,8 +100,6 @@ public abstract class Response {
 		Element serverdesc = new Element("return-description");
 		serverdesc.addContent(ServerDescription);
 		server.addContent(serverdesc);
-
-
 
 		// TEAMFOUND-BLOCK
 				
@@ -133,29 +136,7 @@ public abstract class Response {
 				pc.addContent(project);
 			}
 		}
-
-		//SESSION BLOCK
-		Element sessvalue = new Element("return-value");
-		sessvalue.addContent(SessionStatus.toString());
-		session.addContent(sessvalue);
 		
-		Element sessDescr = new Element("return-description");
-		sessDescr.addContent(SessionDescription);
-		session.addContent(sessDescr);
-
-		Element uname = new Element("name");
-		uname.addContent(username);
-		session.addContent(uname);
-	
-		if(sessionkey != null)
-		{
-			Element sesskey  = new Element("sessionkey");
-			sesskey.addContent(sessionkey);
-			session.addContent(sesskey);
-		}
-
-
-				
 		return doc;
 	}
 	
@@ -163,21 +144,20 @@ public abstract class Response {
 		ServerStatus = code;
 		ServerDescription= desc; 
 	}
-	public void sessionReturnValue(Integer code) {
+/*	public void sessionReturnValue(Integer code) {
 		SessionStatus = code;
 		SessionDescription= ReturnCodes.getDescription(code);
-	}
+	}*/
 	public void tfReturnValue(Integer code) {
 		TFStatus= code;
 		TFDescription= ReturnCodes.getDescription(code);
 	}
-	public void setSessionUserName(String n) {
+/*	public void setSessionUserName(String n) {
 		username = n;
-	}
-	public void setSessionKey(String s) {
+	}*/
+/*	public void setSessionKey(String s) {
 		sessionkey = s;
-	}
-
+	}*/
 
 	public abstract Document getXML();
 

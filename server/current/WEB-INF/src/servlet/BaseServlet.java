@@ -93,22 +93,57 @@ public abstract class BaseServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException {
 		
+
+		//Session auslesen falls eine existiert
+		HttpSession session = request.getSession(false);
+		//wenn sessin existiert SessionData auslesen
+		SessionData tfsession = null;
+		if(session != null)
+		{	
+			tfsession = SessionData.getSessionData(session.getId());
+			if( tfsession == null)
+			{
+				tfsession = SessionData.guest;
+			}
+		}
+		else
+		{
+			// Gast session initialisieren
+			tfsession = SessionData.guest;
+		}
 		
 		Map params = request.getParameterMap();
 		Response resp;
 		try {
-			resp = launchCommand(request);
+			resp = launchCommand(request, tfsession);
 		} catch(Exception e) {
 			resp = new ErrorResponse(null);
 			resp.serverReturnValue(-1, "Internal Error: "+e.getClass());
 			e.printStackTrace();
 		}
 
+		// TODO: steht erstmal drinn da login/logout tfsession aendern
+		if(session != null)
+		{	
+			tfsession = SessionData.getSessionData(session.getId());
+			if( tfsession == null)
+			{
+				tfsession = SessionData.guest;
+			}
+		}
+		else
+		{
+			// Gast session initialisieren
+			tfsession = SessionData.guest;
+		}
+
+		resp.addElementToRoot(tfsession.getXMLBlock());
+
 		xmlResponse(response, resp, request.getParameter("pt"));
 	}
 		
 		
-	protected Response launchCommand(HttpServletRequest req) throws IndexAccessException, DownloadFailedException, ServerInitFailedException, DBAccessException {
+	protected Response launchCommand(HttpServletRequest req, SessionData tfsession) throws IndexAccessException, DownloadFailedException, ServerInitFailedException, DBAccessException {
 		Response r;
 		// parameter validieren
 		Map params = req.getParameterMap();
@@ -147,13 +182,6 @@ public abstract class BaseServlet extends HttpServlet {
 		}
 		Integer i = commands.get(cmd);
 	
-		//Session auslesen falls eine existiert
-		HttpSession session = req.getSession(false);
-		//wenn sessin existiert SessionData auslesen
-		SessionData tfsession = null;
-		if(session != null)
-			tfsession = SessionData.getSessionData(session.getId());
-
 		switch(i.intValue()) {
 		case 1:
 			String query;
@@ -220,16 +248,16 @@ public abstract class BaseServlet extends HttpServlet {
 		case 3:
 			// getCategories (für eine kategorie)
 			int projectID;
-			if(!params.containsKey("projectID")) 
+			if(!params.containsKey("projectid")) 
 			{
 				//r = new ErrorResponse(null);
-				//r.serverReturnValue(2, "Need Parameter 'projectID'");
+				//r.serverReturnValue(2, "Need Parameter 'projectid'");
 				//return r;
 				projectID=0;
 			} 
 			else 
 			{
-				projectID = Integer.parseInt(req.getParameter("projectID"));
+				projectID = Integer.parseInt(req.getParameter("projectid"));
 			}
 			return ctrl.getCategories(projectID);
 			
@@ -305,21 +333,19 @@ public abstract class BaseServlet extends HttpServlet {
 			}
 			
 			if(!params.containsKey("uniforgeuser")) {
-				r = new ErrorResponse(null);
-				r.serverReturnValue(2, "Need Parameter 'uniforgeuser'");
-				return r;
+				uniforgeuser = "no";
 			} else {
 				uniforgeuser = req.getParameter("uniforgeuser");
 			}
 
-			if (uniforgeuser == "yes")
+			if (uniforgeuser.equals("yes"))
 			{
 				//TODO Abfrage Uniforge oder wie auch immer
 			}
 			if(ctrl.checkUser(user, pass)) //will nur eine Session anlegen wenn alles stimmt
 			{
 				//1. Session anlegen
-				session  = req.getSession();
+				HttpSession session = req.getSession();
 				String sessionkey = session.getId();
 				Date last = new Date(session.getLastAccessedTime());
 				

@@ -6,6 +6,7 @@ import db.teamfound.DBLayerHSQL;
 import java.sql.Connection;
 import config.Config;
 import config.teamfound.TeamFoundConfig;
+import java.util.*;
 
 public class Testdbconnect
 {
@@ -13,7 +14,7 @@ public class Testdbconnect
 	{
 		try
 		{
-			java.io.File f = new java.io.File("/home/moddin/build/teamfound.properties");
+			java.io.File f = new java.io.File("/home/jan/teamfound/server/current/conf/teamfound.properties");
 
 			java.io.FileInputStream pin = new java.io.FileInputStream(f);
 
@@ -34,6 +35,7 @@ public class Testdbconnect
 			try
 			{
 				conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+				/*
 				//conn.setAutoCommit(false);
 				
 				//neuen rootcat anlegen
@@ -348,8 +350,23 @@ public class Testdbconnect
 				System.out.println("tfuser:");
 				db.query(conn2,"SELECT * FROM tfuser");
 				
-				System.out.println("projectadmin:");
-				db.query(conn2,"SELECT * FROM projectadmin");
+				/*System.out.println("projectadmin:");
+				db.query(conn2,"SELECT * FROM projectadmin");*/
+
+
+
+				System.out.println("get subcategories of 0:");
+				categoryBean cb = new categoryBean();
+				cb.setID(new Integer(0));
+				cb.setLeft(new Integer(1));
+				cb.setRight(new Integer(6));
+				Vector<categoryBean> v = db.getAllChildCategorys(conn2, cb);
+				Iterator it = v.iterator();
+				while(it.hasNext())
+				{
+					((categoryBean)it.next()).printAll();
+				}
+
 				conn2.close();
 			}
 			catch (Exception e)

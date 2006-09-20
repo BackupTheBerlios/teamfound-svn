@@ -313,7 +313,7 @@ public class TeamFoundController implements Controller {
 					return(resp);
 				}
 
-				if( tfsession == null || (!tfsession.urb.isUser(cb.getRootID()) && !tfsession.urb.isAdmin(cb.getRootID())))
+				if( tfsession == SessionData.guest || (!tfsession.urb.isUser(cb.getRootID()) && !tfsession.urb.isAdmin(cb.getRootID())))
 				{
 					// GAST
 					if( SessionData.projectdata.get(cb.getRootID()).getGuestRead().booleanValue() == false)
@@ -438,10 +438,22 @@ public class TeamFoundController implements Controller {
 			categoryBean newcat = new categoryBean();
 			newcat.setCategory(name);
 			newcat.setBeschreibung(description);
-			categoryBean parentcat = new categoryBean();
-			parentcat.setID(parentCat);
-			
-			newcat = db.addCategory(conn, newcat, parentcat);
+
+			if( parentCat == -1)
+			{
+				// neues Projekt anlegen
+				newcat = db.addRootCategory(conn, newcat);
+			}
+			else
+			{
+				// neue Kategorie in existierendem Projekt anlegen
+
+				categoryBean parentcat = new categoryBean();
+
+				parentcat.setID(parentCat);
+				
+				newcat = db.addCategory(conn, newcat, parentcat);
+			}
 		
 		//3.response liefern		
 			AddCategoriesResponse resp = new AddCategoriesResponse(
@@ -643,7 +655,7 @@ public class TeamFoundController implements Controller {
 			newuser.setPass(pass);
 
 			//Username zu kurz ?
-			if(user.length() < 4)
+			if(user.length() < 3)
 			{
 				NewUserResponse re = new NewUserResponse(vertup, newuser.getUsername());
 				//7 ist ReturnCode fuer Username zu kurz
@@ -702,7 +714,7 @@ public class TeamFoundController implements Controller {
 			tfuserBean tf = db.getUserByName(conn,user);
 			if(tf != null)
 			{
-				if(pass == tf.getPass())
+				if(pass.equals(tf.getPass()))
 				{
 					return(true);
 				}
@@ -776,13 +788,12 @@ public class TeamFoundController implements Controller {
 
 			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 
+
 		//2.Session info speichern
-			if(SessionData.getSessionData(sessionkey) == null)
-			{
-				tfuserBean tfun = db.getUserByName(conn,user);
-				userRightBean uright = db.getRights(conn,tfun.getID());
-				SessionData.addSession(sessionkey,uright,tfun);
-			}
+			tfuserBean tfun = db.getUserByName(conn,user);
+			userRightBean uright = db.getRights(conn,tfun.getID());
+			SessionData.addSession(sessionkey,uright,tfun);
+
 			conn.close();
 		//3. antwort erstellen
 
@@ -797,7 +808,7 @@ public class TeamFoundController implements Controller {
 		{
  			System.out.println("TeamFoundController : loginUser)"+e);
 			DBAccessException dbe = new DBAccessException("loginUser SQLException");
-			dbe.initCause(dbe);
+			dbe.initCause(e);
 			throw(dbe);
 
 		}

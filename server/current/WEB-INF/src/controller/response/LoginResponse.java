@@ -25,8 +25,8 @@ public class LoginResponse extends Response {
 	public Document getXML() {
 		Document d = super.getBaseDocument();
 		//Element xmlroot = d.getRootElement();
-		setSessionUserName(username);
-		setSessionKey(sesskey);
+		//setSessionUserName(username);
+		//setSessionKey(sesskey);
 
 		// unterbaum aufbauen
 		Element login = new Element("login");

@@ -78,16 +78,44 @@ Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Versio
 		</a>
 	</xsl:if>
 	|
-	<xsl:if test="/response/xsltpassthrough = 'login'">
-		<b>Login</b>
+	<xsl:if test="/response/session/name = 'guest'">
+		<xsl:if test="/response/xsltpassthrough = 'login'">
+			<b>Login</b>
+		</xsl:if>
+		<xsl:if test="/response/xsltpassthrough != 'login' or count(/response/xsltpassthrough) = 0">
+			<a> 
+				<xsl:attribute name="href">
+					?pt=login&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
+				</xsl:attribute>
+				Login
+			</a>
+		</xsl:if>
 	</xsl:if>
-	<xsl:if test="/response/xsltpassthrough != 'login' or count(/response/xsltpassthrough) = 0">
-		<a> 
-			<xsl:attribute name="href">
-				?pt=login&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
-			</xsl:attribute>
-			Login
-		</a>
+	<xsl:if test="/response/session/name != 'guest'">
+		<xsl:if test="/response/xsltpassthrough = 'login'">
+			<b><xsl:value-of select="/response/session/name"/></b>
+		</xsl:if>
+		<xsl:if test="/response/xsltpassthrough != 'login' or count(/response/xsltpassthrough) = 0">
+			<a> 
+				<xsl:attribute name="href">
+					?pt=login&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
+				</xsl:attribute>
+				<xsl:value-of select="/response/session/name"/>
+			</a>
+		</xsl:if>
+		|
+		<xsl:if test="/response/xsltpassthrough = 'myprojects'">
+			<b>My Projects</b>
+		</xsl:if>
+		<xsl:if test="/response/xsltpassthrough != 'myprojects' or count(/response/xsltpassthrough) = 0">
+			<a> 
+				<xsl:attribute name="href">
+					?pt=myprojects&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
+				</xsl:attribute>
+				My Projects
+			</a>
+		</xsl:if>
+
 	</xsl:if>
 </p>
 </xsl:template>
@@ -103,8 +131,16 @@ Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Versio
 		<xsl:call-template name="browsecats"/>
 	</xsl:if>
 	<xsl:if test="/response/xsltpassthrough = 'login'">
+		<h2>Login</h2>
 		<xsl:call-template name="login"/>
+		<h2>Register</h2>
+		<xsl:call-template name="register"/>
 	</xsl:if>
+
+	<xsl:if test="/response/xsltpassthrough = 'myprojects'">
+		<xsl:call-template name="myprojects"/>
+	</xsl:if>
+
 </xsl:template>
 
 <xsl:template name="searchfield">
@@ -253,12 +289,54 @@ Categories:
 </p>
 </xsl:template>
 
+<xsl:template name="register">
+<p>
+	<form id="register" action="tf" method="post">
+	<table>
+	<tr><td>Username:</td><td><input size="20" type="text" name="user" value=""/></td></tr>
+	<tr><td>Password:</td><td><input size="20" type="password" name="pass" value=""/></td></tr>
+	<tr><td><input size="50" type="submit" value="Register"/></td></tr>
+	</table>
+		<input type="hidden" name="want" value="xml"/>
+		<input size="50" type="hidden" name="version">
+			<xsl:attribute name="value">
+				<xsl:value-of select="/response/server/interface-version"/>
+			</xsl:attribute>
+		</input> 
+		<input type="hidden" name="command" value="register"/>
+	</form>
+</p>
+</xsl:template>
+
+<xsl:template name="myprojects">
+<p>
+	<h2>My Projects</h2>
+	<form id="newproject" action="tf" method="post">
+	<table>
+	<tr><td>Projectname:</td><td><input size="20" type="text" name="name" value=""/></td></tr>
+	<tr><td>Description:</td><td><input size="20" type="text" name="description" value=""/></td></tr>
+	<tr><td><input size="50" type="submit" value="Create Project"/></td></tr>
+	</table>
+		<input type="hidden" name="want" value="xml"/>
+		<input size="50" type="hidden" name="version">
+			<xsl:attribute name="value">
+				<xsl:value-of select="/response/server/interface-version"/>
+			</xsl:attribute>
+		</input> 
+		<input type="hidden" name="command" value="addcategory"/>
+		<input type="hidden" name="subcategoryof" value="-1"/>
+	</form>
+</p>
+</xsl:template>
+
+
 <xsl:template name="login">
 <p>
 	<form id="login1" action="tf" method="post">
 	<table>
-	<tr><td>Username:</td><td><input size="20" type="text" name="username" value=""/></td></tr>
-	<tr><td>Password:</td><td><input size="20" type="password" name="password" value=""/></td></tr>
+	<tr><td>Username:</td><td><input size="20" type="text" name="user" value=""/></td></tr>
+	<tr><td>Password:</td><td><input size="20" type="password" name="pass" value=""/></td></tr>
+	<tr><td>UniForge:</td><td><input size="20" type="checkbox" name="uniforgeuser" value="yes"/></td></tr>
 	<tr><td><input size="50" type="submit" value="Login"/></td></tr>
 	</table>
 		<input type="hidden" name="want" value="xml"/>

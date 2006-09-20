@@ -7,20 +7,24 @@ package controller;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.*;
+import org.jdom.*;
 
 import db.dbbeans.*;
 
 public class SessionData
 {
-	private static ConcurrentHashMap<String,SessionData> sessions;
-	public static ConcurrentHashMap<Integer,projectdataBean> projectdata;
+	private static ConcurrentHashMap<String,SessionData> sessions = new ConcurrentHashMap<String,SessionData>();
+	public static ConcurrentHashMap<Integer,projectdataBean> projectdata = new ConcurrentHashMap<Integer,projectdataBean>();
+
+	public static final SessionData guest = new SessionData(null, "guest", new tfuserBean(-1, "guest", "", "guest", null, false));
 
 	public static void addSession(String sessionid, userRightBean rights, tfuserBean tfu)
 	{
-		if( getSessionData(sessionid) == null)
+		if( getSessionData(sessionid) != null)
 		{
-			sessions.put(sessionid,new SessionData(rights, sessionid, tfu));
+			removeSession(sessionid);
 		}
+		sessions.put(sessionid,new SessionData(rights, sessionid, tfu));
 	}
 
 	public static void removeOldSessions()
@@ -63,5 +67,28 @@ public class SessionData
 		sessionkey = _sessionkey;
 		lastaccess = new Date();
 		tfu = t;
+	}
+
+	public Element getXMLBlock()
+	{
+		Element session = new Element("session");
+
+		Element sessvalue = new Element("return-value");
+//		sessvalue.addContent(SessionStatus.toString());
+		session.addContent(sessvalue);
+		
+		Element sessDescr = new Element("return-description");
+//		sessDescr.addContent(SessionDescription);
+		session.addContent(sessDescr);
+
+		Element uname = new Element("name");
+		uname.addContent(tfu.getUsername());
+		session.addContent(uname);
+	
+		Element sesskey = new Element("sessionkey");
+		sesskey.addContent(sessionkey);
+		session.addContent(sesskey);
+
+		return session;
 	}
 }

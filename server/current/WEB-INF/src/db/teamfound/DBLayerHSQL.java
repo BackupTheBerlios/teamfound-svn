@@ -433,7 +433,7 @@ public class DBLayerHSQL implements DBLayer
 		String prim = new String("CALL IDENTITY()");
 		
 		// lock table category , set savepoint
-		conn.setSavepoint("addrootcot");
+		conn.setSavepoint("addrootcat");
 
 		try
 		{
@@ -837,7 +837,7 @@ public class DBLayerHSQL implements DBLayer
 			catbean.setRight(rs.getInt(2));
 			
 			//find statement
-			String find = new String("SELECT * FROM category where left < "+catbean.getLeft()+" and right > "+catbean.getRight());
+			String find = new String("SELECT * FROM category where left < "+catbean.getLeft()+" and right > "+catbean.getRight() + " AND root_id = " + catbean.getRootID());
 			ResultSet rsi = st.executeQuery(find);
 			
 			java.util.Vector<categoryBean> revec = new java.util.Vector<categoryBean>();
@@ -900,7 +900,7 @@ public class DBLayerHSQL implements DBLayer
 			catbean.setRight(rs.getInt(2));
 			
 			//find statement
-			String find = new String("SELECT * FROM category where left < "+catbean.getLeft()+" and right > "+catbean.getRight());
+			String find = new String("SELECT * FROM category where left < "+catbean.getLeft()+" and right > "+catbean.getRight() + " AND root_id = " + catbean.getRootID());
 			ResultSet rsi = st.executeQuery(find);
 			
 			categoryBean re = new categoryBean();
@@ -1419,7 +1419,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 			
 			//find statement
-			String find = new String("SELECT * FROM category where left > "+rootbean.getLeft()+" and right < "+rootbean.getRight());
+			String find = new String("SELECT * FROM category where left > "+rootbean.getLeft()+" and right < "+rootbean.getRight() + " AND root_id = " + rootbean.getID());
 			ResultSet rsi = st.executeQuery(find);
 			
 			java.util.Vector<categoryBean> revec = new java.util.Vector<categoryBean>();
@@ -1621,8 +1621,7 @@ public class DBLayerHSQL implements DBLayer
 	 */ 
 	public tfuserBean getUserByName(Connection conn, String name) throws SQLException
 	{
-		PreparedStatement st = null;
-		st = conn.prepareStatement("Select * from tfuser where name = ?");   
+		PreparedStatement st = conn.prepareStatement("Select * from tfuser where username = ?");   
 		try
 		{	
 			st.setString(1, name);
@@ -1631,7 +1630,7 @@ public class DBLayerHSQL implements DBLayer
 			
 			tfuserBean re = new tfuserBean();
 			
-			if(rsi.first())
+			if(rsi.next()) // first call to next positions to 1st row!
 			{
 				re.setID(rsi.getInt("id"));
 				re.setUsername(rsi.getString("username"));
