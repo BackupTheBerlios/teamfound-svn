@@ -147,7 +147,7 @@ public class TeamFoundController implements Controller {
 					categoryBean catbean = new categoryBean();
 					for(int i=0;i<category.length;i++)
 					{
-						if(!oldcats.contains(category[i]))
+						if(!oldcats.contains(new Integer(category[i])))
 						{
 							catbean.setID(new Integer(category[i]));
 							db.addCatwithParentsToUrl(conn,urlbean,catbean);
