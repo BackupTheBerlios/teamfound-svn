@@ -10,6 +10,11 @@ namespace TeamFound.IE
 	{
 		private string _serverUrl;
 
+		private Configuration()
+		{
+			
+		}
+
 		public string ServerUrl
 		{
 			get
@@ -22,14 +27,17 @@ namespace TeamFound.IE
 			}
 		}
 
-		public void Read()
+		public static Configuration Read()
 		{
+			Configuration cfg = new Configuration();
 			RegistryKey key = Registry.CurrentUser.OpenSubKey( @"Software\Teamfound", true );
 			if ( key == null )
-				return;
+				return cfg;
 
-			_serverUrl = (string)key.GetValue( "serverUrl", "http://localhost" );
-			key.SetValue( "serverUrl", _serverUrl );
+
+			cfg._serverUrl = (string)key.GetValue( "serverUrl", "http://localhost" );
+
+			return cfg;
 		}
 
 		public void Write()

@@ -10,9 +10,11 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using BandObjectLib;
 using mshtml;
-using TeamFound.IE;
-
-namespace IE
+using System.Xml;
+using SHDocVw;
+using System.Collections.Generic;
+using TeamFound.IE.Event;
+namespace TeamFound.IE
 {
 	
 	/// <summary>
@@ -22,8 +24,7 @@ namespace IE
 	[BandObjectAttribute("TeamFound Search Bar", BandObjectStyle.ExplorerToolbar | BandObjectStyle.Horizontal)]
 	public class TeamFoundBar : BandObject
 	{
-		private Controller controller = new Controller();
-		private ArrayList categories = new ArrayList();
+		private List<Category> categories = new List<Category>();
 		private System.Windows.Forms.ContextMenu ctxCategory;
 		/// <summary>
 		/// Erforderliche Designervariable.
@@ -35,8 +36,8 @@ namespace IE
 		private Joaqs.UI.XpComboBox cbbSearch;
 		private Joaqs.UI.XpButton btnCategory;
 
-		private Configuration configuration = new Configuration();
-
+		private CategoryTreeView tree = new CategoryTreeView();
+		
 		public TeamFoundBar()
 		{
 			// Dieser Aufruf ist für den Windows Form-Designer erforderlich.
@@ -44,7 +45,20 @@ namespace IE
 			
 			//Wird ausgelöst wenn wir am Explorer angedockt sind.
 			this.ExplorerAttached+=new EventHandler(TeamFoundBar_ExplorerAttached);
+
+			
+				tree.Location = new Point(0,0);
+				tree.Size = new Size(320, 200);
+				tree.Visible = false;
+				tree.LostFocus += new EventHandler(tree_LostFocus);
+				tree.BorderStyle = BorderStyle.FixedSingle;
+				tree.CategorySelected += new EventHandler<CategorySelectEventArgs>(tree_CategorySelected);
+				Controls.Add(tree);
 		}
+
+		
+
+		
 
 		/// <summary>
 		/// Die verwendeten Ressourcen bereinigen.
@@ -58,6 +72,7 @@ namespace IE
 			}
 			base.Dispose( disposing );
 		}
+
 		#region Vom Komponenten-Designer generierter Code
 		/// <summary>
 		/// Erforderliche Methode für die Designerunterstützung. 
@@ -65,7 +80,7 @@ namespace IE
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(TeamFoundBar));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TeamFoundBar));
 			this.ctxCategory = new System.Windows.Forms.ContextMenu();
 			this.btnAdd = new Joaqs.UI.XpButton();
 			this.btnSearch = new Joaqs.UI.XpButton();
@@ -77,18 +92,20 @@ namespace IE
 			// btnAdd
 			// 
 			this.btnAdd.BackColor = System.Drawing.Color.Transparent;
-			this.btnAdd.Location = new System.Drawing.Point(72, 0);
+			this.btnAdd.Location = new System.Drawing.Point(70, 0);
 			this.btnAdd.Name = "btnAdd";
 			this.btnAdd.Size = new System.Drawing.Size(72, 23);
 			this.btnAdd.TabIndex = 9;
 			this.btnAdd.Text = "Hinzufügen";
+			this.btnAdd.UseVisualStyleBackColor = false;
 			this.btnAdd.Click += new System.EventHandler(this.btnAddPage_Click);
 			// 
 			// btnSearch
 			// 
 			this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnSearch.Location = new System.Drawing.Point(528, 0);
+			this.btnSearch.Location = new System.Drawing.Point(443, 0);
 			this.btnSearch.Name = "btnSearch";
+			this.btnSearch.Size = new System.Drawing.Size(75, 23);
 			this.btnSearch.TabIndex = 10;
 			this.btnSearch.Text = "Suche";
 			this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
@@ -96,7 +113,7 @@ namespace IE
 			// btnSettings
 			// 
 			this.btnSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnSettings.Location = new System.Drawing.Point(608, 0);
+			this.btnSettings.Location = new System.Drawing.Point(523, 0);
 			this.btnSettings.Name = "btnSettings";
 			this.btnSettings.Size = new System.Drawing.Size(80, 23);
 			this.btnSettings.TabIndex = 11;
@@ -105,11 +122,11 @@ namespace IE
 			// 
 			// cbbSearch
 			// 
-			this.cbbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-				| System.Windows.Forms.AnchorStyles.Right)));
-			this.cbbSearch.Location = new System.Drawing.Point(152, 1);
+			this.cbbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.cbbSearch.Location = new System.Drawing.Point(148, 1);
 			this.cbbSearch.Name = "cbbSearch";
-			this.cbbSearch.Size = new System.Drawing.Size(368, 21);
+			this.cbbSearch.Size = new System.Drawing.Size(287, 21);
 			this.cbbSearch.TabIndex = 12;
 			this.cbbSearch.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cbbSearch_KeyUp);
 			// 
@@ -124,6 +141,7 @@ namespace IE
 			this.btnCategory.Size = new System.Drawing.Size(64, 23);
 			this.btnCategory.TabIndex = 13;
 			this.btnCategory.Text = "Kategorie";
+			this.btnCategory.UseVisualStyleBackColor = false;
 			this.btnCategory.Click += new System.EventHandler(this.btnDropDownCategory_Click);
 			// 
 			// TeamFoundBar
@@ -134,10 +152,13 @@ namespace IE
 			this.Controls.Add(this.btnSettings);
 			this.Controls.Add(this.btnSearch);
 			this.Controls.Add(this.btnAdd);
-			this.MaxSize = new System.Drawing.Size(-1, 23);
+			this.IntegralSize = new System.Drawing.Size(-1, 23);
+			this.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.MaxSize = new System.Drawing.Size(10000, 23);
 			this.MinSize = new System.Drawing.Size(536, 23);
 			this.Name = "TeamFoundBar";
-			this.Size = new System.Drawing.Size(696, 23);
+			this.Size = new System.Drawing.Size(611, 23);
 			this.Title = "TeamFound";
 			this.Resize += new System.EventHandler(this.TeamFoundBar_Resize);
 			this.ResumeLayout(false);
@@ -147,93 +168,44 @@ namespace IE
 
 		private void btnDropDownCategory_Click(object sender, System.EventArgs e)
 		{
-			ctxCategory.Show( btnCategory, new Point( btnCategory.Left, btnCategory.Top+btnCategory.Height ) );
-		}
-
-		private void CategoryMenuClick( object sender, EventArgs e )
-		{
-			CategoryMenuItem item = sender as CategoryMenuItem;
-			if ( item == null )
-				return;
-
-			item.Checked = ! item.Checked;
-
-			if ( item.Checked )
-			{
-				categories.Add( item.Category );
-			}
-			else
-			{
-				categories.Remove( item.Category );
-			}
+			tree.Location = new Point( this.Left, this.Top + btnCategory.Height );
+			tree.Load(Controller.Instance.Categories);
+			tree.ExpandAll();
+			tree.CheckBoxes = true;
+			tree.Visible = true;
+			Win32.SetForegroundWindow(tree.Handle.ToInt32());
+			tree.Focus();
 		}
 
 		private void btnSearch_Click(object sender, System.EventArgs e)
 		{
-			if ( Explorer.Busy )
-				return;
-		
 			string searchString = cbbSearch.Text;
-			if (searchString.Trim(  ) == "" )
+			
+			if ( string.IsNullOrEmpty( searchString) )
 				return;
-
-			object flags = null;
-			object targetFrame = null;
-			object headers = null;
-			object postData = null;
-			Explorer.Navigate( configuration.ServerUrl + "/search.pl?keyword=" + searchString, 
-				ref flags, ref targetFrame, ref postData, ref headers );
+            
+		
+			Controller.Instance.Search(this.cbbSearch.Text , categories.ToArray());
 		}
 
 		private void btnAddPage_Click(object sender, System.EventArgs e)
 		{
-			if ( Explorer.Busy )
-				return;
-		
-			string url = Explorer.LocationURL;
-			if (url.Trim(  ) == "" )
-				return;
-
-			object flags = null;
-			object targetFrame = null;
-			object headers = null;
-			object postData = null;
-			Explorer.Navigate( configuration.ServerUrl + "/addpage.pl?url=" + url, 
-				ref flags, ref targetFrame, ref postData, ref headers );
-		}
-
-		private void Explorer_NavigateComplete(string URL)
-		{
-			
+            string url = Explorer.LocationURL;
+            Controller.Instance.AddPage(url);
 		}
 
 		private void TeamFoundBar_ExplorerAttached(object sender, EventArgs e)
 		{
 			try
 			{
-				configuration.Read( );
-
-				Explorer.NavigateComplete+=new SHDocVw.DWebBrowserEvents_NavigateCompleteEventHandler(Explorer_NavigateComplete);	
-			
-				ICategory[] categories = controller.LoadCategories( );
-
-				AddCategoriesToMenu( categories, ctxCategory );
+                Category[] categories = Controller.Instance.Categories;
+				tree.Parent = null;
+				tree.Visible = false;
+				Win32.SetParent(tree.Handle.ToInt32(), Explorer.HWND);
 			}
 			catch ( Exception ex)
 			{
-				MessageBox.Show( ex.Message );
-			}
-		}
-
-		private void AddCategoriesToMenu( ICategory[] categories, Menu menu )
-		{
-			foreach ( ICategory category in categories )
-			{
-				CategoryMenuItem item = new CategoryMenuItem( category.Name, category );
-				
-				item.Click+=new EventHandler( CategoryMenuClick );
-				menu.MenuItems.Add( item );
-				AddCategoriesToMenu( category.Categories, item );
+				MessageBox.Show( ex.Message +"\r\n" + ex.StackTrace );
 			}
 		}
 
@@ -253,12 +225,7 @@ namespace IE
 
 		private void btnSettings_Click(object sender, System.EventArgs e)
 		{
-			using ( FrmSettings settings = new FrmSettings() )
-			{
-				settings.Configuration = configuration;
-				if ( settings.ShowDialog( this ) == DialogResult.OK )
-					configuration.Write( );				
-			}
+            Controller.Instance.EditSettings();
 		}
 
 		private void TeamFoundBar_Resize(object sender, System.EventArgs e)
@@ -270,6 +237,19 @@ namespace IE
 		{
 			if ( e.KeyCode == Keys.Return )
 				btnSearch_Click( btnSearch, e);
+		}
+
+		private void tree_CategorySelected(object sender, CategorySelectEventArgs e)
+		{
+			if (e.Selected)
+				this.categories.Add(e.Category);
+			else
+				this.categories.Remove(e.Category);
+		}
+
+		private void tree_LostFocus(object sender, EventArgs e)
+		{
+			tree.Visible = false;
 		}
 	}
 
@@ -335,14 +315,14 @@ namespace IE
 
 	internal class CategoryMenuItem : MenuItem
 	{
-		private ICategory _category;
+		private Category _category;
 
-		public CategoryMenuItem( string name, ICategory category ): base( name )
+		public CategoryMenuItem( string name, Category category ): base( name )
 		{
 			_category = category;
 		}
 
-		public ICategory Category
+		public Category Category
 		{
 			get
 			{
