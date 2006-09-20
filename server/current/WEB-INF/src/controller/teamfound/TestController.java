@@ -43,7 +43,7 @@ public class TestController implements Controller {
 	}
 
 	public AddCategoriesResponse addCategory(String name, int parentCat,
-			String description) {
+			String description, SessionData tfsession) {
 		AddCategoriesResponse r = new AddCategoriesResponse(null, name, parentCat+1);
 		return r;
 	}

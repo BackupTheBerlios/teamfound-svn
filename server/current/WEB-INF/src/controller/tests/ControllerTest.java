@@ -47,14 +47,14 @@ public class ControllerTest {
 			System.out.println("\n\n");
 			System.out.println("-------Add Category Test--------");
 			AddCategoriesResponse r2;
-			r2 = ctrl.addCategory("Cat1",0,"Unterkat vom Projekt Tf");
-			printdoc(r2);
+			//r2 = ctrl.addCategory("Cat1",0,"Unterkat vom Projekt Tf");
+			//printdoc(r2);
 			
-			r2 = ctrl.addCategory("Cat2",0,"Unterkat vom Projekt Tf");
-			printdoc(r2);
+			//r2 = ctrl.addCategory("Cat2",0,"Unterkat vom Projekt Tf");
+			//printdoc(r2);
 
-			r2 = ctrl.addCategory("SubCat1",1,"Unterkat von Cat1");
-			printdoc(r2);
+			//r2 = ctrl.addCategory("SubCat1",1,"Unterkat von Cat1");
+			//printdoc(r2);
 
 
 			
