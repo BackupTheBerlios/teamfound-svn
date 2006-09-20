@@ -49,7 +49,7 @@ import org.apache.lucene.document.Document;
 public class TeamFoundController implements Controller {
 
 	Download loader = new Download();
-	public ReadWriteSync indexSync;
+	public static ReadWriteSync indexSync;
 	
 	public TeamFoundController() 
 	{
