@@ -194,7 +194,7 @@ project Teamfound
   <property name="lucene.jar"
            value="current/WEB-INF/lib/"/>
 	<property name="hsql"
-		value="linktohsqldb/lib"/>
+		value="current/WEB-INF/lib"/>
 	<property name="jdom.jar"
            value="current/WEB-INF/lib/"/>
 <!-- ==================== Compilation Classpath =========================== -->
