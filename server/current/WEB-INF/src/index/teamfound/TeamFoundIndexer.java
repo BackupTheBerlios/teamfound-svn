@@ -6,6 +6,7 @@ package index.teamfound;
 
 import java.net.URL;
 import java.util.Vector;
+import java.util.HashSet;
 
 import controller.IndexAccessException;
 
@@ -402,8 +403,29 @@ public class TeamFoundIndexer implements Indexer {
 		}	
 	}
 	
+	/**
+	 *	Bei einem Dokument das Feld Category updaten 
+	 * @param url Die url des zu ersetzenden Documents
+	 */
+	public void updateCategory(String url,HashSet<Integer> allcats) throws IndexAccessException
+	{
+			//1.Doc im index loeschen
+			Document doc = delDoc(url);
+			doc.removeField("cats");
+				
+			//2.Doc neu adden mit allen sich ergebenden Kats
+			String cats = new String();
+			java.util.Iterator allit = allcats.iterator();
+			Integer tmp;
+			while(allit.hasNext())
+			{
+				tmp = (Integer)allit.next();
+				cats = (cats + tmp.intValue() +" ");
+			}
+			doc.add(new org.apache.lucene.document.Field("cats",cats,true,true,true));
+			addUrl(doc);
 
-		
+	}
 	
 	
 }

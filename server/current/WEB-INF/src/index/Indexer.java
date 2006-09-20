@@ -11,6 +11,7 @@ import controller.response.SearchResponse;
 import org.apache.lucene.document.Document;
 
 import java.util.Vector;
+import java.util.HashSet;
 
 /**
  * Interface für einen Indexer nach Milestone2-Spezifikation
@@ -83,5 +84,11 @@ public interface Indexer {
 	 *
 	 */
 	public void createIndex(String path) throws java.io.IOException;
+	
+	/**
+	 *	Bei einem Dokument das Feld Category updaten 
+	 * @param url Die url des zu ersetzenden Documents
+	 */
+	public void updateCategory(String url,HashSet<Integer> allcats) throws IndexAccessException;
 		
 }

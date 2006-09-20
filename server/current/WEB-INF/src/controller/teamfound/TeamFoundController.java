@@ -104,6 +104,7 @@ public class TeamFoundController implements Controller {
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 			//ProjectVersionen auslesen fuer die Response
 			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+			Vector<Integer> newcatstoadd = getAllPar(conn,category);//neue Kats mit elternKats 
 			
 			// 0. Datenbank auf Existenz der URL checken
 			urltabBean urlbean = db.getUrl(conn,adress.toString());
@@ -111,7 +112,6 @@ public class TeamFoundController implements Controller {
 			{
 				System.out.println("habe Url schon indiziert!");
 				Vector<Integer> oldcats = db.getCatsOfUrl(conn,urlbean.getID());
-				Vector<Integer> newcatstoadd = getAllPar(conn,category);//neue Kats mit elternKats 
 				
 				if(oldcats.containsAll(newcatstoadd))
 				{
@@ -123,26 +123,12 @@ public class TeamFoundController implements Controller {
 				else
 				{
 
-					System.out.println("Neue Category zu der URL hinzutun");
-					//1.Doc im index loeschen
-					 Document doc = tfindexer.delDoc(adress.toString());
-					 doc.removeField("cats");
-				
-					 //2.Doc neu adden mit allen sich ergebenden Kats
-					 String cats = new String();
-					 HashSet<Integer> allcats = new HashSet<Integer>();
-					 allcats.addAll(oldcats);
-					 allcats.addAll(newcatstoadd);
-					 java.util.Iterator allit = allcats.iterator();
-					 Integer tmp;
-					 while(allit.hasNext())
-					 {
-						 tmp = (Integer)allit.next();
-						 cats = (cats + tmp.intValue() +" ");
-					 }
-					 doc.add(new org.apache.lucene.document.Field("cats",cats,true,true,true));
-					 tfindexer.addUrl(doc);
-					 
+					System.out.println("Neue Categorys zu der URL hinzutun");
+					HashSet<Integer> allcats = new HashSet<Integer>();
+					allcats.addAll(oldcats);
+					allcats.addAll(newcatstoadd);
+					tfindexer.updateCategory(adress.toString(),allcats);	
+					
 					//3.DB Aktualisieren
 					categoryBean catbean = new categoryBean();
 					for(int i=0;i<category.length;i++)
@@ -166,12 +152,8 @@ public class TeamFoundController implements Controller {
 			/*Url muss heruntergeladen und neu Indiziert werden*/
 			//System.out.println("habe Url noch nicht indiziert!");
 			
-
-			//Array mit allen IDs der Kategorien erstellen (inklusive Eltern Kategorien zum aden in Index)
-			Vector<Integer>cats = getAllPar(conn,category);	
-			
-			int[] categ = new int[cats.size()];
-			Iterator intit = cats.iterator();
+			int[] categ = new int[newcatstoadd.size()];
+			Iterator intit = newcatstoadd.iterator();
 			int i = 0;
 			while(intit.hasNext())
 			{
