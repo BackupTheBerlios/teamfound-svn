@@ -50,16 +50,17 @@ public class TeamFoundController implements Controller {
 
 	Download loader = new Download();
 	public static ReadWriteSync indexSync;
+	private DBLayer db;
 	
 	public TeamFoundController() 
 	{
 		indexSync = new ReadWriteSync();
+		db = new DBLayerHSQL();
+		
 		if(initServer()) //TODO Logg falls nciht
 		{	
 			try{
-				// 0. Datenbank nach Kategorienversionen durchsuchen
-				DBLayer db;
-				db = new DBLayerHSQL();
+				// 0. ProjectData auslesen
 				Connection conn;
 				conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 				SessionData.projectdata = db.getAllProjectData(conn);
@@ -92,11 +93,8 @@ public class TeamFoundController implements Controller {
 			e2.initCause(e);
 		}
 		
-		//DBVerbindung fuer die Funktion erstellen
-		DBLayer db;
-		db = new DBLayerHSQL();
+		//Connection fuer DB
 		Connection conn;
-
 		
 		//Indexer erstellen
 		Indexer tfindexer = new TeamFoundIndexer(indexSync);
@@ -113,7 +111,7 @@ public class TeamFoundController implements Controller {
 				//Kategorien vergleichen falls welche Fehlen mit in den Vector aufnehmen
 				Vector<Integer> oldcats = db.getCatsOfUrl(conn,urlbean.getID());
 				Vector<Integer> newcats = new Vector<Integer>();	
-				Vector<Integer> newcatstoadd = getAllPar(conn,db,category);
+				Vector<Integer> newcatstoadd = getAllPar(conn,category);
 				
 				boolean updateurl = false;
 				
@@ -184,7 +182,7 @@ public class TeamFoundController implements Controller {
 			// 1. URL herunterladen
 			//System.out.println("1. Url herunterladen!");
 			
-			Vector<Integer>cats = getAllPar(conn,db,category);	
+			Vector<Integer>cats = getAllPar(conn,category);	
 			
 			int[] categ = new int[cats.size()];
 			Iterator intit = cats.iterator();
@@ -238,7 +236,7 @@ public class TeamFoundController implements Controller {
 	}
 
 	//Funktion die zu einem Array mit CatId eins baut mit allen ElternCats
-	private Vector<Integer> getAllPar(Connection conn, DBLayer db, int[] categorys)throws java.sql.SQLException
+	private Vector<Integer> getAllPar(Connection conn,  int[] categorys)throws java.sql.SQLException
 	{
 			categoryBean cb = new categoryBean();
 			Vector<Integer> cats = new Vector<Integer>(); 
@@ -272,8 +270,6 @@ public class TeamFoundController implements Controller {
 		
 		try{
 	// 0. Datenbank nach Kategorienversionen durchsuchen
-			DBLayer db;
-			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -317,8 +313,6 @@ public class TeamFoundController implements Controller {
 		{
 	// 0. Datenbank 
 		
-			DBLayer db;
-			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -400,8 +394,6 @@ public class TeamFoundController implements Controller {
 		try
 		{
 		//0. DatenBAnk verbindung		
-			DBLayer db;
-			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -415,8 +407,8 @@ public class TeamFoundController implements Controller {
 			Vector<categoryBean> childvec = db.getAllChildCategorys(conn, rootbean);
 		
 			//nur zum testen
-			System.out.println("Rootbean:");
-			rootbean.printAll();
+			//System.out.println("Rootbean:");
+			//rootbean.printAll();
 			
 			resp.addRoot(
 					rootbean.getCategory(),
@@ -432,14 +424,14 @@ public class TeamFoundController implements Controller {
 				categoryBean parent = db.findParent(conn, catbean);
 			
 				//nur zum testen
-				System.out.println("\ncurrent parentbean:");
-				parent.printAll();
+				//System.out.println("\ncurrent parentbean:");
+				//parent.printAll();
 				
 				//nur zum testen
-				System.out.println("\ncurrent child:");
-				catbean.printAll();
+				//System.out.println("\ncurrent child:");
+				//catbean.printAll();
 				
-				System.out.println("\n");
+				//System.out.println("\n");
 
 				
 				resp.addCategory(
@@ -467,8 +459,6 @@ public class TeamFoundController implements Controller {
 		try
 		{
 		//1. Versionen der KategorieBaeume aus db
-			DBLayer db;
-			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -507,8 +497,6 @@ public class TeamFoundController implements Controller {
 		try
 		{
 		//1. Versionen der KategorieBaeume und alle RootCats() aus der Datenbank holen
-			DBLayer db;
-			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -551,8 +539,6 @@ public class TeamFoundController implements Controller {
 		//TODO Admin install interface und diese ueberfluessige Ueberpruefung raus!
 		
 		//0. kucken ob schon was existiert
-			DBLayer db;
-			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 			if(db.initialized(conn))
@@ -631,8 +617,6 @@ public class TeamFoundController implements Controller {
 		try
 		{
 		//0. DatenBAnk verbindung		
-			DBLayer db;
-			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -676,8 +660,6 @@ public class TeamFoundController implements Controller {
 		try
 		{
 		//1. Establish connection
-			DBLayer db;
-			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -742,8 +724,6 @@ public class TeamFoundController implements Controller {
 		try
 		{
 		//1. Establish connection
-			DBLayer db;
-			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -782,8 +762,6 @@ public class TeamFoundController implements Controller {
 		try
 		{
 		//1. Establish connection
-			DBLayer db;
-			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
@@ -823,8 +801,6 @@ public class TeamFoundController implements Controller {
 		try
 		{
 		//1. Establish connection
-			DBLayer db;
-			db = new DBLayerHSQL();
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
