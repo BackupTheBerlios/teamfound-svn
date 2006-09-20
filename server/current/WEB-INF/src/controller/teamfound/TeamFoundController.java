@@ -81,7 +81,7 @@ public class TeamFoundController implements Controller {
 	 * @param category[] die Kategorien in die die URL gehoert (eigentlich mindestens die root Kategorie des Projekts ... normalerweise 0
 	 * 
 	 */
-	public AddPageResponse addToIndex(String url, int category[]) throws DownloadFailedException, IndexAccessException, ServerInitFailedException {
+	public AddPageResponse addToIndex(String url, int category[]) throws DownloadFailedException, IndexAccessException {
 	
 
 		URL adress = null;
@@ -102,36 +102,21 @@ public class TeamFoundController implements Controller {
 		try
 		{
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
-		
+			//ProjectVersionen auslesen fuer die Response
+			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+			
 			// 0. Datenbank auf Existenz der URL checken
 			urltabBean urlbean = db.getUrl(conn,adress.toString());
 			if(urlbean != null)
 			{
 				System.out.println("habe Url schon indiziert!");
-				//Kategorien vergleichen falls welche Fehlen mit in den Vector aufnehmen
 				Vector<Integer> oldcats = db.getCatsOfUrl(conn,urlbean.getID());
-				Vector<Integer> newcats = new Vector<Integer>();	
-				Vector<Integer> newcatstoadd = getAllPar(conn,category);
+				Vector<Integer> newcatstoadd = getAllPar(conn,category);//neue Kats mit elternKats 
 				
-				boolean updateurl = false;
-				
-				Iterator toadd = newcatstoadd.iterator();
-				Integer tmpint;
-				while(toadd.hasNext())
-				{
-					tmpint = (Integer)toadd.next();
-					if( !oldcats.contains(tmpint))
-					{
-						updateurl=true;
-						newcats.add(tmpint);
-					}
-				}
-
-				if(!updateurl)
+				if(oldcats.containsAll(newcatstoadd))
 				{
 					//brauchen nichts erneueren
 					System.out.println("Nichts an der URL hat sich geaendert!");
-					HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 					AddPageResponse resp = new AddPageResponse(vertup ,adress.toString());
 					return(resp);
 				}
@@ -145,9 +130,9 @@ public class TeamFoundController implements Controller {
 				
 					 //2.Doc neu adden mit allen sich ergebenden Kats
 					 String cats = new String();
-					 Vector<Integer> allcats = new Vector<Integer>();
+					 HashSet<Integer> allcats = new HashSet<Integer>();
 					 allcats.addAll(oldcats);
-					 allcats.addAll(newcats);
+					 allcats.addAll(newcatstoadd);
 					 java.util.Iterator allit = allcats.iterator();
 					 Integer tmp;
 					 while(allit.hasNext())
@@ -159,16 +144,18 @@ public class TeamFoundController implements Controller {
 					 tfindexer.addUrl(doc);
 					 
 					//3.DB Aktualisieren
-					java.util.Iterator newit = newcats.iterator();
 					categoryBean catbean = new categoryBean();
-					while(newit.hasNext())
+					for(int i=0;i<category.length;i++)
 					{
-						catbean.setID((Integer)newit.next());
-						db.addCatwithParentsToUrl(conn,urlbean,catbean);
+						if(!oldcats.contains(category[i]))
+						{
+							catbean.setID(new Integer(category[i]));
+							db.addCatwithParentsToUrl(conn,urlbean,catbean);
+						}
 					}
+
 					
 					//4.Erfolgsmeldung liefern (liste von (projectid, katbaumversion)
-					HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 					AddPageResponse resp = new AddPageResponse(vertup ,adress.toString());
 					return(resp);
 
@@ -179,9 +166,8 @@ public class TeamFoundController implements Controller {
 			/*Url muss heruntergeladen und neu Indiziert werden*/
 			//System.out.println("habe Url noch nicht indiziert!");
 			
-			// 1. URL herunterladen
-			//System.out.println("1. Url herunterladen!");
-			
+
+			//Array mit allen IDs der Kategorien erstellen (inklusive Eltern Kategorien zum aden in Index)
 			Vector<Integer>cats = getAllPar(conn,category);	
 			
 			int[] categ = new int[cats.size()];
@@ -193,6 +179,9 @@ public class TeamFoundController implements Controller {
 				i=i+1;
 			}
 			
+			
+			// 1. URL herunterladen
+			//System.out.println("1. Url herunterladen!");			
 			NewIndexEntry entry = loader.downloadFile(adress, categ);
 		
 			// 2. Indexieren
@@ -216,7 +205,6 @@ public class TeamFoundController implements Controller {
 		
 			// 4. fertig
 			// hier muss eine addpage-response zurückgegeben werden
-			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 			AddPageResponse resp = new AddPageResponse(vertup ,adress.toString());
 			
 			conn.close();
@@ -235,7 +223,7 @@ public class TeamFoundController implements Controller {
 		}
 	}
 
-	//Funktion die zu einem Array mit CatId eins baut mit allen ElternCats
+	//Funktion die zu einem Array mit CatId eins baut mit den Ids und allen Ids der ElternCats aber keine Cat doppelt einfuegt
 	private Vector<Integer> getAllPar(Connection conn,  int[] categorys)throws java.sql.SQLException
 	{
 			categoryBean cb = new categoryBean();
