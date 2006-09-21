@@ -21,7 +21,7 @@ import controller.SessionData;
 import java.util.Date;
 
 public class TestController implements Controller {
-	public AddPageResponse addToIndex(String url, int category[])
+	public AddPageResponse addToIndex(String url, int category[], SessionData tfsession)
 			throws DownloadFailedException, IndexAccessException {
 		AddPageResponse r = new AddPageResponse("http://test.com");
 		return r;

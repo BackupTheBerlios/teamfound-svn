@@ -241,7 +241,7 @@ public abstract class BaseServlet extends HttpServlet {
 				for(int h = 0; h < rawcat2.length; h++) {
 					categories[h] = Integer.parseInt(rawcat2[h]);
 				}
-				return ctrl.addToIndex(url, categories);
+				return ctrl.addToIndex(url, categories, tfsession);
 			}			
 			
 			

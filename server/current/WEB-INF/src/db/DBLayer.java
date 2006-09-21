@@ -376,17 +376,21 @@ public interface DBLayer
 	 * Einen Nutzer dem Projekt zuordnen
 	 * @param userid
 	 * @param rootid 
+	 *
+	 * @return boolean true user geadded, false kein Eintrag hat stattgefunden
 	 */ 
-	public void addUserToProject(Connection conn, Integer userid, Integer rootid) throws SQLException;
+	public boolean addUserToProject(Connection conn, Integer userid, Integer rootid) throws SQLException;
 	
 	/**
 	 *
 	 * Gib einem Nutzer adminrechte fuer ein Projekt (vorausgesetzt er ist dem Project zugeordnet)
 	 * Achtung der Nutzer muss bereits dem Project angehoeren!
 	 * @param userid
-	 * @param rootid 
+	 * @param rootid
+	 *
+	 * @return boolean true user geadded, false kein Eintrag hat stattgefunden
 	 */ 
-	public void addUserToAdminsOfProject(Connection conn, Integer userid, Integer rootid) throws SQLException;
+	public boolean addUserToAdminsOfProject(Connection conn, Integer userid, Integer rootid) throws SQLException;
 
 	/**
 	 * Setzt die Rechte fuer ein Project neu

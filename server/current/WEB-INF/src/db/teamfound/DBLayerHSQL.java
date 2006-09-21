@@ -1920,9 +1920,10 @@ public class DBLayerHSQL implements DBLayer
 	 * Gib einem Nutzer adminrechte fuer ein Projekt
 	 * Achtung der Nutzer muss bereits dem Project angehoeren!
 	 * @param userid
-	 * @param rootid 
+	 * @param rootid
+	 * @return boolean true es wurde was geaendert, false kein Eintrag hat stattgefunden
 	 */ 
-	public void addUserToAdminsOfProject(Connection conn, Integer userid, Integer rootid) throws SQLException
+	public boolean addUserToAdminsOfProject(Connection conn, Integer userid, Integer rootid) throws SQLException
 	{
 		PreparedStatement pst = null;
 		pst = conn.prepareStatement("UPDATE tfusertoproject SET isadmin = true WHERE userid = ? AND rootid = ?");   
@@ -1933,10 +1934,10 @@ public class DBLayerHSQL implements DBLayer
 			pst.setInt(1, userid.intValue());
 			pst.setInt(2, rootid.intValue());
 			//ausfuehren der Updates 
-			pst.executeUpdate();	
-			
-			conn.commit();
-			return;
+			if(pst.executeUpdate()> 0)	
+				return(true);
+			else
+				return(false);
 			
 		}
 		catch(SQLException e)
@@ -1953,8 +1954,9 @@ public class DBLayerHSQL implements DBLayer
 	 * Einen Nutzer dem Projekt zuordnen
 	 * @param userid
 	 * @param rootid 
+	 *@return true User wurde Eingetragen, false kein Eintrag
 	 */ 
-	public void addUserToProject(Connection conn, Integer userid, Integer rootid) throws SQLException
+	public boolean addUserToProject(Connection conn, Integer userid, Integer rootid) throws SQLException
 	{
 		PreparedStatement check = null;
 		check = conn.prepareStatement("SELECT count(*) FROM tfusertoproject WHERE userid = ? AND rootid = ?");
@@ -1978,10 +1980,12 @@ public class DBLayerHSQL implements DBLayer
 			}
 			if(count < 1)
 			{
-				pst.executeUpdate();
+				if(pst.executeUpdate()>0)
+					return true;
+				else
+					return false;
 			}
-			conn.commit();
-			return;
+			return true;
 			
 		}
 		catch(SQLException e)

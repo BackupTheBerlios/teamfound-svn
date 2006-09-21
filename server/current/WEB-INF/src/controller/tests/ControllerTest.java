@@ -70,16 +70,16 @@ public class ControllerTest {
 			String url = new String("http://www.black-sparx.de/");
 			try
 			{
-				AddPageResponse r4 = ctrl.addToIndex(url,cats);
-				printdoc(r4);
-				r4 = ctrl.addToIndex(url,cats);
-				printdoc(r4);
+				//AddPageResponse r4 = ctrl.addToIndex(url,cats);
+				//printdoc(r4);
+				//r4 = ctrl.addToIndex(url,cats);
+				//printdoc(r4);
 				cats[0] = 2;//ist Cat2
-				r4 = ctrl.addToIndex(url,cats);
-				printdoc(r4);
+				//r4 = ctrl.addToIndex(url,cats);
+				//printdoc(r4);
 				url = ("http://de.wikipedia.org/wiki/Reiseveranstalter");
-				r4 = ctrl.addToIndex(url,cats);
-				printdoc(r4);
+				//r4 = ctrl.addToIndex(url,cats);
+				//printdoc(r4);
 
 
 			}

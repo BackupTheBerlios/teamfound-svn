@@ -34,6 +34,7 @@ import controller.response.SearchResponse;
 import controller.response.NewUserResponse;
 import controller.response.LoginResponse;
 import controller.SessionData;
+import controller.teamfound.checkAuthorisation;
 
 import config.teamfound.TeamFoundConfig;
 
@@ -82,7 +83,7 @@ public class TeamFoundController implements Controller {
 	 * @param category[] die Kategorien in die die URL gehoert (eigentlich mindestens die root Kategorie des Projekts ... normalerweise 0
 	 * 
 	 */
-	public AddPageResponse addToIndex(String url, int category[]) throws DownloadFailedException, IndexAccessException {
+	public AddPageResponse addToIndex(String url, int category[], SessionData tfsession) throws DownloadFailedException, IndexAccessException {
 	
 
 		URL adress = null;
@@ -94,6 +95,8 @@ public class TeamFoundController implements Controller {
 			e2.initCause(e);
 		}
 		
+		AddPageResponse resp = new AddPageResponse(adress.toString());
+		
 		//Connection fuer DB
 		Connection conn;
 		
@@ -103,10 +106,22 @@ public class TeamFoundController implements Controller {
 		try
 		{
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
-			//ProjectVersionen auslesen fuer die Response
-			Vector<Integer> newcatstoadd = getAllPar(conn,category);//neue Kats mit elternKats 
+		
+			//1. Authorisation checken
+			for(int i=0; i<category.length; i++)
+			{
+				categoryBean cbean = db.getCatByID(conn,category[i]);
+				if(!checkAuthorisation.checkAddPage(tfsession, cbean.getRootID()))
+				{
+					resp.tfReturnValue(9);
+					return(resp);
+				}
+			}
+
+			//zu den Kats noch alle  elternKats suchen
+			Vector<Integer> newcatstoadd = getAllPar(conn,category);
 			
-			// 0. Datenbank auf Existenz der URL checken
+			// 2. Datenbank auf Existenz der URL checken
 			urltabBean urlbean = db.getUrl(conn,adress.toString());
 			if(urlbean != null)
 			{
@@ -117,19 +132,19 @@ public class TeamFoundController implements Controller {
 				{
 					//brauchen nichts erneueren
 					System.out.println("Nichts an der URL hat sich geaendert!");
-					AddPageResponse resp = new AddPageResponse(adress.toString());
 					return(resp);
 				}
 				else
 				{
-
+					//muessen nur Kategorien hinzufuegen
 					System.out.println("Neue Categorys zu der URL hinzutun");
 					HashSet<Integer> allcats = new HashSet<Integer>();
 					allcats.addAll(oldcats);
 					allcats.addAll(newcatstoadd);
+					//3. Kategorien in Index
 					tfindexer.updateCategory(adress.toString(),allcats);	
 					
-					//3.DB Aktualisieren
+					//4.DB Aktualisieren
 					categoryBean catbean = new categoryBean();
 					for(int i=0;i<category.length;i++)
 					{
@@ -141,8 +156,7 @@ public class TeamFoundController implements Controller {
 					}
 
 					
-					//4.Erfolgsmeldung liefern (liste von (projectid, katbaumversion)
-					AddPageResponse resp = new AddPageResponse(adress.toString());
+					//5.Erfolgsmeldung liefern (liste von (projectid, katbaumversion)
 					return(resp);
 
 				}
@@ -185,9 +199,7 @@ public class TeamFoundController implements Controller {
 				db.addCatwithParentsToUrl(conn,ubean,catbean);
 			}
 		
-			// 4. fertig
-			// hier muss eine addpage-response zurückgegeben werden
-			AddPageResponse resp = new AddPageResponse(adress.toString());
+			// 4. fertig alles schliessen und response senden
 			
 			conn.close();
 			db.shutdown("anyserver","tfdb");
@@ -238,7 +250,7 @@ public class TeamFoundController implements Controller {
 	 * @deprecated
 	 */
 
-	@Deprecated public SearchResponse search(String query, int category[]) throws IndexAccessException, ServerInitFailedException
+	@Deprecated public SearchResponse search(String query, int category[]) throws IndexAccessException
 	{
 		
 		try{
@@ -276,7 +288,7 @@ public class TeamFoundController implements Controller {
 	}
 
 	
-	public SearchResponse search(String query, int offset, int category[], SessionData tfsession) throws IndexAccessException, ServerInitFailedException, DBAccessException
+	public SearchResponse search(String query, int offset, int category[], SessionData tfsession) throws IndexAccessException,  DBAccessException
 
 	{
 		
@@ -429,6 +441,12 @@ public class TeamFoundController implements Controller {
 	public AddCategoriesResponse addCategory(String name, int parentCat, String description, SessionData tfsession) throws DBAccessException
 	{
 		AddCategoriesResponse resp;
+		// initialisiert mit not authorized
+		resp = new AddCategoriesResponse(
+							"",
+							new Integer(-1));
+		resp.tfReturnValue(new Integer(9));
+
 		try
 		{
 			//1.Connection zur DB
@@ -470,10 +488,6 @@ public class TeamFoundController implements Controller {
 				else
 				{
 					// not authorized
-					resp = new AddCategoriesResponse(
-							"",
-							new Integer(-1));
-					resp.tfReturnValue(new Integer(9));
 					conn.close();
 					return resp;
 				}
@@ -498,11 +512,6 @@ public class TeamFoundController implements Controller {
 					if( tfsession == SessionData.guest)
 					{
 						// not authorized
-						resp = new AddCategoriesResponse(
-								"",
-								new Integer(-1));
-						resp.tfReturnValue(new Integer(9));
-
 						conn.close();
 						return(resp);
 					}
@@ -511,11 +520,6 @@ public class TeamFoundController implements Controller {
 						if( !tfsession.urb.addCat(parentcat.getRootID()))
 						{
 								// not authorized
-								resp = new AddCategoriesResponse(
-										"",
-										new Integer(-1));
-								resp.tfReturnValue(new Integer(9));
-
 								conn.close();
 								return(resp);
 						}
@@ -535,7 +539,6 @@ public class TeamFoundController implements Controller {
 		}
 		catch(Exception e)
 		{
-			//TODO Exceptions richtig machen
  			System.out.println("TeamFoundController : addCategory)");
 			e.printStackTrace();
 			DBAccessException dba = new DBAccessException("TeamFoundController : addCategory" + e);
