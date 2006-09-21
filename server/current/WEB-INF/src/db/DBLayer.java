@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.Vector;
 import java.util.HashSet;
 import java.util.Date;
+import java.util.Map;
 
 import db.dbbeans.*;
 import tools.Tuple;
@@ -283,6 +284,13 @@ public interface DBLayer
 	 * 
 	 */
 	public HashSet<Tuple<Integer,Integer>> getAllVersions(Connection conn) throws SQLException;
+
+	/**
+	 * Liefert Map <Integer,Integer> 
+	 * der erste int ist die ID der RootCAT der Zweite ist die Version des Baumes
+	 * Also alle Versionsnummer der Projecte mit ProjektID
+	 */
+	public Map<Integer,Integer> getAllVersion(Connection conn) throws SQLException;
 
 	/**
 	 * Liest alle WurzelKategorien aus.

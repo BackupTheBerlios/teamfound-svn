@@ -17,6 +17,7 @@ import java.util.Vector;
 import java.util.List;
 import java.util.Iterator;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Date;
 
 import controller.Download;
@@ -473,7 +474,10 @@ public class TeamFoundController implements Controller {
 		}
 			
 	}
-	
+	/*
+	 * alle Projekte auslesen
+	 *
+	 */
 	public GetProjectsResponse getProjects() throws ServerInitFailedException
 	{
 		try
@@ -483,6 +487,7 @@ public class TeamFoundController implements Controller {
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
 			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+			Map<Integer,Integer> projver = db.getAllVersion(conn);
 			Vector<categoryBean> catvec = db.getAllRootCats(conn);
 		//2. mit den Infos die Response fuellen
 			GetProjectsResponse resp = new GetProjectsResponse(vertup);
@@ -490,7 +495,7 @@ public class TeamFoundController implements Controller {
 			while(it.hasNext())
 			{
 				categoryBean cat = (categoryBean)it.next();
-				resp.addProject(cat.getCategory(), cat.getBeschreibung(),cat.getID());
+				resp.addProject(cat.getCategory(), cat.getBeschreibung(),cat.getID(),projver.get(cat.getRootID()));
 						
 			}
 			conn.close();

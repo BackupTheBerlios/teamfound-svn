@@ -22,20 +22,23 @@ public class GetProjectsResponse extends Response {
 		projects = new LinkedList<Element>();
 	}
 	
-	public void addProject(String pname, String pdescription, Integer pID) {
+	public void addProject(String pname, String pdescription, Integer pID, Integer ver) {
 		Element project = new Element("project");
 		
 		Element name = new Element("name");
 		Element description = new Element("description");
 		Element ID = new Element("id");
+		Element version = new Element("version");
 		
 		project.addContent(name);
 		project.addContent(description);
 		project.addContent(ID);
+		project.addContent(version);
 		
 		name.addContent(pname);
 		description.addContent(pdescription);
 		ID.addContent(pID.toString());
+		version.addContent(ver.toString());
 		
 		projects.add(project);
 	}

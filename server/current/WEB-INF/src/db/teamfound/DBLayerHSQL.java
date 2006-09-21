@@ -28,7 +28,8 @@ import java.util.HashSet;
 import java.util.AbstractList;
 import java.util.LinkedList;
 import java.util.Date; 
-import java.util.HashMap; 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Iterator; 
 import config.teamfound.TeamFoundConfig;
 
@@ -1362,6 +1363,38 @@ public class DBLayerHSQL implements DBLayer
 			throw(e);
 		}
 	}
+
+	/**
+	 * Liefert Map <Integer,Integer> 
+	 * der erste int ist die ID der RootCAT der Zweite ist die Version des Baumes
+	 * Also alle Versionsnummer der Projecte mit ProjektID
+	 */
+	public Map<Integer,Integer> getAllVersion(Connection conn) throws SQLException
+	{
+		PreparedStatement st = null;
+		st = conn.prepareStatement("SELECT rootid,version FROM projectdata");    // erstelle statements
+		try
+		{
+			ResultSet rsi = st.executeQuery();
+
+			HashMap<Integer,Integer> versionlist = new HashMap<Integer,Integer>();
+			if(rsi.next())
+			{
+				versionlist.put(rsi.getInt("rootid"),rsi.getInt("version"));
+			}
+
+		
+			return(versionlist);
+									
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("GetVersionNumber: "+ e);
+			throw(e);
+		}
+	}
+
 
 	/**
 	 * Liest alle WurzelKategorien aus.
