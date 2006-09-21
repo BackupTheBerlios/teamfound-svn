@@ -538,7 +538,7 @@ public class TeamFoundController implements Controller {
 	 * alle Projekte auslesen
 	 *
 	 */
-	public GetProjectsResponse getProjects() throws DBAccessException
+	public GetProjectsResponse getProjects(SessionData session) throws DBAccessException
 	{
 		try
 		{
@@ -554,7 +554,7 @@ public class TeamFoundController implements Controller {
 			while(it.hasNext())
 			{
 				categoryBean cat = (categoryBean)it.next();
-				resp.addProject(cat.getCategory(), cat.getBeschreibung(),cat.getID(),projver.get(cat.getRootID()));
+				resp.addProject(cat.getCategory(), cat.getBeschreibung(),cat.getID(),projver.get(cat.getRootID()), session);
 						
 			}
 			conn.close();

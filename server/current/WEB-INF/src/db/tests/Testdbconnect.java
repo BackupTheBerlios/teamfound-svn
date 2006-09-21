@@ -14,7 +14,7 @@ public class Testdbconnect
 	{
 		try
 		{
-			java.io.File f = new java.io.File("/home/moddin/Uni/OpenSourceSoftEnt/teamfound/server/current/conf/teamfound.properties");
+			java.io.File f = new java.io.File("current/conf/teamfound.properties");
 
 			java.io.FileInputStream pin = new java.io.FileInputStream(f);
 

@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator; 
 import config.teamfound.TeamFoundConfig;
+import controller.SessionData;
 
 public class DBLayerHSQL implements DBLayer
 {
@@ -2095,62 +2096,30 @@ public class DBLayerHSQL implements DBLayer
 	public userRightBean getRights(Connection conn, Integer userid) throws SQLException
 	{
 		PreparedStatement stuser = null;
-		stuser = conn.prepareStatement("Select * from projectdata where rootid = (SELECT rootid FROM tfusertoproject WHERE userid = ? AND isadmin =?)");
+		stuser = conn.prepareStatement("Select rootid from projectdata where rootid = (SELECT rootid FROM tfusertoproject WHERE userid = ? AND isadmin =?)");
 		stuser.setInt(1, userid.intValue());
 		stuser.setBoolean(2, false);
-
-		PreparedStatement stadmin = null;
-		stadmin = conn.prepareStatement("SELECT * FROM projectdata WHERE rootid = (SELECT rootid FROM tfusertoproject WHERE userid = ? AND isadmin =?)");
-		stadmin.setInt(1, userid.intValue());
-		stadmin.setBoolean(2, true);
 
 		try
 		{	
 			ResultSet rsi = stuser.executeQuery();	
 			
-			projectdataBean re = new projectdataBean();
-			HashMap<Integer,projectdataBean> pmap= new HashMap<Integer,projectdataBean>();
+			HashMap<Integer,projectdataBean> pmap = new HashMap<Integer,projectdataBean>();
 			while(rsi.next())
 			{
-				re.setRootID(new Integer(rsi.getInt("rootid")));	
-				re.setID(new Integer(rsi.getInt("id")));
-				re.setVersion(new Integer(rsi.getInt("version")));	
-				re.setUserUseradd(new Boolean(rsi.getBoolean("useruseradd")));	
-				re.setUserUrledit(new Boolean(rsi.getBoolean("userurledit")));	
-				re.setUserCatedit(new Boolean(rsi.getBoolean("usercatedit")));	
-				re.setUserAddurl(new Boolean(rsi.getBoolean("useraddurl")));	
-				re.setUserAddcat(new Boolean(rsi.getBoolean("useraddcat")));	
-				re.setGuestRead(new Boolean(rsi.getBoolean("guestread")));	
-				re.setGuestUrledit(new Boolean(rsi.getBoolean("guesturledit")));	
-				re.setGuestCatedit(new Boolean(rsi.getBoolean("guestcatedit")));	
-				re.setGuestAddurl(new Boolean(rsi.getBoolean("guestaddurl")));	
-				re.setGuestAddcat(new Boolean(rsi.getBoolean("guestaddcat")));	
-				pmap.put(re.getRootID(),re);
+				pmap.put(rsi.getInt("rootid"),SessionData.projectdata.get(rsi.getInt("rootid")));
 			}
 			
-			rsi = stadmin.executeQuery();
-			HashMap<Integer,projectdataBean> adminmap= new HashMap<Integer,projectdataBean>();
+			stuser.setBoolean(2, true);
+			rsi = stuser.executeQuery();
+			HashMap<Integer,projectdataBean> adminmap = new HashMap<Integer,projectdataBean>();
 			while(rsi.next())
 			{
-				re.setRootID(new Integer(rsi.getInt("rootid")));	
-				re.setID(new Integer(rsi.getInt("id")));
-				re.setVersion(new Integer(rsi.getInt("version")));	
-				re.setUserUseradd(new Boolean(rsi.getBoolean("useruseradd")));	
-				re.setUserUrledit(new Boolean(rsi.getBoolean("userurledit")));	
-				re.setUserCatedit(new Boolean(rsi.getBoolean("usercatedit")));	
-				re.setUserAddurl(new Boolean(rsi.getBoolean("useraddurl")));	
-				re.setUserAddcat(new Boolean(rsi.getBoolean("useraddcat")));	
-				re.setGuestRead(new Boolean(rsi.getBoolean("guestread")));	
-				re.setGuestUrledit(new Boolean(rsi.getBoolean("guesturledit")));	
-				re.setGuestCatedit(new Boolean(rsi.getBoolean("guestcatedit")));	
-				re.setGuestAddurl(new Boolean(rsi.getBoolean("guestaddurl")));	
-				re.setGuestAddcat(new Boolean(rsi.getBoolean("guestaddcat")));	
-				adminmap.put(re.getRootID(),re);
+				adminmap.put(rsi.getInt("rootid"),SessionData.projectdata.get(rsi.getInt("rootid")));
 			}
 			userRightBean rbean = new userRightBean(pmap,adminmap);
 			
 			return(rbean);
-			
 		}
 		catch(SQLException e)
 		{

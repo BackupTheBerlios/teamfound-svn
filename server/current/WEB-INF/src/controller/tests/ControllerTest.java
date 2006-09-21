@@ -20,7 +20,7 @@ public class ControllerTest {
 		
 		try
 		{
-			java.io.File f = new java.io.File("/home/moddin/build/teamfound.properties");
+			java.io.File f = new java.io.File("build/conf/teamfound.properties");
 
 			java.io.FileInputStream pin = new java.io.FileInputStream(f);
 
@@ -41,7 +41,7 @@ public class ControllerTest {
 
 			System.out.println("\n\n");
 			System.out.println("------GetProjects Test---------");
-			GetProjectsResponse r1 = ctrl.getProjects();
+			GetProjectsResponse r1 = ctrl.getProjects(null);
 			printdoc(r1);
 
 			System.out.println("\n\n");

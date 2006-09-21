@@ -293,7 +293,7 @@ public abstract class BaseServlet extends HttpServlet {
 			return ctrl.addCategory(name, parentID, description, tfsession);
 			
 		case 5:
-			return ctrl.getProjects();
+			return ctrl.getProjects(tfsession);
 			
 		case 6:
 			String user, pass;

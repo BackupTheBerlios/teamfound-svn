@@ -57,7 +57,6 @@ public class SessionData
 		return(sessions.get(sessionkey));
 	}
 
-
 	public userRightBean urb;
 	public Date lastaccess;
 	public String sessionkey;

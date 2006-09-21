@@ -23,7 +23,6 @@ public class userRightBean implements Serializable
 	{
 		this.userprojects = m;
 		this.adminprojects = ad;
-		
 	}
 
 	public HashMap<Integer,projectdataBean> getUserProjects()

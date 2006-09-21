@@ -48,7 +48,7 @@ public class TestController implements Controller {
 		return r;
 	}
 
-	public GetProjectsResponse getProjects() {
+	public GetProjectsResponse getProjects(SessionData session) {
 		// TODO Auto-generated method stub
 		return null;		
 	}
