@@ -16,12 +16,12 @@ public class checkAuthorisation
 	{
 		if(tfsession == SessionData.guest)
 		{
-			//Ueberpruefen ob Gaeste pages adden duerfen
 			if(SessionData.projectdata.get(projectID).getGuestAddurl().booleanValue())
 				return true;
 			else
 				return false;
 		}
+
 
 		if(isAdmin(tfsession,projectID))
 			return true;
@@ -44,6 +44,33 @@ public class checkAuthorisation
 		else
 			return false;
 	}
+	/*
+	 *
+	 *	Ueberbrueft ob der angemeldete Nutzer/Gast Kategorien im Projekt adden darf 
+	 */
+	public static boolean checkAddCat(SessionData tfsession, Integer projectid)
+	{
+		// checke ob guestaddcat == true oder 
+		// user eingeloggt, zu diesem projekt gehoert und projekt useraddcat == true gestzt hat
+		// oder user admin des projekts ist
+		
+		if( tfsession == SessionData.guest)
+		{
+			if( SessionData.projectdata.get(projectid).getGuestAddcat().booleanValue())
+				return true;
+			else
+				return false;
+		}
+
+		if(isAdmin(tfsession,projectid))
+			return true;
+
+		if(tfsession.urb.addCat(projectid))
+			return true;
+		else 
+			return false;
+	}
+
 
 
 }

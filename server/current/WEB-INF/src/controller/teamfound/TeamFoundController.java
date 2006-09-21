@@ -437,7 +437,11 @@ public class TeamFoundController implements Controller {
 		}
 		
 	}
-
+	/*
+	 * Legt neue subKategorie zur uebergebenen ElternKategorie an.
+	 * Wird -1 als Elternkateorie angegeben so wird ein neues Projekt angelegt
+	 *
+	 */
 	public AddCategoriesResponse addCategory(String name, int parentCat, String description, SessionData tfsession) throws DBAccessException
 	{
 		AddCategoriesResponse resp;
@@ -470,7 +474,7 @@ public class TeamFoundController implements Controller {
 						newcat = db.addRootCategory(conn, newcat);
 						db.addUserToProject(conn, tfsession.tfu.getID(), newcat.getID());
 						db.addUserToAdminsOfProject(conn, tfsession.tfu.getID(), newcat.getID());
-						// In DataSession neue Sachen eintragen
+						// DataSession updaten
 						tfsession.urb = db.getRights(conn, tfsession.tfu.getID());
 						projectdataBean pdb = db.getProjectDataToCat(conn, newcat.getID());
 						SessionData.projectdata.put(pdb.getRootID(),pdb);
@@ -504,28 +508,12 @@ public class TeamFoundController implements Controller {
 				}
 
 
-				// checke ob guestaddcat == true oder 
-				// user eingeloggt, zu diesem projekt gehoert und projekt useraddcat == true gestzt hat
-				// oder user admin des projekts ist
-				if( !SessionData.projectdata.get(parentcat.getRootID()).getGuestAddcat().booleanValue())
+				if(!checkAuthorisation.checkAddCat(tfsession,parentcat.getRootID()))
 				{
-					if( tfsession == SessionData.guest)
-					{
-						// not authorized
-						conn.close();
-						return(resp);
-					}
-					if( !tfsession.urb.isAdmin(parentcat.getRootID()))
-					{
-						if( !tfsession.urb.addCat(parentcat.getRootID()))
-						{
-								// not authorized
-								conn.close();
-								return(resp);
-						}
-					}
+					// not authorized
+					conn.close();
+					return(resp);
 				}
-				
 				newcat = db.addCategory(conn, newcat, parentcat);
 				resp = new AddCategoriesResponse(
 					newcat.getCategory(),
