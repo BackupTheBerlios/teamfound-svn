@@ -483,7 +483,7 @@ public class TeamFoundController implements Controller {
 	 * alle Projekte auslesen
 	 *
 	 */
-	public GetProjectsResponse getProjects() throws ServerInitFailedException
+	public GetProjectsResponse getProjects() throws DBAccessException
 	{
 		try
 		{
@@ -512,7 +512,10 @@ public class TeamFoundController implements Controller {
 		{
 			//TODO Exceptions richtig machen
  			System.out.println("TeamFoundController : getProjects)"+e);
-			return null;
+			e.printStackTrace();
+            DBAccessException a = new DBAccessException("nested Exception");
+			a.initCause(e);
+			throw a;
 		}
 		
 	}

@@ -1372,7 +1372,7 @@ public class DBLayerHSQL implements DBLayer
 	public Map<Integer,Integer> getAllVersion(Connection conn) throws SQLException
 	{
 		PreparedStatement st = null;
-		st = conn.prepareStatement("SELECT rootid,version FROM projectdata");    // erstelle statements
+		st = conn.prepareStatement("SELECT rootid,version FROM projectdata");   
 		try
 		{
 			ResultSet rsi = st.executeQuery();

@@ -48,7 +48,7 @@ public interface Controller {
 	public AddCategoriesResponse addCategory(String name, int parentCat, String description, SessionData tfsession) throws ServerInitFailedException;
 
 	//TODO Response -> einfach Kategorien nur halt als Liste nicht als Baum ...
-	public GetProjectsResponse getProjects()throws ServerInitFailedException;
+	public GetProjectsResponse getProjects()throws DBAccessException;
 	
 	// evtl.später:
 	
