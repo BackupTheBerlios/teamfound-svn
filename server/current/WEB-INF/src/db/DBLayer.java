@@ -382,6 +382,7 @@ public interface DBLayer
 	/**
 	 *
 	 * Gib einem Nutzer adminrechte fuer ein Projekt (vorausgesetzt er ist dem Project zugeordnet)
+	 * Achtung der Nutzer muss bereits dem Project angehoeren!
 	 * @param userid
 	 * @param rootid 
 	 */ 

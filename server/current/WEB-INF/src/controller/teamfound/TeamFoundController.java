@@ -431,11 +431,11 @@ public class TeamFoundController implements Controller {
 		AddCategoriesResponse resp;
 		try
 		{
-		//1. Versionen der KategorieBaeume aus db
+			//1.Connection zur DB
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-		//2. categorybeans erstellen und ind db adden
+			//2. categorybeans erstellen und ind db adden
 			categoryBean newcat = new categoryBean();
 			newcat.setCategory(name);
 			newcat.setBeschreibung(description);
@@ -450,6 +450,7 @@ public class TeamFoundController implements Controller {
 						// neues Projekt anlegen
 						conn.setSavepoint("newproject");
 						newcat = db.addRootCategory(conn, newcat);
+						db.addUserToProject(conn, tfsession.tfu.getID(), newcat.getID());
 						db.addUserToAdminsOfProject(conn, tfsession.tfu.getID(), newcat.getID());
 						// In DataSession neue Sachen eintragen
 						tfsession.urb = db.getRights(conn, tfsession.tfu.getID());
@@ -623,6 +624,7 @@ public class TeamFoundController implements Controller {
 			admin.setUsername(adminname);
 			admin.setPass(adminpass);
 			admin = db.createNewUser(conn, admin);
+			db.addUserToProject(conn, admin.getID(), catbean.getRootID());
 			db.addUserToAdminsOfProject(conn, admin.getID(), catbean.getRootID());
 			
 			projectdataBean pdata = new projectdataBean(catbean.getRootID(),

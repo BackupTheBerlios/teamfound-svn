@@ -1621,7 +1621,7 @@ public class DBLayerHSQL implements DBLayer
 			
 			tfuserBean re = new tfuserBean();
 			
-			if(rsi.first())
+			if(rsi.next())
 			{
 				re.setID(rsi.getInt("id"));
 				re.setUsername(rsi.getString("username"));
@@ -1782,7 +1782,7 @@ public class DBLayerHSQL implements DBLayer
 			
 			tfuserBean re = new tfuserBean();
 			
-			if(rsi.first())
+			if(rsi.next())
 			{
 				re.setID(rsi.getInt("id"));
 				re.setUsername(rsi.getString("username"));
@@ -1918,6 +1918,7 @@ public class DBLayerHSQL implements DBLayer
 
 	/**
 	 * Gib einem Nutzer adminrechte fuer ein Projekt
+	 * Achtung der Nutzer muss bereits dem Project angehoeren!
 	 * @param userid
 	 * @param rootid 
 	 */ 
@@ -1971,7 +1972,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 			int count = 0;
 			ResultSet rsi = check.executeQuery();	
-			if(rsi.first())
+			if(rsi.next())
 			{
 				count =	rsi.getInt(1);
 			}
@@ -2050,7 +2051,7 @@ public class DBLayerHSQL implements DBLayer
 			ResultSet rsi = st.executeQuery();	
 			
 			projectdataBean re = new projectdataBean();
-			if(rsi.first())
+			if(rsi.next())
 			{
 				re.setRootID(rootid);	
 				re.setID(new Integer(rsi.getInt("id")));
@@ -2175,7 +2176,7 @@ public class DBLayerHSQL implements DBLayer
 			ResultSet rsi = st.executeQuery();	
 			
 			projectdataBean re = new projectdataBean();
-			if(rsi.first())
+			if(rsi.next())
 			{
 				re.setRootID(new Integer(rsi.getInt("rootid")));	
 				re.setID(new Integer(rsi.getInt("id")));
