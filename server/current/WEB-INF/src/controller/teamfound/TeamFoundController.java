@@ -522,13 +522,13 @@ public class TeamFoundController implements Controller {
 	{
 		try
 		{
-		//1. Versionen der KategorieBaeume und alle RootCats() aus der Datenbank holen
+			//1. Versionen der KategorieBaeume und alle RootCats() aus der Datenbank holen
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
 			Map<Integer,Integer> projver = db.getAllVersion(conn);
 			Vector<categoryBean> catvec = db.getAllRootCats(conn);
-		//2. mit den Infos die Response fuellen
+			//2. mit den Infos die Response fuellen
 			GetProjectsResponse resp = new GetProjectsResponse();
 			Iterator it = catvec.iterator();
 			while(it.hasNext())
@@ -559,7 +559,7 @@ public class TeamFoundController implements Controller {
 	 *
 	 * @return true->initialized(entweder war schon oder ist es nun) false->heisst irgentwas funzt nicht richtig im Server
 	 */
-	public boolean initServer()
+	private boolean initServer()
 	{
 		try
 		{
@@ -689,14 +689,11 @@ public class TeamFoundController implements Controller {
 	{	
 		try
 		{
-		//1. Establish connection
+			//1. Establish connection
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-
-		//2. user in db adden
-			
-
+			//2. user in db adden
 			tfuserBean newuser = new tfuserBean();
 			newuser.setUsername(user);
 			newuser.setPass(pass);
@@ -708,7 +705,13 @@ public class TeamFoundController implements Controller {
 				//7 ist ReturnCode fuer Username zu kurz
 				re.tfReturnValue(new Integer(7));
 				return(re);
-
+			}
+			if(pass.length() < 3)
+			{
+				NewUserResponse re = new NewUserResponse(newuser.getUsername());
+				//10 ist ReturnCode fuer Passwort zu kurz
+				re.tfReturnValue(new Integer(10));
+				return(re);
 			}
 			
 			//Username schon vergeben ?
@@ -722,7 +725,7 @@ public class TeamFoundController implements Controller {
 		
 			newuser = db.createNewUser(conn, newuser);
 
-		//3.response liefern		
+			//3.response liefern		
 			NewUserResponse	resp = new NewUserResponse(newuser.getUsername());
 			
 			conn.close();
@@ -750,12 +753,11 @@ public class TeamFoundController implements Controller {
 	{	
 		try
 		{
-		//1. Establish connection
+			//1. Establish connection
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-
-		//2. in DB nachschauen
+			//2. in DB nachschauen
 			tfuserBean tf = db.getUserByName(conn,user);
 			if(tf != null)
 			{
@@ -788,12 +790,12 @@ public class TeamFoundController implements Controller {
 	{	
 		try
 		{
-		//1. Establish connection
+			//1. Establish connection
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
 			conn.close();
-		//2. antwort erstellen
+			//2. antwort erstellen
 
 			LoginResponse resp = new LoginResponse(
 					user,
@@ -825,17 +827,17 @@ public class TeamFoundController implements Controller {
 	{	
 		try
 		{
-		//1. Establish connection
+			//1. Establish connection
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-		//2.Session info speichern
+			//2.Session info speichern
 			tfuserBean tfun = db.getUserByName(conn,user);
 			userRightBean uright = db.getRights(conn,tfun.getID());
 			SessionData.addSession(sessionkey,uright,tfun);
 
 			conn.close();
-		//3. antwort erstellen
+			//3. antwort erstellen
 
 			LoginResponse resp = new LoginResponse(
 					user,
