@@ -14,6 +14,8 @@ import db.dbbeans.*;
 public class SessionData
 {
 	private static ConcurrentHashMap<String,SessionData> sessions = new ConcurrentHashMap<String,SessionData>();
+
+	// projectdata hashmap schluessel ist root_id
 	public static ConcurrentHashMap<Integer,projectdataBean> projectdata = new ConcurrentHashMap<Integer,projectdataBean>();
 
 	public static final SessionData guest = new SessionData(null, "guest", new tfuserBean(-1, "guest", "", "guest", null, false));

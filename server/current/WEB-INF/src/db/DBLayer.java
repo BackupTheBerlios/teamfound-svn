@@ -19,6 +19,8 @@ import java.util.Map;
 import db.dbbeans.*;
 import tools.Tuple;
 
+import controller.SessionData;
+
 public interface DBLayer
 {
 	/** 

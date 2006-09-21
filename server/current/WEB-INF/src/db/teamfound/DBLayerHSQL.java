@@ -420,11 +420,12 @@ public class DBLayerHSQL implements DBLayer
 	{
 		//Bean fuer Return anlegen
 		categoryBean re = catbean;
-		
 		Statement st = null;
 		st = conn.createStatement();    // erstelle statements
-		//TODO ist die Bean auch gefuellt			
-		String insert = new String("INSERT INTO category(left,right,name,beschreibung) VALUES(1,2,'"+catbean.getCategory()+"','"+catbean.getBeschreibung()+"')");
+
+		PreparedStatement newcat = conn.prepareStatement("INSERT INTO category(left,right,name,beschreibung) VALUES(1,2,?,?)");
+		newcat.setString(1, catbean.getCategory());
+		newcat.setString(2, catbean.getBeschreibung());
 		
 		//returnbean fuellen
 		re.setLeft(1);
@@ -433,14 +434,11 @@ public class DBLayerHSQL implements DBLayer
 		//Statement um PrimKey zu kriegen
 		String prim = new String("CALL IDENTITY()");
 		
-		// lock table category , set savepoint
-		conn.setSavepoint("addrootcat");
-
 		try
 		{
 
 			//ausfuehren des inserts
-			st.executeUpdate(insert);
+			newcat.executeUpdate();
 
 			//erzeugte id holen
 			ResultSet rsi = st.executeQuery(prim);
@@ -456,17 +454,14 @@ public class DBLayerHSQL implements DBLayer
 			st.executeUpdate(upd);			
 
 			//neuer Eintrag in CategoryVersionTabelle
-			insert = new String("INSERT INTO projectdata(rootid,version) VALUES("+identity+",1)");
+			String insert = new String("INSERT INTO projectdata(rootid,version) VALUES("+identity+",1)");
 			st.executeUpdate(insert);			
-			
-			conn.commit();
-			
+
 			return(re);
 			
 		}
 		catch(SQLException e)
 		{
-			conn.rollback();
 			//TODO LoggMessage statt print
 			System.out.println("AddRoot: "+ e);
 			throw(e);
@@ -2276,9 +2271,9 @@ public class DBLayerHSQL implements DBLayer
 
 			ResultSet rsi = st.executeQuery();	
 			
-			projectdataBean re = new projectdataBean();
 			while(rsi.next())
 			{
+				projectdataBean re = new projectdataBean();
 				re.setRootID(new Integer(rsi.getInt("rootid")));	
 				re.setID(new Integer(rsi.getInt("id")));
 				re.setVersion(new Integer(rsi.getInt("version")));	

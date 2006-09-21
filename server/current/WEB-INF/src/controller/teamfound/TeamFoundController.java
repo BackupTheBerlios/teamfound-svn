@@ -423,8 +423,9 @@ public class TeamFoundController implements Controller {
 		
 	}
 
-	public AddCategoriesResponse addCategory(String name, int parentCat, String description, SessionData tfsession) throws ServerInitFailedException 
+	public AddCategoriesResponse addCategory(String name, int parentCat, String description, SessionData tfsession) throws DBAccessException
 	{
+		AddCategoriesResponse resp;
 		try
 		{
 		//1. Versionen der KategorieBaeume aus db
@@ -438,36 +439,102 @@ public class TeamFoundController implements Controller {
 
 			if( parentCat == -1)
 			{
-				// neues Projekt anlegen
-				newcat = db.addRootCategory(conn, newcat);
+
+				if( tfsession != SessionData.guest)
+				{
+					try
+					{
+						// neues Projekt anlegen
+						conn.setSavepoint("newproject");
+						newcat = db.addRootCategory(conn, newcat);
+						db.addUserToAdminsOfProject(conn, tfsession.tfu.getID(), newcat.getID());
+						conn.commit();
+						resp = new AddCategoriesResponse(
+							newcat.getCategory(),
+							newcat.getID());
+					}
+					catch( SQLException e)
+					{
+						conn.rollback();
+						throw e;
+					}
+				}
+				else
+				{
+					// not authorized
+					resp = new AddCategoriesResponse(
+							"",
+							new Integer(-1));
+					resp.tfReturnValue(new Integer(9));
+					conn.close();
+					return resp;
+				}
+
 			}
 			else
 			{
 				// neue Kategorie in existierendem Projekt anlegen
+				categoryBean parentcat = db.getCatByID(conn, parentCat);
 
-				categoryBean parentcat = new categoryBean();
+				if( parentcat == null)
+				{
+					throw new Exception("XXX");
+				}
 
-				parentcat.setID(parentCat);
+
+				// checke ob guestaddcat == true oder 
+				// user eingeloggt, zu diesem projekt gehoert und projekt useraddcat == true gestzt hat
+				// oder user admin des projekts ist
+
+				if( !SessionData.projectdata.get(parentcat.getRootID()).getGuestAddcat().booleanValue())
+				{
+					if( tfsession == SessionData.guest)
+					{
+						// not authorized
+						resp = new AddCategoriesResponse(
+								"",
+								new Integer(-1));
+						resp.tfReturnValue(new Integer(9));
+
+						conn.close();
+						return(resp);
+					}
+					if( !tfsession.urb.isAdmin(parentcat.getRootID()))
+					{
+						if( !tfsession.urb.addCat(parentcat.getRootID()))
+						{
+								// not authorized
+								resp = new AddCategoriesResponse(
+										"",
+										new Integer(-1));
+								resp.tfReturnValue(new Integer(9));
+
+								conn.close();
+								return(resp);
+						}
+					}
+				}
 				
 				newcat = db.addCategory(conn, newcat, parentcat);
-			}
-		
-		//3.response liefern		
-			AddCategoriesResponse resp = new AddCategoriesResponse(
+				resp = new AddCategoriesResponse(
 					newcat.getCategory(),
 					newcat.getID());
-			
+
+			}
+		
+						
 			conn.close();
 			return(resp);
-
 		}
 		catch(Exception e)
 		{
 			//TODO Exceptions richtig machen
- 			System.out.println("TeamFoundController : addCategory)"+e);
-			return null;
+ 			System.out.println("TeamFoundController : addCategory)");
+			e.printStackTrace();
+			DBAccessException dba = new DBAccessException("TeamFoundController : addCategory" + e);
+			dba.initCause(e);
+			throw dba;
 		}
-			
 	}
 	/*
 	 * alle Projekte auslesen
