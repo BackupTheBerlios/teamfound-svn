@@ -38,7 +38,10 @@ public class GetProjectsResponse extends Response {
 		name.addContent(pname);
 		description.addContent(pdescription);
 		ID.addContent(pID.toString());
-		version.addContent(ver.toString());
+		if( ver != null)
+		{
+			version.addContent(ver.toString());
+		}
 		
 		projects.add(project);
 	}

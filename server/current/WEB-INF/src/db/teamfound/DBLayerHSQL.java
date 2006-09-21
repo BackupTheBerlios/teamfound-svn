@@ -1316,7 +1316,7 @@ public class DBLayerHSQL implements DBLayer
 
 			Tuple<Integer,Integer> versiontuple;
 			HashSet<Tuple<Integer,Integer>> versionlist = new HashSet<Tuple<Integer,Integer>>();
-			if(rsi.next())
+			while(rsi.next())
 			{
 				versiontuple = new Tuple<Integer,Integer>(rsi.getInt(1), rsi.getInt(2));
 				versionlist.add(versiontuple);
@@ -1378,7 +1378,7 @@ public class DBLayerHSQL implements DBLayer
 			ResultSet rsi = st.executeQuery();
 
 			HashMap<Integer,Integer> versionlist = new HashMap<Integer,Integer>();
-			if(rsi.next())
+			while(rsi.next())
 			{
 				versionlist.put(rsi.getInt("rootid"),rsi.getInt("version"));
 			}

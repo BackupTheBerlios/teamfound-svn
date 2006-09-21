@@ -15,6 +15,7 @@
 		<body>
 			<h1><xsl:value-of select="server/name"/></h1>
 			<xsl:call-template name="menu"/>
+			<xsl:call-template name="showcommandresults"/>
 			<xsl:call-template name="pageselector"/>
 			<!--<h2>Request Informationen:</h2>
 			<p>
@@ -31,6 +32,42 @@
 			</p>
 		</body>
 	</html>
+</xsl:template>
+
+<xsl:template name="showcommandresults">
+	<xsl:if test="count(/response/teamfound/search/result) > 0">
+		<p>
+			<xsl:value-of select="count(/response/teamfound/search/result/found)"/>
+			of 
+			<xsl:value-of select="/response/teamfound/search/result/count"/>
+			results shown:<br/>
+			<ul>
+				<xsl:for-each select="/response/teamfound/search/result/found">
+					<li>
+						<a>
+							<xsl:attribute name="href">
+								<xsl:value-of select="url"/>
+							</xsl:attribute>
+							<xsl:value-of select="title"/>
+						</a>
+						<br/>
+						<xsl:value-of select="url"/> (category <xsl:value-of select="incategory"/>)
+					</li>
+				</xsl:for-each>
+			</ul>
+		</p>
+	</xsl:if>
+	<xsl:if test="count(/response/teamfound/addPage) > 0">
+		<p>
+			URL <a>
+					<xsl:attribute name="href">
+						<xsl:value-of select="/response/teamfound/addPage/url"/>
+					</xsl:attribute>
+					<xsl:value-of select="/response/teamfound/addPage/url"/>
+				</a>
+			successfully added.<br/><br/>
+		</p>
+	</xsl:if>
 </xsl:template>
 
 <xsl:template name="menu">
@@ -170,7 +207,21 @@
 					</xsl:if>
 				</xsl:attribute>
 			</input>
-			<input size="50" type="hidden" name="category" value="0"/>
+			<br/>
+			Category: <select size="0" name="category" value="0">
+
+				<xsl:for-each select="/response/teamfound/getcategories/category">
+					<option>
+						<xsl:attribute name="value">
+							<xsl:value-of select="id"/>
+						</xsl:attribute>
+						<xsl:value-of select="name"/>
+					</option>
+
+					<xsl:call-template name="recursecatsasoption"/>
+				</xsl:for-each>
+			</select>
+
 			<input size="50" type="hidden" name="want" value="xml"/>
 			<input size="50" type="hidden" name="version">
 				<xsl:attribute name="value">
@@ -179,57 +230,48 @@
 			</input> 
 			<input size="50" type="hidden" name="command" value="search"/>
 			<input size="50" type="submit" value="Search"/>
+			<input size="50" type="hidden" name="pt2">
+				<xsl:attribute name="value">
+					<xsl:value-of select="/response/xsltpassthrough2"/>
+				</xsl:attribute>
+			</input>
 		</form>
 	</p>
 </xsl:template>
 
 <xsl:template name="search">
 	<xsl:call-template name="searchfield"/>
-	<xsl:if test="count(/response/teamfound/search/result) > 0">
-		<p>
-			<xsl:value-of select="count(/response/teamfound/search/result/found)"/>
-			of 
-			<xsl:value-of select="/response/teamfound/search/result/count"/>
-			results shown:<br/>
-			<ul>
-				<xsl:for-each select="/response/teamfound/search/result/found">
-					<li>
-						<a>
-							<xsl:attribute name="href">
-								<xsl:value-of select="url"/>
-							</xsl:attribute>
-							<xsl:value-of select="title"/>
-						</a>
-						<br/>
-						<xsl:value-of select="url"/> (category <xsl:value-of select="incategory"/>)
-					</li>
-				</xsl:for-each>
-			</ul>
-		</p>
-		<xsl:call-template name="searchfield"/>
-	</xsl:if>
 </xsl:template>
 
 <xsl:template name="addpage">
 	<p>
-	<xsl:if test="count(/response/teamfound/addPage) > 0">
-		URL <a>
-				<xsl:attribute name="href">
-					<xsl:value-of select="/response/teamfound/addPage/url"/>
-				</xsl:attribute>
-				<xsl:value-of select="/response/teamfound/addPage/url"/>
-			</a>
-		successfully added.<br/><br/>
-	</xsl:if>
 	<form id="addpage1" action="tf" method="post">
-	<input size="50" type="text" name="url" value="http://"/>
-		<input size="50" type="hidden" name="category" value="0"/>
+		<input size="50" type="text" name="url" value="http://"/>
+		<br/>
+		Category: <select size="0" name="category" value="0">
+			<xsl:for-each select="/response/teamfound/getcategories/category">
+				<option>
+					<xsl:attribute name="value">
+						<xsl:value-of select="id"/>
+					</xsl:attribute>
+					<xsl:value-of select="name"/>
+				</option>
+
+				<xsl:call-template name="recursecatsasoption"/>
+			</xsl:for-each>
+		</select>
 		<input size="50" type="hidden" name="want" value="xml"/>
+
 		<input size="50" type="hidden" name="version">
 			<xsl:attribute name="value">
 				<xsl:value-of select="/response/server/interface-version"/>
 			</xsl:attribute>
 		</input> 
+		<input size="50" type="hidden" name="pt2">
+			<xsl:attribute name="value">
+				<xsl:value-of select="/response/xsltpassthrough2"/>
+			</xsl:attribute>
+		</input>
 		<input size="50" type="hidden" name="command" value="addpage"/>
 		<input size="50" type="submit" value="Add URL"/>
 	</form>
@@ -263,9 +305,7 @@
 	</xsl:if>
 </xsl:template>
 
-
 <xsl:template name="browsecats">
-	<h2>Categories:</h2>
 	<p>
 	<ul>
 		<xsl:for-each select="/response/teamfound/getcategories/category">
@@ -311,7 +351,6 @@
 </xsl:template>
 
 <xsl:template name="allprojects">
-	<h2>Projects:</h2>
 	<p>
 	<ul>
 		<xsl:for-each select="/response/teamfound/projects/project">
@@ -328,7 +367,6 @@
 	</ul>
 	</p>
 </xsl:template>
-
 
 <xsl:template name="register">
 	<p>
