@@ -11,6 +11,7 @@
 			<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"/>
 			<meta http-equiv="expires" content="0"/>
 			<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+			<script src="ui.js" type="text/javascript"></script>
 		</head>
 		<body>
 			<h1><xsl:value-of select="server/name"/></h1>
@@ -122,7 +123,7 @@
 		<xsl:if test="/response/xsltpassthrough != 'login' or count(/response/xsltpassthrough) = 0">
 			<a> 
 				<xsl:attribute name="href">
-					?pt=login&amp;command=getcategories<xsl:value-of select="$stdserverparamsnopt2"/>
+					?pt=login<xsl:value-of select="$stdserverparamsnopt2"/>
 				</xsl:attribute>
 				Login
 			</a>
@@ -136,7 +137,7 @@
 		<xsl:if test="/response/xsltpassthrough != 'login' or count(/response/xsltpassthrough) = 0">
 			<a> 
 				<xsl:attribute name="href">
-					?pt=login&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
+					?pt=login&amp;command=getprojects<xsl:value-of select="$stdserverparams"/>
 				</xsl:attribute>
 				<xsl:value-of select="/response/session/name"/>'s projects
 			</a>
@@ -386,6 +387,157 @@
 	</p>
 </xsl:template>
 
+<xsl:template name="editproject">
+(<a>
+			<xsl:attribute name="href">
+			javascript:showhide('projectpermissions<xsl:value-of select="id"/>');
+			</xsl:attribute>
+			view/edit permissions</a> )
+			<div style="display: none;">
+				<xsl:attribute name="id">projectpermissions<xsl:value-of select="id"/></xsl:attribute>
+				<form action="tf" name="editproject" method="post">
+					<table>
+						<tr><td>Guest permissions</td><td>User permissions</td></tr>
+						<tr>
+							<td>
+								<input type="checkbox" id="idguestread" name="guestread">
+									<xsl:if test="guestread = 'yes'">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="idguestread">read</label>
+							</td>
+							<td>
+								<input type="checkbox" id="iduseruseradd" name="useruseradd">
+									<xsl:if test="useruseradd = 'yes'">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="iduseruseradd">add users</label>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="checkbox" id="idguesturledit" name="guesturledit">
+									<xsl:if test="guesturledit= 'yes'">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="idguesturledit">url edit</label>
+							</td>
+							<td>
+								<input type="checkbox" id="iduserurledit" name="userurledit">
+									<xsl:if test="userurledit= 'yes'">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="iduserurledit">url edit</label>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="checkbox" id="idguestcatedit" name="guestcatedit">
+									<xsl:if test="guestcatedit= 'yes'">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="idguestcatedit">cat edit</label>
+							</td>
+							<td>
+								<input type="checkbox" id="idusercatedit" name="usercatedit">
+									<xsl:if test="usercatedit= 'yes'">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="idusercatedit">cat edit</label>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="checkbox" id="idguestaddurl" name="guestaddurl">
+									<xsl:if test="guestaddurl= 'yes'">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="idguestaddurl">url add</label>
+							</td>
+							<td>
+								<input type="checkbox" id="iduseraddurl" name="useraddurl">
+									<xsl:if test="useraddurl= 'yes'">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="iduseraddurl">url add</label>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="checkbox" id="idguestaddcat" name="guestaddcat">
+									<xsl:if test="guestaddcat= 'yes'">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="idguestaddcat">add cat</label>
+							</td>
+							<td>
+								<input type="checkbox" id="iduseraddcat" name="useraddcat">
+									<xsl:if test="useraddcat= 'yes'">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</input>
+								<label for="iduseraddcat">add cat</label>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2"><input type="submit" value="save"/></td>
+						</tr>
+					</table>
+				</form>
+			</div>
+</xsl:template>
+
+<xsl:template name="listmyprojects">
+	<p>
+		<xsl:if test="/response/teamfound/projects/project/isadmin = 'yes'">
+			<h2>I'm admin for:</h2>
+			<ul>
+				<xsl:for-each select="/response/teamfound/projects/project">
+					<xsl:if test="isadmin = 'yes'">
+						<li>
+							<a>
+								<xsl:attribute name="href">
+									?pt=browsecats&amp;command=getcategories&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+								</xsl:attribute>
+								<xsl:value-of select="name"/> 
+							</a>
+							- <xsl:value-of select="description"/> <xsl:call-template name="editproject"/>
+						</li>
+					</xsl:if>
+				</xsl:for-each>
+			</ul>
+		</xsl:if>
+
+		<xsl:if test="/response/teamfound/projects/project/isadmin = 'no'">
+			<h2>I'm user in:</h2>
+			<ul>
+				<xsl:for-each select="/response/teamfound/projects/project">
+					<xsl:if test="isadmin = 'no'">
+						<li>
+							<a>
+								<xsl:attribute name="href">
+									?pt=browsecats&amp;command=getcategories&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+								</xsl:attribute>
+								<xsl:value-of select="name"/> 
+							</a>
+							- <xsl:value-of select="description"/>
+						</li>
+					</xsl:if>
+				</xsl:for-each>
+			</ul>
+		</xsl:if>
+	</p>
+</xsl:template>
+
 <xsl:template name="register">
 	<p>
 	<form id="register" action="tf" method="post">
@@ -406,6 +558,7 @@
 </xsl:template>
 
 <xsl:template name="myprojects">
+	<xsl:call-template name="listmyprojects"/>
 	<p>
 	<h2>Register new Project:</h2>
 	<form id="newproject" action="tf" method="post">
@@ -442,7 +595,6 @@
 			</xsl:attribute>
 		</input> 
 		<input type="hidden" name="command" value="login"/>
-		<input type="hidden" name="pt" value="login"/>
 	</form>
 	</p>
 </xsl:template>

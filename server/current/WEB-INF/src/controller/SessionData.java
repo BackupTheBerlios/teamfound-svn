@@ -75,11 +75,11 @@ public class SessionData
 		Element session = new Element("session");
 
 		Element sessvalue = new Element("return-value");
-//		sessvalue.addContent(SessionStatus.toString());
+		sessvalue.addContent("0");
 		session.addContent(sessvalue);
 		
 		Element sessDescr = new Element("return-description");
-//		sessDescr.addContent(SessionDescription);
+		sessDescr.addContent("OK");
 		session.addContent(sessDescr);
 
 		Element uname = new Element("name");
