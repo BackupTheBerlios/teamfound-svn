@@ -15,8 +15,8 @@ public class NewUserResponse extends Response {
 	
 	protected String username;
 	
-	public NewUserResponse(HashSet<Tuple<Integer,Integer>> projectCounters, String name ) {
-		super(projectCounters);
+	public NewUserResponse( String name ) {
+		super();
 		this.username = name;
 	}
 	

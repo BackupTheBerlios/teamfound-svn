@@ -104,7 +104,6 @@ public class TeamFoundController implements Controller {
 		{
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 			//ProjectVersionen auslesen fuer die Response
-			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 			Vector<Integer> newcatstoadd = getAllPar(conn,category);//neue Kats mit elternKats 
 			
 			// 0. Datenbank auf Existenz der URL checken
@@ -118,7 +117,7 @@ public class TeamFoundController implements Controller {
 				{
 					//brauchen nichts erneueren
 					System.out.println("Nichts an der URL hat sich geaendert!");
-					AddPageResponse resp = new AddPageResponse(vertup ,adress.toString());
+					AddPageResponse resp = new AddPageResponse(adress.toString());
 					return(resp);
 				}
 				else
@@ -143,7 +142,7 @@ public class TeamFoundController implements Controller {
 
 					
 					//4.Erfolgsmeldung liefern (liste von (projectid, katbaumversion)
-					AddPageResponse resp = new AddPageResponse(vertup ,adress.toString());
+					AddPageResponse resp = new AddPageResponse(adress.toString());
 					return(resp);
 
 				}
@@ -188,7 +187,7 @@ public class TeamFoundController implements Controller {
 		
 			// 4. fertig
 			// hier muss eine addpage-response zurückgegeben werden
-			AddPageResponse resp = new AddPageResponse(vertup ,adress.toString());
+			AddPageResponse resp = new AddPageResponse(adress.toString());
 			
 			conn.close();
 			db.shutdown("anyserver","tfdb");
@@ -244,8 +243,6 @@ public class TeamFoundController implements Controller {
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
-		
 	// 1. Im Index Suchen
 		
 			Indexer tfindexer = new TeamFoundIndexer(indexSync);
@@ -257,7 +254,7 @@ public class TeamFoundController implements Controller {
 			//TODO keywords ?
 			String[] keywords = new String[1];
 			keywords[0] = query;
-			SearchResponse resp = new SearchResponse(vertup ,keywords);
+			SearchResponse resp = new SearchResponse(keywords);
 			resp.addSearchResults(docvec);
 			
 			conn.close();	
@@ -291,8 +288,7 @@ public class TeamFoundController implements Controller {
 		//TODO keywords ?
 			String[] keywords = new String[1];
 			keywords[0] = query;
-			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
-			SearchResponse resp = new SearchResponse(vertup ,keywords);
+			SearchResponse resp = new SearchResponse(keywords);
 
 	// 0.1. Userrechte ueberpruefen (seit Milestone 3)
 			
@@ -368,11 +364,8 @@ public class TeamFoundController implements Controller {
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-		//1. Versionen der KategorieBaeume aus db
-			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
-
 		//3. response fuellen
-			GetCategoriesResponse resp = new GetCategoriesResponse(vertup);
+			GetCategoriesResponse resp = new GetCategoriesResponse();
 			
 			categoryBean rootbean = db.getCatByID(conn,rootid);
 
@@ -438,8 +431,6 @@ public class TeamFoundController implements Controller {
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
-
 		//2. categorybeans erstellen und ind db adden
 			categoryBean newcat = new categoryBean();
 			newcat.setCategory(name);
@@ -463,7 +454,6 @@ public class TeamFoundController implements Controller {
 		
 		//3.response liefern		
 			AddCategoriesResponse resp = new AddCategoriesResponse(
-					vertup,
 					newcat.getCategory(),
 					newcat.getID());
 			
@@ -491,11 +481,10 @@ public class TeamFoundController implements Controller {
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 			Map<Integer,Integer> projver = db.getAllVersion(conn);
 			Vector<categoryBean> catvec = db.getAllRootCats(conn);
 		//2. mit den Infos die Response fuellen
-			GetProjectsResponse resp = new GetProjectsResponse(vertup);
+			GetProjectsResponse resp = new GetProjectsResponse();
 			Iterator it = catvec.iterator();
 			while(it.hasNext())
 			{
@@ -658,7 +647,6 @@ public class TeamFoundController implements Controller {
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 
 		//2. user in db adden
 			
@@ -670,7 +658,7 @@ public class TeamFoundController implements Controller {
 			//Username zu kurz ?
 			if(user.length() < 3)
 			{
-				NewUserResponse re = new NewUserResponse(vertup, newuser.getUsername());
+				NewUserResponse re = new NewUserResponse(newuser.getUsername());
 				//7 ist ReturnCode fuer Username zu kurz
 				re.tfReturnValue(new Integer(7));
 				return(re);
@@ -680,7 +668,7 @@ public class TeamFoundController implements Controller {
 			//Username schon vergeben ?
 			if(db.getUserByName(conn,newuser.getUsername()) != null)
 			{
-				NewUserResponse re = new NewUserResponse(vertup, newuser.getUsername());
+				NewUserResponse re = new NewUserResponse(newuser.getUsername());
 				//6 ist ReturnCode fuer User existiert (siehe spezifikation
 				re.tfReturnValue(new Integer(6));
 				return(re);
@@ -689,9 +677,7 @@ public class TeamFoundController implements Controller {
 			newuser = db.createNewUser(conn, newuser);
 
 		//3.response liefern		
-			NewUserResponse	resp = new NewUserResponse(
-					vertup,
-					newuser.getUsername());
+			NewUserResponse	resp = new NewUserResponse(newuser.getUsername());
 			
 			conn.close();
 			return(resp);
@@ -760,12 +746,10 @@ public class TeamFoundController implements Controller {
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
 			conn.close();
 		//2. antwort erstellen
 
 			LoginResponse resp = new LoginResponse(
-					vertup,
 					user,
 					null);
 			resp.tfReturnValue(new Integer(8));	
@@ -799,9 +783,6 @@ public class TeamFoundController implements Controller {
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
-
-
 		//2.Session info speichern
 			tfuserBean tfun = db.getUserByName(conn,user);
 			userRightBean uright = db.getRights(conn,tfun.getID());
@@ -811,7 +792,6 @@ public class TeamFoundController implements Controller {
 		//3. antwort erstellen
 
 			LoginResponse resp = new LoginResponse(
-					vertup,
 					user,
 					sessionkey);
 			return(resp);

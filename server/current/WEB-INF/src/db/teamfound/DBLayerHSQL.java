@@ -1303,9 +1303,9 @@ public class DBLayerHSQL implements DBLayer
 	/**
 	 * Liefert Tuple <Integer,Integer> 
 	 * der erste int ist die ID der RootCAT der Zweite ist die Version des Baumes
-	 * 
+	 * @deprecated as of version 0.3
 	 */
-	public HashSet<Tuple<Integer,Integer>> getAllVersions(Connection conn) throws SQLException
+	@Deprecated public HashSet<Tuple<Integer,Integer>> getAllVersions(Connection conn) throws SQLException
 	{
 		PreparedStatement st = null;
 		st = conn.prepareStatement("SELECT rootid,version FROM projectdata WHERE guestread = ?");    // erstelle statements

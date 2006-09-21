@@ -46,10 +46,7 @@ public abstract class Response {
 	//protected String username = "guest";
 	//protected String sessionkey;
 	
-	protected HashSet<Tuple<Integer, Integer>> pCounters;
-	
-	public Response(HashSet<Tuple<Integer,Integer>> projectCounters) {
-		pCounters = projectCounters;
+	public Response() {
 
 		root = new Element("response");
 		doc = new Document(root);
@@ -111,31 +108,6 @@ public abstract class Response {
 		Element retDescr = new Element("return-description");
 		retDescr.addContent(TFDescription);
 		teamfound.addContent(retDescr);
-
-		// projectCounter
-		if(pCounters != null) {
-			Element pc = new Element("project-counter");
-			Iterator<Tuple<Integer, Integer>> i = pCounters.iterator();
-			
-			teamfound.addContent(pc);
-			
-			Element project, projectID, projectC;
-			Tuple<Integer, Integer> t;
-			while(i.hasNext()) {
-				t = i.next();
-				
-				project = new Element("project");
-				projectID = new Element("projectID");
-				projectC = new Element("count");
-				project.addContent(projectID);
-				project.addContent(projectC);
-				
-				projectID.addContent(t.getFirst().toString());
-				projectC.addContent(t.getSecond().toString());
-				
-				pc.addContent(project);
-			}
-		}
 		
 		return doc;
 	}

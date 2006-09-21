@@ -16,8 +16,8 @@ public class LoginResponse extends Response {
 	protected String username;
 	protected String sesskey;
 	
-	public LoginResponse(HashSet<Tuple<Integer,Integer>> projectCounters, String name, String sesskey ) {
-		super(projectCounters);
+	public LoginResponse(String name, String sesskey ) {
+		super();
 		this.username = name;
 		this.sesskey = sesskey;
 	}

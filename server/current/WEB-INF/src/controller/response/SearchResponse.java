@@ -28,8 +28,8 @@ public class SearchResponse extends Response {
 	
 	protected Element result;
 	
-	public SearchResponse(HashSet<Tuple<Integer,Integer>> projectCounters, String[] keywords) {
-		super(projectCounters);
+	public SearchResponse( String[] keywords) {
+		super();
 		this.keywords = keywords;
 		
 		
@@ -37,7 +37,7 @@ public class SearchResponse extends Response {
 	}
 	
 	public SearchResponse(HashSet<Tuple<Integer,Integer>> projectCounters, String[] keywords, int offset, int number) {
-		super(projectCounters);
+		super();
 		this.keywords = keywords;
 		this.offset = offset;
 		this.number = number;

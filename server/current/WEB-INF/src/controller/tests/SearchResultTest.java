@@ -14,7 +14,7 @@ public class SearchResultTest {
 		
 		String[] kw = {"keyword1", "keyword2"};
 		
-		SearchResponse result = new SearchResponse(null, kw);
+		SearchResponse result = new SearchResponse(kw);
 		result.testResultAdd();
 		
 		Document d = result.getXML();

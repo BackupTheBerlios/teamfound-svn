@@ -117,7 +117,7 @@ public abstract class BaseServlet extends HttpServlet {
 		try {
 			resp = launchCommand(request, tfsession);
 		} catch(Exception e) {
-			resp = new ErrorResponse(null);
+			resp = new ErrorResponse();
 			resp.serverReturnValue(-1, "Internal Error: "+e.getClass());
 			e.printStackTrace();
 		}
@@ -155,19 +155,19 @@ public abstract class BaseServlet extends HttpServlet {
 		}*/
 		
 		if(!params.containsKey("version")) {
-			r = new ErrorResponse(null);
+			r = new ErrorResponse();
 			r.serverReturnValue(2, "Need Parameter 'version'");
 			return r;
 		} else {
 			if(!req.getParameter("version").equals(interfaceversion)) {
-				r = new ErrorResponse(null);
+				r = new ErrorResponse();
 				r.serverReturnValue(3, "Incompatible Interface Version");
 				return r;
 			}
 		}
 		
 		if(!params.containsKey("command")) {
-			r = new ErrorResponse(null);
+			r = new ErrorResponse();
 			r.serverReturnValue(2, "Need Parameter 'command'");
 			return r;
 		}
@@ -177,7 +177,7 @@ public abstract class BaseServlet extends HttpServlet {
 		
 		// kommando existent?
 		if(!commands.containsKey(cmd)) {
-			r = new ErrorResponse(null);
+			r = new ErrorResponse();
 			r.serverReturnValue(-1, "Command not found");
 			return r;
 		}
@@ -189,7 +189,7 @@ public abstract class BaseServlet extends HttpServlet {
 			int offset;
 			// suche, es müssen die parameter keyword und offset da sein
 			if(!params.containsKey("keyword")) {
-				r = new ErrorResponse(null);
+				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'keyword'");
 				return r;
 			} else {
@@ -203,7 +203,7 @@ public abstract class BaseServlet extends HttpServlet {
 			}			
 			String[] rawcat;
 			if(!params.containsKey("category")) {
-				r = new ErrorResponse(null);
+				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'category'");
 				return r;		
 			} else {
@@ -222,7 +222,7 @@ public abstract class BaseServlet extends HttpServlet {
 			String url;
 			// suche, es müssen die parameter category und url da sein
 			if(!params.containsKey("url")) {
-				r = new ErrorResponse(null);
+				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'url'");
 				return r;
 			} else {
@@ -231,7 +231,7 @@ public abstract class BaseServlet extends HttpServlet {
 			
 			String[] rawcat2;
 			if(!params.containsKey("category")) {
-				r = new ErrorResponse(null);
+				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'category'");
 				return r;		
 			} else {
@@ -267,7 +267,7 @@ public abstract class BaseServlet extends HttpServlet {
 			int parentID;
 			// addCategory
 			if(!params.containsKey("name")) {
-				r = new ErrorResponse(null);
+				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'name'");
 				return r;
 			} else {
@@ -275,7 +275,7 @@ public abstract class BaseServlet extends HttpServlet {
 			}			
 
 			if(!params.containsKey("description")) {
-				r = new ErrorResponse(null);
+				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'description'");
 				return r;
 			} else {
@@ -283,7 +283,7 @@ public abstract class BaseServlet extends HttpServlet {
 			}			
 			
 			if(!params.containsKey("subcategoryof")) {
-				r = new ErrorResponse(null);
+				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'subcategoryof'");
 				return r;
 			} else {
@@ -298,7 +298,7 @@ public abstract class BaseServlet extends HttpServlet {
 		case 6:
 			String user, pass;
 			if(!params.containsKey("user")) {
-				r = new ErrorResponse(null);
+				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'user'");
 				return r;
 			} else {
@@ -306,7 +306,7 @@ public abstract class BaseServlet extends HttpServlet {
 			}			
 
 			if(!params.containsKey("pass")) {
-				r = new ErrorResponse(null);
+				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'pass'");
 				return r;
 			} else {
@@ -318,7 +318,7 @@ public abstract class BaseServlet extends HttpServlet {
 		case 7:
 			String uniforgeuser;
 			if(!params.containsKey("user")) {
-				r = new ErrorResponse(null);
+				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'user'");
 				return r;
 			} else {
@@ -326,7 +326,7 @@ public abstract class BaseServlet extends HttpServlet {
 			}			
 
 			if(!params.containsKey("pass")) {
-				r = new ErrorResponse(null);
+				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'pass'");
 				return r;
 			} else {
@@ -361,7 +361,7 @@ public abstract class BaseServlet extends HttpServlet {
 			
 		}
 		
-		r = new ErrorResponse(null);
+		r = new ErrorResponse();
 		r.serverReturnValue(-1, "Unknown command");
 		return r;
 		

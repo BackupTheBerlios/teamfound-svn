@@ -15,8 +15,8 @@ public class AddPageResponse extends Response {
 	
 	protected String url;
 	
-	public AddPageResponse(HashSet<Tuple<Integer,Integer>> projectCounters, String url) {
-		super(projectCounters);
+	public AddPageResponse( String url) {
+		super();
 		this.url = url;
 	}
 	

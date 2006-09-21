@@ -282,8 +282,9 @@ public interface DBLayer
 	 * Liefert alle Tuple <Integer,Integer> 
 	 * der erste int ist die ID der RootCAT der Zweite ist die Version des Baumes
 	 * 
+	 *	@deprecated as of release 0.3
 	 */
-	public HashSet<Tuple<Integer,Integer>> getAllVersions(Connection conn) throws SQLException;
+	@Deprecated public HashSet<Tuple<Integer,Integer>> getAllVersions(Connection conn) throws SQLException;
 
 	/**
 	 * Liefert Map <Integer,Integer> 

@@ -12,8 +12,8 @@ import tools.Tuple;
 
 public class ErrorResponse extends Response {
 
-	public ErrorResponse(HashSet<Tuple<Integer, Integer>> projectCounters) {
-		super(projectCounters);
+	public ErrorResponse() {
+		super();
 	}
 
 	public Document getXML() {

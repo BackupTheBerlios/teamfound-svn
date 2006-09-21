@@ -23,18 +23,18 @@ import java.util.Date;
 public class TestController implements Controller {
 	public AddPageResponse addToIndex(String url, int category[])
 			throws DownloadFailedException, IndexAccessException {
-		AddPageResponse r = new AddPageResponse(null, "http://test.com");
+		AddPageResponse r = new AddPageResponse("http://test.com");
 		return r;
 	}
 
 	public SearchResponse search(String query, int offset, int category[],SessionData sessionkey)
 			throws IndexAccessException {
 		String[] keywords = {"hello"};
-		SearchResponse r = new SearchResponse(null, keywords);
+		SearchResponse r = new SearchResponse(keywords);
 		return r;
 	}
 	public GetCategoriesResponse getCategories(int rootid) {
-		GetCategoriesResponse r = new GetCategoriesResponse(null);
+		GetCategoriesResponse r = new GetCategoriesResponse();
 		r.addCategory("test", "beschreibung", new Integer(0), new Integer(0));
 		r.addCategory("test2", "beschreibung2", new Integer(1), new Integer(0));
 		r.addCategory("test3", "beschreibung3", new Integer(2), new Integer(1));
@@ -44,7 +44,7 @@ public class TestController implements Controller {
 
 	public AddCategoriesResponse addCategory(String name, int parentCat,
 			String description, SessionData tfsession) {
-		AddCategoriesResponse r = new AddCategoriesResponse(null, name, parentCat+1);
+		AddCategoriesResponse r = new AddCategoriesResponse( name, parentCat+1);
 		return r;
 	}
 

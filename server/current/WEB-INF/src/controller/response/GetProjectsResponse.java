@@ -17,8 +17,8 @@ public class GetProjectsResponse extends Response {
 
 	protected List<Element> projects;
 	
-	public GetProjectsResponse(HashSet<Tuple<Integer,Integer>> projectCounters) {
-		super(projectCounters);
+	public GetProjectsResponse() {
+		super();
 		projects = new LinkedList<Element>();
 	}
 	

@@ -16,8 +16,8 @@ public class AddCategoriesResponse extends Response {
 	protected String name;
 	protected Integer ID;
 	
-	public AddCategoriesResponse(HashSet<Tuple<Integer,Integer>> projectCounters, String name, Integer newID) {
-		super(projectCounters);
+	public AddCategoriesResponse(String name, Integer newID) {
+		super();
 		this.name = name;
 		this.ID = newID;
 	}

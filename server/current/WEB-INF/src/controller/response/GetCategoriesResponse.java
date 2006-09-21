@@ -24,8 +24,8 @@ public class GetCategoriesResponse extends Response {
 
 	private Integer rootID;
 	
-	public GetCategoriesResponse(HashSet<Tuple<Integer,Integer>> projectCounters) {
-		super(projectCounters);
+	public GetCategoriesResponse() {
+		super();
 		categories = new HashMap<Integer, List<Tuple<Integer, Element>>>();
 	}
 	
