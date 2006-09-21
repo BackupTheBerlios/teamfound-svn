@@ -260,7 +260,7 @@ public abstract class BaseServlet extends HttpServlet {
 			{
 				projectID = Integer.parseInt(req.getParameter("projectid"));
 			}
-			return ctrl.getCategories(projectID);
+			return ctrl.getCategories(projectID, tfsession);
 			
 		case 4:
 			String name, description;

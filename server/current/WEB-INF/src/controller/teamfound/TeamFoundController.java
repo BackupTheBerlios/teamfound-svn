@@ -294,20 +294,18 @@ public class TeamFoundController implements Controller {
 		
 		try
 		{
-	// 0. Datenbank 
+			// 0. Datenbank 
 		
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-	// Basis-Antwort bauen
-		//TODO keywords ?
+			// Basis-Antwort bauen
+			//TODO keywords ?
 			String[] keywords = new String[1];
 			keywords[0] = query;
 			SearchResponse resp = new SearchResponse(keywords);
 
-	// 0.1. Userrechte ueberpruefen (seit Milestone 3)
-			
-			// alle categorien ueberpruefen
+			// 0.1. Userrechte ueberpruefen (seit Milestone 3)
 			for( int i = 0; i < category.length; i++)
 			{
 				// root-cat der cat auslesen
@@ -318,33 +316,22 @@ public class TeamFoundController implements Controller {
 					resp.tfReturnValue(new Integer(5));
 					return(resp);
 				}
-				if( SessionData.projectdata == null)
+				if(!checkAuthorisation.checkSearch(tfsession,cb.getRootID()))
 				{
-					System.out.println("NO PROJECTDATA");
-					resp.tfReturnValue(new Integer(-1));
+					resp.tfReturnValue(new Integer(9));
 					return(resp);
-				}
-
-				if( tfsession == SessionData.guest || (!tfsession.urb.isUser(cb.getRootID()) && !tfsession.urb.isAdmin(cb.getRootID())))
-				{
-					// GAST
-					if( SessionData.projectdata.get(cb.getRootID()).getGuestRead().booleanValue() == false)
-					{
-						resp.tfReturnValue(new Integer(9));
-						return(resp);
-					}
 				}
 			}
 			
 		
-	// 1. Im Index Suchen
+			// 1. Im Index Suchen
 		
 			Indexer tfindexer = new TeamFoundIndexer(indexSync);
 			//TODO -> hart den count auf 30 ?
 			Vector<Document> docvec = tfindexer.query(query, category , 50, offset ); 
 	
 		
-	//2.Suchergebnisse in Antwort einbauen
+			//2.Suchergebnisse in Antwort einbauen
 			resp.addSearchResults(docvec);
 		
 			conn.close();
@@ -370,28 +357,29 @@ public class TeamFoundController implements Controller {
 
 	}
 
-	public GetCategoriesResponse getCategories(int rootid) throws ServerInitFailedException 
+	public GetCategoriesResponse getCategories(int rootid, SessionData tfsession) throws DBAccessException 
 	{
 			
+		GetCategoriesResponse resp = new GetCategoriesResponse();
+		if(!checkAuthorisation.checkSearch(tfsession, rootid))
+		{
+			resp.tfReturnValue(9);
+			return resp;
+		}
+
 		try
 		{
-		//0. DatenBAnk verbindung		
+			//1. DatenBAnk verbindung		
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-		//3. response fuellen
-			GetCategoriesResponse resp = new GetCategoriesResponse();
-			
+			//2. response fuellen
 			categoryBean rootbean = db.getCatByID(conn,rootid);
 
 			if( rootbean != null)
 			{
 
 				Vector<categoryBean> childvec = db.getAllChildCategorys(conn, rootbean);
-			
-				//nur zum testen
-				//System.out.println("Rootbean:");
-				//rootbean.printAll();
 				
 				resp.addRoot(
 						rootbean.getCategory(),
@@ -405,17 +393,6 @@ public class TeamFoundController implements Controller {
 				{
 					categoryBean catbean = (categoryBean)it.next();
 					categoryBean parent = db.findParent(conn, catbean);
-				
-					//nur zum testen
-					//System.out.println("\ncurrent parentbean:");
-					//parent.printAll();
-					
-					//nur zum testen
-					//System.out.println("\ncurrent child:");
-					//catbean.printAll();
-					
-					//System.out.println("\n");
-
 					
 					resp.addCategory(
 							catbean.getCategory(),
@@ -433,7 +410,10 @@ public class TeamFoundController implements Controller {
 		{
 			//TODO Exceptions richtig machen
  			System.out.println("TeamFoundController : getCategories)"+e);
-			return null;
+			e.printStackTrace();
+			DBAccessException dba = new DBAccessException("TeamFoundController : addCategory" + e);
+			dba.initCause(e);
+			throw dba;
 		}
 		
 	}

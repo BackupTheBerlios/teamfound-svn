@@ -60,8 +60,8 @@ public class ControllerTest {
 			
 			System.out.println("\n\n");
 			System.out.println("-------GetCategories Test--------");
-			GetCategoriesResponse r3 = ctrl.getCategories(0);
-			printdoc(r3);
+			//GetCategoriesResponse r3 = ctrl.getCategories(0);
+			//printdoc(r3);
 			
 			System.out.println("\n\n");
 			System.out.println("-------AddPage Test--------");

@@ -33,7 +33,7 @@ public class TestController implements Controller {
 		SearchResponse r = new SearchResponse(keywords);
 		return r;
 	}
-	public GetCategoriesResponse getCategories(int rootid) {
+	public GetCategoriesResponse getCategories(int rootid,SessionData tfsession) {
 		GetCategoriesResponse r = new GetCategoriesResponse();
 		r.addCategory("test", "beschreibung", new Integer(0), new Integer(0));
 		r.addCategory("test2", "beschreibung2", new Integer(1), new Integer(0));

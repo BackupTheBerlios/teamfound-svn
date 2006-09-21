@@ -70,6 +70,29 @@ public class checkAuthorisation
 		else 
 			return false;
 	}
+	/*
+	 *
+	 *	Ueberbrueft ob der angemeldete Nutzer/Gast im Projekt suchen darf
+	 */
+	public static boolean checkSearch(SessionData tfsession, Integer projectid)
+	{
+		if( tfsession == SessionData.guest)
+		{
+			if( SessionData.projectdata.get(projectid).getGuestRead().booleanValue())
+				return true;
+			else
+				return false;
+		}
+
+		if(isAdmin(tfsession,projectid))
+			return true;
+
+		if(tfsession.urb.isUser(projectid))
+			return true;
+		
+
+		return false;
+	}
 
 
 

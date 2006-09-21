@@ -43,7 +43,7 @@ public interface Controller {
 	 */
 	public SearchResponse search(String query, int offset, int category[],SessionData tfsession) throws IndexAccessException, ServerInitFailedException, DBAccessException;
 
-	public GetCategoriesResponse getCategories(int rootid) throws ServerInitFailedException;
+	public GetCategoriesResponse getCategories(int rootid, SessionData tfsession) throws DBAccessException;
 	
 	public AddCategoriesResponse addCategory(String name, int parentCat, String description, SessionData tfsession) throws DBAccessException;
 
