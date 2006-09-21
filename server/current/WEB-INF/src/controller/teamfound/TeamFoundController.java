@@ -375,42 +375,47 @@ public class TeamFoundController implements Controller {
 			GetCategoriesResponse resp = new GetCategoriesResponse(vertup);
 			
 			categoryBean rootbean = db.getCatByID(conn,rootid);
-			Vector<categoryBean> childvec = db.getAllChildCategorys(conn, rootbean);
-		
-			//nur zum testen
-			//System.out.println("Rootbean:");
-			//rootbean.printAll();
-			
-			resp.addRoot(
-					rootbean.getCategory(),
-					rootbean.getBeschreibung(),
-					rootbean.getID(),
-					rootbean.getID());
-					//null);
-				
-			Iterator it = childvec.iterator();
-			while(it.hasNext())
-			{
-				categoryBean catbean = (categoryBean)it.next();
-				categoryBean parent = db.findParent(conn, catbean);
-			
-				//nur zum testen
-				//System.out.println("\ncurrent parentbean:");
-				//parent.printAll();
-				
-				//nur zum testen
-				//System.out.println("\ncurrent child:");
-				//catbean.printAll();
-				
-				//System.out.println("\n");
 
+			if( rootbean != null)
+			{
+
+				Vector<categoryBean> childvec = db.getAllChildCategorys(conn, rootbean);
+			
+				//nur zum testen
+				//System.out.println("Rootbean:");
+				//rootbean.printAll();
 				
-				resp.addCategory(
-						catbean.getCategory(),
-						catbean.getBeschreibung(),
-						catbean.getID(),
-						parent.getID());
-						
+				resp.addRoot(
+						rootbean.getCategory(),
+						rootbean.getBeschreibung(),
+						rootbean.getID(),
+						rootbean.getID());
+						//null);
+					
+				Iterator it = childvec.iterator();
+				while(it.hasNext())
+				{
+					categoryBean catbean = (categoryBean)it.next();
+					categoryBean parent = db.findParent(conn, catbean);
+				
+					//nur zum testen
+					//System.out.println("\ncurrent parentbean:");
+					//parent.printAll();
+					
+					//nur zum testen
+					//System.out.println("\ncurrent child:");
+					//catbean.printAll();
+					
+					//System.out.println("\n");
+
+					
+					resp.addCategory(
+							catbean.getCategory(),
+							catbean.getBeschreibung(),
+							catbean.getID(),
+							parent.getID());
+							
+				}
 			}
 			conn.close();
 			return(resp);

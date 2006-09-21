@@ -123,6 +123,7 @@ public abstract class BaseServlet extends HttpServlet {
 		}
 
 		// TODO: steht erstmal drinn da login/logout tfsession aendern
+		session = request.getSession(false);
 		if(session != null)
 		{	
 			tfsession = SessionData.getSessionData(session.getId());
@@ -139,7 +140,7 @@ public abstract class BaseServlet extends HttpServlet {
 
 		resp.addElementToRoot(tfsession.getXMLBlock());
 
-		xmlResponse(response, resp, request.getParameter("pt"));
+		xmlResponse(response, resp, request.getParameter("pt"), request.getParameter("pt2"));
 	}
 		
 		
@@ -367,7 +368,7 @@ public abstract class BaseServlet extends HttpServlet {
 	}
 	
 	
-	protected void xmlResponse(HttpServletResponse response, Response tfResponse, String xsltpassthrough) throws IOException 
+	protected void xmlResponse(HttpServletResponse response, Response tfResponse, String xsltpassthrough, String xsltpassthrough2) throws IOException 
 	{
 		Document d = tfResponse.getXML();
 
@@ -378,6 +379,14 @@ public abstract class BaseServlet extends HttpServlet {
 			epassthrough.addContent(xsltpassthrough);
 			root.addContent(epassthrough);
 		}
+		if( xsltpassthrough2 != null)
+		{
+			Element root = d.getRootElement();
+			Element epassthrough = new Element("xsltpassthrough2");
+			epassthrough.addContent(xsltpassthrough2);
+			root.addContent(epassthrough);
+		}
+
 		response.setContentType("application/xml");
 		PrintWriter out = response.getWriter();
 		out.println(xmlout.outputString(d));

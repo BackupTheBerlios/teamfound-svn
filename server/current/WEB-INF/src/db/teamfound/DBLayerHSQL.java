@@ -1402,7 +1402,7 @@ public class DBLayerHSQL implements DBLayer
 	 */
 	public Vector<categoryBean> getAllRootCats(Connection conn)throws SQLException
 	{
-		String getcats = new String("select id,root_id,left,right,name,beschreibung from category where id=root_id");
+		String getcats = new String("select id,root_id,left,right,name,beschreibung,owner from category where id=root_id");
 	
 		Statement st = null;
 		st = conn.createStatement();    // erstelle statements
@@ -1412,7 +1412,7 @@ public class DBLayerHSQL implements DBLayer
 			ResultSet rsi = st.executeQuery(getcats);
 			Vector<categoryBean> result = new Vector<categoryBean>();
 			
-			if(rsi.next())
+			while(rsi.next())
 			{
 				categoryBean cat = new categoryBean( 
 						rsi.getInt(1), 

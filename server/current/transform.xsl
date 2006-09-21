@@ -4,77 +4,59 @@
 <xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/>
 
 <xsl:template match="/response">
-
-
-<html>
-<head>
-	<title>TeamFound - share your search results</title>
-	<link rel="stylesheet" type="text/css" href="stylesheet.css"/> 
-	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"/>
-	<meta http-equiv="expires" content="0"/>
-	<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
-</head>
-<body>
-<h1><xsl:value-of select="server/name"/></h1>
-<xsl:call-template name="menu"/>
-<xsl:call-template name="pageselector"/>
-<!--<h2>Request Informationen:</h2>
-<p>
-Return-Value: <xsl:value-of select="teamfound/return-value"/><br/>
-Return-Description: <xsl:value-of select="teamfound/return-description"/><br/>
-</p>
--->
-<p id="bottom">
-<br/><br/>
-<a href="http://teamfound.berlios.de/">TeamFound</a> - share your search results<br/>
-Copyright (c) 2006 - Jan Kechel, Martin Klink, Jonas Heese, Andreas Bachmann <br/>
-Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Version: <xsl:value-of select="server/interface-version"/><br/>
-</p>
-
-</body>
-</html>
-
+	<html>
+		<head>
+			<title>TeamFound - share your search results</title>
+			<link rel="stylesheet" type="text/css" href="stylesheet.css"/> 
+			<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"/>
+			<meta http-equiv="expires" content="0"/>
+			<link rel="stylesheet" type="text/css" href="stylesheet.css"/>
+		</head>
+		<body>
+			<h1><xsl:value-of select="server/name"/></h1>
+			<xsl:call-template name="menu"/>
+			<xsl:call-template name="pageselector"/>
+			<!--<h2>Request Informationen:</h2>
+			<p>
+			Return-Value: <xsl:value-of select="teamfound/return-value"/><br/>
+			Return-Description: <xsl:value-of select="teamfound/return-description"/><br/>
+			</p>
+			-->
+			<p id="bottom">
+				<br/><br/>
+				<a href="http://teamfound.berlios.de/">TeamFound</a> - share your search results<br/>
+				Copyright (c) 2006 - Jan Kechel, Martin Klink, Jonas Heese, Andreas Bachmann <br/>
+				Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Version: <xsl:value-of select="server/interface-version"/>
+				<br/>
+			</p>
+		</body>
+	</html>
 </xsl:template>
 
 <xsl:template name="menu">
 	<xsl:variable name="stdserverparams">
-		&amp;want=xml&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+		<xsl:if test="count(/response/xsltpassthrough2) > 0">
+			&amp;want=xml&amp;version=<xsl:value-of select="/response/server/interface-version"/>&amp;pt2=<xsl:value-of select="/response/xsltpassthrough2"/>&amp;projectid=<xsl:value-of select="/response/xsltpassthrough2"/>
+		</xsl:if>
+		<xsl:if test="count(/response/xsltpassthrough2) = 0">
+			&amp;want=xml&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+		</xsl:if>
+	</xsl:variable>
+	<xsl:variable name="stdserverparamsnopt2">
+			&amp;want=xml&amp;version=<xsl:value-of select="/response/server/interface-version"/>
 	</xsl:variable>
 
-<p>
-	<xsl:if test="/response/xsltpassthrough = 'search' or count(/response/xsltpassthrough) = 0">
-		<b>Search</b>
+	<p>
+
+	<xsl:if test="/response/xsltpassthrough = 'allprojects'">
+		<b>Browse projects</b>
 	</xsl:if>
-	<xsl:if test="/response/xsltpassthrough != 'search'">
+	<xsl:if test="/response/xsltpassthrough != 'allprojects' or count(/response/xsltpassthrough) = 0">
 		<a> 
 			<xsl:attribute name="href">
-				?pt=search&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
+				?pt=allprojects&amp;command=getprojects<xsl:value-of select="$stdserverparamsnopt2"/>
 			</xsl:attribute>
-			Search
-		</a>
-	</xsl:if>
-	|
-	<xsl:if test="/response/xsltpassthrough = 'addpage'">
-		<b>Add page</b>
-	</xsl:if>
-	<xsl:if test="/response/xsltpassthrough != 'addpage' or count(/response/xsltpassthrough) = 0">
-		<a> 
-			<xsl:attribute name="href">
-				?pt=addpage&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
-			</xsl:attribute>
-			Add page
-		</a>
-	</xsl:if>
-	|
-	<xsl:if test="/response/xsltpassthrough = 'browsecats'">
-		<b>Browse categories</b>
-	</xsl:if>
-	<xsl:if test="/response/xsltpassthrough != 'browsecats' or count(/response/xsltpassthrough) = 0">
-		<a> 
-			<xsl:attribute name="href">
-				?pt=browsecats&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
-			</xsl:attribute>
-			Browse categories
+			Browse projects
 		</a>
 	</xsl:if>
 	|
@@ -85,45 +67,78 @@ Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Versio
 		<xsl:if test="/response/xsltpassthrough != 'login' or count(/response/xsltpassthrough) = 0">
 			<a> 
 				<xsl:attribute name="href">
-					?pt=login&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
+					?pt=login&amp;command=getcategories<xsl:value-of select="$stdserverparamsnopt2"/>
 				</xsl:attribute>
 				Login
 			</a>
 		</xsl:if>
 	</xsl:if>
+
 	<xsl:if test="/response/session/name != 'guest'">
 		<xsl:if test="/response/xsltpassthrough = 'login'">
-			<b><xsl:value-of select="/response/session/name"/></b>
+			<b><xsl:value-of select="/response/session/name"/>'s projects</b>
 		</xsl:if>
 		<xsl:if test="/response/xsltpassthrough != 'login' or count(/response/xsltpassthrough) = 0">
 			<a> 
 				<xsl:attribute name="href">
 					?pt=login&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
 				</xsl:attribute>
-				<xsl:value-of select="/response/session/name"/>
+				<xsl:value-of select="/response/session/name"/>'s projects
+			</a>
+		</xsl:if>
+	</xsl:if>
+
+	<xsl:if test="count(/response/xsltpassthrough2) > 0">
+		<br/>
+		Project #<xsl:value-of select="/response/xsltpassthrough2"/>: 
+		<xsl:if test="/response/xsltpassthrough = 'search'">
+			<b>Search</b>
+		</xsl:if>
+		<xsl:if test="/response/xsltpassthrough != 'search' or count(/response/xsltpassthrough) = 0">
+			<a> 
+				<xsl:attribute name="href">
+					?pt=search&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
+				</xsl:attribute>
+				Search
 			</a>
 		</xsl:if>
 		|
-		<xsl:if test="/response/xsltpassthrough = 'myprojects'">
-			<b>My Projects</b>
+		<xsl:if test="/response/xsltpassthrough = 'addpage'">
+			<b>Add page</b>
 		</xsl:if>
-		<xsl:if test="/response/xsltpassthrough != 'myprojects' or count(/response/xsltpassthrough) = 0">
+		<xsl:if test="/response/xsltpassthrough != 'addpage' or count(/response/xsltpassthrough) = 0">
 			<a> 
 				<xsl:attribute name="href">
-					?pt=myprojects&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
+					?pt=addpage&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
 				</xsl:attribute>
-				My Projects
+				Add page
 			</a>
 		</xsl:if>
-
+		|
+		<xsl:if test="/response/xsltpassthrough = 'browsecats'">
+			<b>Browse categories</b>
+		</xsl:if>
+		<xsl:if test="/response/xsltpassthrough != 'browsecats' or count(/response/xsltpassthrough) = 0">
+			<a> 
+				<xsl:attribute name="href">
+					?pt=browsecats&amp;command=getcategories<xsl:value-of select="$stdserverparams"/>
+				</xsl:attribute>
+				Browse categories
+			</a>
+		</xsl:if>
 	</xsl:if>
-</p>
+	</p>
 </xsl:template>
 
 <xsl:template name="pageselector">
-	<xsl:if test="/response/xsltpassthrough = 'search' or count(/response/xsltpassthrough) = 0">
+	<xsl:if test="/response/xsltpassthrough = 'search'">
 		<xsl:call-template name="search"/>
 	</xsl:if>
+
+	<xsl:if test="/response/xsltpassthrough = 'allprojects'">
+		<xsl:call-template name="allprojects"/>
+	</xsl:if>
+
 	<xsl:if test="/response/xsltpassthrough = 'addpage'">
 		<xsl:call-template name="addpage"/>
 	</xsl:if>
@@ -131,16 +146,16 @@ Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Versio
 		<xsl:call-template name="browsecats"/>
 	</xsl:if>
 	<xsl:if test="/response/xsltpassthrough = 'login'">
-		<h2>Login</h2>
-		<xsl:call-template name="login"/>
-		<h2>Register</h2>
-		<xsl:call-template name="register"/>
+		<xsl:if test="/response/session/name = 'guest'">
+			<h2>Login</h2>
+			<xsl:call-template name="login"/>
+			<h2>Register</h2>
+			<xsl:call-template name="register"/>
+		</xsl:if>
+		<xsl:if test="/response/session/name != 'guest'">
+			<xsl:call-template name="myprojects"/>
+		</xsl:if>
 	</xsl:if>
-
-	<xsl:if test="/response/xsltpassthrough = 'myprojects'">
-		<xsl:call-template name="myprojects"/>
-	</xsl:if>
-
 </xsl:template>
 
 <xsl:template name="searchfield">
@@ -196,7 +211,7 @@ Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Versio
 </xsl:template>
 
 <xsl:template name="addpage">
-<p>
+	<p>
 	<xsl:if test="count(/response/teamfound/addPage) > 0">
 		URL <a>
 				<xsl:attribute name="href">
@@ -218,7 +233,7 @@ Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Versio
 		<input size="50" type="hidden" name="command" value="addpage"/>
 		<input size="50" type="submit" value="Add URL"/>
 	</form>
-</p>
+	</p>
 </xsl:template>
 
 <xsl:template name="recursecats">
@@ -250,8 +265,8 @@ Using Server-Version: <xsl:value-of select="server/version"/> / Interface-Versio
 
 
 <xsl:template name="browsecats">
-<p>
-Categories:
+	<h2>Categories:</h2>
+	<p>
 	<ul>
 		<xsl:for-each select="/response/teamfound/getcategories/category">
 			<li>
@@ -284,13 +299,39 @@ Categories:
 				<xsl:value-of select="/response/server/interface-version"/>
 			</xsl:attribute>
 		</input> 
+		<input size="50" type="hidden" name="pt2">
+			<xsl:attribute name="value">
+				<xsl:value-of select="/response/xsltpassthrough2"/>
+			</xsl:attribute>
+		</input> 
+
 		<input type="hidden" name="command" value="addcategory"/>
 	</form>
-</p>
+	</p>
 </xsl:template>
 
+<xsl:template name="allprojects">
+	<h2>Projects:</h2>
+	<p>
+	<ul>
+		<xsl:for-each select="/response/teamfound/projects/project">
+			<li>
+				<a>
+					<xsl:attribute name="href">
+						?pt=browsecats&amp;command=getcategories&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+					</xsl:attribute>
+					<xsl:value-of select="name"/> 
+				</a>
+				- <xsl:value-of select="description"/>
+			</li>
+		</xsl:for-each>
+	</ul>
+	</p>
+</xsl:template>
+
+
 <xsl:template name="register">
-<p>
+	<p>
 	<form id="register" action="tf" method="post">
 	<table>
 	<tr><td>Username:</td><td><input size="20" type="text" name="user" value=""/></td></tr>
@@ -305,12 +346,12 @@ Categories:
 		</input> 
 		<input type="hidden" name="command" value="register"/>
 	</form>
-</p>
+	</p>
 </xsl:template>
 
 <xsl:template name="myprojects">
-<p>
-	<h2>My Projects</h2>
+	<p>
+	<h2>Register new Project:</h2>
 	<form id="newproject" action="tf" method="post">
 	<table>
 	<tr><td>Projectname:</td><td><input size="20" type="text" name="name" value=""/></td></tr>
@@ -326,12 +367,11 @@ Categories:
 		<input type="hidden" name="command" value="addcategory"/>
 		<input type="hidden" name="subcategoryof" value="-1"/>
 	</form>
-</p>
+	</p>
 </xsl:template>
 
-
 <xsl:template name="login">
-<p>
+	<p>
 	<form id="login1" action="tf" method="post">
 	<table>
 	<tr><td>Username:</td><td><input size="20" type="text" name="user" value=""/></td></tr>
@@ -346,8 +386,9 @@ Categories:
 			</xsl:attribute>
 		</input> 
 		<input type="hidden" name="command" value="login"/>
+		<input type="hidden" name="pt" value="login"/>
 	</form>
-</p>
+	</p>
 </xsl:template>
 
 </xsl:stylesheet>

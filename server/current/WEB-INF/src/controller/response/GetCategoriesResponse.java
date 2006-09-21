@@ -39,9 +39,10 @@ public class GetCategoriesResponse extends Response {
 		teamfound.addContent(getcat);
 		
 		// hole root
-		Element root = this.root;
-		getcat.addContent(root);
-		saveSubcategories(root, rootID);
+		if( root != null)
+		{	getcat.addContent(root);
+			saveSubcategories(root, rootID);
+		}
 
 		return d;
 	}
