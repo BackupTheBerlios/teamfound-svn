@@ -46,7 +46,7 @@ public class projectdataBean implements Serializable
 		useraddurl= _useraddurl;
 		useraddcat= _useraddcat;
 		guestread= _guestread;
-		guesturledit= _guestread;
+		guesturledit= _guesturledit;
 		guestcatedit= _guestcatedit;
 		guestaddurl= _guestaddurl;
 		guestaddcat= _guestaddcat;
@@ -70,7 +70,7 @@ public class projectdataBean implements Serializable
 		useraddurl= _useraddurl;
 		useraddcat= _useraddcat;
 		guestread= _guestread;
-		guesturledit= _guestread;
+		guesturledit= _guesturledit;
 		guestcatedit= _guestcatedit;
 		guestaddurl= _guestaddurl;
 		guestaddcat= _guestaddcat;

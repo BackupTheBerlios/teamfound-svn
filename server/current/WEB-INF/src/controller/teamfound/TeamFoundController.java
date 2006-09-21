@@ -234,8 +234,11 @@ public class TeamFoundController implements Controller {
 			return(cats);
 	}
 
-	public SearchResponse search(String query, int category[]) throws IndexAccessException, ServerInitFailedException
+	/*
+	 * @deprecated
+	 */
 
+	@Deprecated public SearchResponse search(String query, int category[]) throws IndexAccessException, ServerInitFailedException
 	{
 		
 		try{
@@ -448,6 +451,10 @@ public class TeamFoundController implements Controller {
 						conn.setSavepoint("newproject");
 						newcat = db.addRootCategory(conn, newcat);
 						db.addUserToAdminsOfProject(conn, tfsession.tfu.getID(), newcat.getID());
+						// In DataSession neue Sachen eintragen
+						tfsession.urb = db.getRights(conn, tfsession.tfu.getID());
+						projectdataBean pdb = db.getProjectDataToCat(conn, newcat.getID());
+						SessionData.projectdata.put(pdb.getRootID(),pdb);
 						conn.commit();
 						resp = new AddCategoriesResponse(
 							newcat.getCategory(),
@@ -485,7 +492,6 @@ public class TeamFoundController implements Controller {
 				// checke ob guestaddcat == true oder 
 				// user eingeloggt, zu diesem projekt gehoert und projekt useraddcat == true gestzt hat
 				// oder user admin des projekts ist
-
 				if( !SessionData.projectdata.get(parentcat.getRootID()).getGuestAddcat().booleanValue())
 				{
 					if( tfsession == SessionData.guest)

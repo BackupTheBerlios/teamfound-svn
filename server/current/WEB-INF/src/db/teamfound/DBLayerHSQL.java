@@ -454,7 +454,7 @@ public class DBLayerHSQL implements DBLayer
 			st.executeUpdate(upd);			
 
 			//neuer Eintrag in CategoryVersionTabelle
-			String insert = new String("INSERT INTO projectdata(rootid,version) VALUES("+identity+",1)");
+			String insert = new String("INSERT INTO projectdata(rootid,version,useruseradd, userurledit, usercatedit, useraddurl, useraddcat , guestread , guesturledit , guestcatedit , guestaddurl , guestaddcat ) VALUES("+identity+",1, false, false , false, true, true,true , false, false, false ,false)");
 			st.executeUpdate(insert);			
 
 			return(re);
@@ -2297,7 +2297,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("getProjectdataToCat: "+ e);
+			System.out.println("getProjectDataToCat: "+ e);
 			throw(e);
 		}
 
