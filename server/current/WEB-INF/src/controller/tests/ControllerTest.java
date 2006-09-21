@@ -34,10 +34,11 @@ public class ControllerTest {
 		
 			
 			System.out.println("Server initializieren!");
-			if(ctrl.initServer())
+/*			if(ctrl.initServer())
 				System.out.println("Server ist bereit\n\n");
 			else
 				System.out.println("Server ist nicht bereit\n\n");
+				*/
 
 			System.out.println("\n\n");
 			System.out.println("------GetProjects Test---------");
