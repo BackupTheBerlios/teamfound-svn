@@ -59,15 +59,33 @@
 	</xsl:if>
 	<xsl:if test="count(/response/teamfound/addPage) > 0">
 		<p>
-			URL <a>
+			Add URL <a>
 					<xsl:attribute name="href">
 						<xsl:value-of select="/response/teamfound/addPage/url"/>
 					</xsl:attribute>
 					<xsl:value-of select="/response/teamfound/addPage/url"/>
-				</a>
-			successfully added.<br/><br/>
+				</a>: <xsl:value-of select="/response/teamfound/return-description"/>
 		</p>
 	</xsl:if>
+
+	<xsl:if test="count(/response/teamfound/registeruser) > 0">
+		<p>
+			Register username <xsl:value-of select="/response/teamfound/registeruser/user"/>: <xsl:value-of select="/response/teamfound/return-description"/>
+		</p>
+	</xsl:if>
+
+	<xsl:if test="count(/response/teamfound/login) > 0">
+		<p>
+			Login user <xsl:value-of select="/response/teamfound/login/user"/>: <xsl:value-of select="/response/teamfound/return-description"/>
+		</p>
+	</xsl:if>
+
+	<xsl:if test="count(/response/teamfound/addcategory) > 0">
+		<p>
+			Create category <xsl:value-of select="/response/teamfound/addcategory/name"/>: <xsl:value-of select="/response/teamfound/return-description"/>
+		</p>
+	</xsl:if>
+
 </xsl:template>
 
 <xsl:template name="menu">
