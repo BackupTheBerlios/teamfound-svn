@@ -5,18 +5,20 @@ package controller.teamfound;
 
 import index.NewIndexEntry;
 import index.Indexer;
+import index.crawler.teamfound.TeamFoundCrawler;
 import index.teamfound.TeamFoundIndexer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import java.util.Vector;
 import java.util.List;
 import java.util.Iterator;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Date;
 
@@ -29,7 +31,7 @@ import controller.response.*;
 import controller.SessionData;
 import controller.teamfound.checkAuthorisation;
 
-import config.teamfound.TeamFoundConfig;
+
 
 import db.teamfound.DBLayerHSQL;
 import db.DBLayer;
@@ -39,17 +41,25 @@ import sync.ReadWriteSync;
 
 import tools.Tuple;
 
+import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 
 public class TeamFoundController implements Controller {
 
-	Download loader = new Download();
+	//Download loader = new Download();
 	public static ReadWriteSync indexSync;
 	private DBLayer db;
+	protected Logger log;
+	protected TeamFoundCrawler crawler;
 	
 	public TeamFoundController() 
 	{
 		indexSync = new ReadWriteSync();
+
+		log = Logger.getLogger("tf-ctrl");
+		// TODO maximum frame fetch depth könnte in die properties ausgelagert werden
+		crawler = new TeamFoundCrawler(3);
+
 		db = new DBLayerHSQL();
 		
 		if(initServer()) //TODO Logg falls nciht
@@ -66,6 +76,7 @@ public class TeamFoundController implements Controller {
 				System.out.println(e);
 			}
 		}
+
 	}
 
 
@@ -167,11 +178,11 @@ public class TeamFoundController implements Controller {
 				categ[i]= ((Integer)intit.next()).intValue();
 				i=i+1;
 			}
-			
-			
-			// 1. URL herunterladen
-			//System.out.println("1. Url herunterladen!");			
-			NewIndexEntry entry = loader.downloadFile(adress, categ);
+
+			NewIndexEntry entry = crawler.fetch(adress); 
+			//loader.downloadFile(adress, categ);
+
+
 		
 			// 2. Indexieren
 			System.out.println("2. Url in den Index!");
@@ -572,7 +583,7 @@ public class TeamFoundController implements Controller {
 	 *
 	 * @return true->initialized(entweder war schon oder ist es nun) false->heisst irgentwas funzt nicht richtig im Server
 	 */
-	private boolean initServer()
+	protected boolean initServer()
 	{
 		try
 		{
@@ -705,6 +716,54 @@ public class TeamFoundController implements Controller {
 		}
 		
 	}
+<<<<<<< .mine
+	
+	/**
+	 * Liest den Inhalt für das übergebene Dokument neu ein. Dabei werden die Kategorien des Dokuments nicht verändert
+	 * 
+	 * Diese Methode wird zB. vom autgomatischen Updater benutzt um veränderungen an seiten in den Index zu holen
+	 * @param doc Das neue Dokument
+	 * @return 1 wenn die seite geupdated wurde, 0 wenn nicht,-1 bei fehler
+	 * 
+	 * TODO rückgabe könnte verschönert werden, response-objektre sind aber unsinnig, da der updateThread die garnicht braucht
+	 */
+	public int updateDocument(NewIndexEntry doc) {
+		/* 
+		 * 1. 	hole alte seite, bzw. einen hash davon und teste ob
+		 * 		sich die neue seite überhaupt davon unterscheidet
+		 */
+		MessageDigest md = null;
+		try {
+			md = MessageDigest.getInstance("SHA-1");
+		} catch(NoSuchAlgorithmException e) {
+			log.fatal(e);
+			return -1;
+		}
+		md.update(doc.getContent().getBytes());
+		byte[] digestNew = md.digest();
+		
+		// TODO hier muss der digest vom alten dokument berechnet oder aus der datenbank geholt werden
+		md.update(doc.getContent().getBytes());
+		byte[] digestOld = md.digest();
+		
+		if(!MessageDigest.isEqual(digestNew, digestOld)) {
+			/*
+			 * 2. 	wenn änderungen, lese die seite neu ein und ändere den 
+			 * 		last-update wert in der datenbank auf jetzt
+			 */
+			// TODO dokument in der datenbank sowie dem index updaten
+			/*
+			 * 3a. 	antworten
+			 */
+			return 1;
+		} else {
+			/*
+			 * 3b. es hat sich nichts geändert, generieren wir eine entsprechende antwort
+			 */
+			return 0;
+		}
+	}
+=======
 	
 	
 	/**
@@ -721,7 +780,13 @@ public class TeamFoundController implements Controller {
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-			//2. user in db adden
+	
+
+
+			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+
+		//2. user in db adden
+
 			tfuserBean newuser = new tfuserBean();
 			newuser.setUsername(user);
 			newuser.setPass(pass);
@@ -881,6 +946,11 @@ public class TeamFoundController implements Controller {
 			throw(dbe);
 
 		}
+	}
+	
+	public int updateDocument(NewIndexEntry nd, int[] categories) {
+		// TODO Auto-generated method stub
+		return -1;
 	}
 
 	public EditPermissionsResponse editPermissions(Integer projectid, SessionData tfsession, Boolean _useruseradd, 
@@ -1098,9 +1168,5 @@ public class TeamFoundController implements Controller {
 
 		}
 	}
-
-
-
-
 
 }

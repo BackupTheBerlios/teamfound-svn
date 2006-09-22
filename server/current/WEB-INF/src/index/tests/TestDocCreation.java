@@ -9,11 +9,13 @@ package index.tests;
 import index.teamfound.*;
 import org.apache.lucene.document.*;
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 
 public class TestDocCreation
 {
-	public static void main(String args[])
+	public static void main(String args[]) throws MalformedURLException
 	{
 		String url = new String("www.irgentwas.de");
 		File f = new File("/home/moddin/testseiten/Inhalt.htm");
@@ -24,7 +26,7 @@ public class TestDocCreation
 		id[2] = 5;
 			
 		
-		SimpleNewIndexEntry tentry = new SimpleNewIndexEntry(url,f,headers,id);
+		SimpleNewIndexEntry tentry = new SimpleNewIndexEntry(new URL(url),f,headers,id);
 		try
 		{
 			System.out.println("Inhalt des Docs ausgeben:");

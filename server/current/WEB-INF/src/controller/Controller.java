@@ -3,6 +3,7 @@
  */
 package controller;
 
+import index.NewIndexEntry;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
 import controller.DBAccessException;
@@ -52,7 +53,21 @@ public interface Controller {
 	public ConfigResponse getConfiguration();
 	
 	*/
+	
+	/**
+	 * Ein Dokument im Index und der Datenbank updaten
+	 * 
+	 * Diese Methode ändert nur den Inhalt, nicht die Kategorien, 
+	 * es wird vorallem vom UpdateThread benutzt
+	 */
+	public int updateDocument(NewIndexEntry nd);
 		
+<<<<<<< .mine
+	/**
+	 * Ein Dokument im Index und der Datenbak updaten
+	 */
+	public int updateDocument(NewIndexEntry nd, int[] categories);
+=======
 	/*------------------------------------------
 	 *Neu Milestone 3
 	 *----------------------------------------*/
@@ -63,7 +78,11 @@ public interface Controller {
 	 * @param pass passwort
 	 */
 	public NewUserResponse newUser(String user, String pass) throws DBAccessException ;
+>>>>>>> .r228
 	
+<<<<<<< .mine
+	
+=======
 	/**
 	 * Ueberpruefen ob User existiert und passwort stimmt
 	 *
@@ -106,6 +125,9 @@ public interface Controller {
 		Boolean _guestaddurl,
 		Boolean _guestaddcat ) throws IndexAccessException,  DBAccessException;
 
+<<<<<<< .mine
+>>>>>>> .r228
+=======
 	public Response editCategory(Integer category, String catname, String description, SessionData session) throws DBAccessException;
 
 	/**
@@ -136,4 +158,5 @@ public interface Controller {
 	public Response removeUserFromProject(String user,Integer projectid, SessionData tfsession) throws DBAccessException;
 	
 
+>>>>>>> .r265
 }

@@ -20,10 +20,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+
+import updater.UpdateThread;
 
 import controller.Controller;
 import controller.DownloadFailedException;
@@ -47,9 +51,24 @@ public abstract class BaseServlet extends HttpServlet {
 	protected Controller ctrl;
 	protected XMLOutputter xmlout;
 	protected Map<String, Integer> commands;
+	protected config.teamfound.TeamFoundConfig conf;	
+	protected UpdateThread updater;
+	protected Logger servletLog;
+	protected Logger requestLog;
+	
+
 
 	public void init() throws ServletException {
 		
+
+		// configure log4j
+		PropertyConfigurator.configure("logging.properties");
+		servletLog = Logger.getLogger("servlet");
+		requestLog = Logger.getLogger("requests");
+		
+		servletLog.info("Servlet ini");
+		//conf im Servlet root lesen
+
 		try 
 		{
 			// Pfad ist relative zu Servlet root /conf/teamfound.properties wird gesucht 
@@ -64,9 +83,16 @@ public abstract class BaseServlet extends HttpServlet {
 		{
 			ServletException a = new ServletException("Could not read Properties!");
 			a.initCause(e);
+			servletLog.fatal(a);
 			throw(a);
+			
 		}
 			
+		// wir starten nun einen nebenläufigen thread der sich darum kümmert die seiten in der datenbank aktuell zu halten
+		updater = new UpdateThread();
+		updater.start();
+		servletLog.info("Started Update-Thread");
+		
 		xmlout = new XMLOutputter(Format.getPrettyFormat());
 		
 		commands = new HashMap<String, Integer>();
@@ -84,6 +110,18 @@ public abstract class BaseServlet extends HttpServlet {
 		commands.put("login", new Integer(7));
 		commands.put("editpermissions", new Integer(8));
 		commands.put("editcategory", new Integer(9));
+		servletLog.info("Servlet ini done");
+	}
+	
+	public void destroy() {
+		// updater-thread anhalten
+		updater.interrupt();
+		try {
+			updater.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			servletLog.error("could not wait for update-thread");
+		}	
 	}
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -94,6 +132,8 @@ public abstract class BaseServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException {
 		
+		requestLog.info("request from "+request.getRemoteAddr());
+
 
 		//Session auslesen falls eine existiert
 		HttpSession session = request.getSession(false);
@@ -112,6 +152,7 @@ public abstract class BaseServlet extends HttpServlet {
 			// Gast session initialisieren
 			tfsession = SessionData.guest;
 		}
+		
 		
 		Map params = request.getParameterMap();
 		Response resp;
@@ -147,22 +188,27 @@ public abstract class BaseServlet extends HttpServlet {
 		
 	protected Response launchCommand(HttpServletRequest req, SessionData tfsession) throws IndexAccessException, DownloadFailedException, DBAccessException {
 		Response r;
+		
 		// parameter validieren
 		Map params = req.getParameterMap();
 		/*if(!params.containsKey("want")) {
 			r = new ErrorResponse(null);
 			r.serverReturnValue(2, "Need Parameter 'want'");
+			requestLog.warn("["+req.getRemoteAddr()+"] missing parameter 'want'");
 			return r;
 		}*/
 		
 		if(!params.containsKey("version")) {
 			r = new ErrorResponse();
 			r.serverReturnValue(2, "Need Parameter 'version'");
+			requestLog.warn("["+req.getRemoteAddr()+"] missing parameter 'version'");
 			return r;
 		} else {
 			if(!req.getParameter("version").equals(interfaceversion)) {
 				r = new ErrorResponse();
 				r.serverReturnValue(3, "Incompatible Interface Version");
+				requestLog.warn("["+req.getRemoteAddr()+"] incompatible interface: "+req.getParameter("version"));
+
 				return r;
 			}
 		}
@@ -170,6 +216,7 @@ public abstract class BaseServlet extends HttpServlet {
 		if(!params.containsKey("command")) {
 			r = new ErrorResponse();
 			r.serverReturnValue(2, "Need Parameter 'command'");
+			requestLog.warn("["+req.getRemoteAddr()+"] missing parameter 'command'");
 			return r;
 		}
 		
@@ -180,35 +227,36 @@ public abstract class BaseServlet extends HttpServlet {
 		if(!commands.containsKey(cmd)) {
 			r = new ErrorResponse();
 			r.serverReturnValue(-1, "Command not found");
+			requestLog.error("["+req.getRemoteAddr()+"] unknown command '"+cmd+"'");
+
 			return r;
 		}
 		Integer i = commands.get(cmd);
-	
+
+		requestLog.info("["+req.getRemoteAddr()+"] executing command '"+cmd+"'");
+
 		switch(i.intValue()) {
 		case 1: // search
 			String query;
 			int offset;
 			// suche, es müssen die parameter keyword und offset da sein
-			if(!params.containsKey("keyword") || req.getParameter("keyword").length() == 0) {
-				if( !params.containsKey("getall"))
-				{
+			if(!params.containsKey("keyword")) {
+				r = new ErrorResponse(null);
+				r.serverReturnValue(2, "Need Parameter 'keyword'");
+				requestLog.warn("["+req.getRemoteAddr()+"] missing param 'keyword'");
+				return r;
+			}
+			else
+			{
+				if( ! req.getParameter("getall").equals("yes")) {
 					r = new ErrorResponse();
-					r.serverReturnValue(2, "Need Parameter 'keyword'");
+					r.serverReturnValue(2, "Need Parameter 'getall=yes'");
 					return r;
 				}
-				else
-				{
-					if( ! req.getParameter("getall").equals("yes"))
-					{
-						r = new ErrorResponse();
-						r.serverReturnValue(2, "Need Parameter 'getall=yes'");
-						return r;
-					}
-					query=null; // so identifizieren wird das alle zurueckgegeben werden sollen
-				}
-			} else {
+				query = null; // so identifizieren wird das alle zurueckgegeben werden sollen
+			/*} else {
 				query = req.getParameter("keyword");
-			}
+			}*/
 			
 			if(!params.containsKey("offset")) {
 				offset = 0;				
@@ -219,6 +267,7 @@ public abstract class BaseServlet extends HttpServlet {
 			if(!params.containsKey("category")) {
 				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'category'");
+				requestLog.warn("["+req.getRemoteAddr()+"] missing param 'category'");
 				return r;		
 			} else {
 				rawcat = req.getParameterValues("category");
@@ -227,17 +276,16 @@ public abstract class BaseServlet extends HttpServlet {
 				for(int h = 0; h < rawcat.length; h++) {
 					categories[h] = Integer.parseInt(rawcat[h]);
 				}
-					return ctrl.search(query, offset, categories, tfsession);
+				return ctrl.search(query, offset, categories, tfsession);
 			}			
 
-			
-			
 		case 2: // addpage
 			String url;
 			// suche, es müssen die parameter category und url da sein
 			if(!params.containsKey("url")) {
 				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'url'");
+				requestLog.warn("["+req.getRemoteAddr()+"] missing param 'url'");
 				return r;
 			} else {
 				url = req.getParameter("url");
@@ -247,6 +295,7 @@ public abstract class BaseServlet extends HttpServlet {
 			if(!params.containsKey("category")) {
 				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'category'");
+				requestLog.warn("["+req.getRemoteAddr()+"] missing param 'category'");
 				return r;		
 			} else {
 				rawcat2 = req.getParameterValues("category");
@@ -283,6 +332,8 @@ public abstract class BaseServlet extends HttpServlet {
 			if(!params.containsKey("name")) {
 				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'name'");
+				requestLog.warn("["+req.getRemoteAddr()+"] missing param 'name'");
+
 				return r;
 			} else {
 				name = req.getParameter("name");
@@ -291,6 +342,8 @@ public abstract class BaseServlet extends HttpServlet {
 			if(!params.containsKey("description")) {
 				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'description'");
+				requestLog.warn("["+req.getRemoteAddr()+"] missing param 'description'");
+
 				return r;
 			} else {
 				description = req.getParameter("description");
@@ -299,6 +352,8 @@ public abstract class BaseServlet extends HttpServlet {
 			if(!params.containsKey("subcategoryof")) {
 				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'subcategoryof'");
+				requestLog.warn("["+req.getRemoteAddr()+"] missing param 'subcategoryof'");
+
 				return r;
 			} else {
 				parentID = Integer.parseInt(req.getParameter("subcategoryof"));
@@ -475,6 +530,8 @@ public abstract class BaseServlet extends HttpServlet {
 		
 		r = new ErrorResponse();
 		r.serverReturnValue(-1, "Unknown command");
+		requestLog.error("["+req.getRemoteAddr()+"] unknown command '"+cmd+"'");
+
 		return r;
 		
 	}

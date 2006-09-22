@@ -37,7 +37,7 @@ public class Download
 	protected String tempDir = "/tmp/";
 	
 	
-	public NewIndexEntry downloadFile(URL adress, int[] cats) throws DownloadFailedException
+	public NewIndexEntry downloadFile(URL address, int[] cats) throws DownloadFailedException
 	{
 		// Habe diese deklarationen mal in die methode gezogen, da es 
 		// eigentlich keinen grund gibt, diese Methode nicht halbwegs 
@@ -55,7 +55,7 @@ public class Download
 			//create url
 			
 			//create URLConnection
-			ucon = adress.openConnection();
+			ucon = address.openConnection();
 			ucon.connect();
 			//ucon.getHeaderFields();
 			
@@ -80,7 +80,7 @@ public class Download
 			// verarbeiten können, knallt es schon beim Download, nicht erst beim Versuch die zu indexieren.			
 			//toWriteIn = new File(tempDir+(adress.getHost()+adress.getPath()).hashCode()+".html");
 			
-			toWriteIn = new File(tempDir+adress.hashCode()+".htm");
+			toWriteIn = new File(tempDir+address.hashCode()+".htm");
 			// Hier würde sich evtl. ein Cache-Managment gut machen :)
 			toWriteIn.createNewFile();
 			
@@ -93,7 +93,7 @@ public class Download
 				dout.write(data);	  
 			}
 		
-			entry = new SimpleNewIndexEntry(adress.toString(), toWriteIn, ucon.getHeaderFields(),cats);
+			entry = new SimpleNewIndexEntry(address, toWriteIn, ucon.getHeaderFields(), cats);
 			
 			
 		}

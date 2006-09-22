@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.Map;
 import java.io.IOException;
 import java.lang.InterruptedException;
+import java.net.URL;
 
 import index.NewIndexEntry;
 
@@ -24,7 +25,7 @@ import index.Parser.Html.HTMLParser;
  */
 public class SimpleNewIndexEntry implements NewIndexEntry {
 	
-	protected String url;
+	protected URL url;
 	protected File f;
 	protected Map headers;
 	protected int[] categoryID;
@@ -34,7 +35,7 @@ public class SimpleNewIndexEntry implements NewIndexEntry {
 	 * @param f
 	 * @param headers
 	 */
-	public SimpleNewIndexEntry(String url, File f, Map headers, int[] id) {
+	public SimpleNewIndexEntry(URL url, File f, Map headers, int[] id) {
 		this.url = url;
 		this.f = f;
 		this.headers = headers;
@@ -58,15 +59,20 @@ public class SimpleNewIndexEntry implements NewIndexEntry {
 	/**
 	 * @return Returns the url.
 	 */
-	public String getUrl() {
+	public URL getUrl() {
 		return url;
 	}
 
 	/**
 	 * @return Returns the Categorys as IDs
 	 */
-	public int[] getCategoryID() {
+	public int[] getCategories() {
 		return categoryID;
+	}
+	
+	
+	public String getContent() {
+		return null;
 	}
 	/**
 	 * Erzeugt ein Lucene Dokument,dass wir dann dem Index inzufuegen koennen.
@@ -79,7 +85,7 @@ public class SimpleNewIndexEntry implements NewIndexEntry {
 		//URL als KeyWord-Feld ins Document adden
 		//Bedeutet es wird nicht in Tokens zerlegt aber indexiert und gespeichert
 		//es ist suchbar
-		doc.add(Field.Keyword("url",url));
+		doc.add(Field.Keyword("url",url.toString()));
 
 		//ein Datum ( z.b. letzte modifikation)
 		//bin noch nicht sicher ob wir das brauchen, da wir ja ein Datum in der Daten

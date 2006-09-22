@@ -81,7 +81,7 @@ public class IndexerTest
 			int[] id = new int[2];
 			id[0] = 0;
 			id[1] = 2;
-			SimpleNewIndexEntry tentry = new SimpleNewIndexEntry(url,f,headers,id);
+			SimpleNewIndexEntry tentry = new SimpleNewIndexEntry(new URL(url),f,headers,id);
 	
 			//erstmal ein Entry anlegen
 			String url2 = new String("http://www.Regeln.de");
@@ -90,7 +90,7 @@ public class IndexerTest
 			id2[0] = 0;
 			id2[1] = 1;
 			id2[2] = 6;
-			SimpleNewIndexEntry tentry2 = new SimpleNewIndexEntry(url2,f2,headers,id2);
+			SimpleNewIndexEntry tentry2 = new SimpleNewIndexEntry(new URL(url2),f2,headers,id2);
 		
 
 /*			URL u1 = new URL("http://www.irgentwas.de");

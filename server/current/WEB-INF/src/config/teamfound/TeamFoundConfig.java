@@ -13,8 +13,6 @@ package config.teamfound;
 import config.Config;
 
 import java.util.Properties;
-import java.io.IOException;
-import java.io.FileInputStream;
 
 public class TeamFoundConfig 
 {

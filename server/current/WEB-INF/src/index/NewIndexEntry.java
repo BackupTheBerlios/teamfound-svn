@@ -4,7 +4,11 @@
 package index;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
+
+import org.apache.lucene.document.Document;
 
 /**
  * Ein neuer Index-Eintrag muss die Datei in welcher der Inhalt, die url von welcher die Datei stammt sowie eine Hashmap mit http-headern zur Verfügung stellen
@@ -17,15 +21,23 @@ import java.util.Map;
 public interface NewIndexEntry {
 	/**
 	 * Liefert die temporäre Datei
+	 * @deprecated
 	 * @return
 	 */
 	public File getFile();
+	
+	
+	/**
+	 * Liefert den Inhalt des Dokuments
+	 * 
+	 */
+	public String getContent();
 	
 	/**
 	 * Liefert die URL für diese Inhalte
 	 * @return
 	 */
-	public String getUrl();
+	public URL getUrl();
 	
 	/**
 	 * Liefert die Header die beim Empfang der Daten empfangen wurden
@@ -37,5 +49,10 @@ public interface NewIndexEntry {
 	 * Erzeugt ein Lucene Dokument,dass dem Index hinzugefuegt werden kann.
 	 * @return Returns an org.apache.lucene.document.Document 
 	 */
-	public org.apache.lucene.document.Document getdocument()  throws java.io.IOException, java.lang.InterruptedException;
+	public Document getdocument()  throws IOException, InterruptedException;
+	
+	/**
+	 * Liefert die Kategorien als Array
+	 **/
+	public int[] getCategories();
 }

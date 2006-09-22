@@ -6,7 +6,6 @@ package index;
 import java.net.URL;
 
 import controller.IndexAccessException;
-import controller.response.SearchResponse;
 
 import org.apache.lucene.document.Document;
 
