@@ -2150,7 +2150,8 @@ public class DBLayerHSQL implements DBLayer
 	public userRightBean getRights(Connection conn, Integer userid) throws SQLException
 	{
 		PreparedStatement stuser = null;
-		stuser = conn.prepareStatement("Select rootid from projectdata where rootid = (SELECT rootid FROM tfusertoproject WHERE userid = ? AND isadmin =?)");
+		//stuser = conn.prepareStatement("Select rootid from projectdata where rootid = (SELECT rootid FROM tfusertoproject WHERE userid = ? AND isadmin =?)");
+		stuser = conn.prepareStatement("SELECT rootid FROM tfusertoproject WHERE userid = ? AND isadmin =?");
 		stuser.setInt(1, userid.intValue());
 		stuser.setBoolean(2, false);
 
@@ -2195,7 +2196,8 @@ public class DBLayerHSQL implements DBLayer
 	public projectdataBean getProjectDataToCat(Connection conn, Integer catid) throws SQLException
 	{
 		PreparedStatement st = null;
-		st = conn.prepareStatement("SELECT * FROM projectdata WHERE rootid = (SELECT root_id FROM category WHERE id = ?)");
+		//st = conn.prepareStatement("SELECT * FROM projectdata WHERE rootid = (SELECT root_id FROM category WHERE id = ?)");
+		st = conn.prepareStatement("SELECT * FROM projectdata as pd, category as c WHERE pd.rootid = c.root_id and c.id = ?");
 		st.setInt(1,catid.intValue());
 	try
 		{	
