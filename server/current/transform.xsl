@@ -488,124 +488,141 @@
 </xsl:template>
 
 <xsl:template name="editproject">
-(<a>
-			<xsl:attribute name="href">
-			javascript:showhide('projectpermissions<xsl:value-of select="id"/>');
-			</xsl:attribute>
-			view/edit permissions</a> / 
-			<a>
-			<xsl:attribute name="href">
-			?pt=manageusers&amp;command=getusers&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
-			</xsl:attribute>
-			manage users
-			</a> /
-			<a>
-			<xsl:attribute name="href">
-			?pt=browsecats&amp;command=getcategories&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
-			</xsl:attribute>
-			manage categories &amp; URLs
-			</a> )
-			<div style="display: none;">
-				<xsl:attribute name="id">projectpermissions<xsl:value-of select="id"/></xsl:attribute>
-				<form action="tf" name="editproject" method="post">
-					<table>
-						<tr><td>Guest permissions</td><td>User permissions</td></tr>
-						<tr>
-							<td>
-								<input type="checkbox" id="idguestread" name="guestread">
-									<xsl:if test="guestread = 'yes'">
-										<xsl:attribute name="checked">checked</xsl:attribute>
-									</xsl:if>
-								</input>
-								<label for="idguestread">read</label>
-							</td>
-							<td>
-								<input type="checkbox" id="iduseruseradd" name="useruseradd">
-									<xsl:if test="useruseradd = 'yes'">
-										<xsl:attribute name="checked">checked</xsl:attribute>
-									</xsl:if>
-								</input>
-								<label for="iduseruseradd">add users</label>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<input type="checkbox" id="idguesturledit" name="guesturledit">
-									<xsl:if test="guesturledit= 'yes'">
-										<xsl:attribute name="checked">checked</xsl:attribute>
-									</xsl:if>
-								</input>
-								<label for="idguesturledit">url edit</label>
-							</td>
-							<td>
-								<input type="checkbox" id="iduserurledit" name="userurledit">
-									<xsl:if test="userurledit= 'yes'">
-										<xsl:attribute name="checked">checked</xsl:attribute>
-									</xsl:if>
-								</input>
-								<label for="iduserurledit">url edit</label>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<input type="checkbox" id="idguestcatedit" name="guestcatedit">
-									<xsl:if test="guestcatedit= 'yes'">
-										<xsl:attribute name="checked">checked</xsl:attribute>
-									</xsl:if>
-								</input>
-								<label for="idguestcatedit">cat edit</label>
-							</td>
-							<td>
-								<input type="checkbox" id="idusercatedit" name="usercatedit">
-									<xsl:if test="usercatedit= 'yes'">
-										<xsl:attribute name="checked">checked</xsl:attribute>
-									</xsl:if>
-								</input>
-								<label for="idusercatedit">cat edit</label>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<input type="checkbox" id="idguestaddurl" name="guestaddurl">
-									<xsl:if test="guestaddurl= 'yes'">
-										<xsl:attribute name="checked">checked</xsl:attribute>
-									</xsl:if>
-								</input>
-								<label for="idguestaddurl">url add</label>
-							</td>
-							<td>
-								<input type="checkbox" id="iduseraddurl" name="useraddurl">
-									<xsl:if test="useraddurl= 'yes'">
-										<xsl:attribute name="checked">checked</xsl:attribute>
-									</xsl:if>
-								</input>
-								<label for="iduseraddurl">url add</label>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<input type="checkbox" id="idguestaddcat" name="guestaddcat">
-									<xsl:if test="guestaddcat= 'yes'">
-										<xsl:attribute name="checked">checked</xsl:attribute>
-									</xsl:if>
-								</input>
-								<label for="idguestaddcat">add cat</label>
-							</td>
-							<td>
-								<input type="checkbox" id="iduseraddcat" name="useraddcat">
-									<xsl:if test="useraddcat= 'yes'">
-										<xsl:attribute name="checked">checked</xsl:attribute>
-									</xsl:if>
-								</input>
-								<label for="iduseraddcat">add cat</label>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2"><input type="submit" value="save"/></td>
-						</tr>
-					</table>
-				</form>
-			</div>
+	(<a>
+	<xsl:attribute name="href">
+	javascript:showhide('projectpermissions<xsl:value-of select="id"/>');
+	</xsl:attribute>
+	view/edit permissions</a> / 
+	<a>
+	<xsl:attribute name="href">
+	?pt=manageusers&amp;command=getusers&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+	</xsl:attribute>
+	manage users
+	</a> /
+	<a>
+	<xsl:attribute name="href">
+	?pt=browsecats&amp;command=getcategories&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+	</xsl:attribute>
+	manage categories &amp; URLs
+	</a> )
+	<div style="display: none;">
+		<xsl:attribute name="id">projectpermissions<xsl:value-of select="id"/></xsl:attribute>
+		<form action="tf" name="editproject" method="post">
+			<table>
+				<tr><td>Guest permissions</td><td>User permissions</td></tr>
+				<tr>
+					<td>
+						<input type="checkbox" id="idguestread" name="guestread" value="yes">
+							<xsl:if test="guestread = 'yes'">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+						</input>
+						<label for="idguestread">read</label>
+					</td>
+					<td>
+						<input type="checkbox" id="iduseruseradd" name="useruseradd" value="yes">
+							<xsl:if test="useruseradd = 'yes'">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+						</input>
+						<label for="iduseruseradd">add users</label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="checkbox" id="idguesturledit" name="guesturledit" value="yes">
+							<xsl:if test="guesturledit= 'yes'">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+						</input>
+						<label for="idguesturledit">url edit</label>
+					</td>
+					<td>
+						<input type="checkbox" id="iduserurledit" name="userurledit" value="yes">
+							<xsl:if test="userurledit= 'yes'">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+						</input>
+						<label for="iduserurledit">url edit</label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="checkbox" id="idguestcatedit" name="guestcatedit" value="yes">
+							<xsl:if test="guestcatedit= 'yes'">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+						</input>
+						<label for="idguestcatedit">cat edit</label>
+					</td>
+					<td>
+						<input type="checkbox" id="idusercatedit" name="usercatedit" value="yes">
+							<xsl:if test="usercatedit= 'yes'">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+						</input>
+						<label for="idusercatedit">cat edit</label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="checkbox" id="idguestaddurl" name="guestaddurl" value="yes">
+							<xsl:if test="guestaddurl= 'yes'">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+						</input>
+						<label for="idguestaddurl">url add</label>
+					</td>
+					<td>
+						<input type="checkbox" id="iduseraddurl" name="useraddurl" value="yes">
+							<xsl:if test="useraddurl= 'yes'">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+						</input>
+						<label for="iduseraddurl">url add</label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="checkbox" id="idguestaddcat" name="guestaddcat" value="yes">
+							<xsl:if test="guestaddcat= 'yes'">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+						</input>
+						<label for="idguestaddcat">add cat</label>
+					</td>
+					<td>
+						<input type="checkbox" id="iduseraddcat" name="useraddcat" value="yes">
+							<xsl:if test="useraddcat= 'yes'">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+						</input>
+						<label for="iduseraddcat">add cat</label>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="submit" value="save"/></td>
+				</tr>
+			</table>
+			<input type="hidden" name="want" value="xml"/>
+			<input type="hidden" name="version">
+				<xsl:attribute name="value">
+					<xsl:value-of select="/response/server/interface-version"/>
+				</xsl:attribute>
+			</input> 
+			<input type="hidden" name="pt2">
+				<xsl:attribute name="value">
+					<xsl:value-of select="id"/>
+				</xsl:attribute>
+			</input> 
+			<input type="hidden" name="projectid">
+				<xsl:attribute name="value">
+					<xsl:value-of select="id"/>
+				</xsl:attribute>
+			</input> 
+			<input type="hidden" name="command" value="editpermissions"/>
+		</form>
+	</div>
 </xsl:template>
 
 <xsl:template name="listmyprojects">

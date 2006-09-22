@@ -2028,6 +2028,7 @@ public class DBLayerHSQL implements DBLayer
 
 			//ausfuehren der Updates 
 			st.executeUpdate();	
+			conn.commit();
 			
 			
 		}
