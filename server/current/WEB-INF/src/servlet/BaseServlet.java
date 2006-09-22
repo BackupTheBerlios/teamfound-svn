@@ -245,28 +245,32 @@ public abstract class BaseServlet extends HttpServlet {
 			int offset;
 			// suche, es müssen die parameter keyword und offset da sein
 			if(!params.containsKey("keyword")) {
-				r = new ErrorResponse();
-				r.serverReturnValue(2, "Need Parameter 'keyword'");
-				requestLog.warn("["+req.getRemoteAddr()+"] missing param 'keyword'");
-				return r;
-			}
-			else
-			{
-				if( ! req.getParameter("getall").equals("yes")) {
+				if( ! params.containsKey("getall")) {
 					r = new ErrorResponse();
-					r.serverReturnValue(2, "Need Parameter 'getall=yes'");
+					r.serverReturnValue(2, "Need Parameter 'keyword'");
 					return r;
 				}
-				query = null; // so identifizieren wird das alle zurueckgegeben werden sollen
-			/*} else {
-				query = req.getParameter("keyword");
-			}*/
+				else
+				{
+					if(req.getParameter("getall").equals("yes"))
+					{
+						query=null;
+					}
+					else
+					{
+						r = new ErrorResponse();
+						r.serverReturnValue(2, "Wrong Value in Parameter 'getall'");
+						return r;
+					}
+				}
 			}
+				
+			query = req.getParameter("keyword");
 			
 			if(!params.containsKey("offset")) {
 				offset = 0;				
 			} else {
-				offset = Integer.parseInt(req.getParameter("keyword"));
+				offset = Integer.parseInt(req.getParameter("offset"));
 			}			
 			String[] rawcat;
 			if(!params.containsKey("category")) {

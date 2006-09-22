@@ -63,7 +63,7 @@ public class CrawlerDocument implements NewIndexEntry {
 
 	public Map getHeaders() {
 		// TODO Auto-generated method stub
-		return null;
+		return headers ;
 	}
 	
 	public org.apache.lucene.document.Document getdocument() {

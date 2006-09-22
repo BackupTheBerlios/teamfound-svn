@@ -3,10 +3,15 @@
  */
 package index.teamfound;
 
-
 import java.net.URL;
 import java.util.Vector;
 import java.util.HashSet;
+import java.io.StringReader;
+import java.io.IOException;
+import java.lang.InterruptedException;
+import java.util.Iterator;
+
+import index.Parser.Html.HTMLParser;
 
 import controller.IndexAccessException;
 
@@ -19,7 +24,7 @@ import sync.*;
 
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.document.Document;
+import org.apache.lucene.document.*;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.BooleanQuery;
@@ -47,10 +52,14 @@ public class TeamFoundIndexer implements Indexer {
 
 	//der Indexer braucht zugang zur Konfiguration damit er den Index findet
 	private ReadWriteSync indexsync; 
-	
+	private String indexpath;
+
 	public TeamFoundIndexer(ReadWriteSync s )
 	{
 		indexsync = s;
+		//teamfound BasePfad erfragen und indexPfad bauen 
+		String path = TeamFoundConfig.getConfValue("tfpath");
+		indexpath = (path+"/index");
 	}
 	
 	/**
@@ -64,9 +73,6 @@ public class TeamFoundIndexer implements Indexer {
 	 */
 	public void createIndex(String path) throws java.io.IOException
 	{
-		
-		String indexpath = (path+"/index");
-		
 		if(!IndexReader.indexExists(path))
 		{
 				IndexWriter writer = new IndexWriter(indexpath, new TeamFoundAnalyzer(), true);
@@ -85,10 +91,6 @@ public class TeamFoundIndexer implements Indexer {
 	 */
 	public void addUrl(Document doc) throws IndexAccessException
 	{
-		//teamfound BasePfad erfragen und indexPfad bauen 
-		String path = TeamFoundConfig.getConfValue("tfpath");
-		String indexpath = (path+"/index");
-		
 		try
 		{
 			//schreibewunsch anmelden
@@ -138,19 +140,16 @@ public class TeamFoundIndexer implements Indexer {
 	 * @param adress Die URL, die zu diesem Dokument führt
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Exceptions einpacken
 	 */
-	public void addUrl(NewIndexEntry entry, URL adress) throws IndexAccessException
+	public void addUrl(NewIndexEntry entry, URL adress, Vector<Integer> cats) throws IndexAccessException
 	{
-		//teamfound BasePfad erfragen und indexPfad bauen 
-		String path = TeamFoundConfig.getConfValue("tfpath");
-		String indexpath = (path+"/index");
-		
 		try
 		{
 			//schreibewunsch anmelden
 			indexsync.doWrite();
 			
 			//Dokument erstellen und in den Index schreiben
-			Document doc = entry.getdocument();
+			Document doc = getdocument(entry, cats);
+			
 			IndexWriter writer = new IndexWriter(indexpath, new TeamFoundAnalyzer(), false);
 			writer.addDocument(doc);
 			
@@ -186,7 +185,68 @@ public class TeamFoundIndexer implements Indexer {
 			indexsync.endWrite();
 		}
 	}
+	
+	/**
+	 * Erzeugt ein Lucene Dokument,dass wir dann dem Index inzufuegen koennen.
+	 * @return Returns an org.apache.lucene.document.Document 
+	 */
+	private Document getdocument(NewIndexEntry entry, Vector<Integer> cats)  throws IOException, InterruptedException		
+	{
+		Document doc = new Document();
+
+		//URL als KeyWord-Feld ins Document adden
+		//Bedeutet es wird nicht in Tokens zerlegt aber indexiert und gespeichert
+		//es ist suchbar
+		doc.add(Field.Keyword("url",entry.getUrl().toString()));
+
+		//ein Datum ( z.b. letzte modifikation)
+		//bin noch nicht sicher ob wir das brauchen, da wir ja ein Datum in der Daten
+		//bank haben .. allerdings gibt uns das die Moeglichkeit einfach aus dem Index alle
+		//eintraege rauszufischen die z.b. ein bestimmtes alter ueberschritten haben
+		//auch hier nicht in Tokens zerlegt aber suchbar gespeichert
+		/* doc.add(Field.Keyword("datum",datum));*/
+
+		//TODO anderen HTML Parser suchen -> dann koennen wir ohne das apbspeichern der URL als File auskommen
+		//TODO Test ob File existiert
 		
+		index.Parser.Html.HTMLParser parser = new HTMLParser(new StringReader(entry.getContent()));
+		
+		//Ok, der Parser liefert uns einen Reader der uns den Text ohne HTML Tags etc.
+		//liefert und dieser kann dann indexiert und suchbar gespeichert werden
+		doc.add(Field.Text("contents",parser.getReader()));
+	
+		//wir speichern die Zusammenfassung der Seite aber indexieren nicht
+		//kann nur zum anzeigen bei Suchergebnissen genutzt werden nicht durchsuchbar
+		doc.add(Field.UnIndexed("summary",parser.getSummary()));
+
+		//Title wird wieder indexiert damit er zusaetzlich durchsucht werden kann
+		String title = new String("no title extracted");
+		if(entry.getHeaders().get("TITLE") != null)
+			title = (String)entry.getHeaders().get("TITLE");
+		if(entry.getHeaders().get("title") != null)
+			title = (String)entry.getHeaders().get("title");
+		doc.add(Field.Text("title", title));
+
+		//Kategorien: wir bauen erstmal einen String der die ids beinhaltet und 
+		//z.b. so aussieht "3 45 6 ..."
+		//eine Aufzaehlung aller Kathegorien mit leerzeichen getrennt
+		//Dann nehmen wir unseren eigen Analyser der bei dem Feld Cats automatisch
+		//den org.apache.lucene.analysis.WhitespaceTokenizer benutzt somit haben
+		//wir die ids schoen durchsuchbar gespeichert
+		String catstring  = new String();
+		Iterator it = cats.iterator();
+		while(it.hasNext())
+		{
+			catstring = (catstring + ((Integer)it.next()).toString() + " ");
+		}
+		//Kategorien speicher indexieren und zwar als tokens
+		doc.add(new Field("cats",catstring,true,true,true));
+
+		return doc; 
+		
+	}
+
+
 	/**
 	 * Eine Query auf dem Index ausführen
 	 * @param query Der Query-String
@@ -198,9 +258,6 @@ public class TeamFoundIndexer implements Indexer {
 	 */
 	public Vector<Document> query(String query, int[] categorys, int count , int offset ) throws IndexAccessException
 	{
- 		
-		String path = TeamFoundConfig.getConfValue("tfpath");
-		String indexpath = (path+"/index");		
 		try
 		{
 			//lesewunsch anmelden
@@ -348,9 +405,6 @@ public class TeamFoundIndexer implements Indexer {
 	 */
 	public Document delDoc(String url) throws IndexAccessException
 	{
-		//teamfound BasePfad erfragen und indexPfad bauen 
-		String path = TeamFoundConfig.getConfValue("tfpath");
-		String indexpath = (path+"/index");
 		
 		try
 		{

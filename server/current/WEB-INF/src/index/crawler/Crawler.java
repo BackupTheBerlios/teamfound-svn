@@ -197,7 +197,7 @@ public class Crawler {
 		}
 		
 		// inhalt in einen stringbuffer ziehen
-		StringBuffer sbuff = new StringBuffer(conn.getContentLength());
+		StringBuffer sbuff = new StringBuffer(conn.getContentLength() > 0 ? conn.getContentLength() : 2000);
 		
 		InputStreamReader in = new InputStreamReader(conn.getInputStream(), encoding);
 		

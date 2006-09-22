@@ -172,23 +172,12 @@ public class TeamFoundController implements Controller {
 			/*Url muss heruntergeladen und neu Indiziert werden*/
 			//System.out.println("habe Url noch nicht indiziert!");
 			
-			int[] categ = new int[newcatstoadd.size()];
-			Iterator intit = newcatstoadd.iterator();
-			int i = 0;
-			while(intit.hasNext())
-			{
-				categ[i]= ((Integer)intit.next()).intValue();
-				i=i+1;
-			}
-
 			NewIndexEntry entry = crawler.fetch(adress); 
 			//loader.downloadFile(adress, categ);
-
-
 		
 			// 2. Indexieren
 			System.out.println("2. Url in den Index!");
-			tfindexer.addUrl(entry,adress);
+			tfindexer.addUrl(entry,adress, newcatstoadd);
 
 			// 3. Datenbank aktualisieren
 
