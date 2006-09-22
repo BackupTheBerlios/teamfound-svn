@@ -200,7 +200,19 @@ public class Crawler {
 		StringBuffer sbuff = new StringBuffer(conn.getContentLength() > 0 ? conn.getContentLength() : 2000);
 		
 		InputStreamReader in = new InputStreamReader(conn.getInputStream(), encoding);
-		
+	
+		//To Jonas: Eingefuegt weil immer leerer Inhalt kam!
+			char ch;
+			int a;
+			while ((a = in.read()) >= 0)
+			{
+				ch = (char) a;
+				sbuff.append(ch);
+			}
+			in.close();
+		////////////////////////////////////////////////////////
+
+
 		int c, i = 0;
 		
 		

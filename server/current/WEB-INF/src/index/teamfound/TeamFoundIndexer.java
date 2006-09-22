@@ -214,7 +214,9 @@ public class TeamFoundIndexer implements Indexer {
 		//Ok, der Parser liefert uns einen Reader der uns den Text ohne HTML Tags etc.
 		//liefert und dieser kann dann indexiert und suchbar gespeichert werden
 		doc.add(Field.Text("contents",parser.getReader()));
-	
+	//	doc.add(Field.Text("contents",entry.getContent()));
+		
+		
 		//wir speichern die Zusammenfassung der Seite aber indexieren nicht
 		//kann nur zum anzeigen bei Suchergebnissen genutzt werden nicht durchsuchbar
 		doc.add(Field.UnIndexed("summary",parser.getSummary()));
