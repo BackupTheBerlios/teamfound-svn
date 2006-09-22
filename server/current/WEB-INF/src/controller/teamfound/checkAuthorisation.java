@@ -90,5 +90,25 @@ public class checkAuthorisation
 	}
 
 
+	public static boolean checkEditCat(SessionData tfsession, Integer projectid)
+	{
+		// checke ob guestaddcat == true oder 
+		// user eingeloggt, zu diesem projekt gehoert und projekt useraddcat == true gestzt hat
+		// oder user admin des projekts ist
+		
+		if(!(tfsession == SessionData.guest))
+		{
+			if(isAdmin(tfsession,projectid))
+				return true;
+
+			if(tfsession.urb.userCatedit(projectid))
+				return true;
+		}
+
+		if( SessionData.projectdata.get(projectid).getGuestCatedit().booleanValue())
+			return true;
+		
+		return false;
+	}
 
 }

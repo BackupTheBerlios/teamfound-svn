@@ -7,13 +7,7 @@ import controller.DownloadFailedException;
 import controller.IndexAccessException;
 import controller.DBAccessException;
 import controller.ServerInitFailedException;
-import controller.response.AddCategoriesResponse;
-import controller.response.AddPageResponse;
-import controller.response.GetCategoriesResponse;
-import controller.response.GetProjectsResponse;
-import controller.response.SearchResponse;
-import controller.response.NewUserResponse;
-import controller.response.LoginResponse;
+import controller.response.*;
 import controller.SessionData;
 
 import java.util.Date;
@@ -99,5 +93,6 @@ public interface Controller {
 	public LoginResponse loginUser(String user, String pass, String sessionkey,Date last) throws DBAccessException, ServerInitFailedException;
 	
 
+	public Response editCategory(Integer category, String catname, String description, SessionData session) throws DBAccessException;
 
 }

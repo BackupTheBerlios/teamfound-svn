@@ -84,6 +84,7 @@ public abstract class BaseServlet extends HttpServlet {
 		commands.put("register", new Integer(6));
 		commands.put("login", new Integer(7));
 		//commands.put("editpermissions", new Integer(8));
+		commands.put("editcategory", new Integer(9));
 	}
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -185,7 +186,7 @@ public abstract class BaseServlet extends HttpServlet {
 		Integer i = commands.get(cmd);
 	
 		switch(i.intValue()) {
-		case 1:
+		case 1: // search
 			String query;
 			int offset;
 			// suche, es müssen die parameter keyword und offset da sein
@@ -219,7 +220,7 @@ public abstract class BaseServlet extends HttpServlet {
 
 			
 			
-		case 2:
+		case 2: // addpage
 			String url;
 			// suche, es müssen die parameter category und url da sein
 			if(!params.containsKey("url")) {
@@ -247,7 +248,7 @@ public abstract class BaseServlet extends HttpServlet {
 			
 			
 			
-		case 3:
+		case 3: // getcategories
 			// getCategories (für eine kategorie)
 			int projectID;
 			if(!params.containsKey("projectid")) 
@@ -263,7 +264,7 @@ public abstract class BaseServlet extends HttpServlet {
 			}
 			return ctrl.getCategories(projectID, tfsession);
 			
-		case 4:
+		case 4: // addcategory
 			String name, description;
 			int parentID;
 			// addCategory
@@ -293,10 +294,10 @@ public abstract class BaseServlet extends HttpServlet {
 			
 			return ctrl.addCategory(name, parentID, description, tfsession);
 			
-		case 5:
+		case 5: // getprojects
 			return ctrl.getProjects(tfsession);
 			
-		case 6:
+		case 6: // register
 			String user, pass;
 			if(!params.containsKey("user")) {
 				r = new ErrorResponse();
@@ -316,7 +317,7 @@ public abstract class BaseServlet extends HttpServlet {
 			
 			return ctrl.newUser(user, pass);
 		
-		case 7:
+		case 7: // login
 			String uniforgeuser;
 			if(!params.containsKey("user")) {
 				r = new ErrorResponse();
@@ -359,6 +360,37 @@ public abstract class BaseServlet extends HttpServlet {
 				return ctrl.rejectUser(user);
 			}
 
+		case 8:
+			// edit permissions
+
+		case 9:
+			// edit category
+			String newname = null;
+			String newdescription = null;
+			Integer category;
+
+			// nur parameter category ist pflicht
+			if(params.containsKey("name")) 
+			{ 
+				newname = req.getParameter("name"); 
+			}
+
+			if(params.containsKey("description")) 
+			{ 
+				newdescription = req.getParameter("description"); 
+			}
+
+			if(!params.containsKey("category")) 
+			{ 	r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'category'");
+				return r;
+			} 
+			else 
+			{ 
+				category = Integer.parseInt(req.getParameter("category"));
+			}
+
+			return ctrl.editCategory(category, newname, newdescription, tfsession);
 			
 		}
 		

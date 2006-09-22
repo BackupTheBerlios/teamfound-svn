@@ -16,7 +16,7 @@ public class TestServlet extends BaseServlet {
 	private static final long serialVersionUID = -2766879274061221595L;
 
 	public void init() throws ServletException {
-		ctrl = new TestController();
+	/*	ctrl = new TestController();
 		xmlout = new XMLOutputter(Format.getPrettyFormat());
 		
 		commands = new HashMap<String, Integer>();
@@ -25,5 +25,6 @@ public class TestServlet extends BaseServlet {
 		commands.put("addpage", new Integer(2));
 		commands.put("getcategories", new Integer(3));
 		commands.put("addcategories", new Integer(4));
+		*/
 	}
 }

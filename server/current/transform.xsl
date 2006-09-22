@@ -36,6 +36,14 @@
 </xsl:template>
 
 <xsl:template name="showcommandresults">
+
+	<xsl:if test="/response/teamfound/return-value != '0'">
+		<p id="error">
+			Error #<xsl:value-of select="/response/teamfound/return-value"/><br/>
+			<xsl:value-of select="/response/teamfound/return-description"/>
+		</p>
+	</xsl:if>
+
 	<xsl:if test="count(/response/teamfound/search/result) > 0">
 		<p>
 			<xsl:value-of select="count(/response/teamfound/search/result/found)"/>
@@ -87,6 +95,13 @@
 		</p>
 	</xsl:if>
 
+	<xsl:if test="count(/response/teamfound/editcategory) > 0">
+		<p>
+			Edit category <xsl:value-of select="/response/teamfound/editcategory/name"/> - <xsl:value-of select="/response/teamfound/editcategory/description"/>: <xsl:value-of select="/response/teamfound/return-description"/>
+		</p>
+	</xsl:if>
+
+
 </xsl:template>
 
 <xsl:template name="menu">
@@ -137,7 +152,7 @@
 		<xsl:if test="/response/xsltpassthrough != 'login' or count(/response/xsltpassthrough) = 0">
 			<a> 
 				<xsl:attribute name="href">
-					?pt=login&amp;command=getprojects<xsl:value-of select="$stdserverparams"/>
+					?pt=login&amp;command=getprojects<xsl:value-of select="$stdserverparamsnopt2"/>
 				</xsl:attribute>
 				<xsl:value-of select="/response/session/name"/>'s projects
 			</a>
@@ -146,7 +161,13 @@
 
 	<xsl:if test="count(/response/xsltpassthrough2) > 0">
 		<br/>
-		Project #<xsl:value-of select="/response/xsltpassthrough2"/>: 
+		Project 
+		<xsl:for-each select="/response/teamfound/getcategories/category">
+			<xsl:if test="id = /response/xsltpassthrough2">
+				<xsl:value-of select="name"/>
+			</xsl:if>
+		</xsl:for-each>
+		 (#<xsl:value-of select="/response/xsltpassthrough2"/>): 
 		<xsl:if test="/response/xsltpassthrough = 'search'">
 			<b>Search</b>
 		</xsl:if>
@@ -217,7 +238,7 @@
 <xsl:template name="searchfield">
 	<p>
 		<form id="search1" action="tf" method="post">
-			<input size="50" type="text" name="keyword">
+			<input type="text" size="50" name="keyword">
 				<xsl:attribute name="value">
 					<xsl:if test="count(/response/teamfound/search/keywords/word) > 0">
 						<xsl:for-each select="/response/teamfound/search/keywords/word">
@@ -241,15 +262,15 @@
 				</xsl:for-each>
 			</select>
 
-			<input size="50" type="hidden" name="want" value="xml"/>
-			<input size="50" type="hidden" name="version">
+			<input type="hidden" name="want" value="xml"/>
+			<input type="hidden" name="version">
 				<xsl:attribute name="value">
 					<xsl:value-of select="/response/server/interface-version"/>
 				</xsl:attribute>
 			</input> 
-			<input size="50" type="hidden" name="command" value="search"/>
-			<input size="50" type="submit" value="Search"/>
-			<input size="50" type="hidden" name="pt2">
+			<input type="hidden" name="command" value="search"/>
+			<input type="submit" value="Search"/>
+			<input type="hidden" name="pt2">
 				<xsl:attribute name="value">
 					<xsl:value-of select="/response/xsltpassthrough2"/>
 				</xsl:attribute>
@@ -265,7 +286,7 @@
 <xsl:template name="addpage">
 	<p>
 	<form id="addpage1" action="tf" method="post">
-		<input size="50" type="text" name="url" value="http://"/>
+		<input type="text" size="50" name="url" value="http://"/>
 		<br/>
 		Category: <select size="0" name="category" value="0">
 			<xsl:for-each select="/response/teamfound/getcategories/category">
@@ -279,20 +300,20 @@
 				<xsl:call-template name="recursecatsasoption"/>
 			</xsl:for-each>
 		</select>
-		<input size="50" type="hidden" name="want" value="xml"/>
+		<input type="hidden" name="want" value="xml"/>
 
-		<input size="50" type="hidden" name="version">
+		<input type="hidden" name="version">
 			<xsl:attribute name="value">
 				<xsl:value-of select="/response/server/interface-version"/>
 			</xsl:attribute>
 		</input> 
-		<input size="50" type="hidden" name="pt2">
+		<input type="hidden" name="pt2">
 			<xsl:attribute name="value">
 				<xsl:value-of select="/response/xsltpassthrough2"/>
 			</xsl:attribute>
 		</input>
-		<input size="50" type="hidden" name="command" value="addpage"/>
-		<input size="50" type="submit" value="Add URL"/>
+		<input type="hidden" name="command" value="addpage"/>
+		<input type="submit" value="Add URL"/>
 	</form>
 	</p>
 </xsl:template>
@@ -303,6 +324,19 @@
 			<xsl:for-each select="subcategories/category">
 				<li>
 					<xsl:value-of select="name"/> - <xsl:value-of select="description"/>
+					(<a>
+						<xsl:attribute name="href">
+							?pt=viewallsites&amp;command=search&amp;getall=yes&amp;category=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="/response/xsltpassthrough2"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+						</xsl:attribute>
+						view URLs 
+					 </a> /
+					 <a>
+						<xsl:attribute name="href">
+							javascript:showhide('editcat<xsl:value-of select="id"/>');
+						</xsl:attribute>
+						edit category
+					 </a>)
+					<xsl:call-template name="editcats"/>
 					<xsl:call-template name="recursecats"/>
 				</li>
 			</xsl:for-each>
@@ -324,16 +358,82 @@
 	</xsl:if>
 </xsl:template>
 
+<xsl:template name="editcats">
+	<div style="display: none;">
+		<xsl:attribute name="id">editcat<xsl:value-of select="id"/></xsl:attribute>
+		<form action="tf" name="editcat" method="post">
+			<table>
+				<tr>
+					<td>Name:</td>
+					<td>
+						<input type="text" name="name">
+							<xsl:attribute name="value">
+								<xsl:value-of select="name"/>
+							</xsl:attribute>
+						</input>
+					</td>
+				</tr>
+				<tr>
+					<td>Description:</td>
+					<td>
+						<input type="text" name="description">
+							<xsl:attribute name="value">
+								<xsl:value-of select="description"/>
+							</xsl:attribute>
+						</input>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="submit" value="save"/></td>
+				</tr>
+			</table>
+
+			<input type="hidden" name="command" value="editcategory"/>
+			<input type="hidden" name="want" value="xml"/>
+			<input type="hidden" name="version">
+				<xsl:attribute name="value">
+					<xsl:value-of select="/response/server/interface-version"/>
+				</xsl:attribute>
+			</input> 
+			<input type="hidden" name="pt2">
+				<xsl:attribute name="value">
+					<xsl:value-of select="/response/xsltpassthrough2"/>
+				</xsl:attribute>
+			</input> 
+			<input type="hidden" name="category">
+				<xsl:attribute name="value">
+					<xsl:value-of select="id"/>
+				</xsl:attribute>
+			</input> 
+
+		</form>
+	</div>
+</xsl:template>
+
 <xsl:template name="browsecats">
 	<p>
 	<ul>
 		<xsl:for-each select="/response/teamfound/getcategories/category">
 			<li>
 				<xsl:value-of select="name"/> - <xsl:value-of select="description"/>
+				(<a>
+					<xsl:attribute name="href">
+						?pt=viewallsites&amp;command=search&amp;getall=yes&amp;category=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="/response/xsltpassthrough2"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+					</xsl:attribute>
+					view URLs 
+				 </a> /
+				 <a>
+					<xsl:attribute name="href">
+						javascript:showhide('editcat<xsl:value-of select="id"/>');
+					</xsl:attribute>
+					edit category
+				 </a>)
+				<xsl:call-template name="editcats"/>
 				<xsl:call-template name="recursecats"/>
 			</li>
 		</xsl:for-each>
 	</ul>
+	<h2>Add category</h2>
 	<form id="addcategory1" action="tf" method="post">
 		Add category as subcategory of
 		<select size="0" name="subcategoryof">
@@ -353,12 +453,12 @@
 			<tr><td colspan="2"><input type="submit" value="create new category"/></td></tr>
 		</table>
 		<input type="hidden" name="want" value="xml"/>
-		<input size="50" type="hidden" name="version">
+		<input type="hidden" name="version">
 			<xsl:attribute name="value">
 				<xsl:value-of select="/response/server/interface-version"/>
 			</xsl:attribute>
 		</input> 
-		<input size="50" type="hidden" name="pt2">
+		<input type="hidden" name="pt2">
 			<xsl:attribute name="value">
 				<xsl:value-of select="/response/xsltpassthrough2"/>
 			</xsl:attribute>
@@ -376,7 +476,7 @@
 			<li>
 				<a>
 					<xsl:attribute name="href">
-						?pt=browsecats&amp;command=getcategories&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+						?pt=search&amp;command=getcategories&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
 					</xsl:attribute>
 					<xsl:value-of select="name"/> 
 				</a>
@@ -392,7 +492,19 @@
 			<xsl:attribute name="href">
 			javascript:showhide('projectpermissions<xsl:value-of select="id"/>');
 			</xsl:attribute>
-			view/edit permissions</a> )
+			view/edit permissions</a> / 
+			<a>
+			<xsl:attribute name="href">
+			?pt=manageusers&amp;command=getusers&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+			</xsl:attribute>
+			manage users
+			</a> /
+			<a>
+			<xsl:attribute name="href">
+			?pt=browsecats&amp;command=getcategories&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+			</xsl:attribute>
+			manage categories &amp; URLs
+			</a> )
 			<div style="display: none;">
 				<xsl:attribute name="id">projectpermissions<xsl:value-of select="id"/></xsl:attribute>
 				<form action="tf" name="editproject" method="post">
@@ -506,7 +618,7 @@
 						<li>
 							<a>
 								<xsl:attribute name="href">
-									?pt=browsecats&amp;command=getcategories&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+									?pt=search&amp;command=getcategories&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
 								</xsl:attribute>
 								<xsl:value-of select="name"/> 
 							</a>
@@ -525,7 +637,7 @@
 						<li>
 							<a>
 								<xsl:attribute name="href">
-									?pt=browsecats&amp;command=getcategories&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+									?pt=search&amp;command=getcategories&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
 								</xsl:attribute>
 								<xsl:value-of select="name"/> 
 							</a>
@@ -544,15 +656,16 @@
 	<table>
 	<tr><td>Username:</td><td><input size="20" type="text" name="user" value=""/></td></tr>
 	<tr><td>Password:</td><td><input size="20" type="password" name="pass" value=""/></td></tr>
-	<tr><td><input size="50" type="submit" value="Register"/></td></tr>
+	<tr><td><input type="submit" value="Register"/></td></tr>
 	</table>
 		<input type="hidden" name="want" value="xml"/>
-		<input size="50" type="hidden" name="version">
+		<input type="hidden" name="version">
 			<xsl:attribute name="value">
 				<xsl:value-of select="/response/server/interface-version"/>
 			</xsl:attribute>
 		</input> 
 		<input type="hidden" name="command" value="register"/>
+		<input type="hidden" name="pt" value="login"/>
 	</form>
 	</p>
 </xsl:template>
@@ -565,10 +678,10 @@
 	<table>
 	<tr><td>Projectname:</td><td><input size="20" type="text" name="name" value=""/></td></tr>
 	<tr><td>Description:</td><td><input size="20" type="text" name="description" value=""/></td></tr>
-	<tr><td><input size="50" type="submit" value="Create Project"/></td></tr>
+	<tr><td><input type="submit" value="Create Project"/></td></tr>
 	</table>
 		<input type="hidden" name="want" value="xml"/>
-		<input size="50" type="hidden" name="version">
+		<input type="hidden" name="version">
 			<xsl:attribute name="value">
 				<xsl:value-of select="/response/server/interface-version"/>
 			</xsl:attribute>
@@ -586,10 +699,10 @@
 	<tr><td>Username:</td><td><input size="20" type="text" name="user" value=""/></td></tr>
 	<tr><td>Password:</td><td><input size="20" type="password" name="pass" value=""/></td></tr>
 	<tr><td>UniForge:</td><td><input size="20" type="checkbox" name="uniforgeuser" value="yes"/></td></tr>
-	<tr><td><input size="50" type="submit" value="Login"/></td></tr>
+	<tr><td><input type="submit" value="Login"/></td></tr>
 	</table>
 		<input type="hidden" name="want" value="xml"/>
-		<input size="50" type="hidden" name="version">
+		<input type="hidden" name="version">
 			<xsl:attribute name="value">
 				<xsl:value-of select="/response/server/interface-version"/>
 			</xsl:attribute>

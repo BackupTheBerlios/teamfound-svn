@@ -26,14 +26,7 @@ import controller.IndexAccessException;
 import controller.DBAccessException;
 import controller.ServerInitFailedException;
 import controller.Controller;
-import controller.response.AddCategoriesResponse;
-import controller.response.AddPageResponse;
-import controller.response.GetCategoriesResponse;
-import controller.response.GetProjectsResponse;
-import controller.response.SearchResponse;
-import controller.response.NewUserResponse;
-import controller.response.LoginResponse;
-import controller.response.EditPermissionsResponse;
+import controller.response.*;
 import controller.SessionData;
 import controller.teamfound.checkAuthorisation;
 
@@ -644,38 +637,52 @@ public class TeamFoundController implements Controller {
 	 * @param description neue Desc, wenn description = null dann gleichlassen, wenn string der laenge 0 dann loeschen
 	 * 
 	 */
-	public void editCategory(int catid, String catname, String description) throws DBAccessException, ServerInitFailedException
+	public Response editCategory(Integer category, String catname, String description, SessionData session) throws DBAccessException
 	{
+
 		try
 		{
 		//0. DatenBAnk verbindung		
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-		// TODO ueberpruefen ob clients Version vom Categorytree akatuell
-		// Rechte ueberpruefen!
+			categoryBean catbean = db.getCatByID(conn,category);
+
+			// TODO ueberpruefen ob clients Version vom Categorytree akatuell
+			// Rechte ueberpruefen!
+			if( !checkAuthorisation.checkEditCat(session, catbean.getRootID()))
+			{
+				ErrorResponse er = new ErrorResponse();
+				er.tfReturnValue(9);
+				return er;
+			}
 			
 		//1. Datenbank eintraege zur Kategorie aendern
 			// erstmal alte zustand auslesen			
-			categoryBean catbean = db.getCatByID(conn,catid);
-			if((catname != null)&&(catname.length() > 0)) 
+			if((catname != null)&&(catname.length() > 0))  // catname darf nie leer werden
 			{
 				catbean.setCategory(catname);
 			}
-			if(description != null)
+			if(description != null) // beschreibung darf geloescht werden (string "")
 			{
 				catbean.setBeschreibung(description);
 			}
+			db.updateCat(conn, catbean);
 		
 		//2. Versionsnummer erhoehen
+		// TODO
 			
 		//3. response fuellen
+			return new EditCategoryResponse(catbean.getCategory(), catbean.getBeschreibung(), catbean.getID());
 			
 		}
 		catch(Exception e)
 		{
 			//TODO Exceptions richtig machen
  			System.out.println("TeamFoundController : addCategory)"+e);
+			DBAccessException dbe = new DBAccessException("TeamFoundController : addCategory)"+e);
+			dbe.initCause(e);
+			throw dbe;
 		}
 		
 	}
@@ -858,15 +865,15 @@ public class TeamFoundController implements Controller {
 	}
 
 	public EditPermissionsResponse editPermissions(Integer projectid, SessionData tfsession, Boolean _useruseradd, 
-		Boolean _userurledit,
-		Boolean _usercatedit,
-		Boolean _useraddurl,
-		Boolean _useraddcat,
-		Boolean _guestread,
-		Boolean _guesturledit,
-		Boolean _guestcatedit,
-		Boolean _guestaddurl,
-		Boolean _guestaddcat ) throws IndexAccessException,  DBAccessException
+	Boolean _userurledit,
+	Boolean _usercatedit,
+	Boolean _useraddurl,
+	Boolean _useraddcat,
+	Boolean _guestread,
+	Boolean _guesturledit,
+	Boolean _guestcatedit,
+	Boolean _guestaddurl,
+	Boolean _guestaddcat ) throws IndexAccessException,  DBAccessException
 	{
 		
 		try
@@ -923,7 +930,5 @@ public class TeamFoundController implements Controller {
 		}
 
 	}
-
-
 
 }
