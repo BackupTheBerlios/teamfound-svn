@@ -36,7 +36,7 @@ public class UpdateThread extends Thread {
 		// TODO max frame fetch depth aus den proerties holen
 		crawler = new TeamFoundCrawler(3);
 		// TODO controller richtig konfigurieren
-		ctrl = new TeamFoundController(null);
+		ctrl = new TeamFoundController();
 		
 		log = Logger.getLogger("update");
 	}

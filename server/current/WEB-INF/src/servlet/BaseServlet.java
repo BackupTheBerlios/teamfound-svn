@@ -241,7 +241,7 @@ public abstract class BaseServlet extends HttpServlet {
 			int offset;
 			// suche, es müssen die parameter keyword und offset da sein
 			if(!params.containsKey("keyword")) {
-				r = new ErrorResponse(null);
+				r = new ErrorResponse();
 				r.serverReturnValue(2, "Need Parameter 'keyword'");
 				requestLog.warn("["+req.getRemoteAddr()+"] missing param 'keyword'");
 				return r;
@@ -257,6 +257,7 @@ public abstract class BaseServlet extends HttpServlet {
 			/*} else {
 				query = req.getParameter("keyword");
 			}*/
+			}
 			
 			if(!params.containsKey("offset")) {
 				offset = 0;				

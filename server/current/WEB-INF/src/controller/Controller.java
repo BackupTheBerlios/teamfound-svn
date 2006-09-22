@@ -62,12 +62,13 @@ public interface Controller {
 	 */
 	public int updateDocument(NewIndexEntry nd);
 		
-<<<<<<< .mine
+
 	/**
 	 * Ein Dokument im Index und der Datenbak updaten
 	 */
 	public int updateDocument(NewIndexEntry nd, int[] categories);
-=======
+
+	
 	/*------------------------------------------
 	 *Neu Milestone 3
 	 *----------------------------------------*/
@@ -78,11 +79,7 @@ public interface Controller {
 	 * @param pass passwort
 	 */
 	public NewUserResponse newUser(String user, String pass) throws DBAccessException ;
->>>>>>> .r228
-	
-<<<<<<< .mine
-	
-=======
+
 	/**
 	 * Ueberpruefen ob User existiert und passwort stimmt
 	 *
@@ -125,9 +122,6 @@ public interface Controller {
 		Boolean _guestaddurl,
 		Boolean _guestaddcat ) throws IndexAccessException,  DBAccessException;
 
-<<<<<<< .mine
->>>>>>> .r228
-=======
 	public Response editCategory(Integer category, String catname, String description, SessionData session) throws DBAccessException;
 
 	/**
@@ -158,5 +152,4 @@ public interface Controller {
 	public Response removeUserFromProject(String user,Integer projectid, SessionData tfsession) throws DBAccessException;
 	
 
->>>>>>> .r265
 }

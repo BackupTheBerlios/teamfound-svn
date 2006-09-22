@@ -16,12 +16,14 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import java.util.HashSet;
 import java.util.Vector;
 import java.util.List;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Date;
 
+import config.teamfound.TeamFoundConfig;
 import controller.Download;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
@@ -716,7 +718,6 @@ public class TeamFoundController implements Controller {
 		}
 		
 	}
-<<<<<<< .mine
 	
 	/**
 	 * Liest den Inhalt für das übergebene Dokument neu ein. Dabei werden die Kategorien des Dokuments nicht verändert
@@ -763,7 +764,6 @@ public class TeamFoundController implements Controller {
 			return 0;
 		}
 	}
-=======
 	
 	
 	/**

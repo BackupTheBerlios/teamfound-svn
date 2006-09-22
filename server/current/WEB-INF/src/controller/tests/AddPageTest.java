@@ -23,7 +23,7 @@ public class AddPageTest {
 		TeamFoundCrawler c = new TeamFoundCrawler(3);
 		NewIndexEntry cd = c.fetch(new URL("http://localhost/~jonas"));
 		
-		TeamFoundController ctrl = new TeamFoundController(null);
+		TeamFoundController ctrl = new TeamFoundController();
 		
 		ctrl.updateDocument(cd);
 		
