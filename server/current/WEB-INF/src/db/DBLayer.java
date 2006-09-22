@@ -329,7 +329,7 @@ public interface DBLayer
 	 * @return Liste der projectadminBeans des users
 	 * @param userid des Users
 	 */ 
-	public Vector<projectadminBean> getAdminProjectsForUser(Connection conn, Integer userid) throws SQLException;
+	public Vector<tfusertoprojectBean> getAdminProjectsForUser(Connection conn, Integer userid) throws SQLException;
 
 	/**
 	 * User by ID
@@ -431,6 +431,13 @@ public interface DBLayer
 	public projectdataBean getProjectDataToCat(Connection conn, Integer catid) throws SQLException;
 
 	public java.util.concurrent.ConcurrentHashMap<Integer, projectdataBean> getAllProjectData(Connection conn) throws SQLException;
+
+	/**
+	 * Einen Nutzer aus dem Projekt entferenen
+	 * @param userid
+	 * @param rootid 
+	 */ 
+	public void removeFromProject(Connection conn, Integer userid, Integer rootid) throws SQLException;
 
 	public Vector<String> getAllUrlsInCategory(Connection conn, Integer category) throws SQLException;
 

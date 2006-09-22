@@ -108,4 +108,32 @@ public interface Controller {
 
 	public Response editCategory(Integer category, String catname, String description, SessionData session) throws DBAccessException;
 
+	/**
+	 * User einem Project zuordnen
+	 *
+	 * @param String user
+	 * @param Integer projectid
+	 * @return Response
+	 */
+	public Response addUserToProject(String user,Integer projectid, SessionData tfsession) throws DBAccessException; 
+	
+	/**
+	 * User ProjektAdminRechte in einem Project geben
+	 *
+	 * @param String user
+	 * @param Integer projectid
+	 * @return Response
+	 */
+	public Response grantProjectAdmin(String user,Integer projectid, SessionData tfsession) throws DBAccessException; 
+	
+	/**
+	 * User aus Projekt entfernen
+	 *
+	 * @param String user
+	 * @param Integer projectid
+	 * @return Response
+	 */
+	public Response removeUserFromProject(String user,Integer projectid, SessionData tfsession) throws DBAccessException;
+	
+
 }

@@ -110,6 +110,21 @@ public class checkAuthorisation
 		
 		return false;
 	}
+	/* 
+	 * ueberprueft Authorisation zum adden von Usern zum Projekt
+	 */
+	public static boolean userAdd(SessionData tfsession, Integer projectID)
+	{
+		if(!(tfsession == SessionData.guest))
+		{
+			if(isAdmin(tfsession,projectID))
+				return true;
+			if(tfsession.urb.useradd(projectID))
+				return true;
+		}
+		return false;
+
+	}
 
 	public static boolean checkRead(SessionData tfsession, Integer projectid)
 	{

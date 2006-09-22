@@ -403,6 +403,8 @@ public class DBLayerHSQL implements DBLayer
 			String updateCatVersion = new String("UPDATE projectdata SET version = version+1 WHERE rootid = "+catbean.getRootID());
 			stc.executeUpdate(updateCatVersion);	
 			
+			conn.commit();
+
 		}
 		catch(SQLException e)
 		{
@@ -1593,7 +1595,7 @@ public class DBLayerHSQL implements DBLayer
 	 * @return Liste der projectadminBeans des users
 	 * @param userid des Users
 	 */ 
-	public Vector<projectadminBean> getAdminProjectsForUser(Connection conn, Integer userid) throws SQLException
+	public Vector<tfusertoprojectBean> getAdminProjectsForUser(Connection conn, Integer userid) throws SQLException
 	{
 		PreparedStatement st = null;
 		st = conn.prepareStatement("Select * from projectadmin where userid = ? AND isadmin = ?");   
@@ -1604,18 +1606,17 @@ public class DBLayerHSQL implements DBLayer
 
 			ResultSet rsi = st.executeQuery();	
 			
-			java.util.Vector<projectadminBean> revec = new java.util.Vector<projectadminBean>();
+			java.util.Vector<tfusertoprojectBean> revec = new java.util.Vector<tfusertoprojectBean>();
 
 			//results in Return Array schreiben
 			while(rsi.next())
 			{
-				projectadminBean re = new projectadminBean();
+				tfusertoprojectBean re = new tfusertoprojectBean();
 				
 				re.setID(rsi.getInt("id"));
-				
 				re.setRootID(rsi.getInt("rootid"));
-				
 				re.setUserID(rsi.getInt("userid"));
+				re.setAdmin(rsi.getBoolean("isadmin"));
 				
 				if(!revec.add(re))
 					System.out.println("an Vector adden fehlgeschlagen!");
@@ -1782,6 +1783,7 @@ public class DBLayerHSQL implements DBLayer
 			//ausfuehren der Updates 
 			st.executeUpdate();	
 			
+			conn.commit();
 			
 		}
 		catch(SQLException e)
@@ -1855,6 +1857,7 @@ public class DBLayerHSQL implements DBLayer
 			st.executeUpdate();	
 			
 			
+			conn.commit();
 		}
 		catch(SQLException e)
 		{
@@ -1887,6 +1890,7 @@ public class DBLayerHSQL implements DBLayer
 			//ausfuehren der Updates 
 			st.executeUpdate();	
 			
+			conn.commit();
 			
 		}
 		catch(SQLException e)
@@ -2303,9 +2307,34 @@ public class DBLayerHSQL implements DBLayer
 			System.out.println("getProjectDataToCat: "+ e);
 			throw(e);
 		}
+	}
 
 
+	/**
+	 * Einen Nutzer aus dem Projekt entferenen
+	 * @param userid
+	 * @param rootid 
+	 */ 
+	public void removeFromProject(Connection conn, Integer userid, Integer rootid) throws SQLException
+	{
 
+		PreparedStatement pst = null;
+		pst = conn.prepareStatement("REMOVE FROM tfusertoproject WHERE userid=? AND rootid=?");   
+			pst.setInt(1, userid.intValue());
+			pst.setInt(2, rootid.intValue());
+
+		try
+		{
+			pst.executeUpdate();
+		    conn.commit();	
+		}
+		catch(SQLException e)
+		{
+
+			//TODO LoggMessage statt print
+			System.out.println("addUserToProject: "+ e);
+			throw(e);
+		}
 
 	}
 

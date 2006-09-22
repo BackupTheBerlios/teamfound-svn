@@ -630,7 +630,8 @@ public class TeamFoundController implements Controller {
 			guest.setUsername("guest");
 			guest.setPass("none");
 			guest = db.createNewUser(conn, guest);
-
+			
+			conn.commit();
 			conn.close();
 			return(true);
 		}
@@ -948,5 +949,158 @@ public class TeamFoundController implements Controller {
 		}
 
 	}
+
+
+	/**
+	 * User einem Project zuordnen
+	 *
+	 * @param String user
+	 * @param Integer projectid
+	 * @param SessionData
+	 * @return Response
+	 */
+	public Response addUserToProject(String user,Integer projectid, SessionData tfsession) throws DBAccessException 
+	{	
+		try
+		{
+			if(!(checkAuthorisation.userAdd(tfsession,projectid)))
+			{
+				ErrorResponse re = new ErrorResponse();
+				re.tfReturnValue(new Integer(9));
+			}
+
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+			
+			tfuserBean tfuser = db.getUserByName(conn,user);
+			if(tfuser == null)
+			{
+				ErrorResponse re = new ErrorResponse();
+				re.tfReturnValue(new Integer(11));
+			}
+
+			conn.setSavepoint("usertoproject");
+			db.addUserToProject(conn, tfuser.getID(), projectid);
+			// DataSession updaten
+			projectdataBean pdb = db.getProjectDataToCat(conn, projectid);
+			SessionData.projectdata.put(pdb.getRootID(),pdb);
+			conn.commit();
+
+			UserToProjectResponse re = new UserToProjectResponse(user,projectid);
+			re.setRoleUser();
+			return(re);
+		
+		}
+		catch(Exception e)
+		{
+ 			System.out.println("TeamFoundController : loginUser)"+e);
+			DBAccessException dbe = new DBAccessException("loginUser SQLException");
+			dbe.initCause(e);
+			throw(dbe);
+
+		}
+	}
+
+	/**
+	 * User ProjektAdminRechte in einem Project geben
+	 *
+	 * @param String user
+	 * @param Integer projectid
+	 * @param sessiondata
+	 * @return Response
+	 */
+	public Response grantProjectAdmin(String user,Integer projectid,SessionData tfsession) throws DBAccessException 
+	{	
+		try
+		{
+			if(!(checkAuthorisation.isAdmin(tfsession,projectid)))
+			{
+				ErrorResponse re = new ErrorResponse();
+				re.tfReturnValue(new Integer(9));
+			}
+
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+			
+			tfuserBean tfuser = db.getUserByName(conn,user);
+			if(tfuser == null)
+			{
+				ErrorResponse re = new ErrorResponse();
+				re.tfReturnValue(new Integer(11));
+			}
+
+			conn.setSavepoint("usertoproject");
+			if(!db.addUserToAdminsOfProject(conn, tfuser.getID(), projectid))
+			{
+				ErrorResponse re = new ErrorResponse();
+				re.tfReturnValue(new Integer(12));
+			}
+			// DataSession updaten
+			projectdataBean pdb = db.getProjectDataToCat(conn, projectid);
+			SessionData.projectdata.put(pdb.getRootID(),pdb);
+			conn.commit();
+
+			UserToProjectResponse re = new UserToProjectResponse(user,projectid);
+			re.setRoleAdmin();
+			return(re);
+		
+		}
+		catch(Exception e)
+		{
+ 			System.out.println("TeamFoundController : loginUser)"+e);
+			DBAccessException dbe = new DBAccessException("loginUser SQLException");
+			dbe.initCause(e);
+			throw(dbe);
+
+		}
+	}
+
+	/**
+	 * User aus Projekt entfernen
+	 *
+	 * @param String user
+	 * @param Integer projectid
+	 * @param sessiondata
+	 * @return Response
+	 */
+	public Response removeUserFromProject(String user,Integer projectid, SessionData tfsession) throws DBAccessException 
+	{	
+		try
+		{
+			if(!(checkAuthorisation.isAdmin(tfsession,projectid)))
+			{
+				ErrorResponse re = new ErrorResponse();
+				re.tfReturnValue(new Integer(9));
+			}
+
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+		
+			tfuserBean tfuser = db.getUserByName(conn,user);
+			if(tfuser == null)
+			{
+				ErrorResponse re = new ErrorResponse();
+				re.tfReturnValue(new Integer(11));
+			}
+		
+			db.removeFromProject(conn, tfuser.getID(), projectid);
+
+			RemoveUserResponse re = new RemoveUserResponse(user,projectid);
+			return(re);
+		
+		}
+		catch(Exception e)
+		{
+ 			System.out.println("TeamFoundController : loginUser)"+e);
+			DBAccessException dbe = new DBAccessException("loginUser SQLException");
+			dbe.initCause(e);
+			throw(dbe);
+
+		}
+	}
+
+
+
+
 
 }

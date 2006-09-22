@@ -28,6 +28,8 @@ public class ReturnCodes
 			case 8:return("Login failed");
 			case 9:return("Not authorized!");
 			case 10:return("Password to short");
+			case 11:return("User does not exist");
+			case 12:return("User does not belong to specified project!");
 
 			default :return("Some wierd Error");
 		}
