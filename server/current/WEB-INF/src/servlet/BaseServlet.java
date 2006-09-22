@@ -110,6 +110,9 @@ public abstract class BaseServlet extends HttpServlet {
 		commands.put("login", new Integer(7));
 		commands.put("editpermissions", new Integer(8));
 		commands.put("editcategory", new Integer(9));
+		commands.put("adduser", new Integer(10));
+		commands.put("deluser", new Integer(11));
+		
 		servletLog.info("Servlet ini done");
 	}
 	
@@ -525,7 +528,49 @@ public abstract class BaseServlet extends HttpServlet {
 			}
 
 			return ctrl.editCategory(category, newname, newdescription, tfsession);
+		case 10:
+			// adduser
+			String username = null;
+			String role = null;
+			Integer projectid;
+
+			if(!params.containsKey("user")) 
+			{ 
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'user'");
+				return r;
+			}
+			else
+				username = req.getParameter("user"); 
 			
+			if(!params.containsKey("projectid")) 
+			{
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'projectid'");
+				return r;
+			}
+			else
+				projectid = Integer.parseInt(req.getParameter("projectid")); 
+
+			if(!params.containsKey("role")) 
+			{ 	r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'role'");
+				return r;
+			} 
+			else 
+			{ 
+				role = req.getParameter("role");
+				if(!(role.equals("user")||role.equals("projectadmin")))
+				{
+					r = new ErrorResponse();
+					r.serverReturnValue(2, "Unknown 'role'");
+					return r;
+				}
+			}
+			if(role.equals("user"))
+				return ctrl.addUserToProject(username,projectid,tfsession);
+			else
+				return ctrl.grantProjectAdmin(username,projectid,tfsession);
 			
 		}
 		
