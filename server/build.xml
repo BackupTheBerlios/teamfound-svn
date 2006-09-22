@@ -195,6 +195,9 @@ project Teamfound
            value="current/WEB-INF/lib/"/>
 	<property name="hsql"
 		value="current/WEB-INF/lib"/>
+	<property name="log4j"
+		value="current/WEB-INF/lib"/>
+
 	<property name="jdom.jar"
            value="current/WEB-INF/lib/"/>
 <!-- ==================== Compilation Classpath =========================== -->
@@ -242,6 +245,7 @@ project Teamfound
       	<include name="jdom.jar"/>
     	</fileset>
 
+
 		
 <!--	<pathelement location="${lucene.jar}"/>	
 		<fileset dir="${lucene.jar}">
@@ -252,6 +256,11 @@ project Teamfound
 		<fileset dir="${hsql}">
       	<include name="hsqldb.jar"/>
     	</fileset>
+	<pathelement location="${log4j}"/>	
+		<fileset dir="${log4j}">
+      	<include name="log4j.jar"/>
+    	</fileset>
+
 	
   </path>
 

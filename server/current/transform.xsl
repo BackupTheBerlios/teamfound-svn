@@ -266,6 +266,9 @@
 				<xsl:call-template name="myprojects"/>
 			</xsl:if>
 		</xsl:if>
+		<xsl:if test="/response/xsltpassthrough = 'manageusers'">
+			<xsl:call-template name="manageusers"/>
+		</xsl:if>
 	</xsl:if>
 </xsl:template>
 
@@ -657,6 +660,42 @@
 			<input type="hidden" name="command" value="editpermissions"/>
 		</form>
 	</div>
+</xsl:template>
+
+<xsl:template name="manageusers">
+	<h2>Users in this Project</h2>
+	<h2>Add user</h2>
+	<p>
+	<form id="adduser" action="tf" method="post">
+		Username to add: <input type="text" size="20" name="user"/>
+		<br/>
+		Role: <input type="radio" name="role" id="ruser" value="user" checked="checked"/> <label for="ruser">user</label> / 
+		<input type="radio" name="role" id="radmin" value="projectadmin"/> <label for="radmin">admin</label>
+		<br/>
+		<input type="hidden" name="want" value="xml"/>
+
+		<input type="hidden" name="version">
+			<xsl:attribute name="value">
+				<xsl:value-of select="/response/server/interface-version"/>
+			</xsl:attribute>
+		</input> 
+		<input type="hidden" name="pt2">
+			<xsl:attribute name="value">
+				<xsl:value-of select="/response/xsltpassthrough2"/>
+			</xsl:attribute>
+		</input>
+		<input type="hidden" name="projectid">
+			<xsl:attribute name="value">
+				<xsl:value-of select="/response/xsltpassthrough2"/>
+			</xsl:attribute>
+		</input>
+
+		<input type="hidden" name="command" value="adduser"/>
+		<input type="submit" value="add user"/>
+	</form>
+	</p>
+
+
 </xsl:template>
 
 <xsl:template name="listmyprojects">
