@@ -256,28 +256,17 @@ public class TeamFoundController implements Controller {
 	// 1. Im Index Suchen
 			
 			SearchResponse resp;
-			if( query != null)
-			{	// normale suche
 		
-				Indexer tfindexer = new TeamFoundIndexer(indexSync);
-				//TODO -> hart den count auf 30 und den Offset auf 0 ??
-				//
-				Vector<Document> docvec = tfindexer.query(query, category , 50, 0 ); 
+			Indexer tfindexer = new TeamFoundIndexer(indexSync);
+			//TODO -> hart den count auf 30 und den Offset auf 0 ??
+			//
+			Vector<Document> docvec = tfindexer.query(query, category , 50, 0 ); 
 
-				// Antwort bauen
-				String[] keywords = new String[1];
-				keywords[0] = query;
-				resp = new SearchResponse(keywords);
-				resp.addSearchResults(docvec);
-			}
-			else
-			{
-				// getall = yes
-				// category[0] da nur fuer eine kat erlaubt
-				Vector<String> v = db.getAllUrlsInCategory(conn, category[0]); 
-				resp = new SearchResponse(null);
-				resp.addSimpleSearchResults(v);
-			}
+			// Antwort bauen
+			String[] keywords = new String[1];
+			keywords[0] = query;
+			resp = new SearchResponse(keywords);
+			resp.addSearchResults(docvec);
 	
 			conn.close();	
 			return (resp);
@@ -352,7 +341,7 @@ public class TeamFoundController implements Controller {
 				// category[0] da nur fuer eine kat erlaubt
 				Vector<String> v = db.getAllUrlsInCategory(conn, category[0]); 
 				resp = new SearchResponse(null);
-				resp.addSimpleSearchResults(v);
+				resp.addSimpleSearchResults(v, category[0]);
 			}
 		
 			conn.close();

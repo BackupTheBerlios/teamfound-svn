@@ -36,7 +36,6 @@
 </xsl:template>
 
 <xsl:template name="showcommandresults">
-
 	<xsl:if test="/response/teamfound/return-value != '0'">
 		<p id="error">
 			Error #<xsl:value-of select="/response/teamfound/return-value"/><br/>
@@ -44,84 +43,97 @@
 		</p>
 	</xsl:if>
 
-	<xsl:if test="count(/response/teamfound/search/result) > 0">
-		<xsl:if test="/response/xsltpassthrough != 'viewallsites'">
-			<p>
-				<xsl:value-of select="count(/response/teamfound/search/result/found)"/>
-				of 
-				<xsl:value-of select="/response/teamfound/search/result/count"/>
-				results shown:<br/>
-				<ul>
-					<xsl:for-each select="/response/teamfound/search/result/found">
-						<li>
-							<a>
-								<xsl:attribute name="href">
+	<xsl:if test="/response/teamfound/return-value = '0'">
+		<xsl:if test="count(/response/teamfound/search/result) > 0">
+			<xsl:if test="/response/xsltpassthrough != 'viewallsites' or count(/response/xsltpassthrough) = 0">
+				<p>
+					<xsl:value-of select="count(/response/teamfound/search/result/found)"/>
+					of 
+					<xsl:value-of select="/response/teamfound/search/result/count"/>
+					results shown:<br/>
+					<ul>
+						<xsl:for-each select="/response/teamfound/search/result/found">
+							<li>
+								<a>
+									<xsl:attribute name="href">
+										<xsl:value-of select="url"/>
+									</xsl:attribute>
+									<xsl:value-of select="title"/>
+								</a>
+								<br/>
+								<xsl:value-of select="url"/> (category <xsl:value-of select="incategory"/>)
+							</li>
+						</xsl:for-each>
+					</ul>
+				</p>
+			</xsl:if>
+			<xsl:if test="/response/xsltpassthrough = 'viewallsites'">
+				<p>
+					This category contains <xsl:value-of select="count(/response/teamfound/search/result/found)"/> URLs:
+					<ul>
+						<xsl:for-each select="/response/teamfound/search/result/found">
+							<li>
+								<a>
+									<xsl:attribute name="href">
+										<xsl:value-of select="url"/>
+									</xsl:attribute>
 									<xsl:value-of select="url"/>
-								</xsl:attribute>
-								<xsl:value-of select="title"/>
-							</a>
-							<br/>
-							<xsl:value-of select="url"/> (category <xsl:value-of select="incategory"/>)
-						</li>
-					</xsl:for-each>
-				</ul>
-			</p>
+								</a>
+								(<a>
+									<xsl:attribute name="href">
+									?pt=nyi
+									</xsl:attribute>
+									remove from category
+								</a> / 
+								<a>
+									<xsl:attribute name="href">
+									?pt=nyi
+									</xsl:attribute>
+									delete from project
+								</a> )
+							</li>
+						</xsl:for-each>
+					</ul>
+				</p>
+
+			</xsl:if>
 		</xsl:if>
-		<xsl:if test="/response/xsltpassthrough = 'viewallsites'">
+
+		<xsl:if test="count(/response/teamfound/addPage) > 0">
 			<p>
-				<ul>
-					<xsl:for-each select="/response/teamfound/search/result/found">
-						<li>
-							<a>
-								<xsl:attribute name="href">
-									<xsl:value-of select="url"/>
-								</xsl:attribute>
-								<xsl:value-of select="url"/>
-							</a>
-						</li>
-					</xsl:for-each>
-				</ul>
-			</p>
-
-		</xsl:if>
-	</xsl:if>
-
-	<xsl:if test="count(/response/teamfound/addPage) > 0">
-		<p>
-			Add URL <a>
-					<xsl:attribute name="href">
+				Add URL <a>
+						<xsl:attribute name="href">
+							<xsl:value-of select="/response/teamfound/addPage/url"/>
+						</xsl:attribute>
 						<xsl:value-of select="/response/teamfound/addPage/url"/>
-					</xsl:attribute>
-					<xsl:value-of select="/response/teamfound/addPage/url"/>
-				</a>: <xsl:value-of select="/response/teamfound/return-description"/>
-		</p>
+					</a>: <xsl:value-of select="/response/teamfound/return-description"/>
+			</p>
+		</xsl:if>
+
+		<xsl:if test="count(/response/teamfound/registeruser) > 0">
+			<p>
+				Register username <xsl:value-of select="/response/teamfound/registeruser/user"/>: <xsl:value-of select="/response/teamfound/return-description"/>
+			</p>
+		</xsl:if>
+
+		<xsl:if test="count(/response/teamfound/login) > 0">
+			<p>
+				Login user <xsl:value-of select="/response/teamfound/login/user"/>: <xsl:value-of select="/response/teamfound/return-description"/>
+			</p>
+		</xsl:if>
+
+		<xsl:if test="count(/response/teamfound/addcategory) > 0">
+			<p>
+				Create category <xsl:value-of select="/response/teamfound/addcategory/name"/>: <xsl:value-of select="/response/teamfound/return-description"/>
+			</p>
+		</xsl:if>
+
+		<xsl:if test="count(/response/teamfound/editcategory) > 0">
+			<p>
+				Edit category <xsl:value-of select="/response/teamfound/editcategory/name"/> - <xsl:value-of select="/response/teamfound/editcategory/description"/>: <xsl:value-of select="/response/teamfound/return-description"/>
+			</p>
+		</xsl:if>
 	</xsl:if>
-
-	<xsl:if test="count(/response/teamfound/registeruser) > 0">
-		<p>
-			Register username <xsl:value-of select="/response/teamfound/registeruser/user"/>: <xsl:value-of select="/response/teamfound/return-description"/>
-		</p>
-	</xsl:if>
-
-	<xsl:if test="count(/response/teamfound/login) > 0">
-		<p>
-			Login user <xsl:value-of select="/response/teamfound/login/user"/>: <xsl:value-of select="/response/teamfound/return-description"/>
-		</p>
-	</xsl:if>
-
-	<xsl:if test="count(/response/teamfound/addcategory) > 0">
-		<p>
-			Create category <xsl:value-of select="/response/teamfound/addcategory/name"/>: <xsl:value-of select="/response/teamfound/return-description"/>
-		</p>
-	</xsl:if>
-
-	<xsl:if test="count(/response/teamfound/editcategory) > 0">
-		<p>
-			Edit category <xsl:value-of select="/response/teamfound/editcategory/name"/> - <xsl:value-of select="/response/teamfound/editcategory/description"/>: <xsl:value-of select="/response/teamfound/return-description"/>
-		</p>
-	</xsl:if>
-
-
 </xsl:template>
 
 <xsl:template name="menu">
@@ -228,32 +240,33 @@
 </xsl:template>
 
 <xsl:template name="pageselector">
-	<xsl:if test="/response/xsltpassthrough = 'search'">
-		<xsl:call-template name="search"/>
-	</xsl:if>
-
-	<xsl:if test="/response/xsltpassthrough = 'allprojects'">
-		<xsl:call-template name="allprojects"/>
-	</xsl:if>
-
-	<xsl:if test="/response/xsltpassthrough = 'addpage'">
-		<xsl:call-template name="addpage"/>
-	</xsl:if>
-	<xsl:if test="/response/xsltpassthrough = 'browsecats'">
-		<xsl:call-template name="browsecats"/>
-	</xsl:if>
-	<xsl:if test="/response/xsltpassthrough = 'login'">
-		<xsl:if test="/response/session/name = 'guest'">
-			<h2>Login</h2>
-			<xsl:call-template name="login"/>
-			<h2>Register</h2>
-			<xsl:call-template name="register"/>
+	<xsl:if test="/response/teamfound/return-value = '0'">
+		<xsl:if test="/response/xsltpassthrough = 'search'">
+			<xsl:call-template name="search"/>
 		</xsl:if>
-		<xsl:if test="/response/session/name != 'guest'">
-			<xsl:call-template name="myprojects"/>
+
+		<xsl:if test="/response/xsltpassthrough = 'allprojects'">
+			<xsl:call-template name="allprojects"/>
+		</xsl:if>
+
+		<xsl:if test="/response/xsltpassthrough = 'addpage'">
+			<xsl:call-template name="addpage"/>
+		</xsl:if>
+		<xsl:if test="/response/xsltpassthrough = 'browsecats'">
+			<xsl:call-template name="browsecats"/>
+		</xsl:if>
+		<xsl:if test="/response/xsltpassthrough = 'login'">
+			<xsl:if test="/response/session/name = 'guest'">
+				<h2>Login</h2>
+				<xsl:call-template name="login"/>
+				<h2>Register</h2>
+				<xsl:call-template name="register"/>
+			</xsl:if>
+			<xsl:if test="/response/session/name != 'guest'">
+				<xsl:call-template name="myprojects"/>
+			</xsl:if>
 		</xsl:if>
 	</xsl:if>
-
 </xsl:template>
 
 <xsl:template name="searchfield">

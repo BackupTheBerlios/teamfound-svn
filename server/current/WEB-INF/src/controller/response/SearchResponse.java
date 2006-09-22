@@ -57,21 +57,24 @@ public class SearchResponse extends Response {
 		result.addContent(count);
 	}
 
-	public void addSimpleSearchResults(Vector<String> hits) throws IOException {
+	public void addSimpleSearchResults(Vector<String> hits, int category) throws IOException {
 		Iterator it = (Iterator)hits.iterator();
 		
 		//Hit h;
 		String d;
-		Element found, url;
+		Element found, url, xmlcategory;
 		while(it.hasNext()) 
 		{
 			d = (String)it.next();
 			found = new Element("found");
 			url = new Element("url");
+			xmlcategory = new Element("incategory");
 			
 			// 1. url -- Die Url als String
 			
 			url.addContent(d);
+			xmlcategory.addContent(new Integer(category).toString());
+			found.addContent(xmlcategory);
 			found.addContent(url);
 			
 			this.result.addContent(found);
