@@ -822,7 +822,7 @@ public class DBLayerHSQL implements DBLayer
 		//TODO ist die Bean auch gefuellt			
 
 		//wir brauchen auf jeden left und right der category
-		String getBeanInfo = new String("select left,right from category where id = "+catbean.getID());
+		String getBeanInfo = new String("select left,right,root_id from category where id = "+catbean.getID());
 
 		try
 		{
@@ -830,8 +830,9 @@ public class DBLayerHSQL implements DBLayer
 			ResultSet rs = st.executeQuery(getBeanInfo);			
 			// result in categoryBean schreiben
 			rs.next();
-			catbean.setLeft(rs.getInt(1));
-			catbean.setRight(rs.getInt(2));
+			catbean.setLeft(rs.getInt("left"));
+			catbean.setRight(rs.getInt("right"));
+			catbean.setRootID(rs.getInt("root_id"));
 			
 			//find statement
 			String find = new String("SELECT * FROM category where left < "+catbean.getLeft()+" and right > "+catbean.getRight() + " AND root_id = " + catbean.getRootID());
@@ -885,7 +886,7 @@ public class DBLayerHSQL implements DBLayer
 		//TODO ist die Bean auch gefuellt			
 
 		//wir brauchen auf jeden left und right der category
-		String getBeanInfo = new String("select left,right from category where id = "+catbean.getID());
+		String getBeanInfo = new String("select left,right,root_id from category where id = "+catbean.getID());
 
 		try
 		{
@@ -893,8 +894,9 @@ public class DBLayerHSQL implements DBLayer
 			ResultSet rs = st.executeQuery(getBeanInfo);			
 			// result in categoryBean schreiben
 			rs.next();
-			catbean.setLeft(rs.getInt(1));
-			catbean.setRight(rs.getInt(2));
+			catbean.setLeft(rs.getInt("left"));
+			catbean.setRight(rs.getInt("right"));
+			catbean.setRootID(rs.getInt("root_id"));
 			
 			//find statement
 			String find = new String("SELECT * FROM category where left < "+catbean.getLeft()+" and right > "+catbean.getRight() + " AND root_id = " + catbean.getRootID());

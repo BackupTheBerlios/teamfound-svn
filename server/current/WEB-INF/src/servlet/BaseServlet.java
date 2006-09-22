@@ -83,6 +83,7 @@ public abstract class BaseServlet extends HttpServlet {
 		 * -----------------------------*/
 		commands.put("register", new Integer(6));
 		commands.put("login", new Integer(7));
+		//commands.put("editpermissions", new Integer(8));
 	}
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)

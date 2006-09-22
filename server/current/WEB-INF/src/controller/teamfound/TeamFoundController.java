@@ -33,6 +33,7 @@ import controller.response.GetProjectsResponse;
 import controller.response.SearchResponse;
 import controller.response.NewUserResponse;
 import controller.response.LoginResponse;
+import controller.response.EditPermissionsResponse;
 import controller.SessionData;
 import controller.teamfound.checkAuthorisation;
 
@@ -230,9 +231,10 @@ public class TeamFoundController implements Controller {
 				Vector<categoryBean> allids = db.findAllParents(conn, cb); 
 				Iterator allidit = allids.iterator();
 			
-				categoryBean tmpcb = new categoryBean();
 				while(allidit.hasNext())
 				{
+
+					categoryBean tmpcb = new categoryBean();
 					tmpcb = (categoryBean)allidit.next();
 					
 					if( !cats.contains(tmpcb.getID()) )
@@ -854,5 +856,74 @@ public class TeamFoundController implements Controller {
 
 		}
 	}
+
+	public EditPermissionsResponse editPermissions(Integer projectid, SessionData tfsession, Boolean _useruseradd, 
+		Boolean _userurledit,
+		Boolean _usercatedit,
+		Boolean _useraddurl,
+		Boolean _useraddcat,
+		Boolean _guestread,
+		Boolean _guesturledit,
+		Boolean _guestcatedit,
+		Boolean _guestaddurl,
+		Boolean _guestaddcat ) throws IndexAccessException,  DBAccessException
+	{
+		
+		try
+		{
+			// 0. Datenbank 
+		
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+			// Basis-Antwort bauen
+			EditPermissionsResponse resp = new EditPermissionsResponse(projectid);
+
+			// 1. Userrechte ueberpruefen (seit Milestone 3)
+			
+			if(!(checkAuthorisation.isAdmin(tfsession,projectid)))
+			{
+				resp.tfReturnValue(9);
+			}
+			
+			// 2. Permissions anpassen	
+			projectdataBean pdata = new projectdataBean(projectid,
+					_useruseradd, 
+					_userurledit,
+					_usercatedit,
+					_useraddurl,
+					_useraddcat,
+					_guestread,
+					_guesturledit,
+					_guestcatedit,
+					_guestaddurl,
+					_guestaddcat);
+
+
+
+			conn.close();
+			return (resp);
+		}
+		catch(SQLException e)
+		{
+			System.out.println("TeamFoundController : search)"+e);
+            DBAccessException a = new DBAccessException("nested Exception");
+			a.initCause(e);
+			throw a;
+		}
+		catch(Exception e)
+		{
+			//TODO Exceptions richtig machen
+ 			System.out.println("TeamFoundController : search)"+e);
+			System.out.println("INDEX FEHLER");
+			e.printStackTrace();
+            IndexAccessException a = new IndexAccessException("nested Exception");
+			a.initCause(e);
+			throw a;
+		}
+
+	}
+
+
 
 }
