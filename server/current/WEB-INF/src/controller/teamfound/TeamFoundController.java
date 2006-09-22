@@ -24,7 +24,6 @@ import controller.Download;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
 import controller.DBAccessException;
-import controller.ServerInitFailedException;
 import controller.Controller;
 import controller.response.*;
 import controller.SessionData;
@@ -139,11 +138,11 @@ public class TeamFoundController implements Controller {
 					tfindexer.updateCategory(adress.toString(),allcats);	
 					
 					//4.DB Aktualisieren
-					categoryBean catbean = new categoryBean();
 					for(int i=0;i<category.length;i++)
 					{
 						if(!oldcats.contains(new Integer(category[i])))
 						{
+							categoryBean catbean = new categoryBean();
 							catbean.setID(new Integer(category[i]));
 							db.addCatwithParentsToUrl(conn,urlbean,catbean);
 						}
@@ -694,7 +693,7 @@ public class TeamFoundController implements Controller {
 	 * @param name Username
 	 * @param pass passwort
 	 */
-	public NewUserResponse newUser(String user, String pass) throws DBAccessException, ServerInitFailedException
+	public NewUserResponse newUser(String user, String pass) throws DBAccessException 
 	{	
 		try
 		{
@@ -758,7 +757,7 @@ public class TeamFoundController implements Controller {
 	 * @param pass passwort
 	 * @return boolean
 	 */
-	public boolean checkUser(String user, String pass) throws DBAccessException, ServerInitFailedException
+	public boolean checkUser(String user, String pass) throws DBAccessException 
 	{	
 		try
 		{
@@ -795,7 +794,7 @@ public class TeamFoundController implements Controller {
 	 * @param name Username
 	 * @return LoginResponse
 	 */
-	public LoginResponse rejectUser(String user) throws DBAccessException, ServerInitFailedException
+	public LoginResponse rejectUser(String user) throws DBAccessException 
 	{	
 		try
 		{
@@ -832,7 +831,7 @@ public class TeamFoundController implements Controller {
 	 * @param String last (time when accessed)
 	 * @return LoginResponse
 	 */
-	public LoginResponse loginUser(String user, String pass, String sessionkey,Date last) throws DBAccessException, ServerInitFailedException
+	public LoginResponse loginUser(String user, String pass, String sessionkey,Date last) throws DBAccessException 
 	{	
 		try
 		{
@@ -906,14 +905,13 @@ public class TeamFoundController implements Controller {
 					_guestaddurl,
 					_guestaddcat);
 
-
-
+			db.setProjectdata(conn, pdata);
 			conn.close();
 			return (resp);
 		}
 		catch(SQLException e)
 		{
-			System.out.println("TeamFoundController : search)"+e);
+			System.out.println("TeamFoundController : editPermission)"+e);
             DBAccessException a = new DBAccessException("nested Exception");
 			a.initCause(e);
 			throw a;
@@ -921,8 +919,7 @@ public class TeamFoundController implements Controller {
 		catch(Exception e)
 		{
 			//TODO Exceptions richtig machen
- 			System.out.println("TeamFoundController : search)"+e);
-			System.out.println("INDEX FEHLER");
+ 			System.out.println("TeamFoundController : editPermission)"+e);
 			e.printStackTrace();
             IndexAccessException a = new IndexAccessException("nested Exception");
 			a.initCause(e);

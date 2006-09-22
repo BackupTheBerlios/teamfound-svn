@@ -6,7 +6,6 @@ package controller.teamfound;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
 import controller.DBAccessException;
-import controller.ServerInitFailedException;
 
 import controller.Controller;
 import controller.response.AddCategoriesResponse;
@@ -56,21 +55,21 @@ public class TestController {
 	{
 		return true;
 	}
-	public NewUserResponse newUser(String user, String pass) throws DBAccessException, ServerInitFailedException
+	public NewUserResponse newUser(String user, String pass) throws DBAccessException 
 	{
 		return null;
 	}
 
-	public LoginResponse rejectUser(String user) throws DBAccessException, ServerInitFailedException
+	public LoginResponse rejectUser(String user) throws DBAccessException 
 	{
 		return null;
 	}
-	public boolean checkUser(String user, String pass) throws DBAccessException, ServerInitFailedException
+	public boolean checkUser(String user, String pass) throws DBAccessException 
 	{
 		return true;
 	}
 
-	public LoginResponse loginUser(String user, String pass, String sessionkey,Date last) throws DBAccessException, ServerInitFailedException
+	public LoginResponse loginUser(String user, String pass, String sessionkey,Date last) throws DBAccessException 
 	{
 		return null;
 	}

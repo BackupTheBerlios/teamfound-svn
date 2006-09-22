@@ -28,7 +28,6 @@ import org.jdom.output.XMLOutputter;
 import controller.Controller;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
-import controller.ServerInitFailedException;
 import controller.DBAccessException;
 import controller.response.ErrorResponse;
 import controller.response.Response;
@@ -83,7 +82,7 @@ public abstract class BaseServlet extends HttpServlet {
 		 * -----------------------------*/
 		commands.put("register", new Integer(6));
 		commands.put("login", new Integer(7));
-		//commands.put("editpermissions", new Integer(8));
+		commands.put("editpermissions", new Integer(8));
 		commands.put("editcategory", new Integer(9));
 	}
 	
@@ -146,7 +145,7 @@ public abstract class BaseServlet extends HttpServlet {
 	}
 		
 		
-	protected Response launchCommand(HttpServletRequest req, SessionData tfsession) throws IndexAccessException, DownloadFailedException, ServerInitFailedException, DBAccessException {
+	protected Response launchCommand(HttpServletRequest req, SessionData tfsession) throws IndexAccessException, DownloadFailedException, DBAccessException {
 		Response r;
 		// parameter validieren
 		Map params = req.getParameterMap();
@@ -360,8 +359,94 @@ public abstract class BaseServlet extends HttpServlet {
 				return ctrl.rejectUser(user);
 			}
 
-		case 8:
-			// edit permissions
+		case 8 :
+			Boolean useruseradd, userurledit, usercatedit, useraddurl, useraddcat, guestread, guesturledit, guestcatedit, guestaddurl, guestaddcat    ;
+
+			if(!params.containsKey("projectid")) 
+			{
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'projectid'");
+				return r;
+			}
+			else
+			{
+				projectID = Integer.parseInt(req.getParameter("projectid"));
+			}
+
+
+			if(!params.containsKey("useruseradd")) {
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'useruseradd'");
+				return r;
+			} else {
+				useruseradd = getBooleanFromParam(req.getParameter("useruseradd"));
+			}
+			if(!params.containsKey("userurledit")) {
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'userurledit'");
+				return r;
+			} else {
+				userurledit = getBooleanFromParam(req.getParameter("userurledit"));
+			}
+			if(!params.containsKey("usercatedit")) {
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'usercatedit'");
+				return r;
+			} else {
+				 usercatedit= getBooleanFromParam(req.getParameter("usercatedit"));
+			}
+			if(!params.containsKey("useraddurl")) {
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'useraddurl'");
+				return r;
+			} else {
+				useraddurl = getBooleanFromParam(req.getParameter("useraddurl"));
+			}
+			if(!params.containsKey("useraddcat")) {
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'useraddcat'");
+				return r;
+			} else {
+				useraddcat = getBooleanFromParam(req.getParameter("useraddcat"));
+			}
+			if(!params.containsKey("guestread")) {
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'guestread'");
+				return r;
+			} else {
+				guestread = getBooleanFromParam(req.getParameter("guestread"));
+			}
+			if(!params.containsKey("guesturledit")) {
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'guesturledit'");
+				return r;
+			} else {
+				guesturledit = getBooleanFromParam(req.getParameter("guesturledit"));
+			}
+			if(!params.containsKey("guestcatedit")) {
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'guestcatedit'");
+				return r;
+			} else {
+				 guestcatedit= getBooleanFromParam(req.getParameter("guestcatedit"));
+			}
+			if(!params.containsKey("guestaddurl")) {
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'guestaddurl'");
+				return r;
+			} else {
+				 guestaddurl= getBooleanFromParam(req.getParameter("guestaddurl"));
+			}
+			if(!params.containsKey("guestaddcat")) {
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'guestaddcat'");
+				return r;
+			} else {
+				guestaddcat = getBooleanFromParam(req.getParameter("guestaddcat"));
+			}
+			return ctrl.editPermissions(projectID, tfsession, useruseradd, userurledit, usercatedit,useraddurl,useraddcat,guestread,guesturledit,guestcatedit,guestaddurl,guestaddcat ) ;
+
+
 
 		case 9:
 			// edit category
@@ -391,6 +476,7 @@ public abstract class BaseServlet extends HttpServlet {
 			}
 
 			return ctrl.editCategory(category, newname, newdescription, tfsession);
+			
 			
 		}
 		
@@ -435,4 +521,11 @@ public abstract class BaseServlet extends HttpServlet {
 		
 	}
 
+	private Boolean getBooleanFromParam(String s)
+	{
+		if(s == "yes")
+			return(new Boolean(true));
+		else
+			return(new Boolean(false));
+	}
 }

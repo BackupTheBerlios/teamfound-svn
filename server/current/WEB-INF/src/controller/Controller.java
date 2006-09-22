@@ -6,8 +6,8 @@ package controller;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
 import controller.DBAccessException;
-import controller.ServerInitFailedException;
 import controller.response.*;
+import controller.response.EditPermissionsResponse;
 import controller.SessionData;
 
 import java.util.Date;
@@ -27,7 +27,7 @@ public interface Controller {
 	 * @param url die hinzuzufuegende Url
 	 * @param category[] die Kategorien in die die URL gehoert (eigentlich mindestens die root Kategorie des Projekts ... normalerweise 0
 	 */
-	public AddPageResponse addToIndex(String url, int category[], SessionData tfsession) throws DownloadFailedException, IndexAccessException, ServerInitFailedException;
+	public AddPageResponse addToIndex(String url, int category[], SessionData tfsession) throws DownloadFailedException, IndexAccessException ;
 	
 	/**
 	 * Nach einer Query im Index suchen
@@ -35,7 +35,7 @@ public interface Controller {
 	 * @todo Das Ergebnis müsste genauer spezifiziert werden, siehe Interface SearchResult
 	 * @see controller.SearchResponse
 	 */
-	public SearchResponse search(String query, int offset, int category[],SessionData tfsession) throws IndexAccessException, ServerInitFailedException, DBAccessException;
+	public SearchResponse search(String query, int offset, int category[],SessionData tfsession) throws IndexAccessException, DBAccessException;
 
 	public GetCategoriesResponse getCategories(int rootid, SessionData tfsession) throws DBAccessException;
 	
@@ -62,7 +62,7 @@ public interface Controller {
 	 * @param name Username
 	 * @param pass passwort
 	 */
-	public NewUserResponse newUser(String user, String pass) throws DBAccessException, ServerInitFailedException;
+	public NewUserResponse newUser(String user, String pass) throws DBAccessException ;
 	
 	/**
 	 * Ueberpruefen ob User existiert und passwort stimmt
@@ -71,7 +71,7 @@ public interface Controller {
 	 * @param pass passwort
 	 * @return boolean
 	 */
-	public boolean checkUser(String user, String pass) throws DBAccessException, ServerInitFailedException;
+	public boolean checkUser(String user, String pass) throws DBAccessException ;
 	
 	/**
 	 * Antwort erstellen die Anmeldewunsch des Users zurueckweist!
@@ -79,7 +79,7 @@ public interface Controller {
 	 * @param name Username
 	 * @return LoginResponse
 	 */
-	public LoginResponse rejectUser(String user) throws DBAccessException, ServerInitFailedException;
+	public LoginResponse rejectUser(String user) throws DBAccessException ;
 	
 	/**
 	 * User einloggen
@@ -90,8 +90,21 @@ public interface Controller {
 	 * @param String last (time when accessed)
 	 * @return LoginResponse
 	 */
-	public LoginResponse loginUser(String user, String pass, String sessionkey,Date last) throws DBAccessException, ServerInitFailedException;
+	public LoginResponse loginUser(String user, String pass, String sessionkey,Date last) throws DBAccessException ;
 	
+
+	/* Rechte eines Projekts anpassen
+	 */
+	public EditPermissionsResponse editPermissions(Integer projectid, SessionData tfsession, Boolean _useruseradd, 
+		Boolean _userurledit,
+		Boolean _usercatedit,
+		Boolean _useraddurl,
+		Boolean _useraddcat,
+		Boolean _guestread,
+		Boolean _guesturledit,
+		Boolean _guestcatedit,
+		Boolean _guestaddurl,
+		Boolean _guestaddcat ) throws IndexAccessException,  DBAccessException;
 
 	public Response editCategory(Integer category, String catname, String description, SessionData session) throws DBAccessException;
 
