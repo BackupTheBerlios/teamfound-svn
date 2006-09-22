@@ -128,13 +128,18 @@ public class checkAuthorisation
 
 	public static boolean checkRead(SessionData tfsession, Integer projectid)
 	{
-		if(tfsession == SessionData.guest)
-		{
-			if( ! SessionData.projectdata.get(projectid).getGuestRead().booleanValue())
-				return false;
+		if( SessionData.projectdata.get(projectid).getGuestRead().booleanValue())
+		{	return true;
 		}
-		
-		return true;
+
+		if(tfsession != SessionData.guest)
+		{
+			if( tfsession.urb.isAdmin(projectid) || tfsession.urb.isUser(projectid))
+			{	
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
