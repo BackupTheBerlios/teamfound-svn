@@ -375,72 +375,52 @@ public abstract class BaseServlet extends HttpServlet {
 
 
 			if(!params.containsKey("useruseradd")) {
-				r = new ErrorResponse();
-				r.serverReturnValue(2, "Need Parameter 'useruseradd'");
-				return r;
+				useruseradd = new Boolean(false);
 			} else {
 				useruseradd = getBooleanFromParam(req.getParameter("useruseradd"));
 			}
 			if(!params.containsKey("userurledit")) {
-				r = new ErrorResponse();
-				r.serverReturnValue(2, "Need Parameter 'userurledit'");
-				return r;
+				userurledit = new Boolean(false);
 			} else {
 				userurledit = getBooleanFromParam(req.getParameter("userurledit"));
 			}
 			if(!params.containsKey("usercatedit")) {
-				r = new ErrorResponse();
-				r.serverReturnValue(2, "Need Parameter 'usercatedit'");
-				return r;
+				usercatedit = new Boolean(false);
 			} else {
 				 usercatedit= getBooleanFromParam(req.getParameter("usercatedit"));
 			}
 			if(!params.containsKey("useraddurl")) {
-				r = new ErrorResponse();
-				r.serverReturnValue(2, "Need Parameter 'useraddurl'");
-				return r;
+				useraddurl =new Boolean(false);
 			} else {
 				useraddurl = getBooleanFromParam(req.getParameter("useraddurl"));
 			}
 			if(!params.containsKey("useraddcat")) {
-				r = new ErrorResponse();
-				r.serverReturnValue(2, "Need Parameter 'useraddcat'");
-				return r;
+				useraddcat = new Boolean(false);
 			} else {
 				useraddcat = getBooleanFromParam(req.getParameter("useraddcat"));
 			}
 			if(!params.containsKey("guestread")) {
-				r = new ErrorResponse();
-				r.serverReturnValue(2, "Need Parameter 'guestread'");
-				return r;
+				guestread = new Boolean(false);
 			} else {
 				guestread = getBooleanFromParam(req.getParameter("guestread"));
 			}
 			if(!params.containsKey("guesturledit")) {
-				r = new ErrorResponse();
-				r.serverReturnValue(2, "Need Parameter 'guesturledit'");
-				return r;
+				guesturledit = new Boolean(false);
 			} else {
 				guesturledit = getBooleanFromParam(req.getParameter("guesturledit"));
 			}
 			if(!params.containsKey("guestcatedit")) {
-				r = new ErrorResponse();
-				r.serverReturnValue(2, "Need Parameter 'guestcatedit'");
-				return r;
+				guestcatedit = new Boolean(false);
 			} else {
 				 guestcatedit= getBooleanFromParam(req.getParameter("guestcatedit"));
 			}
 			if(!params.containsKey("guestaddurl")) {
-				r = new ErrorResponse();
-				r.serverReturnValue(2, "Need Parameter 'guestaddurl'");
-				return r;
+				guestaddurl = new Boolean(false);
 			} else {
 				 guestaddurl= getBooleanFromParam(req.getParameter("guestaddurl"));
 			}
 			if(!params.containsKey("guestaddcat")) {
-				r = new ErrorResponse();
-				r.serverReturnValue(2, "Need Parameter 'guestaddcat'");
-				return r;
+				guestaddcat = new Boolean(false);
 			} else {
 				guestaddcat = getBooleanFromParam(req.getParameter("guestaddcat"));
 			}

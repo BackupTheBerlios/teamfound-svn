@@ -906,6 +906,8 @@ public class TeamFoundController implements Controller {
 					_guestaddcat);
 
 			db.setProjectdata(conn, pdata);
+			projectdataBean pdb = db.getProjectDataToCat(conn, projectid);
+			SessionData.projectdata.put(pdb.getRootID(),pdb);
 			conn.close();
 			return (resp);
 		}
