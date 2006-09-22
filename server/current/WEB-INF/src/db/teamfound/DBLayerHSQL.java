@@ -130,7 +130,7 @@ public class DBLayerHSQL implements DBLayer
 				System.out.println("error in Statement "+ sqlcreate);
 
 			//create URL table
-			sqlcreate = "CREATE TABLE indexedurls (id INTEGER IDENTITY,url VARCHAR,indexdate DATE, rating INTEGER)";
+			sqlcreate = "CREATE TABLE indexedurls (id INTEGER IDENTITY,url VARCHAR,indexdate DATE, rating INTEGER, originalcat INTEGER)";
 			if(!update(c,sqlcreate))
 				System.out.println("error in Statement "+ sqlcreate);
 
@@ -679,7 +679,7 @@ public class DBLayerHSQL implements DBLayer
 	 */
 	public Vector<String> getAllUrlsInCategory(Connection conn, Integer category) throws SQLException
 	{
-		PreparedStatement ps = conn.prepareStatement("select iu.url from urltocategory as uc, indexedurls as iu where uc.category = ? and uc.url=iu.id");
+		PreparedStatement ps = conn.prepareStatement("select url from indexedurls where originalcat = ?");
 		ps.setInt(1, category);
 
 		Vector<String> v = new Vector<String>();
@@ -724,8 +724,11 @@ public class DBLayerHSQL implements DBLayer
 		//TODO ist die Bean auch gefuellt			
 		
 		//insert statement
-		String insert = new String("INSERT INTO indexedurls(url,indexdate) VALUES('"+re.getUrl()+"','"+dat.toString()+"')");
-		
+		PreparedStatement insindex = conn.prepareStatement("INSERT INTO indexedurls(url,indexdate,originalcat) VALUES(?, ?, ?)");
+		insindex.setString(1, re.getUrl());
+		insindex.setString(2, dat.toString());
+		insindex.setInt(3, catbean.getID());
+			
 		//Statement um PrimKey zu kriegen
 		String prim = new String("CALL IDENTITY()");
 		
@@ -741,7 +744,7 @@ public class DBLayerHSQL implements DBLayer
 			{
 			
 				//ausfuehren des URL inserts
-				st.executeUpdate(insert);
+				insindex.executeUpdate();
 
 				//erzeugte id holen
 				ResultSet rs = st.executeQuery(prim);
@@ -1084,7 +1087,7 @@ public class DBLayerHSQL implements DBLayer
 		
 		try
 		{
-			String search = new String("SELECT id,url,indexdate FROM indexedurls WHERE url = '"+url+"'");
+			String search = new String("SELECT id,url,indexdate,originalcat FROM indexedurls WHERE url = '"+url+"'");
 			ResultSet rsi = st.executeQuery(search);
 			
 			if(rsi.next())
@@ -1092,7 +1095,8 @@ public class DBLayerHSQL implements DBLayer
 				urltabBean re = new urltabBean(
 						rsi.getString(2),
 						rsi.getDate(3),
-						rsi.getInt(1));
+						rsi.getInt(1),
+						rsi.getInt(4));
 				return(re);
 			}
 			else
@@ -1156,7 +1160,7 @@ public class DBLayerHSQL implements DBLayer
 		
 		try
 		{
-			String search = new String("SELECT i.id,i.url,i.indexdate FROM indexedurls i,urltocategory u WHERE i.url = '"+url+"' AND i.id = u.url AND u.category = "+rootbean.getID());
+			String search = new String("SELECT i.id,i.url,i.indexdate,originalcat FROM indexedurls i,urltocategory u WHERE i.url = '"+url+"' AND i.id = u.url AND u.category = "+rootbean.getID());
 			ResultSet rsi = st.executeQuery(search);
 			
 			if(rsi.next())
@@ -1164,7 +1168,8 @@ public class DBLayerHSQL implements DBLayer
 				urltabBean re = new urltabBean(
 						rsi.getString("url"),
 						rsi.getDate("indexdate"),
-						rsi.getInt("id"));
+						rsi.getInt("id"),
+						rsi.getInt("originalcat"));
 				return(re);
 			}
 			else
@@ -1744,6 +1749,7 @@ public class DBLayerHSQL implements DBLayer
 				
 				re.setUrl(rsi.getString("url"));
 				re.setDate(rsi.getDate("indexdate"));
+				re.setOriginalCat(rsi.getInt("originalcat"));
 				
 				
 				if(!revec.add(re))
