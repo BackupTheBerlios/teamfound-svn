@@ -45,27 +45,47 @@
 	</xsl:if>
 
 	<xsl:if test="count(/response/teamfound/search/result) > 0">
-		<p>
-			<xsl:value-of select="count(/response/teamfound/search/result/found)"/>
-			of 
-			<xsl:value-of select="/response/teamfound/search/result/count"/>
-			results shown:<br/>
-			<ul>
-				<xsl:for-each select="/response/teamfound/search/result/found">
-					<li>
-						<a>
-							<xsl:attribute name="href">
+		<xsl:if test="/response/xsltpassthrough != 'viewallsites'">
+			<p>
+				<xsl:value-of select="count(/response/teamfound/search/result/found)"/>
+				of 
+				<xsl:value-of select="/response/teamfound/search/result/count"/>
+				results shown:<br/>
+				<ul>
+					<xsl:for-each select="/response/teamfound/search/result/found">
+						<li>
+							<a>
+								<xsl:attribute name="href">
+									<xsl:value-of select="url"/>
+								</xsl:attribute>
+								<xsl:value-of select="title"/>
+							</a>
+							<br/>
+							<xsl:value-of select="url"/> (category <xsl:value-of select="incategory"/>)
+						</li>
+					</xsl:for-each>
+				</ul>
+			</p>
+		</xsl:if>
+		<xsl:if test="/response/xsltpassthrough = 'viewallsites'">
+			<p>
+				<ul>
+					<xsl:for-each select="/response/teamfound/search/result/found">
+						<li>
+							<a>
+								<xsl:attribute name="href">
+									<xsl:value-of select="url"/>
+								</xsl:attribute>
 								<xsl:value-of select="url"/>
-							</xsl:attribute>
-							<xsl:value-of select="title"/>
-						</a>
-						<br/>
-						<xsl:value-of select="url"/> (category <xsl:value-of select="incategory"/>)
-					</li>
-				</xsl:for-each>
-			</ul>
-		</p>
+							</a>
+						</li>
+					</xsl:for-each>
+				</ul>
+			</p>
+
+		</xsl:if>
 	</xsl:if>
+
 	<xsl:if test="count(/response/teamfound/addPage) > 0">
 		<p>
 			Add URL <a>
@@ -233,6 +253,7 @@
 			<xsl:call-template name="myprojects"/>
 		</xsl:if>
 	</xsl:if>
+
 </xsl:template>
 
 <xsl:template name="searchfield">

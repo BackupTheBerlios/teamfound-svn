@@ -247,25 +247,38 @@ public class TeamFoundController implements Controller {
 	@Deprecated public SearchResponse search(String query, int category[]) throws IndexAccessException
 	{
 		
-		try{
+		try
+		{
 	// 0. Datenbank nach Kategorienversionen durchsuchen
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
 	// 1. Im Index Suchen
-		
-			Indexer tfindexer = new TeamFoundIndexer(indexSync);
-			//TODO -> hart den count auf 30 und den Offset auf 0 ??
-			Vector<Document> docvec = tfindexer.query(query, category , 50, 0 ); 
-	
-		
-	//2.Antwort bauen
-			//TODO keywords ?
-			String[] keywords = new String[1];
-			keywords[0] = query;
-			SearchResponse resp = new SearchResponse(keywords);
-			resp.addSearchResults(docvec);
 			
+			SearchResponse resp;
+			if( query != null)
+			{	// normale suche
+		
+				Indexer tfindexer = new TeamFoundIndexer(indexSync);
+				//TODO -> hart den count auf 30 und den Offset auf 0 ??
+				//
+				Vector<Document> docvec = tfindexer.query(query, category , 50, 0 ); 
+
+				// Antwort bauen
+				String[] keywords = new String[1];
+				keywords[0] = query;
+				resp = new SearchResponse(keywords);
+				resp.addSearchResults(docvec);
+			}
+			else
+			{
+				// getall = yes
+				// category[0] da nur fuer eine kat erlaubt
+				Vector<String> v = db.getAllUrlsInCategory(conn, category[0]); 
+				resp = new SearchResponse(null);
+				resp.addSimpleSearchResults(v);
+			}
+	
 			conn.close();	
 			return (resp);
 		}
@@ -292,41 +305,55 @@ public class TeamFoundController implements Controller {
 		
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+			SearchResponse resp;
 
-			// Basis-Antwort bauen
-			//TODO keywords ?
-			String[] keywords = new String[1];
-			keywords[0] = query;
-			SearchResponse resp = new SearchResponse(keywords);
-
-			// 0.1. Userrechte ueberpruefen (seit Milestone 3)
-			for( int i = 0; i < category.length; i++)
+			if( query != null)
 			{
-				// root-cat der cat auslesen
-				categoryBean cb = db.getCatByID(conn, category[i]);
+		
 
-				if( cb == null)
-				{	// category not found
-					resp.tfReturnValue(new Integer(5));
-					return(resp);
-				}
-				if(!checkAuthorisation.checkSearch(tfsession,cb.getRootID()))
+				// Basis-Antwort bauen
+				//TODO keywords ?
+				String[] keywords = new String[1];
+				keywords[0] = query;
+				resp = new SearchResponse(keywords);
+
+				// 0.1. Userrechte ueberpruefen (seit Milestone 3)
+				for( int i = 0; i < category.length; i++)
 				{
-					resp.tfReturnValue(new Integer(9));
-					return(resp);
+					// root-cat der cat auslesen
+					categoryBean cb = db.getCatByID(conn, category[i]);
+
+					if( cb == null)
+					{	// category not found
+						resp.tfReturnValue(new Integer(5));
+						return(resp);
+					}
+					if(!checkAuthorisation.checkSearch(tfsession,cb.getRootID()))
+					{
+						resp.tfReturnValue(new Integer(9));
+						return(resp);
+					}
 				}
-			}
+				
 			
+				// 1. Im Index Suchen
+			
+				Indexer tfindexer = new TeamFoundIndexer(indexSync);
+				//TODO -> hart den count auf 30 ?
+				Vector<Document> docvec = tfindexer.query(query, category , 50, offset ); 
 		
-			// 1. Im Index Suchen
-		
-			Indexer tfindexer = new TeamFoundIndexer(indexSync);
-			//TODO -> hart den count auf 30 ?
-			Vector<Document> docvec = tfindexer.query(query, category , 50, offset ); 
-	
-		
-			//2.Suchergebnisse in Antwort einbauen
-			resp.addSearchResults(docvec);
+			
+				//2.Suchergebnisse in Antwort einbauen
+				resp.addSearchResults(docvec);
+			}
+			else
+			{
+				// getall = yes
+				// category[0] da nur fuer eine kat erlaubt
+				Vector<String> v = db.getAllUrlsInCategory(conn, category[0]); 
+				resp = new SearchResponse(null);
+				resp.addSimpleSearchResults(v);
+			}
 		
 			conn.close();
 			return (resp);

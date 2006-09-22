@@ -56,6 +56,27 @@ public class SearchResponse extends Response {
 		count.addContent(Integer.toString(this.number));
 		result.addContent(count);
 	}
+
+	public void addSimpleSearchResults(Vector<String> hits) throws IOException {
+		Iterator it = (Iterator)hits.iterator();
+		
+		//Hit h;
+		String d;
+		Element found, url;
+		while(it.hasNext()) 
+		{
+			d = (String)it.next();
+			found = new Element("found");
+			url = new Element("url");
+			
+			// 1. url -- Die Url als String
+			
+			url.addContent(d);
+			found.addContent(url);
+			
+			this.result.addContent(found);
+		}
+	}
 	
 	public void addSearchResults(Vector<Document> hits) throws IOException {
 		Iterator it = (Iterator)hits.iterator();
@@ -128,11 +149,13 @@ public class SearchResponse extends Response {
 		Element keywords = new Element("keywords");
 		search.addContent(keywords);
 		
-		Element keyword;
-		for(int i = 0; i < this.keywords.length; i++) {
-			keyword = new Element("word");
-			keyword.addContent(this.keywords[i]);
-			keywords.addContent(keyword);
+		if( this.keywords != null)
+		{	Element keyword;
+			for(int i = 0; i < this.keywords.length; i++) {
+				keyword = new Element("word");
+				keyword.addContent(this.keywords[i]);
+				keywords.addContent(keyword);
+			}
 		}
 		
 		search.addContent(this.result);

@@ -432,4 +432,6 @@ public interface DBLayer
 
 	public java.util.concurrent.ConcurrentHashMap<Integer, projectdataBean> getAllProjectData(Connection conn) throws SQLException;
 
+	public Vector<String> getAllUrlsInCategory(Connection conn, Integer category) throws SQLException;
+
 }

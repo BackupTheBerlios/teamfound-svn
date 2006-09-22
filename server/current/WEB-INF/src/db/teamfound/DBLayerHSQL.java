@@ -671,6 +671,33 @@ public class DBLayerHSQL implements DBLayer
 		
 	}
 
+
+	/**
+	 * Gibt alle URLs einer Kategorie zurueck
+	 */
+	public Vector<String> getAllUrlsInCategory(Connection conn, Integer category) throws SQLException
+	{
+		PreparedStatement ps = conn.prepareStatement("select iu.url from urltocategory as uc, indexedurls as iu where uc.category = ? and uc.url=iu.id");
+		ps.setInt(1, category);
+
+		Vector<String> v = new Vector<String>();
+		try
+		{
+			ResultSet r = ps.executeQuery();
+			while(r.next())
+			{
+				v.add(r.getString(1));
+			}
+			return v;
+		}
+		catch(SQLException e)
+		{
+			System.out.println("getAllUrlsInCategory: "+ e);
+			throw(e);
+		}
+	}
+
+
 	/**
 	  *Hinzufuegen einer Url (nur Url in der Bean benoetigt)
 	  *mit zugehoeriger Category(auch hier nur ID benoetigt)
@@ -2029,7 +2056,6 @@ public class DBLayerHSQL implements DBLayer
 			//ausfuehren der Updates 
 			st.executeUpdate();	
 			conn.commit();
-			
 			
 		}
 		catch(SQLException e)

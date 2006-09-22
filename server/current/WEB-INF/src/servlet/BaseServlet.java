@@ -189,10 +189,23 @@ public abstract class BaseServlet extends HttpServlet {
 			String query;
 			int offset;
 			// suche, es müssen die parameter keyword und offset da sein
-			if(!params.containsKey("keyword")) {
-				r = new ErrorResponse();
-				r.serverReturnValue(2, "Need Parameter 'keyword'");
-				return r;
+			if(!params.containsKey("keyword") || req.getParameter("keyword").length() == 0) {
+				if( !params.containsKey("getall"))
+				{
+					r = new ErrorResponse();
+					r.serverReturnValue(2, "Need Parameter 'keyword'");
+					return r;
+				}
+				else
+				{
+					if( ! req.getParameter("getall").equals("yes"))
+					{
+						r = new ErrorResponse();
+						r.serverReturnValue(2, "Need Parameter 'getall=yes'");
+						return r;
+					}
+					query=null; // so identifizieren wird das alle zurueckgegeben werden sollen
+				}
 			} else {
 				query = req.getParameter("keyword");
 			}
