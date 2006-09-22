@@ -503,7 +503,7 @@ public abstract class BaseServlet extends HttpServlet {
 
 	private Boolean getBooleanFromParam(String s)
 	{
-		if(s == "yes")
+		if(s.equals("yes"))
 			return(new Boolean(true));
 		else
 			return(new Boolean(false));
