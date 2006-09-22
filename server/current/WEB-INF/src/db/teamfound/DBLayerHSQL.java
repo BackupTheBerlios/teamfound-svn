@@ -1641,6 +1641,26 @@ public class DBLayerHSQL implements DBLayer
 	}
 
 	/**
+	 * erzeugt eine tfuserBean aus der aktuellen Zeile des ResultSets
+	 * @param resultset 
+	 * @return tfuserBean
+	 */
+	private tfuserBean create_tfuserBean_from_ResultSet(ResultSet rsi) throws SQLException
+	{
+		tfuserBean re = new tfuserBean();
+
+		re.setID(rsi.getInt("id"));
+		re.setUsername(rsi.getString("username"));
+		re.setPass(rsi.getString("pass"));
+		re.setSessionkey(rsi.getString("sessionkey"));
+		re.setServeradmin(rsi.getBoolean("serveradmin"));
+		re.setLastaction(rsi.getTimestamp("lastaction"));
+
+		return re;
+	}
+
+
+	/**
 	 * User by ID
 	 * @return tfuserBean des Users
 	 * @param userid des Users
@@ -1659,12 +1679,7 @@ public class DBLayerHSQL implements DBLayer
 			
 			if(rsi.next())
 			{
-				re.setID(rsi.getInt("id"));
-				re.setUsername(rsi.getString("username"));
-				re.setPass(rsi.getString("pass"));
-				re.setSessionkey(rsi.getString("sessionkey"));
-				re.setServeradmin(rsi.getBoolean("serveradmin"));
-				re.setLastaction(rsi.getTimestamp("lastaction"));
+				re = create_tfuserBean_from_ResultSet(rsi);
 			}	
 			return(re);
 			
@@ -2341,6 +2356,41 @@ public class DBLayerHSQL implements DBLayer
 			System.out.println("addUserToProject: "+ e);
 			throw(e);
 		}
+
+	}
+
+	/**
+	 * User des Projekts zurueckgeben
+	 * @param projectid
+	 *@return liste der user
+	 */ 
+	public Vector<Tuple<tfuserBean,Boolean>> getUsersOfProject(Connection conn, Integer projectid) throws SQLException
+	{
+		PreparedStatement check = conn.prepareStatement("SELECT tf.*, proj.isadmin FROM tfuser as tf, tfusertoproject as proj WHERE proj.rootid = ? and proj.userid = tf.id");
+		check.setInt(1, projectid);
+
+		try
+		{
+			ResultSet rsi = check.executeQuery();	
+			
+			Vector ret = new Vector<Tuple<tfuserBean,Boolean>>();
+			while(rsi.next())
+			{
+				tfuserBean user = create_tfuserBean_from_ResultSet(rsi);
+				Boolean role = new Boolean(rsi.getBoolean("isadmin"));
+				
+				ret.add( new Tuple<tfuserBean,Boolean>(user,role));
+			}
+			return ret;
+		}
+		catch(SQLException e)
+		{
+
+			//TODO LoggMessage statt print
+			System.out.println("getUsersOfProject: "+ e);
+			throw(e);
+		}
+
 
 	}
 

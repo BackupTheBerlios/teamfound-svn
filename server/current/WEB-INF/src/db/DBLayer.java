@@ -441,4 +441,6 @@ public interface DBLayer
 
 	public Vector<String> getAllUrlsInCategory(Connection conn, Integer category) throws SQLException;
 
+	public Vector<Tuple<tfuserBean,Boolean>> getUsersOfProject(Connection conn, Integer projectid) throws SQLException;
+
 }

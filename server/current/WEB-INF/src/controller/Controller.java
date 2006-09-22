@@ -152,4 +152,5 @@ public interface Controller {
 	public Response removeUserFromProject(String user,Integer projectid, SessionData tfsession) throws DBAccessException;
 	
 
+	public Response getUsersOfProject(Integer projectid, SessionData tfsession) throws DBAccessException;
 }

@@ -133,6 +133,12 @@
 				Edit category <xsl:value-of select="/response/teamfound/editcategory/name"/> - <xsl:value-of select="/response/teamfound/editcategory/description"/>: <xsl:value-of select="/response/teamfound/return-description"/>
 			</p>
 		</xsl:if>
+		<xsl:if test="count(/response/teamfound/adduser) > 0">
+			<p>
+				Add user '<xsl:value-of select="/response/teamfound/adduser/user"/>' with role <xsl:value-of select="/response/teamfound/adduser/role"/> to projekt <xsl:value-of select="/response/teamfound/adduser/projectid"/>: <xsl:value-of select="/response/teamfound/return-description"/>
+			</p>
+		</xsl:if>
+
 	</xsl:if>
 </xsl:template>
 
@@ -532,7 +538,7 @@
 	view/edit permissions</a> / 
 	<a>
 	<xsl:attribute name="href">
-	?pt=manageusers&amp;command=getusers&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+	?pt=manageusers&amp;command=getuser&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
 	</xsl:attribute>
 	manage users
 	</a> /
@@ -664,6 +670,13 @@
 
 <xsl:template name="manageusers">
 	<h2>Users in this Project</h2>
+		<ul>
+			<xsl:for-each select="/response/teamfound/getuser/user">
+				<li>
+					<xsl:value-of select="name"/> with userid <xsl:value-of select="id"/> is <xsl:value-of select="role"/>
+				</li>
+			</xsl:for-each>
+		</ul>
 	<h2>Add user</h2>
 	<p>
 	<form id="adduser" action="tf" method="post">

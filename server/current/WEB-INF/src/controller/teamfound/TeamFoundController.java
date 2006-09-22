@@ -1169,4 +1169,46 @@ public class TeamFoundController implements Controller {
 		}
 	}
 
+	/**
+	 * User von Projekt ausgeben
+	 *
+	 * @param Integer projectid
+	 * @return Response
+	 */
+	public Response getUsersOfProject(Integer projectid, SessionData tfsession) throws DBAccessException 
+	{	
+		try
+		{
+			if(tfsession == SessionData.guest || !(tfsession.urb.isAdmin(projectid)) || !tfsession.urb.isUser(projectid))
+			{
+				ErrorResponse re = new ErrorResponse();
+				re.tfReturnValue(new Integer(9));
+			}
+
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+		
+			Vector<Tuple<tfuserBean,Boolean>> vuser = db.getUsersOfProject(conn,projectid);
+
+			Iterator vuserit = vuser.iterator();
+			GetUsersOfProjectResponse re = new GetUsersOfProjectResponse(projectid);
+			while(vuserit.hasNext())
+			{
+				Tuple user = (Tuple)vuserit.next();
+				re.addUser((tfuserBean)user.getFirst(), (Boolean)user.getSecond());
+			}
+
+			return(re);
+		
+		}
+		catch(Exception e)
+		{
+ 			System.out.println("TeamFoundController : loginUser)"+e);
+			DBAccessException dbe = new DBAccessException("loginUser SQLException");
+			dbe.initCause(e);
+			throw(dbe);
+
+		}
+	}
+	
 }

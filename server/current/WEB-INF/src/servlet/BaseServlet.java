@@ -112,6 +112,7 @@ public abstract class BaseServlet extends HttpServlet {
 		commands.put("editcategory", new Integer(9));
 		commands.put("adduser", new Integer(10));
 		commands.put("deluser", new Integer(11));
+		commands.put("getuser", new Integer(12));
 		
 		servletLog.info("Servlet ini done");
 	}
@@ -431,7 +432,7 @@ public abstract class BaseServlet extends HttpServlet {
 				return ctrl.rejectUser(user);
 			}
 
-		case 8 :
+		case 8 : // editpermissions
 			Boolean useruseradd, userurledit, usercatedit, useraddurl, useraddcat, guestread, guesturledit, guestcatedit, guestaddurl, guestaddcat    ;
 
 			if(!params.containsKey("projectid")) 
@@ -498,9 +499,7 @@ public abstract class BaseServlet extends HttpServlet {
 			}
 			return ctrl.editPermissions(projectID, tfsession, useruseradd, userurledit, usercatedit,useraddurl,useraddcat,guestread,guesturledit,guestcatedit,guestaddurl,guestaddcat ) ;
 
-
-
-		case 9:
+		case 9: // editcategory
 			// edit category
 			String newname = null;
 			String newdescription = null;
@@ -528,8 +527,8 @@ public abstract class BaseServlet extends HttpServlet {
 			}
 
 			return ctrl.editCategory(category, newname, newdescription, tfsession);
-		case 10:
-			// adduser
+
+		case 10: // adduser
 			String username = null;
 			String role = null;
 			Integer projectid;
@@ -571,6 +570,22 @@ public abstract class BaseServlet extends HttpServlet {
 				return ctrl.addUserToProject(username,projectid,tfsession);
 			else
 				return ctrl.grantProjectAdmin(username,projectid,tfsession);
+
+		case 11: // deluser
+
+		case 12: // getuser
+			Integer projectid12;
+
+			if(!params.containsKey("projectid")) 
+			{
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'projectid'");
+				return r;
+			}
+			else
+				projectid12 = Integer.parseInt(req.getParameter("projectid")); 
+
+			return ctrl.getUsersOfProject(projectid12,tfsession);
 			
 		}
 		
