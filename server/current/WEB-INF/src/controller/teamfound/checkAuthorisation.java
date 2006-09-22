@@ -111,4 +111,15 @@ public class checkAuthorisation
 		return false;
 	}
 
+	public static boolean checkRead(SessionData tfsession, Integer projectid)
+	{
+		if(tfsession == SessionData.guest)
+		{
+			if( ! SessionData.projectdata.get(projectid).getGuestRead().booleanValue())
+				return false;
+		}
+		
+		return true;
+	}
+
 }

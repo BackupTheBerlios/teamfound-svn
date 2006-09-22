@@ -544,7 +544,10 @@ public class TeamFoundController implements Controller {
 			while(it.hasNext())
 			{
 				categoryBean cat = (categoryBean)it.next();
-				resp.addProject(cat.getCategory(), cat.getBeschreibung(),cat.getID(),projver.get(cat.getRootID()), session);
+				if( checkAuthorisation.checkRead(session, cat.getRootID()))
+				{
+					resp.addProject(cat.getCategory(), cat.getBeschreibung(),cat.getID(),projver.get(cat.getRootID()), session);
+				}
 						
 			}
 			conn.close();
