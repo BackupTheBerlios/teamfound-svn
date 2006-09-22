@@ -16,7 +16,7 @@ public class UpdatePageResponse extends Response {
 	protected String url;
 	
 	public UpdatePageResponse(List<Tuple<Integer,Integer>> projectCounters, String url) {
-		super(projectCounters);
+		super();
 		this.url = url;
 	}
 	
