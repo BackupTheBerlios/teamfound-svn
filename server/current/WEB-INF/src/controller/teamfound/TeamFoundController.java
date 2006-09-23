@@ -155,13 +155,9 @@ public class TeamFoundController implements Controller {
 							db.addCatwithParentsToUrl(conn,urlbean,catbean);
 						}
 					}
-
-					
 					//5.Erfolgsmeldung liefern (liste von (projectid, katbaumversion)
 					return(resp);
-
 				}
-
 			}
 	
 			/*Url muss heruntergeladen und neu Indiziert werden*/

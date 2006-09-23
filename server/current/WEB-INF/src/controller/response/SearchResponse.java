@@ -59,7 +59,7 @@ public class SearchResponse extends Response {
 
 	public void addSimpleSearchResults(Vector<String> hits, int category) throws IOException {
 		Iterator it = (Iterator)hits.iterator();
-		
+		number = hits.size();	
 		//Hit h;
 		String d;
 		Element found, url, xmlcategory;
@@ -82,9 +82,9 @@ public class SearchResponse extends Response {
 	}
 	
 	public void addSearchResults(Vector<Document> hits) throws IOException {
+		
+		number = hits.size();	
 		Iterator it = (Iterator)hits.iterator();
-		
-		
 		//Hit h;
 		Document d;
 		Element found, url, title, category;
