@@ -12,6 +12,8 @@ import controller.response.EditPermissionsResponse;
 import controller.SessionData;
 
 import java.util.Date;
+import java.net.URL;
+import java.util.List;
 
 /**
  * Interface für einen Controller nach Milestone3-Spezifikation
@@ -155,4 +157,21 @@ public interface Controller {
 	public Response getUsersOfProject(Integer projectid, SessionData tfsession) throws DBAccessException;
 
 	public Response removePage(String url, String category, Integer projectid, SessionData tfsession) throws DBAccessException;
+
+	/**
+	 * Vorlaeufige Version des Updates ohne Vergleiche von Hashwerten.
+	 * d.h. es wird immer ein update ausgefuehrt ohne Ruecksicht auf unveraenderte Inhalte
+	 *
+	 * @param URL die Adresse die upgedatet werden soll
+	 * @return 1 wenn die seite geupdated wurde,-1 bei fehler
+	 * 
+	 */
+	public int updateDocument(URL address); 
+
+	/**
+	 * liefert Alle Urls die laut properties zu alt sind
+	 * liefert null bei Fehler oder wenn nichts gefunden
+	 */
+	public List<URL>getOldURL();
+
 }

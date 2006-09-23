@@ -28,3 +28,13 @@ description = Ein Projekt der TU-Berlin. Ziel ist eine Team-Suchmaschiene.
 name = Hans
 pass = ry12HI
 
+#die tiefe in der Framesets auslegelesen werden sollen
+#beim indizieren von Seiten benoetigt
+framedepth = 3
+
+#die Anzahl der Tage bis ueberprueft wird ob sich der Inhalt
+#einer Url veraendert hat
+tooldafter = 1
+
+#die Zeit die der Update Thread warten soll zwischen AKtionen in Minuten
+updatewait = 5

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Date;
+import java.lang.Long;
 
 import config.teamfound.TeamFoundConfig;
 import controller.DownloadFailedException;
@@ -695,321 +696,374 @@ public class TeamFoundController implements Controller {
 	/**
 	 * liefert Alle Urls die laut properties zu alt sind
 	 */
-	public List<URL>getOldURL() throws DBAccessException
+	public List<URL>getOldURL()
 	{
 		try
 		{
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+			//datum bestimmen
+			String tage = TeamFoundConfig.getConfValue("tooldafter");
+			long back = (new Long(tage)).longValue();
+			back = back*24*60*60*1000; //in millisekunden
 			Date dat = new Date();
-			//Vector<urltabBean> = getOlderDocs(conn, date);
+			long now = dat.getTime();
+			dat.setTime((now-back));
+			
+			//aeltere Dokumente auslesen
+			Vector<urltabBean> vecubean = db.getOlderDocs(conn, dat);
+			Vector<URL> re = extractURL(vecubean);
+			return (re);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Controller : getOlderDocuments:"+e);
+			e.printStackTrace();
 			return null;
 		}
-		catch(Exception e)
-		{
-			//TODO Exceptions richtig machen
- 			System.out.println("TeamFoundController : getOldURL)"+e);
-			DBAccessException dbe = new DBAccessException("TeamFoundController : addCategory)"+e);
-			dbe.initCause(e);
-			throw dbe;
-		}
 	}
 
-	
-	/**
-	 * Liest den Inhalt für das übergebene Dokument neu ein. Dabei werden die Kategorien des Dokuments nicht verändert
-	 * 
-	 * Diese Methode wird zB. vom autgomatischen Updater benutzt um veränderungen an seiten in den Index zu holen
-	 * @param doc Das neue Dokument
-	 * @return 1 wenn die seite geupdated wurde, 0 wenn nicht,-1 bei fehler
-	 * 
-	 * TODO rückgabe könnte verschönert werden, response-objektre sind aber unsinnig, da der updateThread die garnicht braucht
-	 */
-	public int updateDocument(NewIndexEntry doc) {
-		/* 
-		 * 1. 	hole alte seite, bzw. einen hash davon und teste ob
-		 * 		sich die neue seite überhaupt davon unterscheidet
+		/**
+		 *Hilfsfunktion extrahiert URLs aus urltabBeans
 		 */
-		MessageDigest md = null;
-		try {
-			md = MessageDigest.getInstance("SHA-1");
-		} catch(NoSuchAlgorithmException e) {
-			log.fatal(e);
+		private Vector<URL> extractURL(Vector<urltabBean> uv)
+		{
+			Vector<URL> urlvec = new Vector<URL>();
+			Iterator<urltabBean> it = uv.iterator();
+			while(it.hasNext())
+			{
+				urltabBean ub = it.next();
+
+				URL adress = null;
+				try 
+				{
+					adress = new URL(ub.getUrl());
+				} 
+				catch (MalformedURLException e)
+				{}//TODO
+				urlvec.add(adress);
+			}
+			return(urlvec);
+		}
+
+		/**
+		 * Vorlaeufige Version des Updates ohne Vergleiche von Hashwerten.
+		 * d.h. es wird immer ein update ausgefuehrt ohne Ruecksicht auf unveraenderte Inhalte
+		 *
+		 * @param URL die Adresse die upgedatet werden soll
+		 * @return 1 wenn die seite geupdated wurde,-1 bei fehler
+		 * 
+		 */
+		public int updateDocument(URL address) 
+		{
+			try
+			{
+				Indexer tfindexer = new TeamFoundIndexer(indexSync);
+				tfindexer.updateContent(address);
+				return(1);
+			}
+			catch(Exception e)
+			{
+				return(-1);
+			}
+		}
+
+		
+		/**
+		 * Liest den Inhalt für das übergebene Dokument neu ein. Dabei werden die Kategorien des Dokuments nicht verändert
+		 * 
+		 * Diese Methode wird zB. vom autgomatischen Updater benutzt um veränderungen an seiten in den Index zu holen
+		 * @param doc Das neue Dokument
+		 * @return 1 wenn die seite geupdated wurde, 0 wenn nicht,-1 bei fehler
+		 * 
+		 * TODO rückgabe könnte verschönert werden, response-objektre sind aber unsinnig, da der updateThread die garnicht braucht
+		 */
+		public int updateDocument(NewIndexEntry doc) {
+			/* 
+			 * 1. 	hole alte seite, bzw. einen hash davon und teste ob
+			 * 		sich die neue seite überhaupt davon unterscheidet
+			 */
+			MessageDigest md = null;
+			try {
+				md = MessageDigest.getInstance("SHA-1");
+			} catch(NoSuchAlgorithmException e) {
+				log.fatal(e);
+				return -1;
+			}
+			md.update(doc.getContent().getBytes());
+			byte[] digestNew = md.digest();
+			
+			// TODO hier muss der digest vom alten dokument berechnet oder aus der datenbank geholt werden
+			md.update(doc.getContent().getBytes());
+			byte[] digestOld = md.digest();
+			
+			if(!MessageDigest.isEqual(digestNew, digestOld)) {
+				/*
+				 * 2. 	wenn änderungen, lese die seite neu ein und ändere den 
+				 * 		last-update wert in der datenbank auf jetzt
+				 */
+				// TODO dokument in der datenbank sowie dem index updaten
+				/*
+				 * 3a. 	antworten
+				 */
+				return 1;
+			} else {
+				/*
+				 * 3b. es hat sich nichts geändert, generieren wir eine entsprechende antwort
+				 */
+				return 0;
+			}
+		}
+		
+		
+		/**
+		 * Einen neuen User anlegen
+		 *
+		 * @param name Username
+		 * @param pass passwort
+		 */
+		public NewUserResponse newUser(String user, String pass) throws DBAccessException 
+		{	
+			try
+			{
+				//1. Establish connection
+				Connection conn;
+				conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+		
+
+
+				HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
+
+			//2. user in db adden
+
+				tfuserBean newuser = new tfuserBean();
+				newuser.setUsername(user);
+				newuser.setPass(pass);
+
+				//Username zu kurz ?
+				if(user.length() < 3)
+				{
+					NewUserResponse re = new NewUserResponse(newuser.getUsername());
+					//7 ist ReturnCode fuer Username zu kurz
+					re.tfReturnValue(new Integer(7));
+					return(re);
+				}
+				if(pass.length() < 3)
+				{
+					NewUserResponse re = new NewUserResponse(newuser.getUsername());
+					//10 ist ReturnCode fuer Passwort zu kurz
+					re.tfReturnValue(new Integer(10));
+					return(re);
+				}
+				
+				//Username schon vergeben ?
+				if(db.getUserByName(conn,newuser.getUsername()) != null)
+				{
+					NewUserResponse re = new NewUserResponse(newuser.getUsername());
+					//6 ist ReturnCode fuer User existiert (siehe spezifikation
+					re.tfReturnValue(new Integer(6));
+					return(re);
+				}
+			
+				newuser = db.createNewUser(conn, newuser);
+
+				//3.response liefern		
+				NewUserResponse	resp = new NewUserResponse(newuser.getUsername());
+				
+				conn.close();
+				return(resp);
+
+			}
+			catch(Exception e)
+			{
+				System.out.println("TeamFoundController : newuser)"+e);
+				DBAccessException dbe = new DBAccessException("NewUser SQLException");
+				dbe.initCause(dbe);
+				throw(dbe);
+
+			}
+		}
+
+		/**
+		 * Ueberpruefen ob User existiert und passwort stimmt
+		 *
+		 * @param name Username
+		 * @param pass passwort
+		 * @return boolean
+		 */
+		public boolean checkUser(String user, String pass) throws DBAccessException 
+		{	
+			try
+			{
+				//1. Establish connection
+				Connection conn;
+				conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+				//2. in DB nachschauen
+				tfuserBean tf = db.getUserByName(conn,user);
+				if(tf != null)
+				{
+					if(pass.equals(tf.getPass()))
+					{
+						return(true);
+					}
+				}
+				
+				return false;
+			}
+			catch(Exception e)
+			{
+				System.out.println("TeamFoundController : checkuser)"+e);
+				DBAccessException dbe = new DBAccessException("checkUser SQLException");
+				dbe.initCause(dbe);
+				throw(dbe);
+
+			}
+
+		}
+
+		/**
+		 * Antwort erstellen die Anmeldewunsch des Users zurueckweist!
+		 *
+		 * @param name Username
+		 * @return LoginResponse
+		 */
+		public LoginResponse rejectUser(String user) throws DBAccessException 
+		{	
+			try
+			{
+				//1. Establish connection
+				Connection conn;
+				conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+				conn.close();
+				//2. antwort erstellen
+
+				LoginResponse resp = new LoginResponse(
+						user,
+						null);
+				resp.tfReturnValue(new Integer(8));	
+				return(resp);
+
+			}
+			catch(Exception e)
+			{
+				System.out.println("TeamFoundController : rejectUser)"+e);
+				DBAccessException dbe = new DBAccessException("rejectUser SQLException");
+				dbe.initCause(dbe);
+				throw(dbe);
+
+			}
+		}
+
+		/**
+		 * User einloggen
+		 *
+		 * @param String user
+		 * @param String pass 
+		 * @param String sessionkey
+		 * @param String last (time when accessed)
+		 * @return LoginResponse
+		 */
+		public LoginResponse loginUser(String user, String pass, String sessionkey,Date last) throws DBAccessException 
+		{	
+			try
+			{
+				//1. Establish connection
+				Connection conn;
+				conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+				//2.Session info speichern
+				tfuserBean tfun = db.getUserByName(conn,user);
+				userRightBean uright = db.getRights(conn,tfun.getID());
+				SessionData.addSession(sessionkey,uright,tfun);
+
+				conn.close();
+				//3. antwort erstellen
+
+				LoginResponse resp = new LoginResponse(
+						user,
+						sessionkey);
+				return(resp);
+
+			}
+			catch(Exception e)
+			{
+				System.out.println("TeamFoundController : loginUser)"+e);
+				DBAccessException dbe = new DBAccessException("loginUser SQLException");
+				dbe.initCause(e);
+				throw(dbe);
+
+			}
+		}
+		
+		public int updateDocument(NewIndexEntry nd, int[] categories) {
+			// TODO Auto-generated method stub
 			return -1;
 		}
-		md.update(doc.getContent().getBytes());
-		byte[] digestNew = md.digest();
-		
-		// TODO hier muss der digest vom alten dokument berechnet oder aus der datenbank geholt werden
-		md.update(doc.getContent().getBytes());
-		byte[] digestOld = md.digest();
-		
-		if(!MessageDigest.isEqual(digestNew, digestOld)) {
-			/*
-			 * 2. 	wenn änderungen, lese die seite neu ein und ändere den 
-			 * 		last-update wert in der datenbank auf jetzt
-			 */
-			// TODO dokument in der datenbank sowie dem index updaten
-			/*
-			 * 3a. 	antworten
-			 */
-			return 1;
-		} else {
-			/*
-			 * 3b. es hat sich nichts geändert, generieren wir eine entsprechende antwort
-			 */
-			return 0;
-		}
-	}
-	
-	
-	/**
-	 * Einen neuen User anlegen
-	 *
-	 * @param name Username
-	 * @param pass passwort
-	 */
-	public NewUserResponse newUser(String user, String pass) throws DBAccessException 
-	{	
-		try
+
+		public EditPermissionsResponse editPermissions(Integer projectid, SessionData tfsession, Boolean _useruseradd, 
+		Boolean _userurledit,
+		Boolean _usercatedit,
+		Boolean _useraddurl,
+		Boolean _useraddcat,
+		Boolean _guestread,
+		Boolean _guesturledit,
+		Boolean _guestcatedit,
+		Boolean _guestaddurl,
+		Boolean _guestaddcat ) throws IndexAccessException,  DBAccessException
 		{
-			//1. Establish connection
-			Connection conn;
-			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
-
-	
-
-
-			HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
-
-		//2. user in db adden
-
-			tfuserBean newuser = new tfuserBean();
-			newuser.setUsername(user);
-			newuser.setPass(pass);
-
-			//Username zu kurz ?
-			if(user.length() < 3)
-			{
-				NewUserResponse re = new NewUserResponse(newuser.getUsername());
-				//7 ist ReturnCode fuer Username zu kurz
-				re.tfReturnValue(new Integer(7));
-				return(re);
-			}
-			if(pass.length() < 3)
-			{
-				NewUserResponse re = new NewUserResponse(newuser.getUsername());
-				//10 ist ReturnCode fuer Passwort zu kurz
-				re.tfReturnValue(new Integer(10));
-				return(re);
-			}
 			
-			//Username schon vergeben ?
-			if(db.getUserByName(conn,newuser.getUsername()) != null)
+			try
 			{
-				NewUserResponse re = new NewUserResponse(newuser.getUsername());
-				//6 ist ReturnCode fuer User existiert (siehe spezifikation
-				re.tfReturnValue(new Integer(6));
-				return(re);
-			}
-		
-			newuser = db.createNewUser(conn, newuser);
-
-			//3.response liefern		
-			NewUserResponse	resp = new NewUserResponse(newuser.getUsername());
+				// 0. Datenbank 
 			
-			conn.close();
-			return(resp);
+				Connection conn;
+				conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-		}
-		catch(Exception e)
-		{
- 			System.out.println("TeamFoundController : newuser)"+e);
-			DBAccessException dbe = new DBAccessException("NewUser SQLException");
-			dbe.initCause(dbe);
-			throw(dbe);
+				// Basis-Antwort bauen
+				EditPermissionsResponse resp = new EditPermissionsResponse(projectid);
 
-		}
-	}
-
-	/**
-	 * Ueberpruefen ob User existiert und passwort stimmt
-	 *
-	 * @param name Username
-	 * @param pass passwort
-	 * @return boolean
-	 */
-	public boolean checkUser(String user, String pass) throws DBAccessException 
-	{	
-		try
-		{
-			//1. Establish connection
-			Connection conn;
-			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
-
-			//2. in DB nachschauen
-			tfuserBean tf = db.getUserByName(conn,user);
-			if(tf != null)
-			{
-				if(pass.equals(tf.getPass()))
+				// 1. Userrechte ueberpruefen (seit Milestone 3)
+				
+				if(!(checkAuthorisation.isAdmin(tfsession,projectid)))
 				{
-					return(true);
+					resp.tfReturnValue(9);
 				}
+				
+				// 2. Permissions anpassen	
+				projectdataBean pdata = new projectdataBean(projectid,
+						_useruseradd, 
+						_userurledit,
+						_usercatedit,
+						_useraddurl,
+						_useraddcat,
+						_guestread,
+						_guesturledit,
+						_guestcatedit,
+						_guestaddurl,
+						_guestaddcat);
+
+				db.setProjectdata(conn, pdata);
+				projectdataBean pdb = db.getProjectDataToCat(conn, projectid);
+				SessionData.projectdata.put(pdb.getRootID(),pdb);
+				conn.close();
+				return (resp);
 			}
-			
-			return false;
-		}
-		catch(Exception e)
-		{
- 			System.out.println("TeamFoundController : checkuser)"+e);
-			DBAccessException dbe = new DBAccessException("checkUser SQLException");
-			dbe.initCause(dbe);
-			throw(dbe);
-
-		}
-
-	}
-
-	/**
-	 * Antwort erstellen die Anmeldewunsch des Users zurueckweist!
-	 *
-	 * @param name Username
-	 * @return LoginResponse
-	 */
-	public LoginResponse rejectUser(String user) throws DBAccessException 
-	{	
-		try
-		{
-			//1. Establish connection
-			Connection conn;
-			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
-
-			conn.close();
-			//2. antwort erstellen
-
-			LoginResponse resp = new LoginResponse(
-					user,
-					null);
-			resp.tfReturnValue(new Integer(8));	
-			return(resp);
-
-		}
-		catch(Exception e)
-		{
- 			System.out.println("TeamFoundController : rejectUser)"+e);
-			DBAccessException dbe = new DBAccessException("rejectUser SQLException");
-			dbe.initCause(dbe);
-			throw(dbe);
-
-		}
-	}
-
-	/**
-	 * User einloggen
-	 *
-	 * @param String user
-	 * @param String pass 
-	 * @param String sessionkey
-	 * @param String last (time when accessed)
-	 * @return LoginResponse
-	 */
-	public LoginResponse loginUser(String user, String pass, String sessionkey,Date last) throws DBAccessException 
-	{	
-		try
-		{
-			//1. Establish connection
-			Connection conn;
-			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
-
-			//2.Session info speichern
-			tfuserBean tfun = db.getUserByName(conn,user);
-			userRightBean uright = db.getRights(conn,tfun.getID());
-			SessionData.addSession(sessionkey,uright,tfun);
-
-			conn.close();
-			//3. antwort erstellen
-
-			LoginResponse resp = new LoginResponse(
-					user,
-					sessionkey);
-			return(resp);
-
-		}
-		catch(Exception e)
-		{
- 			System.out.println("TeamFoundController : loginUser)"+e);
-			DBAccessException dbe = new DBAccessException("loginUser SQLException");
-			dbe.initCause(e);
-			throw(dbe);
-
-		}
-	}
-	
-	public int updateDocument(NewIndexEntry nd, int[] categories) {
-		// TODO Auto-generated method stub
-		return -1;
-	}
-
-	public EditPermissionsResponse editPermissions(Integer projectid, SessionData tfsession, Boolean _useruseradd, 
-	Boolean _userurledit,
-	Boolean _usercatedit,
-	Boolean _useraddurl,
-	Boolean _useraddcat,
-	Boolean _guestread,
-	Boolean _guesturledit,
-	Boolean _guestcatedit,
-	Boolean _guestaddurl,
-	Boolean _guestaddcat ) throws IndexAccessException,  DBAccessException
-	{
-		
-		try
-		{
-			// 0. Datenbank 
-		
-			Connection conn;
-			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
-
-			// Basis-Antwort bauen
-			EditPermissionsResponse resp = new EditPermissionsResponse(projectid);
-
-			// 1. Userrechte ueberpruefen (seit Milestone 3)
-			
-			if(!(checkAuthorisation.isAdmin(tfsession,projectid)))
+			catch(SQLException e)
 			{
-				resp.tfReturnValue(9);
+				System.out.println("TeamFoundController : editPermission)"+e);
+				DBAccessException a = new DBAccessException("nested Exception");
+				a.initCause(e);
+				throw a;
 			}
-			
-			// 2. Permissions anpassen	
-			projectdataBean pdata = new projectdataBean(projectid,
-					_useruseradd, 
-					_userurledit,
-					_usercatedit,
-					_useraddurl,
-					_useraddcat,
-					_guestread,
-					_guesturledit,
-					_guestcatedit,
-					_guestaddurl,
-					_guestaddcat);
-
-			db.setProjectdata(conn, pdata);
-			projectdataBean pdb = db.getProjectDataToCat(conn, projectid);
-			SessionData.projectdata.put(pdb.getRootID(),pdb);
-			conn.close();
-			return (resp);
-		}
-		catch(SQLException e)
-		{
-			System.out.println("TeamFoundController : editPermission)"+e);
-            DBAccessException a = new DBAccessException("nested Exception");
-			a.initCause(e);
-			throw a;
-		}
-		catch(Exception e)
-		{
-			//TODO Exceptions richtig machen
- 			System.out.println("TeamFoundController : editPermission)"+e);
-			e.printStackTrace();
+			catch(Exception e)
+			{
+				//TODO Exceptions richtig machen
+				System.out.println("TeamFoundController : editPermission)"+e);
+				e.printStackTrace();
             IndexAccessException a = new IndexAccessException("nested Exception");
 			a.initCause(e);
 			throw a;

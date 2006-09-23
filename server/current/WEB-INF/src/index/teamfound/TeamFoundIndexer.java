@@ -63,9 +63,15 @@ public class TeamFoundIndexer implements Indexer {
 		//teamfound BasePfad erfragen und indexPfad bauen 
 		String path = TeamFoundConfig.getConfValue("tfpath");
 		indexpath = (path+"/index");
+	
+		String depth = TeamFoundConfig.getConfValue("framedepth");
+		if(depth != null)
+		{
+			crawler = new TeamFoundCrawler((new Integer(depth)).intValue());
+		}
+		else
+			crawler = new TeamFoundCrawler(3);
 
-		// TODO maximum frame fetch depth könnte in die properties ausgelagert werden
-		crawler = new TeamFoundCrawler(3);
 	}
 	
 	/**
