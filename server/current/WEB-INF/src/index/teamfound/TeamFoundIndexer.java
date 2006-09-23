@@ -486,11 +486,7 @@ public class TeamFoundIndexer implements Indexer {
 			String cats = new String();
 			java.util.Iterator allit = allcats.iterator();
 			Integer tmp;
-			while(allit.hasNext())
-			{
-				tmp = (Integer)allit.next();
-				cats = (cats + tmp.intValue() +" ");
-			}
+			cats = createCatString(allcats);
 			doc.add(new org.apache.lucene.document.Field("cats",cats,true,true,true));
 			addUrl(doc);
 
