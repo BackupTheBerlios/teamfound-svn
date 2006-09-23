@@ -113,6 +113,7 @@ public abstract class BaseServlet extends HttpServlet {
 		commands.put("adduser", new Integer(10));
 		commands.put("deluser", new Integer(11));
 		commands.put("getuser", new Integer(12));
+		commands.put("logout", new Integer(13));
 
 		// NOCH FEHLEN
 		//commands.put("removecategory", new Integer(x));
@@ -617,7 +618,17 @@ public abstract class BaseServlet extends HttpServlet {
 				projectid12 = Integer.parseInt(req.getParameter("projectid")); 
 
 			return ctrl.getUsersOfProject(projectid12,tfsession);
-			
+
+		case 13: // logout
+			if( tfsession != SessionData.guest)
+			{
+				HttpSession session = req.getSession(false);
+				session.invalidate();
+				SessionData.removeSession(tfsession.sessionkey);
+			}
+			r = new ErrorResponse();
+			r.serverReturnValue(0, "OK");
+			return r;
 		}
 		
 		r = new ErrorResponse();

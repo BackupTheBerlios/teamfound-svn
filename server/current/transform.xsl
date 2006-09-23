@@ -806,6 +806,17 @@
 </xsl:template>
 
 <xsl:template name="myprojects">
+	<p>
+		<form id="logout" action="tf" method="post">
+			<input type="submit" value="logout"/>
+			<input type="hidden" name="command" value="logout"/>
+			<input type="hidden" name="version">
+				<xsl:attribute name="value">
+					<xsl:value-of select="/response/server/interface-version"/>
+				</xsl:attribute>
+			</input> 
+		</form>
+	</p>
 	<xsl:call-template name="listmyprojects"/>
 	<p>
 	<h2>Register new Project:</h2>
@@ -815,7 +826,6 @@
 	<tr><td>Description:</td><td><input size="20" type="text" name="description" value=""/></td></tr>
 	<tr><td><input type="submit" value="Create Project"/></td></tr>
 	</table>
-		<input type="hidden" name="want" value="xml"/>
 		<input type="hidden" name="version">
 			<xsl:attribute name="value">
 				<xsl:value-of select="/response/server/interface-version"/>
