@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.io.IOException;
 import java.lang.InterruptedException;
 import java.util.Iterator;
+import java.util.Collection;
 
 import index.Parser.Html.HTMLParser;
 import index.crawler.teamfound.TeamFoundCrawler;
@@ -226,20 +227,13 @@ public class TeamFoundIndexer implements Indexer {
 		//Ok, der Parser liefert uns einen Reader der uns den Text ohne HTML Tags etc.
 		//liefert und dieser kann dann indexiert und suchbar gespeichert werden
 		doc.add(Field.Text("contents",parser.getReader()));
-	//	doc.add(Field.Text("contents",entry.getContent()));
-		
 		
 		//wir speichern die Zusammenfassung der Seite aber indexieren nicht
 		//kann nur zum anzeigen bei Suchergebnissen genutzt werden nicht durchsuchbar
 		doc.add(Field.UnIndexed("summary",parser.getSummary()));
 
 		//Title wird wieder indexiert damit er zusaetzlich durchsucht werden kann
-		String title = new String("no title extracted");
-		if(entry.getHeaders().get("TITLE") != null)
-			title = (String)entry.getHeaders().get("TITLE");
-		if(entry.getHeaders().get("title") != null)
-			title = (String)entry.getHeaders().get("title");
-		doc.add(Field.Text("title", title));
+		doc.add(Field.Text("title", parser.getTitle()));
 
 		//Kategorien: wir bauen erstmal einen String der die ids beinhaltet und 
 		//z.b. so aussieht "3 45 6 ..."
@@ -247,17 +241,24 @@ public class TeamFoundIndexer implements Indexer {
 		//Dann nehmen wir unseren eigen Analyser der bei dem Feld Cats automatisch
 		//den org.apache.lucene.analysis.WhitespaceTokenizer benutzt somit haben
 		//wir die ids schoen durchsuchbar gespeichert
-		String catstring  = new String();
-		Iterator it = cats.iterator();
-		while(it.hasNext())
-		{
-			catstring = (catstring + ((Integer)it.next()).toString() + " ");
-		}
+		String catstring  = createCatString(cats);
 		//Kategorien speicher indexieren und zwar als tokens
 		doc.add(new Field("cats",catstring,true,true,true));
 
 		return doc; 
 		
+	}
+
+	private String createCatString(Collection<Integer> cats)
+	{
+		String catstring= new String();
+		Iterator it = cats.iterator();
+		while(it.hasNext())
+		{
+			catstring = (catstring + ((Integer)it.next()).toString() + " ");
+		}
+		return catstring;
+
 	}
 
 
