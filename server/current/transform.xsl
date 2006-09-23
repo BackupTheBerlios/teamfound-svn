@@ -51,20 +51,18 @@
 					of 
 					<xsl:value-of select="/response/teamfound/search/result/count"/>
 					results shown:<br/>
-					<ul>
 						<xsl:for-each select="/response/teamfound/search/result/found">
-							<li>
+							<div id="searchblock"><br/>
 								<a>
 									<xsl:attribute name="href">
 										<xsl:value-of select="url"/>
 									</xsl:attribute>
 									<xsl:value-of select="title"/>
 								</a>
-								<br/>
-								<xsl:value-of select="url"/> (category <xsl:value-of select="incategory"/>)
-							</li>
+								<font id="searchresultsummary"><br/><xsl:value-of select="summary"/></font>
+								<font id="searchresultadress"><br/><xsl:value-of select="url"/></font>
+								</div>
 						</xsl:for-each>
-					</ul>
 				</p>
 			</xsl:if>
 			<xsl:if test="/response/xsltpassthrough = 'viewallsites'">
