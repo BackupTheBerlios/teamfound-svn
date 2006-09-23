@@ -256,7 +256,7 @@ public class TeamFoundController implements Controller {
 			// Antwort bauen
 			String[] keywords = new String[1];
 			keywords[0] = query;
-			resp = new SearchResponse(keywords);
+			resp = new SearchResponse(keywords,docvec.size());
 			resp.addSearchResults(docvec);
 	
 			conn.close();	
@@ -284,8 +284,8 @@ public class TeamFoundController implements Controller {
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 			
 			SearchResponse resp;
-			resp = new SearchResponse(null);
-			
+			resp = new SearchResponse(null,0);
+
 			//Userrechte ueberpruefen (seit Milestone 3)
 			for( int i = 0; i < category.length; i++)
 			{
@@ -307,17 +307,17 @@ public class TeamFoundController implements Controller {
 
 			if( query != null)
 			{
-				// Basis-Antwort bauen
-				//TODO keywords ?
-				String[] keywords = new String[1];
-				keywords[0] = query;
-				resp = new SearchResponse(keywords);
-			
+							
 				// 1. Im Index Suchen
 				Indexer tfindexer = new TeamFoundIndexer(indexSync);
 				//TODO -> count wird noch nicht uebergeben
 				Vector<Document> docvec = tfindexer.query(query, category , 50, offset ); 
-			
+				// Basis-Antwort bauen
+				//TODO keywords ?
+				String[] keywords = new String[1];
+				keywords[0] = query;
+				resp = new SearchResponse(keywords, docvec.size());
+
 				//2.Suchergebnisse in Antwort einbauen
 				resp.addSearchResults(docvec);
 			}
@@ -326,6 +326,7 @@ public class TeamFoundController implements Controller {
 				// getall = yes
 				// category[0] da nur fuer eine kat erlaubt
 				Vector<String> v = db.getAllUrlsInCategory(conn, category[0]); 
+				resp = new SearchResponse(null, v.size());
 				resp.addSimpleSearchResults(v, category[0]);
 			}
 		
