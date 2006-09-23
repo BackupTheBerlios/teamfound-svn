@@ -691,6 +691,30 @@ public class TeamFoundController implements Controller {
 		}
 		
 	}
+
+	/**
+	 * liefert Alle Urls die laut properties zu alt sind
+	 */
+	public List<URL>getOldURL() throws DBAccessException
+	{
+		try
+		{
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+			Date dat = new Date();
+			//Vector<urltabBean> = getOlderDocs(conn, date);
+			return null;
+		}
+		catch(Exception e)
+		{
+			//TODO Exceptions richtig machen
+ 			System.out.println("TeamFoundController : getOldURL)"+e);
+			DBAccessException dbe = new DBAccessException("TeamFoundController : addCategory)"+e);
+			dbe.initCause(e);
+			throw dbe;
+		}
+	}
+
 	
 	/**
 	 * Liest den Inhalt für das übergebene Dokument neu ein. Dabei werden die Kategorien des Dokuments nicht verändert
