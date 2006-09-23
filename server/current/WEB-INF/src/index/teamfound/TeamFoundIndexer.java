@@ -12,6 +12,7 @@ import java.lang.InterruptedException;
 import java.util.Iterator;
 
 import index.Parser.Html.HTMLParser;
+import index.crawler.teamfound.TeamFoundCrawler;
 
 import controller.IndexAccessException;
 
@@ -36,7 +37,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.index.TermDocs;
 
 /**
- * Implementation Indexer nach Milestone2-Spezifikation
+ * Implementation Indexer nach Milestone3-Spezifikation
  * 
  * Der Indexer übernimmt die low-level Arbeiten direkt am Index, er kümmert sich
  * weder um Datenbank noch um Download der Daten
@@ -53,6 +54,7 @@ public class TeamFoundIndexer implements Indexer {
 	//der Indexer braucht zugang zur Konfiguration damit er den Index findet
 	private ReadWriteSync indexsync; 
 	private String indexpath;
+    protected TeamFoundCrawler crawler;
 
 	public TeamFoundIndexer(ReadWriteSync s )
 	{
@@ -60,6 +62,9 @@ public class TeamFoundIndexer implements Indexer {
 		//teamfound BasePfad erfragen und indexPfad bauen 
 		String path = TeamFoundConfig.getConfValue("tfpath");
 		indexpath = (path+"/index");
+
+		// TODO maximum frame fetch depth könnte in die properties ausgelagert werden
+		crawler = new TeamFoundCrawler(3);
 	}
 	
 	/**
@@ -82,7 +87,8 @@ public class TeamFoundIndexer implements Indexer {
 	}
 	
 	/**
-	 * Fügt einen neuen Eintrag in den Index eina
+	 * Fügt einen neuen Eintrag in den Index ein
+	 *
 	 * Diese Funktion geht davon aus, dass der Eintrag ncoh nicht existiert
 	 * Sollte er existieren wuerde es doppelte Eintraege geben!
 	 * 
@@ -132,7 +138,11 @@ public class TeamFoundIndexer implements Indexer {
 		}
 	}
 	/**
-	 * Fügt einen neuen Eintrag in den Index eina
+	 * Fügt einen neuen Eintrag in den Index ein.
+	 * 1. Die URL heruntergeladen ueber den Crawler
+	 * 2. Das Lucene Dokument wird erstellt
+	 * 3. Das Dokument wird dem Index hinzugefuegt
+	 *
 	 * Diese Funktion geht davon aus, dass der Eintrag ncoh nicht existiert
 	 * Sollte er existieren wuerde es doppelte Eintraege geben!
 	 * 
@@ -140,10 +150,12 @@ public class TeamFoundIndexer implements Indexer {
 	 * @param adress Die URL, die zu diesem Dokument führt
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Exceptions einpacken
 	 */
-	public void addUrl(NewIndexEntry entry, URL adress, Vector<Integer> cats) throws IndexAccessException
+	public void addUrl(URL adress , Vector<Integer> cats) throws IndexAccessException
 	{
 		try
 		{
+			NewIndexEntry entry = crawler.fetch(adress);
+			
 			//schreibewunsch anmelden
 			indexsync.doWrite();
 			

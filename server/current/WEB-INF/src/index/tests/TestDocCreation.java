@@ -2,7 +2,7 @@
  * tests the creation of an IndexEntry and the 
  * getdocument() method
  */
-
+/*
 
 package index.tests;
 
@@ -42,3 +42,4 @@ public class TestDocCreation
 	}
 
 }
+*/

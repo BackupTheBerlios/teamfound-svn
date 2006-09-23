@@ -14,17 +14,9 @@ import org.apache.lucene.document.Document;
  * Ein neuer Index-Eintrag muss die Datei in welcher der Inhalt, die url von welcher die Datei stammt sowie eine Hashmap mit http-headern zur Verfügung stellen
  * @author Jonas Heese <dev-teamfound@jonasheese.de>
  *
- * Martin Klink
- * zusaetzlich eine Methode um ein LuceneDocument zu erstellen
  *
  */
 public interface NewIndexEntry {
-	/**
-	 * Liefert die temporäre Datei
-	 * @deprecated
-	 * @return
-	 */
-	public File getFile();
 	
 	
 	/**
@@ -45,14 +37,4 @@ public interface NewIndexEntry {
 	 */
 	public Map getHeaders();
 	
-	/**
-	 * Erzeugt ein Lucene Dokument,dass dem Index hinzugefuegt werden kann.
-	 * @return Returns an org.apache.lucene.document.Document 
-	 */
-	public Document getdocument()  throws IOException, InterruptedException;
-	
-	/**
-	 * Liefert die Kategorien als Array
-	 **/
-	public int[] getCategories();
 }

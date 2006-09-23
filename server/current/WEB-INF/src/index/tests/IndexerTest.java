@@ -75,23 +75,23 @@ public class IndexerTest
 //			System.out.println("Doc in Index:");
 	
 			//erstmal ein Entry anlegen
-			String url = new String("http://www.Inhalt.htm");
+/*			String url = new String("http://www.Inhalt.htm");
 			File f = new File("/home/moddin/testseiten/Inhalt.htm");
 			Map headers = new java.util.HashMap();
 			int[] id = new int[2];
 			id[0] = 0;
 			id[1] = 2;
 			SimpleNewIndexEntry tentry = new SimpleNewIndexEntry(new URL(url),f,headers,id);
-	
+*/	
 			//erstmal ein Entry anlegen
-			String url2 = new String("http://www.Regeln.de");
+/*			String url2 = new String("http://www.Regeln.de");
 			File f2 = new File("/home/moddin/testseiten/Regel.htm");
 			int[] id2 = new int[3];
 			id2[0] = 0;
 			id2[1] = 1;
 			id2[2] = 6;
 			SimpleNewIndexEntry tentry2 = new SimpleNewIndexEntry(new URL(url2),f2,headers,id2);
-		
+*/		
 
 /*			URL u1 = new URL("http://www.irgentwas.de");
 			

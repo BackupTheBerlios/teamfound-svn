@@ -28,7 +28,7 @@ public interface Controller {
 	 * @param url die hinzuzufuegende Url
 	 * @param category[] die Kategorien in die die URL gehoert (eigentlich mindestens die root Kategorie des Projekts ... normalerweise 0
 	 */
-	public AddPageResponse addToIndex(String url, int category[], SessionData tfsession) throws DownloadFailedException, IndexAccessException ;
+	public AddPageResponse addToIndex(String url, int category[], SessionData tfsession) throws DownloadFailedException, IndexAccessException, DBAccessException ;
 	
 	/**
 	 * Nach einer Query im Index suchen

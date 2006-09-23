@@ -33,7 +33,7 @@ public interface Indexer {
 	 * @param Vector alle Kategorien
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Exceptions einpacken
 	 */
-	public void addUrl(NewIndexEntry entry, URL adress, Vector<Integer> cats ) throws IndexAccessException;
+	public void addUrl(URL adress, Vector<Integer> cats ) throws IndexAccessException;
 	
 	/**
 	 * Eine Query auf dem Index ausführen
@@ -71,7 +71,7 @@ public interface Indexer {
 	 * @param document Das ENtry-Objekt welches eingefügt werden soll
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Exceptions einpacken
 	 */
-	public void addUrl(Document doc) throws IndexAccessException;
+	@Deprecated public void addUrl(Document doc) throws IndexAccessException;
 
 	/**
 	 * neuen Index erstellen

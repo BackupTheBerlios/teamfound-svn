@@ -5,7 +5,6 @@ package controller.teamfound;
 
 import index.NewIndexEntry;
 import index.Indexer;
-import index.crawler.teamfound.TeamFoundCrawler;
 import index.teamfound.TeamFoundIndexer;
 
 import java.net.MalformedURLException;
@@ -24,7 +23,6 @@ import java.util.Map;
 import java.util.Date;
 
 import config.teamfound.TeamFoundConfig;
-import controller.Download;
 import controller.DownloadFailedException;
 import controller.IndexAccessException;
 import controller.DBAccessException;
@@ -52,15 +50,12 @@ public class TeamFoundController implements Controller {
 	public static ReadWriteSync indexSync;
 	private DBLayer db;
 	protected Logger log;
-	protected TeamFoundCrawler crawler;
 	
 	public TeamFoundController() 
 	{
 		indexSync = new ReadWriteSync();
 
 		log = Logger.getLogger("tf-ctrl");
-		// TODO maximum frame fetch depth könnte in die properties ausgelagert werden
-		crawler = new TeamFoundCrawler(3);
 
 		db = new DBLayerHSQL();
 		
@@ -89,7 +84,7 @@ public class TeamFoundController implements Controller {
 	 * @param category[] die Kategorien in die die URL gehoert (eigentlich mindestens die root Kategorie des Projekts ... normalerweise 0
 	 * 
 	 */
-	public AddPageResponse addToIndex(String url, int category[], SessionData tfsession) throws DownloadFailedException, IndexAccessException {
+	public AddPageResponse addToIndex(String url, int category[], SessionData tfsession) throws DownloadFailedException, IndexAccessException, DBAccessException {
 	
 
 		URL adress = null;
@@ -131,7 +126,7 @@ public class TeamFoundController implements Controller {
 			urltabBean urlbean = db.getUrl(conn,adress.toString());
 			if(urlbean != null)
 			{
-				System.out.println("habe Url schon indiziert!");
+				//System.out.println("habe Url schon indiziert!");
 				Vector<Integer> oldcats = db.getCatsOfUrl(conn,urlbean.getID());
 				
 				if(oldcats.containsAll(newcatstoadd))
@@ -143,7 +138,7 @@ public class TeamFoundController implements Controller {
 				else
 				{
 					//muessen nur Kategorien hinzufuegen
-					System.out.println("Neue Categorys zu der URL hinzutun");
+					//System.out.println("Neue Categorys zu der URL hinzutun");
 					HashSet<Integer> allcats = new HashSet<Integer>();
 					allcats.addAll(oldcats);
 					allcats.addAll(newcatstoadd);
@@ -170,23 +165,17 @@ public class TeamFoundController implements Controller {
 			}
 	
 			/*Url muss heruntergeladen und neu Indiziert werden*/
-			//System.out.println("habe Url noch nicht indiziert!");
 			
-			NewIndexEntry entry = crawler.fetch(adress); 
-			//loader.downloadFile(adress, categ);
-		
-			// 2. Indexieren
-			System.out.println("2. Url in den Index!");
-			tfindexer.addUrl(entry,adress, newcatstoadd);
+			// 1.Herunterladen und  Indizieren
+			//System.out.println("2. Url in den Index!");
+			tfindexer.addUrl(adress, newcatstoadd);
 
 			// 3. Datenbank aktualisieren
-
-			System.out.println("3. Url in die DB!");
+			//System.out.println("3. Url in die DB!");
 			urltabBean ub = new urltabBean(adress.toString());			
 			categoryBean catbean = new categoryBean();
 			catbean.setID(new Integer(category[0]));
 			urltabBean ubean = db.addUrl(conn, ub, catbean);
-			
 			//so category[0] ist drinn nun fehlen noch die anderen
 			for(int h = 1; h<category.length; h++)
 			{
@@ -200,15 +189,19 @@ public class TeamFoundController implements Controller {
 			db.shutdown("anyserver","tfdb");
 			return(resp);
 		}
+		catch(SQLException sqle)
+		{
+ 			System.out.println("TeamFoundController : AddToIndex"+sqle);
+            DBAccessException a = new DBAccessException("nested Exception");
+			a.initCause(sqle);
+			throw a;
+		}
 		catch(Exception e)
 		{
-			//TODO Exceptions richtig machen
  			System.out.println("TeamFoundController : AddToIndex"+e);
             IndexAccessException a = new IndexAccessException("nested Exception");
 			a.initCause(e);
 			throw a;
-									 
-
 		}
 	}
 
