@@ -526,7 +526,8 @@
 						?pt=search&amp;command=getcategories&amp;projectid=<xsl:value-of select="id"/>&amp;pt2=<xsl:value-of select="id"/>&amp;version=<xsl:value-of select="/response/server/interface-version"/>
 					</xsl:attribute>
 					<xsl:value-of select="name"/> 
-				</a>
+				</a>  
+				<font size="-1"> (#<xsl:value-of select="id"/>)</font>
 				- <xsl:value-of select="description"/>
 			</li>
 		</xsl:for-each>
