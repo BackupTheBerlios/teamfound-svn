@@ -135,9 +135,15 @@
 		</xsl:if>
 		<xsl:if test="count(/response/teamfound/adduser) > 0">
 			<p>
-				Add user '<xsl:value-of select="/response/teamfound/adduser/user"/>' with role <xsl:value-of select="/response/teamfound/adduser/role"/> to projekt <xsl:value-of select="/response/teamfound/adduser/projectid"/>: <xsl:value-of select="/response/teamfound/return-description"/>
+				Add user '<xsl:value-of select="/response/teamfound/adduser/user"/>' with role <xsl:value-of select="/response/teamfound/adduser/role"/> to project <xsl:value-of select="/response/teamfound/adduser/projectid"/>: <xsl:value-of select="/response/teamfound/return-description"/>
 			</p>
 		</xsl:if>
+		<xsl:if test="count(/response/teamfound/deluser) > 0">
+			<p>
+				Remove user '<xsl:value-of select="/response/teamfound/deluser/user"/>' from project <xsl:value-of select="/response/teamfound/deluser/projectid"/>: <xsl:value-of select="/response/teamfound/return-description"/>
+			</p>
+		</xsl:if>
+
 
 	</xsl:if>
 </xsl:template>
@@ -677,7 +683,7 @@
 				</li>
 			</xsl:for-each>
 		</ul>
-	<h2>Add user</h2>
+	<h2>Add user to project</h2>
 	<p>
 	<form id="adduser" action="tf" method="post">
 		Username to add: <input type="text" size="20" name="user"/>
@@ -707,6 +713,32 @@
 		<input type="submit" value="add user"/>
 	</form>
 	</p>
+	<h2>Remove user from project</h2>
+	<p>
+	<form id="removeuser" action="tf" method="post">
+		Username to remove: <input type="text" size="20" name="user"/>
+		<br/>
+		<input type="hidden" name="version">
+			<xsl:attribute name="value">
+				<xsl:value-of select="/response/server/interface-version"/>
+			</xsl:attribute>
+		</input> 
+		<input type="hidden" name="pt2">
+			<xsl:attribute name="value">
+				<xsl:value-of select="/response/xsltpassthrough2"/>
+			</xsl:attribute>
+		</input>
+		<input type="hidden" name="projectid">
+			<xsl:attribute name="value">
+				<xsl:value-of select="/response/xsltpassthrough2"/>
+			</xsl:attribute>
+		</input>
+
+		<input type="hidden" name="command" value="deluser"/>
+		<input type="submit" value="remove user"/>
+	</form>
+	</p>
+
 
 
 </xsl:template>

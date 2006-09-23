@@ -2346,7 +2346,7 @@ public class DBLayerHSQL implements DBLayer
 	{
 
 		PreparedStatement pst = null;
-		pst = conn.prepareStatement("REMOVE FROM tfusertoproject WHERE userid=? AND rootid=?");   
+		pst = conn.prepareStatement("delete FROM tfusertoproject WHERE userid=? AND rootid=?");   
 			pst.setInt(1, userid.intValue());
 			pst.setInt(2, rootid.intValue());
 
@@ -2359,7 +2359,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 
 			//TODO LoggMessage statt print
-			System.out.println("addUserToProject: "+ e);
+			System.out.println("removeUserFromProject: "+ e);
 			throw(e);
 		}
 

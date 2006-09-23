@@ -113,6 +113,11 @@ public abstract class BaseServlet extends HttpServlet {
 		commands.put("adduser", new Integer(10));
 		commands.put("deluser", new Integer(11));
 		commands.put("getuser", new Integer(12));
+
+		// NOCH FEHLEN
+		//commands.put("removecategory", new Integer(x));
+		//commands.put("removepage", new Integer(x));
+
 		
 		servletLog.info("Servlet ini done");
 	}
@@ -576,6 +581,28 @@ public abstract class BaseServlet extends HttpServlet {
 				return ctrl.grantProjectAdmin(username,projectid,tfsession);
 
 		case 11: // deluser
+			String username11 = null;
+			Integer projectid11;
+
+			if(!params.containsKey("user")) 
+			{ 
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'user'");
+				return r;
+			}
+			else
+				username11 = req.getParameter("user"); 
+			
+			if(!params.containsKey("projectid")) 
+			{
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'projectid'");
+				return r;
+			}
+			else
+				projectid11 = Integer.parseInt(req.getParameter("projectid")); 
+
+			return ctrl.removeUserFromProject(username11,projectid11,tfsession);
 
 		case 12: // getuser
 			Integer projectid12;
