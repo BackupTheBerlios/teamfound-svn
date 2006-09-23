@@ -15,7 +15,6 @@ public class urltabBean implements Serializable
 	private String url;
 	private Date datum;
 	private Integer rating;
-	private Integer originalcat;
 
 	public urltabBean()
 	{};
@@ -24,12 +23,11 @@ public class urltabBean implements Serializable
 	{
 		url = neurl;
 	}
-	public urltabBean(String neurl,Date dat,Integer neid, Integer originalcat)
+	public urltabBean(String neurl,Date dat,Integer neid)
 	{
 		url = neurl;
 		datum = dat;
 		id = neid;
-		
 	}
 	
 	public String getUrl()
@@ -58,15 +56,6 @@ public class urltabBean implements Serializable
 	{
 		id=neid;
 	}
-	public Integer getOriginalCat()
-	{
-		return(originalcat);
-	}
-	public void setOriginalCat(Integer orgcat)
-	{
-		originalcat=orgcat;
-	}
-
 	public void printAll()
 	{
 		System.out.println("ID:"+id+" URL:"+url+" Datum:"+datum.getTime());
