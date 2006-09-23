@@ -506,8 +506,9 @@ var TeamFound =
 					for( var i = 0; i < tf_found.length; i++)
 					{
 						var tf_res_url = tf_found[i].getElementsByTagName("url")[0].firstChild.nodeValue;
+						var tf_res_summary = tf_found[i].getElementsByTagName("summary")[0].firstChild.nodeValue;
 						var tf_res_title = tf_found[i].getElementsByTagName("title")[0].firstChild.nodeValue;
-						tf_html += '<a href="' + tf_res_url + '">' + tf_res_title + '</a><br><font size="-1" color="#008000">' + tf_res_url + '</font><br><br>';
+						tf_html += '<a href="' + tf_res_url + '">' + tf_res_title +  '</a><br>' + tf_res_summary + '<font size="-1" color="#008000">' + '<br>' + tf_res_url + '</font><br><br>';
 					}
 					tfrone.innerHTML = tf_html;
 					
