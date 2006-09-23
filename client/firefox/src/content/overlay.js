@@ -1,6 +1,6 @@
 /*
 *	TeamFound, sharing your search results
-*	Copyright (C) 2005 Jan Kechel
+*	Copyright (C) 2005-2006 Jan Kechel (jan@kechel.de)
 *
 *	This program is free software; you can redistribute it and/or
 *	modify it under the terms of the GNU General Public License
@@ -68,7 +68,7 @@ var TeamFound =
 		var pref_serverurl = prefs.getCharPref("settings.serverurl");
 
 		// Milestone 2 request: getcategories
-		var command = "?want=xml&version=2&command=getcategories";
+		var command = "&version=3&command=getcategories";
 
 		// Request erstellen (globale variable)
 		xmlhttpcat = new XMLHttpRequest();
@@ -106,8 +106,6 @@ var TeamFound =
 					return;
 				}
 
-				// -------- SPECIAL MODDIN ---------
-
 				// Server-Name anzeigen
 				//catmenu.setAttribute("label", xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue);
 
@@ -117,23 +115,25 @@ var TeamFound =
 
 				//TeamFound.addCategory(xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes, catpopup, xmlhttpcat.responseXML.getElementsByTagName("server")[0].getElementsByTagName("name")[0].firstChild.nodeValue, 0);
 
-				var firstcategory = xmlhttpcat.responseXML.getElementsByTagName("getcategories")[0].childNodes;
+				var xmlteamfound = xmlhttpcat.responseXML.getElementsByTagName("teamfound")[0];
+				var xmlgetcagegories = xmlteamfound.getElementsByTagName("getcategories")[0];
+				var firstcategory = xmlgetcagegories.childNodes;
 
 				var m_catname = firstcategory.item(1).getElementsByTagName("name")[0].firstChild.nodeValue;
+				tf_default_category = firstcategory.item(1).getElementsByTagName("id")[0].firstChild.nodeValue;
 				catmenu.setAttribute("label", m_catname);
 
 				var childnodes = firstcategory;
 
 				if( childnodes.item(1).getElementsByTagName("subcategories")[0])
 				{	// more subcategories exist
-					TeamFound.addCategory( childnodes.item(1).getElementsByTagName("subcategories")[0].childNodes, catpopup, childnodes.item(1).getElementsByTagName("name")[0].firstChild.nodeValue, 0);
+					TeamFound.addCategory( childnodes.item(1).getElementsByTagName("subcategories")[0].childNodes, catpopup, childnodes.item(1).getElementsByTagName("name")[0].firstChild.nodeValue, childnodes.item(1).getElementsByTagName("id")[0].firstChild.nodeValue);
 				}
 				else
 				{	// no more subcategories
-					TeamFound.addCategory( false, catpopup, childnodes.item(1).getElementsByTagName("name")[0].firstChild.nodeValue, 0);
+					TeamFound.addCategory( false, catpopup, childnodes.item(1).getElementsByTagName("name")[0].firstChild.nodeValue, childnodes.item(1).getElementsByTagName("id")[0].firstChild.nodeValue);
 				}
 
-				// ------------ END MODDIN --------
 			}
 			else
 			{
@@ -248,7 +248,7 @@ var TeamFound =
 			category = tf_default_category;
 		}
 		// TeamFound Suche
-		var teamfoundurl = pref_serverurl + "?command=search&want=xml&version=2&keyword=" + searchwithand + "&category=" + category;
+		var teamfoundurl = pref_serverurl + "&command=search&version=3&keyword=" + searchwithand + "&category=" + category;
 
 		//alert(teamfoundurl);
 
@@ -303,7 +303,7 @@ var TeamFound =
 		}
 
 		// server-adresse zum hinzufuegen neuer seiten
-		var url = pref_serverurl + "?command=addpage&want=xml&version=2&url=" + addpageurl + "&category=" + category;
+		var url = pref_serverurl + "&command=addpage&version=3&url=" + addpageurl + "&category=" + category;
 		//alert(url);
 
 		// Request erstellen (globale variable)
@@ -486,7 +486,7 @@ var TeamFound =
 				{
 					//tfrone.innerHTML = xmlhttptf.responseText;
 					// let's analize the xml
-					var tf_found = xmlhttptf.responseXML.getElementsByTagName("search")[0].getElementsByTagName("result")[0].getElementsByTagName("found");
+					var tf_found = xmlhttptf.responseXML.getElementsByTagName("teamfound")[0].getElementsByTagName("search")[0].getElementsByTagName("result")[0].getElementsByTagName("found");
 					//alert(tf_found.length);
 					var tf_html = "";
 					if( !tf_found)
