@@ -445,5 +445,6 @@ public interface DBLayer
 
 	public Boolean removePage(Connection conn, Integer category, String url) throws SQLException;
 	public Boolean deleteIndexedUrl(Connection conn, String url) throws SQLException;
+	public Vector<Integer> getCatsWithUrlInProject(Connection conn, String url, Integer projectid) throws SQLException;
 
 }

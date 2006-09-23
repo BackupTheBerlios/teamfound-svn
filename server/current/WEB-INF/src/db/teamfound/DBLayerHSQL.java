@@ -2464,5 +2464,34 @@ public class DBLayerHSQL implements DBLayer
 
 	}
 
+	/**
+	 * alle kategorien des projekts mit der uebergebenen url zurueckgeben
+	 * @param url
+	 * @param projectid 
+	 * @return Vektor<Integer> der gefunden kategorien (distinct)
+	 */ 
+	public Vector<Integer> getCatsWithUrlInProject(Connection conn, String url, Integer projectid) throws SQLException
+	{
+		PreparedStatement check = conn.prepareStatement("select distinct u.originalcat from urltocategory as u, category as c, indexedurls as i where c.root_id = ? and c.id = u.category and u.url = i.id and i.url = ?");
+		check.setInt(1, projectid);
+		check.setString(2, url);
 
+		try
+		{
+			ResultSet r = check.executeQuery();	
+			Vector<Integer> v = new Vector<Integer>();
+			while(r.next())
+			{
+				v.add(r.getInt(1));
+			}
+			return v;
+
+		}
+		catch(SQLException e)
+		{
+			//TODO LoggMessage statt print
+			System.out.println("getCatsWithUrlInProject: "+ e);
+			throw(e);
+		}
+	}
 }

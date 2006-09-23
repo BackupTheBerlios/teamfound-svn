@@ -664,7 +664,7 @@ public abstract class BaseServlet extends HttpServlet {
 						return r;
 					} else 
 					{
-						proj14 = Integer.parseInt(req.getParameter("url"));
+						proj14 = Integer.parseInt(req.getParameter("projectid"));
 					}
 				}
 			}			

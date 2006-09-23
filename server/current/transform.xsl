@@ -85,7 +85,7 @@
 								</a> / 
 								<a>
 									<xsl:attribute name="href">
-									?pt=nyi
+									?command=removepage&amp;category=all&amp;projectid=<xsl:value-of select="/response/xsltpassthrough2"/>&amp;url=<xsl:value-of select="url"/>&amp;version=3
 									</xsl:attribute>
 									delete from project
 								</a> )

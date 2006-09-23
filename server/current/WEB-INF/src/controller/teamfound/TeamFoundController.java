@@ -1209,6 +1209,40 @@ public class TeamFoundController implements Controller {
 	}
 
 	/**
+	 * private funktion, wird von public removePage benutzt
+	 */
+	private boolean removePageFromCategory(Connection conn, Integer cat, Integer projectid, String url) throws SQLException, IndexAccessException
+	{
+			// urltabBean auslesen
+			urltabBean urlbean = db.getUrl(conn, url);
+			if( urlbean == null)
+			{	return false;
+			}
+
+			// datenbank eintrag loeschen
+			db.removePage(conn, cat, url);
+
+			// index
+			Indexer tfindexer = new TeamFoundIndexer(indexSync);
+			// 1. schaue ob andere urltocategory diese url noch haben
+			Vector<Integer> remainingcatlist = db.getCatsOfUrl(conn, urlbean.getID());
+			// 2. NEIN -> ok, deleteDoc + delete indexedurls-eintrag
+			if( remainingcatlist.size() == 0)
+			{	tfindexer.delDoc(url);
+				db.deleteIndexedUrl(conn, url);
+			}
+			else
+			{
+			// 3. JA -> erstelle neue kat-liste aus allen noch in urltocategory enthaltenen eintraegen
+			//       -> tfindexer.updateCategory mit neuer categorie-liste
+				tfindexer.updateCategory(url, remainingcatlist);
+			}
+
+			conn.commit();
+			return true;	
+	}
+
+	/**
 	 * Seite loeschen
 	 *
 	 * @param String url
@@ -1225,7 +1259,27 @@ public class TeamFoundController implements Controller {
 
 			if( category.equals("all"))
 			{	// aus gesamtem projekt loeschen
-				return null;
+				// TODO checkAuthorisation
+				if(!checkAuthorisation.checkEditUrl(tfsession, projectid))
+				{
+					ErrorResponse re = new ErrorResponse();
+					re.tfReturnValue(new Integer(9));
+					return re;
+				}
+
+				// hole alle kategorien aus diesem projekt in denen diese url enthalten ist
+				Vector<Integer> allcats = db.getCatsWithUrlInProject(conn, url, projectid);
+				Iterator catsit = allcats.iterator();
+				while(catsit.hasNext())
+				{
+					Integer curcat = (Integer)catsit.next();
+					removePageFromCategory(conn, curcat, projectid, url);
+				}
+				// TODO: normale response basteln
+				ErrorResponse re = new ErrorResponse();
+				re.tfReturnValue(new Integer(0));
+				return re;
+
 			}
 			else
 			{	// aus uebergebener kategorie loeschen
@@ -1240,7 +1294,6 @@ public class TeamFoundController implements Controller {
 						return re;
 					}
 
-					// TODO checkAuthorisation
 					if(!checkAuthorisation.checkEditUrl(tfsession, catbean.getRootID()))
 					{
 						ErrorResponse re = new ErrorResponse();
@@ -1248,39 +1301,18 @@ public class TeamFoundController implements Controller {
 						return re;
 					}
 
-					// urltabBean auslesen
-					urltabBean urlbean = db.getUrl(conn, url);
-					if( urlbean == null)
-					{	ErrorResponse re = new ErrorResponse();
+					if(!removePageFromCategory(conn, cat, catbean.getRootID(), url))
+					{
+						ErrorResponse re = new ErrorResponse();
 						re.tfReturnValue(new Integer(1)); // url nicht gefunden
 						return re;
 					}
 
-
-					// datenbank eintrag loeschen
-					db.removePage(conn, cat, url);
-
-					// index
-					Indexer tfindexer = new TeamFoundIndexer(indexSync);
-					// 1. schaue ob andere urltocategory diese url noch haben
-					Vector<Integer> remainingcatlist = db.getCatsOfUrl(conn, urlbean.getID());
-					// 2. NEIN -> ok, deleteDoc + delete indexedurls-eintrag
-					if( remainingcatlist.size() == 0)
-					{	tfindexer.delDoc(url);
-						db.deleteIndexedUrl(conn, url);
-					}
-					else
-					{
-					// 3. JA -> erstelle neue kat-liste aus allen noch in urltocategory enthaltenen eintraegen
-					//       -> tfindexer.updateCategory mit neuer categorie-liste
-						tfindexer.updateCategory(url, remainingcatlist);
-					}
-
-					conn.commit();
 					// TODO: normale response basteln
 					ErrorResponse re = new ErrorResponse();
 					re.tfReturnValue(new Integer(0));
 					return re;
+
 				}
 				catch(NumberFormatException nfe)
 				{
