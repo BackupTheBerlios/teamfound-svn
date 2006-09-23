@@ -19,5 +19,5 @@ h3 { font-size: 14px; padding-top:5px; color:#333366;}
 
 #searchresultadress { color:#00AA00; font-size:12px; }
 #searchresultsummary{ color:#555555; font-size:12px; }
-#searchblock { line-height:0.9em;}
+#searchblock { line-height:0.9em; max-width:600px; }
 
