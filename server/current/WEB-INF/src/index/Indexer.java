@@ -63,15 +63,6 @@ public interface Indexer {
 	//TODO 
 	//public Vector<Document> delCat(int id) throws IndexAccessException;
 	
-	/**
-	 * Fügt einen neuen Eintrag in den Index eina
-	 * Diese Funktion geht davon aus, dass der Eintrag ncoh nicht existiert
-	 * Sollte er existieren wuerde es doppelte Eintraege geben!
-	 * 
-	 * @param document Das ENtry-Objekt welches eingefügt werden soll
-	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Exceptions einpacken
-	 */
-	@Deprecated public void addUrl(Document doc) throws IndexAccessException;
 
 	/**
 	 * neuen Index erstellen
@@ -89,5 +80,16 @@ public interface Indexer {
 	 * @param url Die url des zu ersetzenden Documents
 	 */
 	public void updateCategory(String url,Collection<Integer> allcats) throws IndexAccessException;
-		
+
+	
+	/**
+	 *	Bei einem Dokument den Inhalt erneuern.
+	 *	1. Dokument aus Index entfernen und Kategorien rausziehen
+	 *	2. ueber Crawler neu runterladen
+	 *	3. Neues Dokument erstellen
+	 *	4. Neues Dokument dem Index wieder hinzufuegen
+	 * @param URL Die url des zu ersetzenden Documents
+	 *
+	 */
+	public void updateContent(URL adress) throws IndexAccessException;
 }

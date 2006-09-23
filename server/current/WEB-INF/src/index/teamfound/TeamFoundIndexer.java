@@ -96,7 +96,7 @@ public class TeamFoundIndexer implements Indexer {
 	 * @param document Das ENtry-Objekt welches eingefügt werden soll
 	 * @throws IndexAccessException Bei Zugriffsfehlern auf den Index, kann andere Exceptions einpacken
 	 */
-	public void addUrl(Document doc) throws IndexAccessException
+	private void addUrl(Document doc) throws IndexAccessException
 	{
 		try
 		{
@@ -161,7 +161,7 @@ public class TeamFoundIndexer implements Indexer {
 			indexsync.doWrite();
 			
 			//Dokument erstellen und in den Index schreiben
-			Document doc = getdocument(entry, cats);
+			Document doc = getdocument(entry, createCatString(cats));
 			
 			IndexWriter writer = new IndexWriter(indexpath, new TeamFoundAnalyzer(), false);
 			writer.addDocument(doc);
@@ -203,7 +203,7 @@ public class TeamFoundIndexer implements Indexer {
 	 * Erzeugt ein Lucene Dokument,dass wir dann dem Index inzufuegen koennen.
 	 * @return Returns an org.apache.lucene.document.Document 
 	 */
-	private Document getdocument(NewIndexEntry entry, Vector<Integer> cats)  throws IOException, InterruptedException		
+	private Document getdocument(NewIndexEntry entry, String cats)  throws IOException, InterruptedException		
 	{
 		Document doc = new Document();
 
@@ -231,14 +231,18 @@ public class TeamFoundIndexer implements Indexer {
 		//Dann nehmen wir unseren eigen Analyser der bei dem Feld Cats automatisch
 		//den org.apache.lucene.analysis.WhitespaceTokenizer benutzt somit haben
 		//wir die ids schoen durchsuchbar gespeichert
-		String catstring  = createCatString(cats);
+		
 		//Kategorien speicher indexieren und zwar als tokens
-		doc.add(new Field("cats",catstring,true,true,true));
+		doc.add(new Field("cats",cats,true,true,true));
 
 		return doc; 
 		
 	}
 
+	/**
+	 * String mit Kategorien fuer Index erzeugen
+	 *
+	 */
 	private String createCatString(Collection<Integer> cats)
 	{
 		String catstring= new String();
@@ -464,7 +468,7 @@ public class TeamFoundIndexer implements Indexer {
 	
 	/**
 	 *	Bei einem Dokument das Feld Category updaten 
-	 * @param url Die url des zu ersetzenden Documents
+	 * @param String Die url des zu ersetzenden Documents
 	 */
 	public void updateCategory(String url,Collection<Integer> allcats) throws IndexAccessException
 	{
@@ -473,14 +477,45 @@ public class TeamFoundIndexer implements Indexer {
 			doc.removeField("cats");
 				
 			//2.Doc neu adden mit allen sich ergebenden Kats
-			String cats = new String();
-			java.util.Iterator allit = allcats.iterator();
-			Integer tmp;
-			cats = createCatString(allcats);
+			String cats = createCatString(allcats);
 			doc.add(new org.apache.lucene.document.Field("cats",cats,true,true,true));
 			addUrl(doc);
 
 	}
 	
+	/**
+	 *	Bei einem Dokument den Inhalt erneuern.
+	 *	1. Dokument aus Index entfernen und Kategorien rausziehen
+	 *	2. ueber Crawler neu runterladen
+	 *	3. Neues Dokument erstellen
+	 *	4. Neues Dokument dem Index wieder hinzufuegen
+	 * @param URL Die url des zu ersetzenden Documents
+	 *
+	 */
+	public void updateContent(URL adress) throws IndexAccessException
+	{
+		try
+		{
+			//1.
+			Document olddoc = delDoc(adress.toString());
+			String cats = olddoc.get("cats");
+			
+			//2.
+			NewIndexEntry entry = crawler.fetch(adress);
+
+			//3.
+			Document newdoc = getdocument(entry,cats);
+			
+			//4.
+			addUrl(newdoc);
+		}
+		catch(Exception e)
+		{
+			System.out.println("TeamFoundIndexer : updateContent"+ e);
+			IndexAccessException a = new IndexAccessException("nested Exception");
+			a.initCause(e);
+			throw a;
+		}
+	}
 	
 }
