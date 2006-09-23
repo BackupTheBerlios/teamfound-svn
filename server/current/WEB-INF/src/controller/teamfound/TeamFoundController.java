@@ -1192,5 +1192,97 @@ public class TeamFoundController implements Controller {
 
 		}
 	}
+
+	/**
+	 * Seite loeschen
+	 *
+	 * @param String url
+	 * @param Integer category
+	 * @return Response
+	 */
+	public Response removePage(String url, String category, Integer projectid, SessionData tfsession) throws DBAccessException 
+	{	
+		try
+		{
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+			conn.setSavepoint("removepage");
+
+			if( category.equals("all"))
+			{	// aus gesamtem projekt loeschen
+				return null;
+			}
+			else
+			{	// aus uebergebener kategorie loeschen
+				try
+				{
+					Integer cat = Integer.parseInt(category);
+					categoryBean catbean = db.getCatByID(conn, cat);
+
+					if( catbean == null)
+					{	ErrorResponse re = new ErrorResponse();
+						re.tfReturnValue(new Integer(5)); // kategorie nicht gefunden
+						return re;
+					}
+
+					// TODO checkAuthorisation
+					if(!checkAuthorisation.checkEditUrl(tfsession, catbean.getRootID()))
+					{
+						ErrorResponse re = new ErrorResponse();
+						re.tfReturnValue(new Integer(9));
+						return re;
+					}
+
+					// urltabBean auslesen
+					urltabBean urlbean = db.getUrl(conn, url);
+					if( urlbean == null)
+					{	ErrorResponse re = new ErrorResponse();
+						re.tfReturnValue(new Integer(1)); // url nicht gefunden
+						return re;
+					}
+
+
+					// datenbank eintrag loeschen
+					db.removePage(conn, cat, url);
+
+					// index
+					Indexer tfindexer = new TeamFoundIndexer(indexSync);
+					// 1. schaue ob andere urltocategory diese url noch haben
+					Vector<Integer> remainingcatlist = db.getCatsOfUrl(conn, urlbean.getID());
+					// 2. NEIN -> ok, deleteDoc + delete indexedurls-eintrag
+					if( remainingcatlist.size() == 0)
+					{	tfindexer.delDoc(url);
+						db.deleteIndexedUrl(conn, url);
+					}
+					else
+					{
+					// 3. JA -> erstelle neue kat-liste aus allen noch in urltocategory enthaltenen eintraegen
+					//       -> tfindexer.updateCategory mit neuer categorie-liste
+						tfindexer.updateCategory(url, remainingcatlist);
+					}
+
+					conn.commit();
+					// TODO: normale response basteln
+					ErrorResponse re = new ErrorResponse();
+					re.tfReturnValue(new Integer(0));
+					return re;
+				}
+				catch(NumberFormatException nfe)
+				{
+					ErrorResponse re = new ErrorResponse();
+					re.tfReturnValue(new Integer(5)); // kategorie nicht gefunden
+					return re;
+				}
+			}
+
+		}
+		catch(Exception e)
+		{
+ 			System.out.println("TeamFoundController : loginUser)"+e);
+			DBAccessException dbe = new DBAccessException("loginUser SQLException");
+			dbe.initCause(e);
+			throw(dbe);
+		}
+	}
 	
 }

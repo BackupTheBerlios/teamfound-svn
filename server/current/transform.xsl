@@ -81,7 +81,7 @@
 								</a>
 								(<a>
 									<xsl:attribute name="href">
-									?pt=nyi
+									?command=removepage&amp;category=<xsl:value-of select="incategory"/>&amp;url=<xsl:value-of select="url"/>&amp;version=3
 									</xsl:attribute>
 									remove from category
 								</a> / 

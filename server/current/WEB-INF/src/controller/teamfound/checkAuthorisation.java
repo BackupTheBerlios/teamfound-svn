@@ -142,4 +142,25 @@ public class checkAuthorisation
 		return false;
 	}
 
+	public static boolean checkEditUrl(SessionData tfsession, Integer projectid)
+	{
+		// checke ob guestaddcat == true oder 
+		// user eingeloggt, zu diesem projekt gehoert und projekt useraddcat == true gestzt hat
+		// oder user admin des projekts ist
+		
+		if(!(tfsession == SessionData.guest))
+		{
+			if(isAdmin(tfsession,projectid))
+				return true;
+
+			if(tfsession.urb.userUrledit(projectid))
+				return true;
+		}
+
+		if( SessionData.projectdata.get(projectid).getGuestUrledit().booleanValue())
+			return true;
+		
+		return false;
+	}
+
 }

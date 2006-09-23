@@ -10,7 +10,7 @@ import controller.IndexAccessException;
 import org.apache.lucene.document.Document;
 
 import java.util.Vector;
-import java.util.HashSet;
+import java.util.Collection;
 
 /**
  * Interface für einen Indexer nach Milestone2-Spezifikation
@@ -88,6 +88,6 @@ public interface Indexer {
 	 *	Bei einem Dokument das Feld Category updaten 
 	 * @param url Die url des zu ersetzenden Documents
 	 */
-	public void updateCategory(String url,HashSet<Integer> allcats) throws IndexAccessException;
+	public void updateCategory(String url,Collection<Integer> allcats) throws IndexAccessException;
 		
 }

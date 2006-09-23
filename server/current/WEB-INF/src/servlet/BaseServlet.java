@@ -114,10 +114,10 @@ public abstract class BaseServlet extends HttpServlet {
 		commands.put("deluser", new Integer(11));
 		commands.put("getuser", new Integer(12));
 		commands.put("logout", new Integer(13));
+		commands.put("removepage", new Integer(14));
 
 		// NOCH FEHLEN
 		//commands.put("removecategory", new Integer(x));
-		//commands.put("removepage", new Integer(x));
 
 		
 		servletLog.info("Servlet ini done");
@@ -629,6 +629,47 @@ public abstract class BaseServlet extends HttpServlet {
 			r = new ErrorResponse();
 			r.serverReturnValue(0, "OK");
 			return r;
+
+		case 14: // removepage
+			String url14;
+			String cat14;
+			Integer proj14 = null;
+			// suche, es müssen die parameter category und url da sein
+			if(!params.containsKey("url")) {
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'url'");
+				requestLog.warn("["+req.getRemoteAddr()+"] missing param 'url'");
+				return r;
+			} else {
+				url14 = req.getParameter("url");
+			}
+			
+			if(!params.containsKey("category")) {
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'category'");
+				requestLog.warn("["+req.getRemoteAddr()+"] missing param 'category'");
+				return r;		
+			} 
+			else 
+			{
+				cat14 = req.getParameter("category");
+
+				if( cat14.equals("all"))
+				{
+					if(!params.containsKey("projectid")) 
+					{
+						r = new ErrorResponse();
+						r.serverReturnValue(2, "Need Parameter 'projectid'");
+						requestLog.warn("["+req.getRemoteAddr()+"] missing param 'projectid'");
+						return r;
+					} else 
+					{
+						proj14 = Integer.parseInt(req.getParameter("url"));
+					}
+				}
+			}			
+			
+			return ctrl.removePage(url14, cat14, proj14, tfsession);
 		}
 		
 		r = new ErrorResponse();

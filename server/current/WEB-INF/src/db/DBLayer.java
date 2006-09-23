@@ -443,4 +443,7 @@ public interface DBLayer
 
 	public Vector<Tuple<tfuserBean,Boolean>> getUsersOfProject(Connection conn, Integer projectid) throws SQLException;
 
+	public Boolean removePage(Connection conn, Integer category, String url) throws SQLException;
+	public Boolean deleteIndexedUrl(Connection conn, String url) throws SQLException;
+
 }

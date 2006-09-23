@@ -5,7 +5,7 @@ package index.teamfound;
 
 import java.net.URL;
 import java.util.Vector;
-import java.util.HashSet;
+import java.util.Collection;
 import java.io.StringReader;
 import java.io.IOException;
 import java.lang.InterruptedException;
@@ -476,7 +476,7 @@ public class TeamFoundIndexer implements Indexer {
 	 *	Bei einem Dokument das Feld Category updaten 
 	 * @param url Die url des zu ersetzenden Documents
 	 */
-	public void updateCategory(String url,HashSet<Integer> allcats) throws IndexAccessException
+	public void updateCategory(String url,Collection<Integer> allcats) throws IndexAccessException
 	{
 			//1.Doc im index loeschen
 			Document doc = delDoc(url);

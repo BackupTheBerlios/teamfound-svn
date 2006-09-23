@@ -153,4 +153,6 @@ public interface Controller {
 	
 
 	public Response getUsersOfProject(Integer projectid, SessionData tfsession) throws DBAccessException;
+
+	public Response removePage(String url, String category, Integer projectid, SessionData tfsession) throws DBAccessException;
 }

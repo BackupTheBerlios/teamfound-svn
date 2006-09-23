@@ -2400,5 +2400,69 @@ public class DBLayerHSQL implements DBLayer
 
 	}
 
+	/**
+	 * Eintrag aus Kategorie loeschen
+	 * @param url
+	 * @param category
+	 * @return true/false - je nachdem ob url und cat gefunden wurden oder nicht
+	 */ 
+	public Boolean removePage(Connection conn, Integer category, String url) throws SQLException
+	{
+		PreparedStatement check = conn.prepareStatement("delete from urltocategory where urltocategory.originalcat = ? and urltocategory.url = (select id from indexedurls where indexedurls.url = ?)");
+		check.setInt(1, category);
+		check.setString(2, url);
+
+		try
+		{
+			int i = check.executeUpdate();	
+			conn.commit();
+			
+			if(i > 0)
+			{	return new Boolean(true);
+			}
+			return new Boolean(false);
+		}
+		catch(SQLException e)
+		{
+
+			//TODO LoggMessage statt print
+			System.out.println("removePage: "+ e);
+			throw(e);
+		}
+
+
+	}
+
+	/**
+	 * URL aus indexedurls loeschen
+	 * @param url
+	 * @return true/false - je nachdem ob url und cat gefunden wurden oder nicht
+	 */ 
+	public Boolean deleteIndexedUrl(Connection conn, String url) throws SQLException
+	{
+		PreparedStatement check = conn.prepareStatement("delete from indexedurls where url = ?");
+		check.setString(1, url);
+
+		try
+		{
+			int i = check.executeUpdate();	
+			conn.commit();
+			
+			if(i > 0)
+			{	return new Boolean(true);
+			}
+			return new Boolean(false);
+		}
+		catch(SQLException e)
+		{
+
+			//TODO LoggMessage statt print
+			System.out.println("deleteIndexedUrl: "+ e);
+			throw(e);
+		}
+
+
+	}
+
 
 }
