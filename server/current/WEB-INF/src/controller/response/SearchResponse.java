@@ -93,7 +93,6 @@ public class SearchResponse extends Response {
 			found = new Element("found");
 			url = new Element("url");
 			
-			// Felder im Document see SimpleNewIndexEntry.java
 			// 1. url -- Die Url als String
 			// 2. contents -- die indezierten Suchwoerter die sich aus der Seite ergaben
 			// 3. summary  -- ein String den der HtmlParser geliefert hat
@@ -106,6 +105,10 @@ public class SearchResponse extends Response {
 			title = new Element("title");
 			title.addContent(d.get("title"));
 			found.addContent(title);
+
+			Element summ = new Element("summary");
+			summ.addContent(d.get("summary"));
+			found.addContent(summ);
 			
 			//String aufsplitten und Kathegorien raussuchen
 			String catstr = d.get("cats");

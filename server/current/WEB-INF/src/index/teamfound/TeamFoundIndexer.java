@@ -212,20 +212,10 @@ public class TeamFoundIndexer implements Indexer {
 		//es ist suchbar
 		doc.add(Field.Keyword("url",entry.getUrl().toString()));
 
-		//ein Datum ( z.b. letzte modifikation)
-		//bin noch nicht sicher ob wir das brauchen, da wir ja ein Datum in der Daten
-		//bank haben .. allerdings gibt uns das die Moeglichkeit einfach aus dem Index alle
-		//eintraege rauszufischen die z.b. ein bestimmtes alter ueberschritten haben
-		//auch hier nicht in Tokens zerlegt aber suchbar gespeichert
-		/* doc.add(Field.Keyword("datum",datum));*/
-
-		//TODO anderen HTML Parser suchen -> dann koennen wir ohne das apbspeichern der URL als File auskommen
-		//TODO Test ob File existiert
-		
-		index.Parser.Html.HTMLParser parser = new HTMLParser(new StringReader(entry.getContent()));
 		
 		//Ok, der Parser liefert uns einen Reader der uns den Text ohne HTML Tags etc.
 		//liefert und dieser kann dann indexiert und suchbar gespeichert werden
+		index.Parser.Html.HTMLParser parser = new HTMLParser(new StringReader(entry.getContent()));
 		doc.add(Field.Text("contents",parser.getReader()));
 		
 		//wir speichern die Zusammenfassung der Seite aber indexieren nicht
@@ -336,7 +326,7 @@ public class TeamFoundIndexer implements Indexer {
 			completequery.add(catquerry, BooleanClause.Occur.MUST);
 			
 			//nur zum testen
-			System.out.println(completequery.toString());
+			//System.out.println(completequery.toString());
 
 			//die komplette Anfrage an LuceneIndex stellen
 			Hits hits = searcher.search(completequery);

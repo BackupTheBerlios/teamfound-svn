@@ -282,50 +282,45 @@ public class TeamFoundController implements Controller {
 	public SearchResponse search(String query, int offset, int category[], SessionData tfsession) throws IndexAccessException,  DBAccessException
 
 	{
-		
 		try
 		{
-			// 0. Datenbank 
-		
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+			
 			SearchResponse resp;
+			resp = new SearchResponse(null);
+			
+			//Userrechte ueberpruefen (seit Milestone 3)
+			for( int i = 0; i < category.length; i++)
+			{
+				// root-cat der cat auslesen
+				categoryBean cb = db.getCatByID(conn, category[i]);
+
+				if( cb == null)
+				{	// category not found
+					resp.tfReturnValue(new Integer(5));
+					return(resp);
+				}
+				if(!checkAuthorisation.checkSearch(tfsession,cb.getRootID()))
+				{
+					resp.tfReturnValue(new Integer(9));
+					return(resp);
+				}
+			}
+
 
 			if( query != null)
 			{
-		
-
 				// Basis-Antwort bauen
 				//TODO keywords ?
 				String[] keywords = new String[1];
 				keywords[0] = query;
 				resp = new SearchResponse(keywords);
-
-				// 0.1. Userrechte ueberpruefen (seit Milestone 3)
-				for( int i = 0; i < category.length; i++)
-				{
-					// root-cat der cat auslesen
-					categoryBean cb = db.getCatByID(conn, category[i]);
-
-					if( cb == null)
-					{	// category not found
-						resp.tfReturnValue(new Integer(5));
-						return(resp);
-					}
-					if(!checkAuthorisation.checkSearch(tfsession,cb.getRootID()))
-					{
-						resp.tfReturnValue(new Integer(9));
-						return(resp);
-					}
-				}
-				
 			
 				// 1. Im Index Suchen
-			
 				Indexer tfindexer = new TeamFoundIndexer(indexSync);
-				//TODO -> hart den count auf 30 ?
+				//TODO -> count wird noch nicht uebergeben
 				Vector<Document> docvec = tfindexer.query(query, category , 50, offset ); 
-		
 			
 				//2.Suchergebnisse in Antwort einbauen
 				resp.addSearchResults(docvec);
@@ -335,7 +330,6 @@ public class TeamFoundController implements Controller {
 				// getall = yes
 				// category[0] da nur fuer eine kat erlaubt
 				Vector<String> v = db.getAllUrlsInCategory(conn, category[0]); 
-				resp = new SearchResponse(null);
 				resp.addSimpleSearchResults(v, category[0]);
 			}
 		
