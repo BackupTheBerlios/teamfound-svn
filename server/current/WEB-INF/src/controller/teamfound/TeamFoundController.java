@@ -67,7 +67,7 @@ public class TeamFoundController implements Controller {
 				Connection conn;
 				conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 				SessionData.projectdata = db.getAllProjectData(conn);
-
+				conn.close();
 			}catch(Exception e)
 			{
 				//Todo logg
@@ -296,11 +296,13 @@ public class TeamFoundController implements Controller {
 				if( cb == null)
 				{	// category not found
 					resp.tfReturnValue(new Integer(5));
+					conn.close();
 					return(resp);
 				}
 				if(!checkAuthorisation.checkSearch(tfsession,cb.getRootID()))
 				{
 					resp.tfReturnValue(new Integer(9));
+					conn.close();
 					return(resp);
 				}
 			}
@@ -660,6 +662,7 @@ public class TeamFoundController implements Controller {
 			{
 				ErrorResponse er = new ErrorResponse();
 				er.tfReturnValue(9);
+				conn.close();
 				return er;
 			}
 			
@@ -679,6 +682,7 @@ public class TeamFoundController implements Controller {
 		// TODO
 			
 		//3. response fuellen
+			conn.close();
 			return new EditCategoryResponse(catbean.getCategory(), catbean.getBeschreibung(), catbean.getID());
 			
 		}
@@ -714,6 +718,7 @@ public class TeamFoundController implements Controller {
 			//aeltere Dokumente auslesen
 			Vector<urltabBean> vecubean = db.getOlderDocs(conn, dat);
 			Vector<URL> re = extractURL(vecubean);
+			conn.close();
 			return (re);
 		}
 		catch(Exception e)
@@ -761,6 +766,13 @@ public class TeamFoundController implements Controller {
 			{
 				Indexer tfindexer = new TeamFoundIndexer(indexSync);
 				tfindexer.updateContent(address);
+				
+				Connection conn;
+				conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+				urltabBean ub = db.getUrl(conn, address.toString());
+				db.refreshIndexDate(conn, ub.getID());
+				conn.close();
+
 				return(1);
 			}
 			catch(Exception e)
@@ -831,11 +843,6 @@ public class TeamFoundController implements Controller {
 				Connection conn;
 				conn = db.getConnection("tf","tfpass","anyserver","tfdb");
 
-		
-
-
-				HashSet<Tuple<Integer,Integer>> vertup = db.getAllVersions(conn);
-
 			//2. user in db adden
 
 				tfuserBean newuser = new tfuserBean();
@@ -848,6 +855,7 @@ public class TeamFoundController implements Controller {
 					NewUserResponse re = new NewUserResponse(newuser.getUsername());
 					//7 ist ReturnCode fuer Username zu kurz
 					re.tfReturnValue(new Integer(7));
+					conn.close();
 					return(re);
 				}
 				if(pass.length() < 3)
@@ -855,6 +863,7 @@ public class TeamFoundController implements Controller {
 					NewUserResponse re = new NewUserResponse(newuser.getUsername());
 					//10 ist ReturnCode fuer Passwort zu kurz
 					re.tfReturnValue(new Integer(10));
+					conn.close();
 					return(re);
 				}
 				
@@ -864,6 +873,7 @@ public class TeamFoundController implements Controller {
 					NewUserResponse re = new NewUserResponse(newuser.getUsername());
 					//6 ist ReturnCode fuer User existiert (siehe spezifikation
 					re.tfReturnValue(new Integer(6));
+					conn.close();
 					return(re);
 				}
 			
@@ -907,10 +917,12 @@ public class TeamFoundController implements Controller {
 				{
 					if(pass.equals(tf.getPass()))
 					{
+						conn.close();
 						return(true);
 					}
 				}
 				
+				conn.close();
 				return false;
 			}
 			catch(Exception e)
@@ -934,13 +946,7 @@ public class TeamFoundController implements Controller {
 		{	
 			try
 			{
-				//1. Establish connection
-				Connection conn;
-				conn = db.getConnection("tf","tfpass","anyserver","tfdb");
-
-				conn.close();
 				//2. antwort erstellen
-
 				LoginResponse resp = new LoginResponse(
 						user,
 						null);
@@ -1106,6 +1112,7 @@ public class TeamFoundController implements Controller {
 			projectdataBean pdb = db.getProjectDataToCat(conn, projectid);
 			SessionData.projectdata.put(pdb.getRootID(),pdb);
 			conn.commit();
+			conn.close();
 
 			UserToProjectResponse re = new UserToProjectResponse(user,projectid);
 			re.setRoleUser();
@@ -1160,7 +1167,8 @@ public class TeamFoundController implements Controller {
 			projectdataBean pdb = db.getProjectDataToCat(conn, projectid);
 			SessionData.projectdata.put(pdb.getRootID(),pdb);
 			conn.commit();
-
+			conn.close();
+			
 			UserToProjectResponse re = new UserToProjectResponse(user,projectid);
 			re.setRoleAdmin();
 			return(re);
@@ -1205,6 +1213,7 @@ public class TeamFoundController implements Controller {
 			}
 		
 			db.removeFromProject(conn, tfuser.getID(), projectid);
+			conn.close();
 
 			RemoveUserResponse re = new RemoveUserResponse(user,projectid);
 			return(re);
@@ -1235,10 +1244,9 @@ public class TeamFoundController implements Controller {
 				ErrorResponse re = new ErrorResponse();
 				re.tfReturnValue(new Integer(9));
 			}
-
+			
 			Connection conn;
 			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
-		
 			Vector<Tuple<tfuserBean,Boolean>> vuser = db.getUsersOfProject(conn,projectid);
 
 			Iterator vuserit = vuser.iterator();
@@ -1248,7 +1256,7 @@ public class TeamFoundController implements Controller {
 				Tuple user = (Tuple)vuserit.next();
 				re.addUser((tfuserBean)user.getFirst(), (Boolean)user.getSecond());
 			}
-
+			conn.close();
 			return(re);
 		
 		}
@@ -1332,6 +1340,7 @@ public class TeamFoundController implements Controller {
 				// TODO: normale response basteln
 				ErrorResponse re = new ErrorResponse();
 				re.tfReturnValue(new Integer(0));
+				conn.close();
 				return re;
 
 			}
@@ -1345,6 +1354,7 @@ public class TeamFoundController implements Controller {
 					if( catbean == null)
 					{	ErrorResponse re = new ErrorResponse();
 						re.tfReturnValue(new Integer(5)); // kategorie nicht gefunden
+						conn.close();
 						return re;
 					}
 
@@ -1352,6 +1362,7 @@ public class TeamFoundController implements Controller {
 					{
 						ErrorResponse re = new ErrorResponse();
 						re.tfReturnValue(new Integer(9));
+						conn.close();
 						return re;
 					}
 
@@ -1359,12 +1370,14 @@ public class TeamFoundController implements Controller {
 					{
 						ErrorResponse re = new ErrorResponse();
 						re.tfReturnValue(new Integer(1)); // url nicht gefunden
+						conn.close();
 						return re;
 					}
 
 					// TODO: normale response basteln
 					ErrorResponse re = new ErrorResponse();
 					re.tfReturnValue(new Integer(0));
+					conn.close();
 					return re;
 
 				}
