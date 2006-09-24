@@ -21,6 +21,7 @@ Dabei können Seiten, wenn der Crawler auf HTTP-Fehler stößt, vorrübergehend deak
 Da der Funktionsumfang des Teamfound-Servers stark angewachsen ist, wurde die Nutzung eines echten Logging-Systems notwendig, einerseits vereinfacht dies die Entwicklung, da Debug-Ausgaben ordentlich ausgegeben werden können, andererseits ist es für einen späteren Produktiven Einsatz evtl. wichtig Fehler bei Zugriffen auf den Teamfound-Server oder fehlgeschlagene Logins zu protokollieren.
 Da während eines produktiven Einsatzes keine oder nur wenige Debug-Nachrichten protokolliert werden sollen, ist ein Logging-System notwendig, das einerseits zwischen der Art von Nachrichten unterscheiden kann, andererseits aber auch Komponenten, welche Nachrichten einliefern, trennen kann. log4j aus dem Apache-Projekt erfüllt alle diese Aufgaben und wurde daher für die Integration in Teamfound ausgewählt. Einzelne Komponenten benutzen unterschiedliche sogenannte 'Logger' und trennen ihre Nachrichten in mehrere Kategorien zwischen Debug, Info sowie Warning und Error auf. Einzelne oder alle Logger können auf die Konsole oder in eine Datei umgeleitet werden.  
 
+\clearpage
 \section{Neuerungen am Web-Interface}
 \begin{figure}
 \includegraphics{web1.eps}
@@ -60,7 +61,7 @@ Die \texttt{transform.xsl} ist die einzige dieser Dateien die ich hier genauer b
 \end{description}
 
 \begin{figure}
-\includegraphics{web2.eps}
+\includegraphics{web3.eps}
 \caption{Web-Interface Suchergebnisse und Projekt-Menu}
 \end{figure}
 
@@ -68,6 +69,18 @@ Unterst"utzt werden alle im Interface Milestone 3 festgelegten Befehle. Den gena
 
 \section{Neuerungen an der Firefox/Flock-Toolbar}
 Nichts besonderes. Die Toolbar wurde nur an das Interface Milestone 3 angepasst. Die Projektverwaltung und Administration wird nicht unterst"utzt, sondern hier verweise ich freundlichst auf das Web-Interface :-)
+
+\clearpage
+\section{Projekt-Webseite}
+Aktualisierte Version, angereichert mit Werbe-Text: 
+
+\texttt{http://teamfound.berlios.de}
+\begin{figure}[h]
+\includegraphics{web4.eps}
+\caption{Projekt Webseite}
+\end{figure}
+
+\clearpage
 
 \section{Neuerungen an der Internet-Explorer-Toolbar}
 
