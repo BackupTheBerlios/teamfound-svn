@@ -149,14 +149,14 @@
 <xsl:template name="menu">
 	<xsl:variable name="stdserverparams">
 		<xsl:if test="count(/response/xsltpassthrough2) > 0">
-			&amp;want=xml&amp;version=<xsl:value-of select="/response/server/interface-version"/>&amp;pt2=<xsl:value-of select="/response/xsltpassthrough2"/>&amp;projectid=<xsl:value-of select="/response/xsltpassthrough2"/>
+			&amp;version=<xsl:value-of select="/response/server/interface-version"/>&amp;pt2=<xsl:value-of select="/response/xsltpassthrough2"/>&amp;projectid=<xsl:value-of select="/response/xsltpassthrough2"/>
 		</xsl:if>
 		<xsl:if test="count(/response/xsltpassthrough2) = 0">
-			&amp;want=xml&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+			&amp;version=<xsl:value-of select="/response/server/interface-version"/>
 		</xsl:if>
 	</xsl:variable>
 	<xsl:variable name="stdserverparamsnopt2">
-			&amp;want=xml&amp;version=<xsl:value-of select="/response/server/interface-version"/>
+			&amp;version=<xsl:value-of select="/response/server/interface-version"/>
 	</xsl:variable>
 
 	<p>
@@ -454,6 +454,27 @@
 			</input> 
 
 		</form>
+		-
+		<form action="tf" name="delcat" method="post">
+			<input type="submit" value="delete category"/>
+			<input type="hidden" name="command" value="removecategory"/>
+			<input type="hidden" name="version">
+				<xsl:attribute name="value">
+					<xsl:value-of select="/response/server/interface-version"/>
+				</xsl:attribute>
+			</input> 
+			<input type="hidden" name="pt2">
+				<xsl:attribute name="value">
+					<xsl:value-of select="/response/xsltpassthrough2"/>
+				</xsl:attribute>
+			</input> 
+			<input type="hidden" name="category">
+				<xsl:attribute name="value">
+					<xsl:value-of select="id"/>
+				</xsl:attribute>
+			</input> 
+		</form>
+		<br/>
 	</div>
 </xsl:template>
 
