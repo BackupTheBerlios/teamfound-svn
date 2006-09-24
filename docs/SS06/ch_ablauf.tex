@@ -4,11 +4,11 @@
 
 Das Teamfound-Projekt hat gleich mit zwei sehr starken Belastungen zu kämpfen, einerseits ist es ein OpenSource-Projekt und kann zwar auf ordentliche Werkzeuge wie Revisionsverwaltung und Mailinglisten zurückgreifen, lebt jedoch von lockerer Organisation und der weitgehend freiwilligen Mitarbeit aller Beteiligten, andererseits ist es primär immernoch ein Projekt an der Universität und hat damit mit den ganz normalen Problemen solcher Projekte zu kämpfen. Dies schliesst inbesondere den ganz eigenen Arbeitsablauf in derartigen Projekten ein, also mehr Aktivität, je näher der Abgabetermin für diesen Bericht rückt.
 
-Anders als im letzten Semester gab es dieses mal keine regelmäßigen Treffen. Abgesehen von einem Starttreffen, bei dem vorallem Ideen für Erweiterungen und Bugs ausgetauscht wurden und einem Treffen kurz vor Schluss, in welchem die noch zahlreichen offenen Baustellen besprochen wurden, gab es kein Treffen von allen beteiligten. Benutzt wurde daher, wie auch im letzten Semester schon, die Mailingliste des Projektes (teamfound-development ät lists.berlios.de), um sich auszutauschen und Ideen und vorgehensweisen zu besprechen. Weitere Werkzeuge, wie sie Berlios anbietet, darunter Feature- und Bugtracker, wurden wohl auch aufgrudn des geringen nutzens für ein derart kleines Projekt noch nicht benutzt. Gegen Ende des Projektes sind auch die ungeplanten treffen im inoffiziellen Projekt-IRC-Channel (\#teamfound - quakenet) häufiger und bekannt für deren Produktivität geworden.
+Anders als im letzten Semester gab es dieses mal keine regelmäßigen Treffen. Abgesehen von einem Starttreffen, bei dem vorallem Ideen für Erweiterungen und Bugs ausgetauscht wurden und einem Treffen kurz vor Schluss, in welchem die noch zahlreichen offenen Baustellen besprochen wurden, gab es kein Treffen von allen beteiligten. Benutzt wurde daher, wie auch im letzten Semester schon, die Mailingliste des Projektes (teamfound-development ät lists.berlios.de), um sich auszutauschen und Ideen und vorgehensweisen zu besprechen. Weitere Werkzeuge, wie sie Berlios anbietet, darunter Feature- und Bugtracker, wurden wohl auch aufgrund des geringen nutzens für ein derart kleines Projekt noch nicht benutzt. Gegen Ende des Projektes sind auch die ungeplanten treffen im inoffiziellen Projekt-IRC-Channel (\#teamfound - quakenet) häufiger und bekannt für deren Produktivität geworden.
 
 \subsection{Fazit: Probleme wachsender Projekte}
 
-Teamfound besteht mittlerweile aus einer Menge Code, so sind alleine im Server mittlerweile an die einhundert Klassen mit vielen tausend Zeilen Code implementiert. In diesem Semester sind ausserdem viele Funktionen hinzugekommen, so das sich die Aktionsimplementierungen im Server fast verdoppelt haben. Es zeigt sich nun das die bisherige Architektur kaum mehr geeigent ist um mit den Anforderungen klarzukommen, so sind die zentralen Punkte im Server, nämlich das Servlet, welches Requests entgegennimmt, validiert udn an den Controller weiterleitet, sowie dieser Controller, der die eigentliche Nutzlast für die einzelnen Aktionen implementiert,völlig überlaufen.
+Teamfound besteht mittlerweile aus einer Menge Code, so sind alleine im Server mittlerweile an die einhundert Klassen mit vielen tausend Zeilen Code implementiert. In diesem Semester sind ausserdem viele Funktionen hinzugekommen, so das sich die Aktionsimplementierungen im Server fast verdoppelt haben. Es zeigt sich nun das die bisherige Architektur kaum mehr geeigent ist um mit den Anforderungen klarzukommen, so sind die zentralen Punkte im Server, nämlich das Servlet, welches Requests entgegennimmt, validiert undn an den Controller weiterleitet, sowie dieser Controller, der die eigentliche Nutzlast für die einzelnen Aktionen implementiert,völlig überlaufen.
 In Zukunft wird es also immer wichtiger effektive Strukturen für diese wachsenden Anforderungen zu schaffen und zu dokumentieren. Klare Datenschnittstellen sind notwendig und bisher kaum umgesetzt, die Kapselung von Funktionalität ist eine Aufgabe, welche die Architektur des Teamfound-Servers noch einmal deutlich verändern wird. Die Auslagerung von Code in einzelne Bibliotheken-gleiche Implementierungen, wie zB. mit dem Crawler geschehen, können eine Möglichkeit sein, besser wart- und testbaren Code zu schreiben und auch für eine sauberere Implementierung sorgen. 
 
 \section{Projektverlauf by Jan}
@@ -60,6 +60,52 @@ Zum Schluss noch die Anmerkung, da"s unser manuelles Logfile im wiki praktisch n
 So, jetzt bin ich selber gespannt ob wir heute noch den Server v0.3 released bekommen.\\
 
 Jan
+
+\section{Projectverlauf von Martin}
+Der Start des Projekts war einerseits gut, da wir alle 4 weiter an dem Projekt arbeiten wollten.
+Was bedeutet, dass es wohl vorher f"ur keinen von uns schlecht gelaufen ist.
+
+Leider begannen wir auch mit der halboffiziellen "Ubereinkunft, dass wir w"ahrend der Vorlesungszeit alle
+keine Zeit auf das Projekt verwenden k"onnen. Andere Universit"are Leistungen und Pr"ufungen bzw.
+Arbeit oder "ahnliches waren dringender. Ich war selbst damit sehr Einverstanden, da ich
+auch nicht gewusst h"atte wann ich noch Zeit er"ubrigen kann.
+
+Das bringt nat"urlich wenn es dann losgehen soll wieder Einarbeitungszeit mit sich. Hinzu kommt f"ur
+mich, dass vieles was ich schon am ende des letzten Semester als TODO auf der Liste hatte immer
+noch unver"andert ist. Eher ist die Liste l"anger geworden.
+
+Trozdem sehe ich den Verlauf des Projekts positiv.
+Bei unserem ersten gemeinsamen Treffen haben wir festgelegt welche Erweiterungen wir noch in
+Teamfound einbauen wollen. Jan hat ziemlich schnell ein Grundger"ust 
+f"urs Interface im Wiki angelegt. Die Interfacespezifikation war in diesem wie auch 
+im vorigen Semester eines der wichtigsten Hilfsmittel. 
+Ich konnte immer gut vergleichen was schon funktioniert
+und was noch fehlt. 
+Ausserdem sind n"otige "Anderungen und Erweiterungen, die einer erarbeitet sofort f"ur alle
+nachlesbar.
+Einen grossteil der n"otigen Request/Response Kommunikation
+hatten wir beim ersten Treffen besprochen, allerdings
+war die Spezifikation am Anfang noch sehr rudiment"ar. Wir hatten erstmal nur die 
+Aufrufparameter festgelegt und Jan hatte ein leicht ver"andertes XML-Grundger"ust f"ur die
+Serverantwort entworfen.
+
+Deshalb habe ich zu beginn immer gleich f"ur jede Funktion, die ich implementiert
+habe auch die Spezifikation um die Serverantwort erweitert. 
+Das ist sp"ater leider aufgrund von Zeitdruck unter den Tisch gefallen.
+
+Bis zum letzten Treffen vor Abgabe verlief die Arbeit ziemlich z"ah. Danach daf"ur wirklich
+gut. Alle waren wieder oft im IRC-Channel. Die schnellen Absprachen auf diese Art boten
+neben dem Wiki aus meiner Sicht die beste Kommunikationsm"oglichkeit  w"ahrend der Implementation.
+Ich habe gut davon profitiert, weil die andern mir in vielen Belangen doch ein
+St"uck voraus sind und helfen konnten.
+Die Mailingliste lief da eher schlecht, weil meist einfach keine direkte Antwort da ist und
+man schlechter diskutieren kann.
+
+Um ein Fazit zu ziehen, w"urde ich sagen es ausser Startschwierigkeinten gut gelaufen 
+und wir haben alles umgesetzt was wir uns vorgenommen hatten. 
+Leider sind wir noch kein richtiges OpenSource Projekt, da wir den Abgabedruck brauchen um weiterzukommen anstatt von alleine den Antrieb zu entwickeln unser Projekt voranzutreiben. 
+
+
 
 
 
