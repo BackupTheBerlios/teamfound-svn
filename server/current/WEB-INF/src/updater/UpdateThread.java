@@ -24,17 +24,18 @@ import controller.teamfound.TeamFoundController;
  * @author jonas
  *
  */
-public class UpdateThread extends Thread {
+public class UpdateThread extends Thread 
+{
 
-	protected boolean running;
+	protected boolean running = true;
 	protected TeamFoundCrawler crawler;
 	protected TeamFoundController ctrl;
 	protected Logger log;
 
-	
+
 	public UpdateThread() {
 		super();
-	
+
 		String depth = TeamFoundConfig.getConfValue("framedepth");
 		if(depth != null)
 		{
@@ -42,32 +43,40 @@ public class UpdateThread extends Thread {
 		}
 		else
 			crawler = new TeamFoundCrawler(3);
-		
+
 		// TODO controller richtig konfigurieren
 		ctrl = new TeamFoundController();
-		
+
 		log = Logger.getLogger("update");
 	}
 
-	public void run() {
-		try {
+	public void run() 
+	{
+
+		log.info("TF-update Thread gestartet");
+		try 
+		{
 			// wake up every couple minutes and update pending documents 
 			NewIndexEntry doc;
-			while(running) {
+			while(running) 
+			{
 				/*
 				 * 1. get a list of pages to update
 				 */
+				log.info("hole Dokumente zum update");
 				List<URL> pages = ctrl.getOldURL();
-				
+
 				Iterator<URL> i = pages.iterator();
-				
-				while(i.hasNext()) {
+
+				while(i.hasNext()) 
+				{
 					URL url = i.next();
 					// TODO wie sieht das mit den kategorien aus?
-				//	try {
-						//doc = crawler.fetch(url);
-						//switch(ctrl.updateDocument(doc)) {
-						switch(ctrl.updateDocument(url)) {
+					//	try 
+					//doc = crawler.fetch(url);
+					//switch(ctrl.updateDocument(doc)) 
+					switch(ctrl.updateDocument(url)) 
+					{
 						case 1:
 							//log.info("Updated url "+doc.getUrl().toString());
 							log.info("Updated url "+url.toString());
@@ -80,24 +89,28 @@ public class UpdateThread extends Thread {
 							//log.error("Error while updating url "+doc.getUrl().toString()+" see tf-controller-log for more info");
 							log.error("Error while updating url "+url.toString()+" see tf-controller-log for more info");
 							break;
-						}
-				//	} catch(IOException e) {
-				//		log.error(e);
-				//	}
+					}
+					//	 catch(IOException e) 
+					//		log.error(e);
+					//	
 				}
-				
+
 				String wait = TeamFoundConfig.getConfValue("updatewait");
 				if(wait != null)
 				{
-					sleep((new Long(wait)).longValue()*60*1000);
+					sleep((new Long(wait)).longValue()*60*1000);//also mal 60s * 1000ms
 				}
 				else
-					// TODO diesen wert in die properties ziehen
 					sleep(300000);
 			}
-		} catch(InterruptedException e) {
+		} 
+		catch(InterruptedException e) 
+		{
+			
+			log.info("thread wurde angehalten");
 			// thread wurde angehalten, er kann einfach beendet werden
 		}
 	}
-
 }
+
+

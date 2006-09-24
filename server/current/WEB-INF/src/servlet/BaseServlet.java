@@ -125,9 +125,11 @@ public abstract class BaseServlet extends HttpServlet {
 	
 	public void destroy() {
 		// updater-thread anhalten
+		servletLog.info("stopping Updater");
 		updater.interrupt();
 		try {
 			updater.join();
+		servletLog.info("Updater stopped");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			servletLog.error("could not wait for update-thread");

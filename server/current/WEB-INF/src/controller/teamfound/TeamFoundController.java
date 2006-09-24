@@ -74,6 +74,7 @@ public class TeamFoundController implements Controller {
 				log.error(e);
 			}
 		}
+		log.info("TeamFoundController started");
 
 	}
 
@@ -717,6 +718,7 @@ public class TeamFoundController implements Controller {
 			
 			//aeltere Dokumente auslesen
 			Vector<urltabBean> vecubean = db.getOlderDocs(conn, dat);
+			log.info("Found "+vecubean.size()+" Urls to update");
 			Vector<URL> re = extractURL(vecubean);
 			conn.close();
 			return (re);
@@ -772,7 +774,7 @@ public class TeamFoundController implements Controller {
 				urltabBean ub = db.getUrl(conn, address.toString());
 				db.refreshIndexDate(conn, ub.getID());
 				conn.close();
-				log.error("update Document ausgefuehrt");
+				log.info("update Document ausgefuehrt");
 				return(1);
 			}
 			catch(Exception e)
