@@ -22,6 +22,11 @@ Da der Funktionsumfang des Teamfound-Servers stark angewachsen ist, wurde die Nu
 Da während eines produktiven Einsatzes keine oder nur wenige Debug-Nachrichten protokolliert werden sollen, ist ein Logging-System notwendig, das einerseits zwischen der Art von Nachrichten unterscheiden kann, andererseits aber auch Komponenten, welche Nachrichten einliefern, trennen kann. log4j aus dem Apache-Projekt erfüllt alle diese Aufgaben und wurde daher für die Integration in Teamfound ausgewählt. Einzelne Komponenten benutzen unterschiedliche sogenannte 'Logger' und trennen ihre Nachrichten in mehrere Kategorien zwischen Debug, Info sowie Warning und Error auf. Einzelne oder alle Logger können auf die Konsole oder in eine Datei umgeleitet werden.  
 
 \section{Neuerungen am Web-Interface}
+\begin{figure}
+\includegraphics{web1.eps}
+\caption{Web-Interface Eingangsseite}
+\end{figure}
+
 \textit{Neuerungen} ist gut, bisher gab es eigentlich noch kein Web-Interface :)
 
 Die Version 0.2 des TeamFound Servers hatte noch die Option \texttt{want=xml|html}, "uber die man vom Server direkt eine im Browser darstellbare HTML-Seite anfordern konnte. Jedoch war dieser Teil des Servers zu grossen Teilen nicht implementiert.
@@ -32,6 +37,12 @@ In der aktuellen Version 0.3 setzen wir nur auf XML-Antworten, die daf"ur aber a
 
 "Uber diese XSLT Datei k"onnen alle g"angigen Browser das vom Server gelieferte XML selber in HTML umwandeln und anzeigen.
 
+\begin{figure}
+\includegraphics{web2.eps}
+\caption{Web-Interface "Ubersicht der eigenen Projekte}
+\end{figure}
+
+
 \subsection{Komponenten}
 Das gesamte Web-Interface besteht aus 3 Dateien:
 \begin{description}
@@ -40,10 +51,23 @@ Das gesamte Web-Interface besteht aus 3 Dateien:
 \item[ui.js] Enth"alt eine einzige JavaScript Funktion (\texttt{showhide(layer\_ref)}) zum Anzeigen/Verstecken einzelner Bereiche der Webseite.
 \end{description}
 
-Die \texttt{transform.xsl} ist die einzige dieser Dateien die ich hier genauer beschreiben will. 
+Die \texttt{transform.xsl} ist die einzige dieser Dateien die ich hier genauer beschreiben will. Sie besteht, wie jede XSLT Datei aus verschiedenen Templates, die jeweils bestimmte XML Unterb"aume in HTML umwandeln. Als erstes kommt das template \texttt{match=/response} zum Tragen, da unsere XML-B"aume alle von dem tag \texttt{response} umschlossen werden. Es erstellt zuerst die allgemeinen HTML-Header, ruft dann der Reihe nach die 3 templates \texttt{menu}, \texttt{showcommandresults} und \texttt{pageselector} auf, und beendet seine Arbeit mit dem Ende der HTML-Seite incl. einem Link zur teamfound Webseite und einem Copyright Hinweis.
 
+\begin{description}
+\item[menu] Erzeugt nur das Men"u der Seite entsprechend dem Parameter \texttt{xsltpassthrough}. 
+\item[showcommandresults] Durchsucht den XML-Baum nach den verschiedenen Antworten der m"oglichen Befehle und zeigt die Ergebnisse entsprechend an. 
+\item[pageselector] Ruft entsprechend den \texttt{xsltpassthrough}-Parametern spezialisierte templates auf, die jeweils Seiten f"ur die Bedienung der verschiedene Server-Befehle mittels HTML-Formularen erzeugen. 
+\end{description}
 
+\begin{figure}
+\includegraphics{web2.eps}
+\caption{Web-Interface Suchergebnisse und Projekt-Menu}
+\end{figure}
+
+Unterst"utzt werden alle im Interface Milestone 3 festgelegten Befehle. Den genauen Aufbau der Webseite schaut sich am besten jeder selber auf unserem Testserver \texttt{http://teamfound.dyndns.org:8080/tf/tf} an.
 
 \section{Neuerungen an der Firefox/Flock-Toolbar}
+Nichts besonderes. Die Toolbar wurde nur an das Interface Milestone 3 angepasst. Die Projektverwaltung und Administration wird nicht unterst"utzt, sondern hier verweise ich freundlichst auf das Web-Interface :-)
+
 \section{Neuerungen an der Internet-Explorer-Toolbar}
 
