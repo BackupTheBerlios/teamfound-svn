@@ -1,7 +1,51 @@
 
 \chapter{Projektverlauf}
-\section{Organisation und Kommunikation}
+\section{Individuelle Sichtweisen}
+\subsection{Organisation und Kommunikation by Jonas}
 
 Das Teamfound-Projekt hat gleich mit zwei sehr starken Belastungen zu kämpfen, einerseits ist es ein Open Source Projekt und kann zwar auf ordentliche Werkzeuge wie Revisionsverwaltung und Mailinglisten zurückgreifen, lebt jedoch von lockerer Organisation und der weitgehend freiwilligen Mitarbeit aller Beteiligten, andererseits ist es primär immernoch ein Projekt an der Universität und hat damit mit den ganz normalen Problemen solcher Projekte zu kämpfen. Dies schliesst inbesondere den ganz eigenen Arbeitsablauf in derartigen Projekten ein, also mehr Aktivität, je näher der Abgabetermin für diesen Bericht rückt.
 
 Anders als im letzten Semester gab es dieses mal keine regelmäßigen Treffen. Abgesehen von einem Starttreffen, bei dem vorallem Ideen für Erweiterungen und Bugs ausgetauscht wurden und einem Treffen kurz vor Schluss, in welchem die noch zahlreichen offenen Baustellen besprochen wurden, gab es kein Treffen von allen beteiligten. Benutzt wurde daher, wie auch im letzten Semester schon, die Mailingliste des Projektes (teamfound-development ät lists.berlios.de), um sich auszutauschen und Ideen und vorgehensweisen zu besprechen. Weitere Werkzeuge, wie sie Berlios anbietet, darunter Feature- und Bugtracker, wurden wohl auch aufgrudn des geringen nutzens für ein derart kleines Projekt noch nicht benutzt. Gegen Ende des Projektes sind auch die ungeplanten treffen im inoffiziellen Projekt-IRC-Channel (\#teamfound - quakenet) häufiger und bekannt für deren Produktivität geworden.
+
+\subsection{by Jan}
+
+W"ahrend des Semesters hat sich eigentlich garnichts zu diesem Projekt getan. Selbst Steffen habe ich irgendwann im Juli 2006 gefragt ob wir uns nicht mal wieder Treffen sollten. Am 23. August 2006 war es dann soweit, und wir haben gemeinsam "uber m"ogliche Erweiterungen und neue Features diskutiert. Prinzipiell kam dabei aber nichts rum, was nicht schon lange (seit 15. Mai 2006) im wiki unter Milestone 3 eingetragen war. Die dort genannten Features f"ur den Server entsprechen lustigerweise auch genau den jetzt implementierten: 
+\begin{verbatim}
+http://wiki.jonasheese.de/index.php/Milestones
+
+Server 17:05, 15. Mai 2006 Kechel (->Milestone 3 (SS06) - Planung)
+
+* XSL-Stylesheet anstelle von HTML-Antwort von Server 
+  -> es wird immer in XML geantwortet
+* Web-Admin-Interface
+* Framebasierte Seiten unterstützen
+* User-Management
+* Zeichensaetze beachten
+* Automatisches Updated der eingetragenen Seiten (alle x tage oder so) 
+\end{verbatim}
+
+Inwieweit das mit den Zeichens"atzen tats"achlich funktioniert weiss ich pers"onlich nicht, ich habe aber im Source-Code gesehen das Jonas irgendwas mit ''encoding'' und so gemacht hat.
+
+Nach diesem Treffen passierte wiederum erstmal eine Woche lang garnichts.
+
+Ich begann dann am 2. September in unserem wiki das Interface f"ur Milestone 3 (\texttt{http://wiki.jonasheese.de/index.php/Interface\_Milestone\_3}) zu spezifizieren. Dazu "uberlegten Martin und ich welche Funktionen denn f"ur die obigen Features ben"otigt w"urden, welche Parameter sinnvoll seien und wie die XML-Antwort aussehen k"onnte. Leider hat Jonas's Server immernoch als Datum den 1. Januar 1970, daher ist die History dieses Dokuments nicht so eindeutig zur"uckzuverfolgen. F"ur sehr verl"asslich halte ich aber die Angaben in unserem Logbuch (\texttt{http://wiki.jonasheese.de/index.php/Logbuch}). Jedenfalls ist diese \textit{Spezifikation}, ausgedruckt auf DIN A4 Papier, 12 Seiten lang, und wurde im weiteren Projektverlauf von allen Projektseiten wohl von allen Projektseiten am h"aufigsten benutzt und erweitert. Die einzig andere f"ur mich n"utzliche Seite im Wiki war \texttt{Server Milestone 3}, da Martin hier die Datenbank Tabellen incl. der Spaltennamen und Fremdschl"ussel aufgef"uhrt hat.
+
+Am 6. September war wieder ein gemeinsames Treffen, jedoch waren nur Steffen, Andreas und Ich anwesend. Nach etwa zwei Stunden palaber war auch das geschafft. Wir hatten zwar interessante Themen, jedoch nicht wirklich spezifisch "uber das TeamFound Projekt. 
+
+Nach diesen Vorbereitungen war ich eine Woche im Ausland, mit dem Bewusstsein da"s nur nach meiner R"uckkehr nur noch eine einzige Woche Zeit verbleiben w"urde um "uberhaupt etwas zu implementieren. Dementsprechend vermisste ich auch sehr die nicht vorhandene Aktivit"at auf unserer Mailingliste. Nicht eine einzige Mail bzgl. TeamFound erreichte mich in dieser Zeit.  
+
+Zum Gl"uck hatte sich doch etwas getan. Jedenfalls hatte Martin viel am DBLayer gearbeitet, und somit die Infrastruktur f"ur unsere neuen Features stark vorangebracht. Auch Jonas arbeitete schon am Index und Crawler. Was genau da alles ver"andert wurde oder werden sollte weiss ich nicht, aber bis jetzt hatte ich auch noch keine einzige Zeile am Sever selber geschrieben und ich wusste dementsprechend wenig dar"uber.
+
+Hand in Hand mit Martin begann ich dann am Server zu arbeiten, und ein Feature nach dem anderen zu Implementieren. Da wir Zimmernachbarn sind, war die Kommunikation sehr sehr einfach und produktiv. Ich musste einfach nur \textit{r"ubergehen} und sagen $``$\textit{Hey, schalt mal deinen Chat-Client an, ich hab da ne Frage.}$``$ "Uber die folgenden Tage lernte ich so sehr schnell mich im Server-Code zurechtzufinden. Nebenbei erstellte ich noch das Web-Interface und passte die Firefox-Toolbar an das neue Interface an (ca. eine Stunde FF-Toolbar). Das Web-Interface entwickelte sich genauso wie Martin und Ich funktionen im Server fertigstellten, und nutzten dieses auch immer sogleich um die Funktionen forw"ahrend zu testen. Jonas hatte derweil den neuen Indexer und Crawler fertiggestellt. Nach ein paar Stunden Bugfixing von Martin war diese Komponente auch compilierf"ahig in inseren Code integriert. (Jonas hatte anscheinend Probleme mit seinem Internetzugang, und konnte daher bis jetzt seine "Anderungen nicht comitten. Es ergaben sich auch viele Merge-Konflikte durch diese Verz"ogerung..)
+
+Gestern, zwei Tage vor Abgabetermin, hatten wir endlich alle Features bis auf das L"oschen von Kategorien und das automatische Updaten der indizierten Seiten fertiggestellt, und ich konnte einen "offentlichen Testserver aufsetzen (\texttt{http://teamfound.dyndns.org:8080/tf/tf}). Im Chat kl"arten wir mit Andreas auch die letzten Interface-Fragen f"ur seine IE Toolbar implementation. Bis dahin hatte ich null Ahnung ob Andreas "uberhaupt an seinem Teil des Projekts arbeitet. Wie sich herausstellte ist seine Toolbar jedoch inzwischen wesentlich weiter als \textit{meine}. Immerhin half ich ihm einen Fehler beim Einloggen zu l"osen, eine Funktion die in der FF-Toolbar noch f"ollig fehlt.
+
+Danach erstellte ich ein neues Release v0.9 der FF-Toolbar auf berlios.de und passte unsere Projekt Web-Seite \texttt{http://teamfound.berlios.de} entsprechend an.
+
+Heute, einen Tag vor Abgabe, h"orte ich soeben von Martin, da"s die Update-Funktionalit"at nun auch funktioniert (w"ahrend ich selber diesen Text hier schreibe).
+
+Sieht so aus als w"urde alles \textit{just in time} fertig werden!
+
+
+
+
