@@ -772,11 +772,13 @@ public class TeamFoundController implements Controller {
 				urltabBean ub = db.getUrl(conn, address.toString());
 				db.refreshIndexDate(conn, ub.getID());
 				conn.close();
-
+				System.out.println("update Document ausgefuehrt");
 				return(1);
 			}
 			catch(Exception e)
 			{
+
+				System.out.println("update Document fehlgeschlagen");
 				return(-1);
 			}
 		}

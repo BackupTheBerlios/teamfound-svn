@@ -59,18 +59,18 @@ public abstract class BaseServlet extends HttpServlet {
 
 
 	public void init() throws ServletException {
-		
-
-		// configure log4j
-		PropertyConfigurator.configure("logging.properties");
-		servletLog = Logger.getLogger("servlet");
-		requestLog = Logger.getLogger("requests");
-		
-		servletLog.info("Servlet ini");
-		//conf im Servlet root lesen
 
 		try 
 		{
+			// configure log4j
+			String logpath = getServletContext().getRealPath("logging.properties");
+			PropertyConfigurator.configure(logpath);
+			servletLog = Logger.getLogger("servlet");
+			requestLog = Logger.getLogger("requests");
+		
+			servletLog.info("Servlet ini");
+			//conf im Servlet root lesen
+
 			// Pfad ist relative zu Servlet root /conf/teamfound.properties wird gesucht 
 			InputStream is = getServletContext().getResourceAsStream("/conf/teamfound.properties");
 			Properties tfprops  = new Properties();
