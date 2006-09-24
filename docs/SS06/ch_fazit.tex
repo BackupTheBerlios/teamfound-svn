@@ -1,4 +1,7 @@
 
 \chapter{Fazit \& Ausblick}
 
+\section{Probleme wachsender Projekte}
 
+Teamfoudn besteht mittlerweile aus einer Menge Code, so sind alleine im Server mittlerweile an die einhundert Klassen mit vielen tausend Zeilen Code implementiert. In diesem Semester sind ausserdem viele Funktionen hinzugekommen, so das sich die Aktionsimplementierungen im Server fast verdoppelt haben. Es zeigt sich nun das die bisherige Architektur kaum mehr geeigent ist um mit den Anforderungen klarzukommen, so sind die zentralen Punkte im Server, nämlich das Servlet, welches Requests entgegennimmt, validiert udn an den Controller weiterleitet, sowie dieser Controller, der die eigentliche Nutzlast für die einzelnen Aktionen implementiert,völlig überlaufen.
+In Zukunft wird es also immer wichtiger effektive Strukturen für diese wachsenden Anforderungen zu schaffen und zu dokumentieren. Klare Datenschnittstellen sind notwendig und bisher kaum umgesetzt, die Kapselung von Funktionalität ist eine Aufgabe, welche die Architektur des Teamfound-Servers noch einmal deutlich verändern wird. Die Auslagerung von Code in einzelne Bibliotheken-gleiche Implementierungen, wie zB. mit dem Crawler geschehen, können eine Möglichkeit sein, besser wart- und testbaren Code zu schreiben und auch für eine sauberere Implementierung sorgen. 

@@ -1,5 +1,26 @@
 \chapter{Neue Features}
 \section{Neuerungen am Server}
+
+\subsection{Web-Crawler}
+
+Eine wichtige Komponente in einer Suchmaschine ist der Crawler, welcher die zu indexierenden Dokumente herunterlädt. Die bisherige recht einfache Implementierung hat diesen Job nur teilweise gut erledigt. So war es bisher nicht möglich die Codierung der heruntergeladenen Daten korrekt zu bestimmen. Außerdem konnte Teamfound nicht mit Framesets umgehen, bzw. hat versucht die Datei mit dem Frameset zu indexieren, nicht den Inhalt der eigentlichen Frames.
+ 
+Um diese Probleme zu lösen wurde der Teamfound-Crawler komplett neu implementiert. Eine dreistufige Suche nach einer Codierungsangabe, nämlich in der Verbindung an sich, im HTTP-Header sowie im HTML-Header. Letzterer Ort ist der warscheinlichste Fundort für ein solches Encoding. Es ist dafür also notwendig den kompletten HTML-Code herunterzuladen und dann nach einer entsprechenden Angabe zu suchen. Die Suche nach Angaben zum Encoding sieht die Möglichkeit vor, das Teamfoudn in der Zukunft mehrere Arten von Dokumenten indexieren kann. Da die Suche nach einem Encoding in PDF-Dateien zB. ganz anders ablaufen wird, muss diese vom Inhaltstyp abhängen. Der neue Crawler lässt sich bequem um solche erweitern.
+
+Die Behandlung von Framesets ist eine zentrale Anforderung, die auf verschiedene Arten gelöst werden kann. So ist die Frage, ob einfach alle Frames in der Reihenfolge ihrer Definition in der Quelldatei heruntergeladen und zu einem langen Dokument zusammengefügt werden, oder ob mehr Aufwand betrieben werden soll, um zB. den Hauptinhaltsframe zu finden und an den Anfang des Ergebnisdokumentes zu stellen. Die neue Implementierung des Crawler verfolgt erstes Schema, alle Frames werden in einfacher Definitionsreihenfolge hintereinander kopiert und dann an den Indexer übergeben, welcher das HTML entfernt und den Text indexiert. So steht aber natürlich nicht immer der Anfang des Inhaltes in der Teamfound-Ergebnisanzeige. Da es aber nicht einfach ist, den Hauptinhaltsframe innerhalb eines Framesets herauszufinden haben wir uns entschieden dieses auch nicht zu versuchen.
+
+\subsection{Index-Updates}
+
+Wurden bisher Internetseiten in einen Teamfound-Server aufgenommen so wurden sie während dieses Vorganges vom Crawler heruntergeladen und in den Index gespeichert. Änderungen an der Seite würden später nicht in den Index aufgenommen werden da bereits eingetragene Seiten nicht erneuert wurden.
+Um dieses Problem aus der Welt zu schaffen startet ein Teamfound-Server nun einen nebenläufigen Thread der alle Seiten in einem bestimmten Intervall erneut herunterlädt und bei Änderungen neu indexiert.
+
+Dabei können Seiten, wenn der Crawler auf HTTP-Fehler stößt, vorrübergehend deaktiviert werden, oder wenn diese Fehler anhalten, auch komplett aus dem Index entfernt werden.
+
+\subsection{Logging}
+
+Da der Funktionsumfang des Teamfound-Servers stark angewachsen ist, wurde die Nutzung eines echten Logging-Systems notwendig, einerseits vereinfacht dies die Entwicklung, da Debug-Ausgaben ordentlich ausgegeben werden können, andererseits ist es für einen späteren Produktiven Einsatz evtl. wichtig Fehler bei Zugriffen auf den Teamfound-Server oder fehlgeschlagene Logins zu protokollieren.
+Da während eines produktiven Einsatzes keine oder nur wenige Debug-Nachrichten protokolliert werden sollen, ist ein Logging-System notwendig, das einerseits zwischen der Art von Nachrichten unterscheiden kann, andererseits aber auch Komponenten, welche Nachrichten einliefern, trennen kann. log4j aus dem Apache-Projekt erfüllt alle diese Aufgaben und wurde daher für die Integration in Teamfound ausgewählt. Einzelne Komponenten benutzen unterschiedliche sogenannte 'Logger' und trennen ihre Nachrichten in mehrere Kategorien zwischen Debug, Info sowie Warning und Error auf. Einzelne oder alle Logger können auf die Konsole oder in eine Datei umgeleitet werden.  
+
 \section{Neuerungen am Web-Interface}
 \subsection{User Web-Interface}
 \subsection{Admin Web-Interface}
