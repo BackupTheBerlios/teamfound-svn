@@ -79,13 +79,13 @@
 								</a>
 								(<a>
 									<xsl:attribute name="href">
-									?command=removepage&amp;category=<xsl:value-of select="incategory"/>&amp;url=<xsl:value-of select="url"/>&amp;version=3
+									?command=removepage&amp;category=<xsl:value-of select="incategory"/>&amp;url=<xsl:value-of select="url"/>&amp;version=3&amp;pt2=<xsl:value-of select="/response/xsltpassthrough2"/>
 									</xsl:attribute>
 									remove from category
 								</a> / 
 								<a>
 									<xsl:attribute name="href">
-									?command=removepage&amp;category=all&amp;projectid=<xsl:value-of select="/response/xsltpassthrough2"/>&amp;url=<xsl:value-of select="url"/>&amp;version=3
+									?command=removepage&amp;category=all&amp;projectid=<xsl:value-of select="/response/xsltpassthrough2"/>&amp;url=<xsl:value-of select="url"/>&amp;version=3&amp;pt2=<xsl:value-of select="/response/xsltpassthrough2"/>
 									</xsl:attribute>
 									delete from project
 								</a> )

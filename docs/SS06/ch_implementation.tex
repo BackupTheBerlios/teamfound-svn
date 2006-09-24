@@ -22,8 +22,28 @@ Da der Funktionsumfang des Teamfound-Servers stark angewachsen ist, wurde die Nu
 Da während eines produktiven Einsatzes keine oder nur wenige Debug-Nachrichten protokolliert werden sollen, ist ein Logging-System notwendig, das einerseits zwischen der Art von Nachrichten unterscheiden kann, andererseits aber auch Komponenten, welche Nachrichten einliefern, trennen kann. log4j aus dem Apache-Projekt erfüllt alle diese Aufgaben und wurde daher für die Integration in Teamfound ausgewählt. Einzelne Komponenten benutzen unterschiedliche sogenannte 'Logger' und trennen ihre Nachrichten in mehrere Kategorien zwischen Debug, Info sowie Warning und Error auf. Einzelne oder alle Logger können auf die Konsole oder in eine Datei umgeleitet werden.  
 
 \section{Neuerungen am Web-Interface}
-\subsection{User Web-Interface}
-\subsection{Admin Web-Interface}
+\textit{Neuerungen} ist gut, bisher gab es eigentlich noch kein Web-Interface :)
+
+Die Version 0.2 des TeamFound Servers hatte noch die Option \texttt{want=xml|html}, "uber die man vom Server direkt eine im Browser darstellbare HTML-Seite anfordern konnte. Jedoch war dieser Teil des Servers zu grossen Teilen nicht implementiert.
+
+In der aktuellen Version 0.3 setzen wir nur auf XML-Antworten, die daf"ur aber allesamt ein XSL-Transformations Stylesheet enthalten:
+
+\texttt{<?xml-stylesheet href=$``$transform.xsl$``$ type=$``$text/xsl$``$?>}
+
+"Uber diese XSLT Datei k"onnen alle g"angigen Browser das vom Server gelieferte XML selber in HTML umwandeln und anzeigen.
+
+\subsection{Komponenten}
+Das gesamte Web-Interface besteht aus 3 Dateien:
+\begin{description}
+\item[transform.xsl] Transformiert unseren XML-Baum in HTML.
+\item[stylesheet.css] Legt das Layout des erstellten HTMLs fest.
+\item[ui.js] Enth"alt eine einzige JavaScript Funktion (\texttt{showhide(layer\_ref)}) zum Anzeigen/Verstecken einzelner Bereiche der Webseite.
+\end{description}
+
+Die \texttt{transform.xsl} ist die einzige dieser Dateien die ich hier genauer beschreiben will. 
+
+
+
 \section{Neuerungen an der Firefox/Flock-Toolbar}
 \section{Neuerungen an der Internet-Explorer-Toolbar}
 
