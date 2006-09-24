@@ -34,12 +34,15 @@ import java.util.Iterator;
 import config.teamfound.TeamFoundConfig;
 import controller.SessionData;
 
+import org.apache.log4j.Logger;
+
 public class DBLayerHSQL implements DBLayer
 {
 
-	
+	protected Logger log;
 	public DBLayerHSQL()
 	{
+		log = Logger.getLogger("tf-db");
 	}
 	
 	/** 
@@ -111,46 +114,46 @@ public class DBLayerHSQL implements DBLayer
 		{
 			//Password vom admin aendern
 			if(!update(c,"ALTER USER sa SET PASSWORD tf567X"))
-				System.out.println("error changepassword ");
+				log.error("error changepassword ");
 			
 
 			//User anlegen
 			String cuser = new String("CREATE USER "+user+" PASSWORD "+pass);
 			if(!update(c,cuser))
-					System.out.println("error bei create User ");
+					log.error("error bei create User ");
 			
 			//create Table tfuser fuer Usermanagement
 			String sqlcreate = "CREATE TABLE tfuser (id INTEGER IDENTITY,username VARCHAR, pass VARCHAR,sessionkey VARCHAR, lastaction DATETIME, serveradmin BOOLEAN)";
 			if(!update(c,sqlcreate))
-				System.out.println("error in Statement "+ sqlcreate);
+				log.error("error in Statement "+ sqlcreate);
 
 			//create Category table
 			sqlcreate = new String("CREATE TABLE category (id INTEGER IDENTITY,root_id INTEGER, left INTEGER, right INTEGER, name VARCHAR,beschreibung VARCHAR, owner INTEGER, FOREIGN KEY(owner) REFERENCES tfuser(id))");			
 			if(!update(c,sqlcreate))
-				System.out.println("error in Statement "+ sqlcreate);
+				log.error("error in Statement "+ sqlcreate);
 
 			//create URL table
 			sqlcreate = "CREATE TABLE indexedurls (id INTEGER IDENTITY,url VARCHAR,indexdate DATE, rating INTEGER)";
 			if(!update(c,sqlcreate))
-				System.out.println("error in Statement "+ sqlcreate);
+				log.error("error in Statement "+ sqlcreate);
 
 			//create ForeignKeyTable Url <-> Category
 			sqlcreate = "CREATE TABLE urltocategory (id INTEGER IDENTITY,url INTEGER,category INTEGER,rating INTEGER, originalcat INTEGER, FOREIGN KEY (category) REFERENCES category(id), FOREIGN KEY (url) REFERENCES indexedurls(id))";
 			if(!update(c,sqlcreate))
-				System.out.println("error in Statement "+ sqlcreate);
+				log.error("error in Statement "+ sqlcreate);
 
 			//Project-Daten
 			//nicht jede Category sondern nur jede root Cat braucht eine Version
 			sqlcreate = "CREATE TABLE projectdata(id INTEGER IDENTITY,rootid INTEGER,version INTEGER, useruseradd BOOLEAN, userurledit BOOLEAN, usercatedit BOOLEAN, useraddurl BOOLEAN, useraddcat BOOLEAN, guestread BOOLEAN, guesturledit BOOLEAN, guestcatedit BOOLEAN, guestaddurl BOOLEAN, guestaddcat BOOLEAN)";//,FOREIGN KEY (rootid) REFERENCES category(root_id))";
 
 			if(!update(c,sqlcreate))
-				System.out.println("error in Statement "+ sqlcreate);
+				log.error("error in Statement "+ sqlcreate);
 			
 			
 			//create ForeignKeyTable User <-> Project
 			sqlcreate = "CREATE TABLE tfusertoproject (id INTEGER IDENTITY,userid INTEGER, rootid INTEGER, isadmin BOOLEAN)";//, FOREIGN KEY (userid) REFERENCES tfuser(id), FOREIGN KEY (rootid) REFERENCES projectdata(rootid))";
 			if(!update(c,sqlcreate))
-				System.out.println("error in Statement "+ sqlcreate);
+				log.error("error in Statement "+ sqlcreate);
 
 
 			
@@ -158,27 +161,27 @@ public class DBLayerHSQL implements DBLayer
 			
 			cuser=("GRANT ALL ON category TO " +user);
 			if(!update(c,cuser))
-				System.out.println("error bei grant to User ");
+				log.error("error bei grant to User ");
 									
 			cuser=("GRANT ALL ON indexedurls TO " +user);
 			if(!update(c,cuser))
-				System.out.println("error bei grant to User ");
+				log.error("error bei grant to User ");
 			
 			cuser=("GRANT ALL ON urltocategory TO " +user);
 			if(!update(c,cuser))
-				System.out.println("error bei grant to User ");
+				log.error("error bei grant to User ");
 
 			cuser=("GRANT ALL ON projectdata TO " +user);
 			if(!update(c,cuser))
-				System.out.println("error bei grant to User ");
+				log.error("error bei grant to User ");
 
 			cuser=("GRANT ALL ON tfuser TO " +user);
 			if(!update(c,cuser))
-				System.out.println("error bei grant to User ");
+				log.error("error bei grant to User ");
 
 			cuser=("GRANT ALL ON tfusertoproject TO " +user);
 			if(!update(c,cuser))
-				System.out.println("error bei grant to User ");
+				log.error("error bei grant to User ");
 
 
 			c.commit();
@@ -189,7 +192,7 @@ public class DBLayerHSQL implements DBLayer
 			c.rollback();
 			//existiert wohl schon 
 			//dann brauch ich auch nichts anlegen
-			System.out.println("Fehler beim DB initialisieren" +ex2);
+			log.error("Fehler beim DB initialisieren" +ex2);
 			throw(ex2);
 		}
 		
@@ -375,7 +378,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 			conn.rollback();
 			//logging machen
-			System.out.println("AddCategory :"+e);
+			log.error("AddCategory :"+e);
 			throw(e);
 		}
 		
@@ -409,7 +412,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//logging machen
-			System.out.println("UpdateCategory :"+e);
+			log.error("UpdateCategory :"+e);
 			throw(e);
 		}
 	}
@@ -465,8 +468,7 @@ public class DBLayerHSQL implements DBLayer
 		}
 		catch(SQLException e)
 		{
-			//TODO LoggMessage statt print
-			System.out.println("AddRoot: "+ e);
+			log.error("AddRoot: "+ e);
 			throw(e);
 		}
 		
@@ -504,7 +506,7 @@ public class DBLayerHSQL implements DBLayer
 			//pruefen ob es wirklich ein Leaf ist
 			if(catbean.getLeft()+1 != catbean.getRight())
 			{
-				System.out.println("DeleteLeafCategory: Zu loeschende Category ist kein Blatt!");
+				log.error("DeleteLeafCategory: Zu loeschende Category ist kein Blatt!");
 				return;
 			}
 
@@ -531,7 +533,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 			conn.rollback();
 			//logging machen
-			System.out.println("deleteLeafCategory :"+e);
+			log.error("deleteLeafCategory :"+e);
 			throw(e); 
 		}
 		
@@ -587,7 +589,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 			conn.rollback();
 			//logging machen
-			System.out.println("deletepartialTree :"+e);
+			log.error("deletepartialTree :"+e);
 			throw(e); 
 		}
 		
@@ -667,7 +669,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 			conn.rollback();
 			//TODO LoggMessage statt print
-			System.out.println("AddUrl: "+ e);
+			log.error("AddUrl: "+ e);
 			throw(e);
 		}
 		
@@ -694,7 +696,7 @@ public class DBLayerHSQL implements DBLayer
 		}
 		catch(SQLException e)
 		{
-			System.out.println("getAllUrlsInCategory: "+ e);
+			log.error("getAllUrlsInCategory: "+ e);
 			throw(e);
 		}
 	}
@@ -807,7 +809,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 			conn.rollback();
 			//TODO LoggMessage statt print
-			System.out.println("AddUrl: "+ e);
+			log.error("AddUrl: "+ e);
 			throw(e);
 		}
 	}
@@ -842,7 +844,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 			conn.rollback();
 			//TODO LoggMessage statt print
-			System.out.println("AddCatToUrl: "+ e);
+			log.error("AddCatToUrl: "+ e);
 			throw(e);
 		}
 	}
@@ -894,7 +896,7 @@ public class DBLayerHSQL implements DBLayer
 				re.setBeschreibung(rsi.getString(6));
 				
 				if(!revec.add(re))
-					System.out.println("an Vector adden fehlgeschlagen!");
+					log.error("an Vector adden fehlgeschlagen!");
 			}
 			
 			return(revec);
@@ -903,7 +905,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("FindAllParents: "+ e);
+			log.error("FindAllParents: "+ e);
 			throw(e);
 		}
 	}
@@ -963,7 +965,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("DBLayerHSQL.FindParent: "+ e);
+			log.error("DBLayerHSQL.FindParent: "+ e);
 			throw(e);
 		}
 
@@ -1029,7 +1031,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 			conn.rollback();
 			//TODO LoggMessage statt print
-			System.out.println("AddCatwithParentsToUrl: "+ e);
+			log.error("AddCatwithParentsToUrl: "+ e);
 			throw(e);
 		}
 	}
@@ -1076,7 +1078,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("GetCategorybyName: "+ e);
+			log.error("GetCategorybyName: "+ e);
 			throw(e);
 		}
 
@@ -1112,7 +1114,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("GetUrl ohne RootCategory: "+ e);
+			log.error("GetUrl ohne RootCategory: "+ e);
 			throw(e);
 		}
 	}
@@ -1145,7 +1147,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("DBLayerHSQL: getCatsOfUrl "+ e);
+			log.error("DBLayerHSQL: getCatsOfUrl "+ e);
 			throw(e);
 		}
 	}
@@ -1184,7 +1186,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("GetUrl mit RootCategory: "+ e);
+			log.error("GetUrl mit RootCategory: "+ e);
 			throw(e);
 		}
 	}
@@ -1221,7 +1223,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("GetCategoryTree: "+ e);
+			log.error("GetCategoryTree: "+ e);
 			throw(e);
 		}
 		
@@ -1333,7 +1335,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("GetVersionNumber: "+ e);
+			log.error("GetVersionNumber: "+ e);
 			throw(e);
 		}
 	}
@@ -1396,7 +1398,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("GetVersionNumber: "+ e);
+			log.error("GetVersionNumber: "+ e);
 			throw(e);
 		}
 	}
@@ -1427,7 +1429,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("GetVersionNumber: "+ e);
+			log.error("GetVersionNumber: "+ e);
 			throw(e);
 		}
 	}
@@ -1467,7 +1469,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("GetVersionNumber: "+ e);
+			log.error("GetVersionNumber: "+ e);
 			throw(e);
 		}
 		
@@ -1512,7 +1514,7 @@ public class DBLayerHSQL implements DBLayer
 				re.setBeschreibung(rsi.getString(6));
 				
 				if(!revec.add(re))
-					System.out.println("an Vector adden fehlgeschlagen!");
+					log.error("an Vector adden fehlgeschlagen!");
 			}
 			
 			return(revec);
@@ -1521,7 +1523,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("GetAllChildCats: "+ e);
+			log.error("GetAllChildCats: "+ e);
 			throw(e);
 		}
 	
@@ -1560,7 +1562,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("GetCategorybyName: "+ e);
+			log.error("GetCategorybyName: "+ e);
 			throw(e);
 		}
 	}
@@ -1589,7 +1591,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("initialized: "+ e);
+			log.error("initialized: "+ e);
 			throw(e);
 		}
 	}
@@ -1629,7 +1631,7 @@ public class DBLayerHSQL implements DBLayer
 				re.setAdmin(rsi.getBoolean("isadmin"));
 				
 				if(!revec.add(re))
-					System.out.println("an Vector adden fehlgeschlagen!");
+					log.error("an Vector adden fehlgeschlagen!");
 			}
 			
 			return(revec);
@@ -1638,7 +1640,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("getAdminProjectsforUser: "+ e);
+			log.error("getAdminProjectsforUser: "+ e);
 			throw(e);
 		}
 	
@@ -1692,7 +1694,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("getUserByID: "+ e);
+			log.error("getUserByID: "+ e);
 			throw(e);
 		}
 
@@ -1731,7 +1733,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("getUserByName: "+ e);
+			log.error("getUserByName: "+ e);
 			throw(e);
 		}
 
@@ -1772,7 +1774,7 @@ public class DBLayerHSQL implements DBLayer
 				
 				
 				if(!revec.add(re))
-					System.out.println("an Vector adden fehlgeschlagen!");
+					log.error("an Vector adden fehlgeschlagen!");
 			}
 			
 			return(revec);
@@ -1781,7 +1783,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("getOlderDocs: "+ e);
+			log.error("getOlderDocs: "+ e);
 			throw(e);
 		}
 
@@ -1814,7 +1816,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("refreshIndexDate: "+ e);
+			log.error("refreshIndexDate: "+ e);
 			throw(e);
 		}
 
@@ -1856,7 +1858,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("getUserByID: "+ e);
+			log.error("getUserByID: "+ e);
 			throw(e);
 		}
 
@@ -1887,7 +1889,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("updateLastActionForUserID: "+ e);
+			log.error("updateLastActionForUserID: "+ e);
 			throw(e);
 		}
 
@@ -1921,7 +1923,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("updateLastActionForUserID: "+ e);
+			log.error("updateLastActionForUserID: "+ e);
 			throw(e);
 		}
 	}
@@ -1967,7 +1969,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 			conn.rollback();
 			//TODO LoggMessage statt print
-			System.out.println("updateLastActionForUserID: "+ e);
+			log.error("updateLastActionForUserID: "+ e);
 			throw(e);
 		}
 
@@ -2002,7 +2004,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("addUserToAdminsOfProject: "+ e);
+			log.error("addUserToAdminsOfProject: "+ e);
 			throw(e);
 		}
 
@@ -2051,7 +2053,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 
 			//TODO LoggMessage statt print
-			System.out.println("addUserToProject: "+ e);
+			log.error("addUserToProject: "+ e);
 			throw(e);
 		}
 
@@ -2090,7 +2092,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("setProjectdata: "+ e);
+			log.error("setProjectdata: "+ e);
 			throw(e);
 		}
 
@@ -2137,7 +2139,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("getProjectdata: "+ e);
+			log.error("getProjectdata: "+ e);
 			throw(e);
 		}
 
@@ -2183,7 +2185,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("getRights: "+ e);
+			log.error("getRights: "+ e);
 			throw(e);
 		}
 
@@ -2232,7 +2234,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("getProjectdataToCat: "+ e);
+			log.error("getProjectdataToCat: "+ e);
 			throw(e);
 		}
 
@@ -2287,7 +2289,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("checkCatReadAccess : "+ e);
+			log.error("checkCatReadAccess : "+ e);
 			throw(e);
 		}
 
@@ -2331,7 +2333,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("getProjectDataToCat: "+ e);
+			log.error("getProjectDataToCat: "+ e);
 			throw(e);
 		}
 	}
@@ -2359,7 +2361,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 
 			//TODO LoggMessage statt print
-			System.out.println("removeUserFromProject: "+ e);
+			log.error("removeUserFromProject: "+ e);
 			throw(e);
 		}
 
@@ -2393,7 +2395,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 
 			//TODO LoggMessage statt print
-			System.out.println("getUsersOfProject: "+ e);
+			log.error("getUsersOfProject: "+ e);
 			throw(e);
 		}
 
@@ -2426,7 +2428,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 
 			//TODO LoggMessage statt print
-			System.out.println("removePage: "+ e);
+			log.error("removePage: "+ e);
 			throw(e);
 		}
 
@@ -2457,7 +2459,7 @@ public class DBLayerHSQL implements DBLayer
 		{
 
 			//TODO LoggMessage statt print
-			System.out.println("deleteIndexedUrl: "+ e);
+			log.error("deleteIndexedUrl: "+ e);
 			throw(e);
 		}
 
@@ -2490,7 +2492,7 @@ public class DBLayerHSQL implements DBLayer
 		catch(SQLException e)
 		{
 			//TODO LoggMessage statt print
-			System.out.println("getCatsWithUrlInProject: "+ e);
+			log.error("getCatsWithUrlInProject: "+ e);
 			throw(e);
 		}
 	}

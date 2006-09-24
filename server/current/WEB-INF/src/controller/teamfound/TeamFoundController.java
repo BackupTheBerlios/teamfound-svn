@@ -71,7 +71,7 @@ public class TeamFoundController implements Controller {
 			}catch(Exception e)
 			{
 				//Todo logg
-				System.out.println(e);
+				log.error(e);
 			}
 		}
 
@@ -127,19 +127,19 @@ public class TeamFoundController implements Controller {
 			urltabBean urlbean = db.getUrl(conn,adress.toString());
 			if(urlbean != null)
 			{
-				//System.out.println("habe Url schon indiziert!");
+				//log.error("habe Url schon indiziert!");
 				Vector<Integer> oldcats = db.getCatsOfUrl(conn,urlbean.getID());
 				
 				if(oldcats.containsAll(newcatstoadd))
 				{
 					//brauchen nichts erneueren
-					System.out.println("Nichts an der URL hat sich geaendert!");
+					log.info("Nichts an der URL hat sich geaendert!");
 					return(resp);
 				}
 				else
 				{
 					//muessen nur Kategorien hinzufuegen
-					//System.out.println("Neue Categorys zu der URL hinzutun");
+					//log.error("Neue Categorys zu der URL hinzutun");
 					HashSet<Integer> allcats = new HashSet<Integer>();
 					allcats.addAll(oldcats);
 					allcats.addAll(newcatstoadd);
@@ -164,11 +164,11 @@ public class TeamFoundController implements Controller {
 			/*Url muss heruntergeladen und neu Indiziert werden*/
 			
 			// 1.Herunterladen und  Indizieren
-			//System.out.println("2. Url in den Index!");
+			//log.error("2. Url in den Index!");
 			tfindexer.addUrl(adress, newcatstoadd);
 
 			// 3. Datenbank aktualisieren
-			//System.out.println("3. Url in die DB!");
+			//log.error("3. Url in die DB!");
 			urltabBean ub = new urltabBean(adress.toString());			
 			categoryBean catbean = new categoryBean();
 			catbean.setID(new Integer(category[0]));
@@ -188,14 +188,14 @@ public class TeamFoundController implements Controller {
 		}
 		catch(SQLException sqle)
 		{
- 			System.out.println("TeamFoundController : AddToIndex"+sqle);
+ 			log.error("TeamFoundController : AddToIndex"+sqle);
             DBAccessException a = new DBAccessException("nested Exception");
 			a.initCause(sqle);
 			throw a;
 		}
 		catch(Exception e)
 		{
- 			System.out.println("TeamFoundController : AddToIndex"+e);
+ 			log.error("TeamFoundController : AddToIndex"+e);
             IndexAccessException a = new IndexAccessException("nested Exception");
 			a.initCause(e);
 			throw a;
@@ -266,7 +266,7 @@ public class TeamFoundController implements Controller {
 		catch(Exception e)
 		{
 			//TODO Exceptions richtig machen
- 			System.out.println("TeamFoundController : search)"+e);
+ 			log.error("TeamFoundController : search)"+e);
             IndexAccessException a = new IndexAccessException("nested Exception");
 			a.initCause(e);
 			throw a;
@@ -338,7 +338,7 @@ public class TeamFoundController implements Controller {
 		}
 		catch(SQLException e)
 		{
-			System.out.println("TeamFoundController : search)"+e);
+			log.error("TeamFoundController : search)"+e);
             DBAccessException a = new DBAccessException("nested Exception");
 			a.initCause(e);
 			throw a;
@@ -346,8 +346,8 @@ public class TeamFoundController implements Controller {
 		catch(Exception e)
 		{
 			//TODO Exceptions richtig machen
- 			System.out.println("TeamFoundController : search)"+e);
-			System.out.println("INDEX FEHLER");
+ 			log.error("TeamFoundController : search)"+e);
+			log.error("INDEX FEHLER");
 			e.printStackTrace();
             IndexAccessException a = new IndexAccessException("nested Exception");
 			a.initCause(e);
@@ -408,7 +408,7 @@ public class TeamFoundController implements Controller {
 		catch(Exception e)
 		{
 			//TODO Exceptions richtig machen
- 			System.out.println("TeamFoundController : getCategories)"+e);
+ 			log.error("TeamFoundController : getCategories)"+e);
 			e.printStackTrace();
 			DBAccessException dba = new DBAccessException("TeamFoundController : addCategory" + e);
 			dba.initCause(e);
@@ -506,7 +506,7 @@ public class TeamFoundController implements Controller {
 		}
 		catch(Exception e)
 		{
- 			System.out.println("TeamFoundController : addCategory)");
+ 			log.error("TeamFoundController : addCategory)");
 			e.printStackTrace();
 			DBAccessException dba = new DBAccessException("TeamFoundController : addCategory" + e);
 			dba.initCause(e);
@@ -547,7 +547,7 @@ public class TeamFoundController implements Controller {
 		catch(Exception e)
 		{
 			//TODO Exceptions richtig machen
- 			System.out.println("TeamFoundController : getProjects)"+e);
+ 			log.error("TeamFoundController : getProjects)"+e);
 			e.printStackTrace();
             DBAccessException a = new DBAccessException("nested Exception");
 			a.initCause(e);
@@ -627,7 +627,7 @@ public class TeamFoundController implements Controller {
 		catch(Exception e)
 		{
 			//TODO Exceptions richtig machen
- 			System.out.println("TeamFoundController : initServer"+e);
+ 			log.error("TeamFoundController : initServer"+e);
 			return false;
 		}
 		
@@ -689,7 +689,7 @@ public class TeamFoundController implements Controller {
 		catch(Exception e)
 		{
 			//TODO Exceptions richtig machen
- 			System.out.println("TeamFoundController : addCategory)"+e);
+ 			log.error("TeamFoundController : addCategory)"+e);
 			DBAccessException dbe = new DBAccessException("TeamFoundController : addCategory)"+e);
 			dbe.initCause(e);
 			throw dbe;
@@ -723,7 +723,7 @@ public class TeamFoundController implements Controller {
 		}
 		catch(Exception e)
 		{
-			System.out.println("Controller : getOlderDocuments:"+e);
+			log.error("Controller : getOlderDocuments:"+e);
 			e.printStackTrace();
 			return null;
 		}
@@ -772,13 +772,13 @@ public class TeamFoundController implements Controller {
 				urltabBean ub = db.getUrl(conn, address.toString());
 				db.refreshIndexDate(conn, ub.getID());
 				conn.close();
-				System.out.println("update Document ausgefuehrt");
+				log.error("update Document ausgefuehrt");
 				return(1);
 			}
 			catch(Exception e)
 			{
 
-				System.out.println("update Document fehlgeschlagen");
+				log.error("update Document fehlgeschlagen");
 				return(-1);
 			}
 		}
@@ -890,7 +890,7 @@ public class TeamFoundController implements Controller {
 			}
 			catch(Exception e)
 			{
-				System.out.println("TeamFoundController : newuser)"+e);
+				log.error("TeamFoundController : newuser)"+e);
 				DBAccessException dbe = new DBAccessException("NewUser SQLException");
 				dbe.initCause(dbe);
 				throw(dbe);
@@ -929,7 +929,7 @@ public class TeamFoundController implements Controller {
 			}
 			catch(Exception e)
 			{
-				System.out.println("TeamFoundController : checkuser)"+e);
+				log.error("TeamFoundController : checkuser)"+e);
 				DBAccessException dbe = new DBAccessException("checkUser SQLException");
 				dbe.initCause(dbe);
 				throw(dbe);
@@ -958,7 +958,7 @@ public class TeamFoundController implements Controller {
 			}
 			catch(Exception e)
 			{
-				System.out.println("TeamFoundController : rejectUser)"+e);
+				log.error("TeamFoundController : rejectUser)"+e);
 				DBAccessException dbe = new DBAccessException("rejectUser SQLException");
 				dbe.initCause(dbe);
 				throw(dbe);
@@ -999,7 +999,7 @@ public class TeamFoundController implements Controller {
 			}
 			catch(Exception e)
 			{
-				System.out.println("TeamFoundController : loginUser)"+e);
+				log.error("TeamFoundController : loginUser)"+e);
 				DBAccessException dbe = new DBAccessException("loginUser SQLException");
 				dbe.initCause(e);
 				throw(dbe);
@@ -1062,7 +1062,7 @@ public class TeamFoundController implements Controller {
 			}
 			catch(SQLException e)
 			{
-				System.out.println("TeamFoundController : editPermission)"+e);
+				log.error("TeamFoundController : editPermission)"+e);
 				DBAccessException a = new DBAccessException("nested Exception");
 				a.initCause(e);
 				throw a;
@@ -1070,7 +1070,7 @@ public class TeamFoundController implements Controller {
 			catch(Exception e)
 			{
 				//TODO Exceptions richtig machen
-				System.out.println("TeamFoundController : editPermission)"+e);
+				log.error("TeamFoundController : editPermission)"+e);
 				e.printStackTrace();
             IndexAccessException a = new IndexAccessException("nested Exception");
 			a.initCause(e);
@@ -1123,7 +1123,7 @@ public class TeamFoundController implements Controller {
 		}
 		catch(Exception e)
 		{
- 			System.out.println("TeamFoundController : loginUser)"+e);
+ 			log.error("TeamFoundController : loginUser)"+e);
 			DBAccessException dbe = new DBAccessException("loginUser SQLException");
 			dbe.initCause(e);
 			throw(dbe);
@@ -1178,7 +1178,7 @@ public class TeamFoundController implements Controller {
 		}
 		catch(Exception e)
 		{
- 			System.out.println("TeamFoundController : loginUser)"+e);
+ 			log.error("TeamFoundController : loginUser)"+e);
 			DBAccessException dbe = new DBAccessException("loginUser SQLException");
 			dbe.initCause(e);
 			throw(dbe);
@@ -1223,7 +1223,7 @@ public class TeamFoundController implements Controller {
 		}
 		catch(Exception e)
 		{
- 			System.out.println("TeamFoundController : loginUser)"+e);
+ 			log.error("TeamFoundController : loginUser)"+e);
 			DBAccessException dbe = new DBAccessException("loginUser SQLException");
 			dbe.initCause(e);
 			throw(dbe);
@@ -1264,7 +1264,7 @@ public class TeamFoundController implements Controller {
 		}
 		catch(Exception e)
 		{
- 			System.out.println("TeamFoundController : loginUser)"+e);
+ 			log.error("TeamFoundController : loginUser)"+e);
 			DBAccessException dbe = new DBAccessException("loginUser SQLException");
 			dbe.initCause(e);
 			throw(dbe);
@@ -1394,7 +1394,7 @@ public class TeamFoundController implements Controller {
 		}
 		catch(Exception e)
 		{
- 			System.out.println("TeamFoundController : loginUser)"+e);
+ 			log.error("TeamFoundController : loginUser)"+e);
 			DBAccessException dbe = new DBAccessException("loginUser SQLException");
 			dbe.initCause(e);
 			throw(dbe);
