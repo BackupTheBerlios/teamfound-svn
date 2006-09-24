@@ -174,4 +174,14 @@ public interface Controller {
 	 */
 	public List<URL>getOldURL();
 
+	/**
+	 * Category loeschen
+	 * -muss leer sein
+	 * -nur leaf Kategorien koennen derzeit geloescht werden
+	 *
+	 * @param Integer category
+	 * @return Response
+	 */
+	public Response removeCategory(Integer category, SessionData tfsession) throws DBAccessException ;
+	
 }

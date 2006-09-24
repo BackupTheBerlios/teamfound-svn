@@ -115,6 +115,7 @@ public abstract class BaseServlet extends HttpServlet {
 		commands.put("getuser", new Integer(12));
 		commands.put("logout", new Integer(13));
 		commands.put("removepage", new Integer(14));
+		commands.put("removecategory", new Integer(15));
 
 		// NOCH FEHLEN
 		//commands.put("removecategory", new Integer(x));
@@ -672,6 +673,31 @@ public abstract class BaseServlet extends HttpServlet {
 			}			
 			
 			return ctrl.removePage(url14, cat14, proj14, tfsession);
+		
+		case 15: // removecategory
+			String cat15;
+			Integer catid15 = null;
+			// es muss der parameter category da sein
+			if(!params.containsKey("category")) {
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Need Parameter 'category'");
+				requestLog.warn("["+req.getRemoteAddr()+"] missing param 'category'");
+				return r;		
+			}
+			else
+				cat15 = req.getParameter("category");
+			try
+			{
+				catid15 = new Integer(cat15);
+			}
+			catch(NumberFormatException nfe)
+			{
+				r = new ErrorResponse();
+				r.serverReturnValue(2, "Parameter 'category' must be a number");
+				return r;
+			}
+			return ctrl.removeCategory(catid15,tfsession);
+
 		}
 		
 		r = new ErrorResponse();

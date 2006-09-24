@@ -526,6 +526,17 @@ public class DBLayerHSQL implements DBLayer
 			//stmnt = ("DELETE FROM urlstocategory WHERE id = "+catbean.getID());
 			//st.executeUpdate(stmnt);
 
+			//Falls Projekt muss auch der Eintrag aus der Projekttabelle raus und die Zuordnung der User
+			if(catbean.getID().equals(catbean.getRootID()))
+			{
+				stmnt = new String("DELETE FROM projectdata WHERE rootid = "+catbean.getID());
+				st.executeUpdate(stmnt);
+				
+				stmnt = new String("DELETE FROM tfusertoproject WHERE rootid = "+catbean.getID());
+				st.executeUpdate(stmnt);
+
+			}
+
 			conn.commit();
 			return true;
 		}
