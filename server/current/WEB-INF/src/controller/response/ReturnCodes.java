@@ -30,7 +30,8 @@ public class ReturnCodes
 			case 10:return("Password to short");
 			case 11:return("User does not exist");
 			case 12:return("User does not belong to specified project!");
-
+			case 13:return("Can not delete Category! (not empty)");
+			case 14:return("Category is not a leaf!");		
 			default :return("Some wierd Error");
 		}
 

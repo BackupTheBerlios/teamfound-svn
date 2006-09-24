@@ -1403,4 +1403,68 @@ public class TeamFoundController implements Controller {
 		}
 	}
 	
+	/**
+	 * Category loeschen
+	 * -muss leer sein
+	 * -nur leaf Kategorien koennen derzeit geloescht werden
+	 *
+	 * @param Integer category
+	 * @return Response
+	 */
+	public Response removeCategory(Integer category, SessionData tfsession) throws DBAccessException 
+	{	
+		try
+		{
+			Connection conn;
+			conn = db.getConnection("tf","tfpass","anyserver","tfdb");
+
+			categoryBean catbean = db.getCatByID(conn, category);
+
+			ErrorResponse re = new ErrorResponse();
+			if( catbean == null)
+			{	
+				re.tfReturnValue(new Integer(5)); // kategorie nicht gefunden
+				conn.close();
+				return re;
+			}
+
+			if(!checkAuthorisation.checkEditCat(tfsession, catbean.getRootID()))
+			{
+				re.tfReturnValue(new Integer(9));
+				conn.close();
+				return re;
+			}
+
+			Vector<String> urls = db.getAllUrlsInCategory(conn, catbean.getID());
+			if(urls.size() > 0)
+			{
+				re.tfReturnValue(new Integer(13));
+				conn.close();
+				return re;
+			}
+
+			if(db.deleteLeafCategory(conn, catbean))
+			{
+				re.tfReturnValue(new Integer(0));
+				conn.close();
+				return re;
+
+			}
+			else
+			{
+				re.tfReturnValue(new Integer(14));
+				conn.close();
+				return re;
+			}
+
+
+		}
+		catch(Exception e)
+		{
+ 			log.error("TeamFoundController : removeCategory"+e);
+			DBAccessException dbe = new DBAccessException("removeCategory SQLException");
+			dbe.initCause(e);
+			throw(dbe);
+		}
+	}
 }

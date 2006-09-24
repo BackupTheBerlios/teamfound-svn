@@ -92,8 +92,8 @@ public class checkAuthorisation
 
 	public static boolean checkEditCat(SessionData tfsession, Integer projectid)
 	{
-		// checke ob guestaddcat == true oder 
-		// user eingeloggt, zu diesem projekt gehoert und projekt useraddcat == true gestzt hat
+		// checke ob guesteditcat == true oder 
+		// user eingeloggt, zu diesem projekt gehoert und projekt usereditcat == true gestzt hat
 		// oder user admin des projekts ist
 		
 		if(!(tfsession == SessionData.guest))

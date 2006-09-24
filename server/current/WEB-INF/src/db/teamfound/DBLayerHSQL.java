@@ -484,7 +484,7 @@ public class DBLayerHSQL implements DBLayer
 	* @param catbean  categoryBean
 	*
 	*/
-	public void deleteLeafCategory(Connection conn, categoryBean catbean) throws SQLException
+	public boolean deleteLeafCategory(Connection conn, categoryBean catbean) throws SQLException
 	{
 		
 		Statement st = null;
@@ -506,8 +506,8 @@ public class DBLayerHSQL implements DBLayer
 			//pruefen ob es wirklich ein Leaf ist
 			if(catbean.getLeft()+1 != catbean.getRight())
 			{
-				log.error("DeleteLeafCategory: Zu loeschende Category ist kein Blatt!");
-				return;
+				log.info("DeleteLeafCategory: Zu loeschende Category ist kein Blatt!");
+				return false;
 			}
 
 			//Category loeschen
@@ -523,11 +523,11 @@ public class DBLayerHSQL implements DBLayer
 
 			//Zugordnungen zu Urls entfernen
 			//TODO sollte diese Methode ueberhaupt gehen wenn urls zugeordnet sind?
-			stmnt = ("DELETE FROM urlstocategory WHERE id = "+catbean.getID());
-			st.executeUpdate(stmnt);
+			//stmnt = ("DELETE FROM urlstocategory WHERE id = "+catbean.getID());
+			//st.executeUpdate(stmnt);
 
 			conn.commit();
-			return;
+			return true;
 		}
 		catch(SQLException e)
 		{

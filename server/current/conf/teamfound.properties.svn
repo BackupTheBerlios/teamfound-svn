@@ -36,5 +36,6 @@ framedepth = 3
 #einer Url veraendert hat
 tooldafter = 1
 
-#die Zeit die der Update Thread warten soll zwischen AKtionen in Minuten
-updatewait = 5
+#die Zeit die der Update Thread warten soll zwischen Updateversuchen
+#alle 60 Minuten nach veralten URLs suchen sollte im allgemeinen ausreichen
+updatewait = 60

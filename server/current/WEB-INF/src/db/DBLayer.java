@@ -102,7 +102,7 @@ public interface DBLayer
 	* @param catbean  categoryBean
 	*
 	*/
-	public void deleteLeafCategory(Connection conn, categoryBean catbean) throws SQLException;
+	public boolean deleteLeafCategory(Connection conn, categoryBean catbean) throws SQLException;
 	
 	/** 
 	* Loescht einen TeilBaum aus dem Category-Baum (nested Set) 
