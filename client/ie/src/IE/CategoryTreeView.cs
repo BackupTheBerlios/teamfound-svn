@@ -17,7 +17,6 @@ namespace TeamFound.IE
 			InitializeComponent();
 		}
 
-
 		public void Load(Category[] categories)
 		{
 			BeginUpdate();
