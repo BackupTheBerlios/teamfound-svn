@@ -2,6 +2,8 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamFound.IE", "IE\TeamFound.IE.csproj", "{D0DBAED8-129A-4BB0-85AE-24395FAA1AFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teamfound", "Teamfound\Teamfound.csproj", "{BA0E3618-4893-4E13-80C7-117ED6AD8A92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,6 +14,10 @@ Global
 		{D0DBAED8-129A-4BB0-85AE-24395FAA1AFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0DBAED8-129A-4BB0-85AE-24395FAA1AFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0DBAED8-129A-4BB0-85AE-24395FAA1AFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA0E3618-4893-4E13-80C7-117ED6AD8A92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA0E3618-4893-4E13-80C7-117ED6AD8A92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA0E3618-4893-4E13-80C7-117ED6AD8A92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA0E3618-4893-4E13-80C7-117ED6AD8A92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
