@@ -125,3 +125,19 @@ Aktualisierte Version, angereichert mit Werbe-Text:
 
 \section{Neuerungen an der Internet-Explorer-Toolbar}
 
+Die Arbeiten an der Toolbar teilen sich in zwei Bereiche Anpassungen und Erweiterungen. Die Toolbar besteht aus aus einer Sammlung von Views, der Controller Klasse und einer Menge von Datenklassen (Modell). Durch diese Trennung ist die Erweiterung recht gut m"oglich. Neue Objekte wie Projekte, Benutzer und Berechtigungnen wurden zuerst als Datenobjekte implementiert und die dazugeh"orige Logik der Controller Klasse hinzugef"ugt.
+Wo notwendig wurden Views zu Visualisierung erstellt. Es ist abzusehen das mit falls weitere Funktionalit"at hinzugef"ugt wird, ein Teil der Logik aus der Controller Klasse, in Service Klassen ausgelagert werden muss. 
+
+Ansonsten habe ich mit der Verwendung eines Testprogramms begonnen. Der Ansatz verdeutlicht das es m"oglich ist die Funktionen der Toolbar auch ausserhalb des Internet Explorers zu nutzen. Somit k"onnte auch eine Integration in Entwicklungsumgebungen stattfinden (z.B. Visual Studio).
+
+\subsection{Anpassungen}
+
+Es war vollen allem notwendig die Suche so anzupassen das Sie mit den "Anderungen aus Milestone 3 klar komment. Als erstes w"aren da die neu eingef"uhrten Projekte zu nennen. Da ein Projekte eine Kategorie ist, "andert sich an der Suche direkt nichts. Es ergibt sich jedoch die Notwendigkeit eine M"oglich f"ur die Projektauswahl und die Kategorienauswahl in Abh"angikeit davon zu gestalten. 
+
+Weiterhin musste die neue Dokumentstruktur unterst"utzt werden. Da die Toolbar die Sucherergebnisse intern als Objekte verwaltet war der Aufwand in der Anpassung nicht so groﬂ.
+
+\subsection{Erweiterungen}
+
+Wie bereits im Ablauf beschrieben, wurde der bisherige Einstellungsdialog ersetzt. Statt nur eine einzelne Serveraddresse eingeben zu k"onnen, hat der User nun die M"oglichkeit diverse Server zu verwalten. Zu jedem Server k"onnen jetzt Addresse, Benutzer und Passwort, die Projekte, deren Benutzer und die jeweiligen Kategorien und Berechtigungen verwaltet werden. Im wesentlichen entspricht die Funktionalit"at der des Web Interface. 
+
+
