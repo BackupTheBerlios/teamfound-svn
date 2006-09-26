@@ -7,6 +7,7 @@ using System.Threading;
 using System.Text;
 using System.Collections.Generic;
 using TeamFound.IE.Event;
+using System.IO;
 
 namespace TeamFound.IE
 {
@@ -184,28 +185,9 @@ namespace TeamFound.IE
 			url += "&keyword=" + keywords + categoryString;
 
 			//Response document
-			XmlDocument doc = new XmlDocument();
-
-			HttpWebResponse response = null;
-			try
-			{
-				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-				response = (HttpWebResponse)request.GetResponse();
-				if (!CheckHTTPResponse(response))
-					return;
-
-				doc.Load(response.GetResponseStream());
-			}
-			catch (Exception e)
-			{
-				MessageBox.Show(e.Message, "Fehler beim Suchen");
+			XmlDocument doc = SendRequest(url);
+			if (doc == null)
 				return;
-			}
-			finally
-			{
-				if ( response != null )
-					response.Close();
-			}
 
 			if (!CheckResult(doc))
 				return;
@@ -236,29 +218,10 @@ namespace TeamFound.IE
 
 			string catCmd = (cat == null ? "" : "&category=" + cat.ID);
 
-			string commandUrl = config.ServerUrl + "?version=2&want=xml&command=addpage" + catCmd + "&url=" + url;
+			string commandUrl = GetBaseUrl("addpage");
+			commandUrl += catCmd + "&url=" + url;
 
-			XmlDocument doc = new XmlDocument();
-
-			HttpWebResponse response = null;
-			try
-			{
-				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(commandUrl);
-				response = (HttpWebResponse)request.GetResponse();
-				if (!CheckHTTPResponse(response))
-					return;
-
-				doc.Load(response.GetResponseStream());
-			}
-			catch (Exception e)
-			{
-				MessageBox.Show(e.Message, "Fehler");
-			}
-			finally
-			{
-				if (response != null)
-					response.Close();
-			}
+			XmlDocument doc = SendRequest(commandUrl);
 
 			if (!CheckResult(doc))
 				return;
@@ -287,32 +250,11 @@ namespace TeamFound.IE
 			if (question != DialogResult.Yes)
 				return;
 
-			string url = config.ServerUrl + "?want=xml&version=2&command=addcategory&name=" + newCatName + "&description=" + newCatdescription + "&subcategoryof=" + category.ID;
+			string url = GetBaseUrl("addcategory");
+			url += "&name=" + newCatName + "&description=" + newCatdescription + "&subcategoryof=" + category.ID;
 
-			XmlDocument doc = new XmlDocument();
+			XmlDocument doc = SendRequest(url);
 
-			
-			HttpWebResponse response = null;
-			try
-			{
-				HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-				response = (HttpWebResponse)request.GetResponse();
-				if (!CheckHTTPResponse(response))
-					return;
-
-				
-				doc.Load(response.GetResponseStream());
-			}
-			catch (Exception e)
-			{
-				MessageBox.Show(e.Message, "Fehler beim hinzufügen der Kategorie!");
-				return;
-			}
-			finally
-			{
-				if (response != null)
-					response.Close();
-			}
 			if (!CheckResult(doc))
 				return;
 
@@ -326,9 +268,8 @@ namespace TeamFound.IE
 		/// </summary>
 		public void EditSettings()
 		{
-			using (FrmSettings settings = new FrmSettings())
+			using (FrmAdmin settings = new FrmAdmin())
 			{
-				settings.Configuration = config;
 				if (settings.ShowDialog() == DialogResult.OK)
 					config.Write();
 			}
@@ -738,9 +679,13 @@ namespace TeamFound.IE
 				response = (HttpWebResponse)request.GetResponse();
 				if (!CheckHTTPResponse(response))
 					return null;
-
+				if (!(response.ContentType.StartsWith("application/xml")))
+				{
+					return null;
+				}
+				
 				XmlDocument doc = new XmlDocument();
-				doc.Load(response.GetResponseStream());
+				doc.Load(new StreamReader(response.GetResponseStream(),Encoding.GetEncoding(response.CharacterSet)));
 				return doc;
 			}
 			catch (Exception e)

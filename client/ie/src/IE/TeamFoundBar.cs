@@ -14,6 +14,8 @@ using System.Xml;
 using SHDocVw;
 using System.Collections.Generic;
 using TeamFound.IE.Event;
+using System.Xml.Xsl;
+using System.IO;
 namespace TeamFound.IE
 {
 
@@ -39,6 +41,7 @@ namespace TeamFound.IE
 		private Joaqs.UI.XpComboBox projectsComboBox;
 
 		private CategoryTreeView tree = new CategoryTreeView();
+		private XslCompiledTransform transform = new XslCompiledTransform(true);
 
 		public TeamFoundBar()
 		{
@@ -56,11 +59,28 @@ namespace TeamFound.IE
 			tree.BorderStyle = BorderStyle.FixedSingle;
 			tree.CategorySelected += new EventHandler<CategorySelectEventArgs>(tree_CategorySelected);
 			Controls.Add(tree);
+
+			transform.Load(new XmlTextReader(this.GetType().Assembly.GetManifestResourceStream("TeamFound.IE.Transform.xslt")));
+			
+			Controller.Instance.SearchComplete += new EventHandler<SearchEventArgs>(Instance_SearchComplete);
 		}
 
+		void Instance_SearchComplete(object sender, SearchEventArgs e)
+		{
+			StringWriter writer = new StringWriter();
+			transform.Transform(e.Result, new XmlTextWriter(writer));
+			IHTMLDocument2 doc = (IHTMLDocument2)Explorer.Document;
+			doc.clear();
+			try
+			{
+				doc.body.innerHTML = "";
+				doc.write(writer.ToString());
+			}
+			catch
+			{
 
-
-
+			}
+		}
 
 		/// <summary>
 		/// Die verwendeten Ressourcen bereinigen.
@@ -168,8 +188,6 @@ namespace TeamFound.IE
 			// 
 			// projectsComboBox
 			// 
-			this.projectsComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.projectsComboBox.Location = new System.Drawing.Point(73, 1);
 			this.projectsComboBox.Name = "projectsComboBox";
 			this.projectsComboBox.Size = new System.Drawing.Size(116, 21);

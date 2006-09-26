@@ -157,7 +157,7 @@
     <Compile Include="Project.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="TeamFoundBar.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="TeamFoundResultBar.cs">
       <SubType>UserControl</SubType>
@@ -198,6 +198,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>TeamFoundResultBar.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Transform.xslt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
