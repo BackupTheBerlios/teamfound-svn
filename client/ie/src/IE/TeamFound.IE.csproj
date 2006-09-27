@@ -157,7 +157,7 @@
     <Compile Include="Project.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="TeamFoundBar.cs">
-      <SubType>Component</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="TeamFoundResultBar.cs">
       <SubType>UserControl</SubType>

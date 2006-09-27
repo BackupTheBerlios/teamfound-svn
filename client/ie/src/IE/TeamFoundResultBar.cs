@@ -19,7 +19,7 @@ namespace TeamFound.IE
 		public TeamFoundResultBar()
 		{
 			InitializeComponent();
-			Controller.Instance.SearchComplete += new EventHandler<SearchEventArgs>(Instance_SearchComplete);
+			//Controller.Instance.SearchComplete += new EventHandler<SearchEventArgs>(Instance_SearchComplete);
 		}
 
 		void Instance_SearchComplete(object sender, SearchEventArgs e)
