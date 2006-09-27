@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Interface Milestone 2</TITLE>
+<META NAME="description" CONTENT="Interface Milestone 2">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="previous" HREF="node40.html">
+<LINK REL="up" HREF="node38.html">
+<LINK REL="next" HREF="node44.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html883"
+  HREF="node44.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html877"
+  HREF="node38.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html873"
+  HREF="node42.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html879"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html881"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html884"
+  HREF="node44.html">HTML-Antwort</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html878"
+  HREF="node38.html">Protokoll</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html874"
+  HREF="node42.html">Suchen</A>
+ &nbsp; <B>  <A NAME="tex2html880"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html882"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00530000000000000000"></A>
+<A NAME="478"></A>
+<BR>
+Interface Milestone 2
+</H1>
+Alle Anfrage-Parameter werden in Form von <A NAME="479"></A>HTTP <A NAME="480"></A>GET oder <A NAME="481"></A><A NAME="482"></A>POST Variablen &#252;bertragen. Prinzipiell gibt es eine Unterscheidung, ob f&#252;r jedes Kommando eine eigene URL verwendet wird, oder ob das Kommando in Form einer weiteren HTTP-GET Variablen mit &#252;bertragen wird. Unsere Implementation des  Servers verwendet den zus&#228;tzlichen HTTP-GET Parameter <TT>command</TT>. In diesem <A NAME="484"></A>Interface haben wir aber beide M&#246;glichkeiten spezifiziert.
+
+<P>
+<DL>
+<DT><STRONG>want=xml or html</STRONG></DT>
+<DD>Die zu erwartende Antwort soll in xml oder html-format sein (default soll html werden, da dann einfache Link-Clients m&#246;glich sind) 
+
+<P>
+</DD>
+<DT><STRONG>version=2</STRONG></DT>
+<DD>Milestone-Version des Interfaces 
+
+<P>
+</DD>
+<DT><STRONG>command=search</STRONG></DT>
+<DD>Das Kommando das ausgef&#252;hrt werden soll. Dieses Argument kann wegfallen wenn f&#252;r jedes Kommando eine eigene, gleichnamige Anfrage-URL existiert. 
+</DD>
+</DL>
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Unterabschnitte</STRONG></A>
+
+<UL CLASS="ChildLinks">
+<LI><UL>
+<LI><A NAME="tex2html885"
+  HREF="node44.html">HTML-Antwort</A>
+<LI><A NAME="tex2html886"
+  HREF="node45.html">XML-Antwort</A>
+<UL>
+<LI><A NAME="tex2html887"
+  HREF="node46.html">Return Codes</A>
+</UL></UL></UL>
+<!--End of Table of Child-Links-->
+<BR><HR>
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

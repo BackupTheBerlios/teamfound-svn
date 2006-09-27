@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Implementation</TITLE>
+<META NAME="description" CONTENT="Implementation">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="previous" HREF="node51.html">
+<LINK REL="up" HREF="node50.html">
+<LINK REL="next" HREF="node53.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html1038"
+  HREF="node53.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html1032"
+  HREF="node50.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html1028"
+  HREF="node51.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html1034"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html1036"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html1039"
+  HREF="node53.html">Internet Explorer-Toolbar</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html1033"
+  HREF="node50.html">Firefox-Toolbar</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html1029"
+  HREF="node51.html">Dateien</A>
+ &nbsp; <B>  <A NAME="tex2html1035"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html1037"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00622000000000000000">
+Implementation</A>
+</H2>
+
+<DIV ALIGN="CENTER"><A NAME="fftoolbar"></A><A NAME="557"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Abbildung 4.3:</STRONG>
+Firefox-Toolbar Settings Dialog (v0.8, Milestone 2)</CAPTION>
+<TR><TD><IMG
+ WIDTH="585" HEIGHT="483" BORDER="0"
+ SRC="img25.png"
+ ALT="\begin{figure}\epsfig{file=ffextension-settings}\end{figure}"></TD></TR>
+</TABLE>
+</DIV>
+
+<DIV ALIGN="CENTER"><A NAME="fftoolbarsuchergebnis"></A><A NAME="562"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Abbildung 4.4:</STRONG>
+Firefox-Toolbar Suchergebnis (v0.4, Milestone 1)</CAPTION>
+<TR><TD><IMG
+ WIDTH="736" HEIGHT="519" BORDER="0"
+ SRC="img26.png"
+ ALT="\begin{figure}\epsfig{file=screenshot-search-server-0.1-firefox-toolbar-0.4.eps}\end{figure}"></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+Das originale <A NAME="565"></A>Changelog in englischer Sprache der Firefox-Toolbar befindet sich im Anhang changelog.
+
+<BR>
+<BR>
+Die wichtigsten Funktionen der <A NAME="567"></A>Toolbar sind:
+<DL>
+<DD><A NAME="569"></A>
+</DD>
+<DT><STRONG>onLoad</STRONG></DT>
+<DD>Initialisiert die Toolbar: L&#228;dt die gespeicherten lokalen Einstellungen und fragt den Kategorien-Baum vom Server ab. Diese Funktion wird &#252;ber einen Event-Handler automatisch vom Firefox-Browser aufgerufen, sobald dieser geladen wird.
+<A NAME="570"></A>
+</DD>
+<DT><STRONG>loadCategories</STRONG></DT>
+<DD>Stellt einen XMLHttpRequest an den Server, und definiert <TT>onLoadCategoriesFinished</TT> als Callback-Funktion der Anfrage.
+<A NAME="572"></A>
+</DD>
+<DT><STRONG>onLoadCategoriesFinished</STRONG></DT>
+<DD>Wird aufgerufen wenn der Server eine Antwort auf das Kommando <TT>getcategories</TT> gibt. Auf Basis dieser Antwort wird das Kategorien-Men&#252; gel&#246;scht und die Basis-Informationen wie der Server-Name aus der XML-Antwort ausgelesen. Danach wird die Funktion <TT>addCategory</TT> aufgerufen, die rekursiv alle Kategorien durchl&#228;uft und einen entsprechenden Men&#252;-Baum in der Toolbar aufbaut.
+<A NAME="575"></A>
+</DD>
+<DT><STRONG>onSettings</STRONG></DT>
+<DD>Event-Handler wenn auf den 'TF' Button oben links in der Toolbar geklickt wird. Diese Funktion &#246;ffnet den Einstellungen-Dialog.
+<A NAME="576"></A>
+</DD>
+<DT><STRONG>onSearch</STRONG></DT>
+<DD>Diese Funktion startet eine Suchanfrage, und wird aufgerufen wenn in dem Kategorien-Baum 'Search' oder der 'Go' Button angeklickt werden. Die <SPAN CLASS="MATH"><IMG
+ WIDTH="19" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img21.png"
+ ALT="$&lt;$"></SPAN>return<SPAN CLASS="MATH"><IMG
+ WIDTH="19" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img22.png"
+ ALT="$&gt;$"></SPAN>-Taste wenn der Fokus auf dem Eingabefeld der Kategorien ist ruft ebenfalls diese Funktion auf. OnSearch &#252;berpr&#252;ft daraufhin die Einstellungen, und leitet die Suchanfrage entsprechend an die Funktionen <TT>myGotoUrl</TT> oder an <TT>myTeamFoundSearch</TT> und <TT>myExternSearch</TT> weiter. Je nach Einstellung wird das HTML-Template zur Anzeige der Suchergebnisse <TT>search_h.html</TT> f&#252;r eine horizontale Verteilung bzw. <TT>search_v.html</TT> f&#252;r eine vertikale Verteilung der Suchergebnisse geladen.
+<A NAME="582"></A>
+</DD>
+<DT><STRONG>myGotoUrl</STRONG></DT>
+<DD>L&#228;dt ganz einfach die angegebene URL im aktiven Tab des Browser.
+<A NAME="583"></A>
+</DD>
+<DT><STRONG>myTeamFoundSearch</STRONG></DT>
+<DD>Erstellt einen XMLHttpRequest and den TeamFound Server entsprechend den &#252;bergebenen Suchw&#246;rtern und registriert <TT>onTeamFoundSearchFinished</TT> als Callback-Funktion.
+<A NAME="585"></A>
+</DD>
+<DT><STRONG>myExternSearch</STRONG></DT>
+<DD>Erstellt einen XMLHttpRequest an eine externe Suchmaschiene entsprechend den &#252;bergebenen Suchw&#246;rtern und registriert <TT>onExternSearchFinished</TT> als Callback-Funktion.
+<A NAME="587"></A>
+</DD>
+<DT><STRONG>onAddPage</STRONG></DT>
+<DD>Erstellt einen XMLHttpRequest an den TeamFound Server um die aktuell im Browser angezeigte Seite hinzuzuf&#252;gen und registriert <TT>onAddPageFinished</TT> als Callback-Funktion.
+<A NAME="589"></A>
+</DD>
+<DT><STRONG>onAddPageFinished</STRONG></DT>
+<DD>Wertet die Antwort des Server aus und zeigt dem Benutzer eine entsprechende Meldung an. 
+<A NAME="590"></A>
+</DD>
+<DT><STRONG>onExternSearchFinished</STRONG></DT>
+<DD>Such in dem (schon geladenen) Template nach der HTML-Tag-ID ''<TT>teamfound-result-two</TT>'' und f&#252;gt an dieser Stelle die Antwort als <TT>innerHTML</TT> ein.
+<A NAME="593"></A>
+</DD>
+<DT><STRONG>addCategory</STRONG></DT>
+<DD>F&#252;gt an das &#252;bergebene Menu-Element die Eintr&#228;ge ''<TT>Search</TT>'', ''<TT>Add</TT>'' und ''<TT>Select as default</TT>'' f&#252;r die ebenfalls &#252;bergebene Kategorie an. F&#252;r jede existierende Unterkategorie wird ein <TT>menupopup</TT>-Eintrag erstellt und diese Funktion jeweils rekursiv wieder aufgerufen.
+<A NAME="598"></A>
+</DD>
+<DT><STRONG>onTeamFoundSearchFinished</STRONG></DT>
+<DD>Sucht in dem Ergebnis-Template nach der HTML-Tag-ID <TT>teamfound-result-one</TT> und f&#252;gt das TeamFound Ergebnis an dieser Stelle als <TT>innerHTML</TT> ein.
+</DD>
+</DL>
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html1038"
+  HREF="node53.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html1032"
+  HREF="node50.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html1028"
+  HREF="node51.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html1034"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html1036"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html1039"
+  HREF="node53.html">Internet Explorer-Toolbar</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html1033"
+  HREF="node50.html">Firefox-Toolbar</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html1029"
+  HREF="node51.html">Dateien</A>
+ &nbsp; <B>  <A NAME="tex2html1035"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html1037"
+  HREF="node176.html">Index</A></B> </DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

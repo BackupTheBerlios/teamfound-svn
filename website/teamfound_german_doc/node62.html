@@ -1,0 +1,86 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Registry</TITLE>
+<META NAME="description" CONTENT="Registry">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="previous" HREF="node61.html">
+<LINK REL="up" HREF="node59.html">
+<LINK REL="next" HREF="node63.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html1202"
+  HREF="node63.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html1196"
+  HREF="node59.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html1192"
+  HREF="node61.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html1198"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html1200"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html1203"
+  HREF="node63.html">Band Objekte und COM</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html1197"
+  HREF="node59.html">COM, Schnittstellen, Klassen, Registry</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html1193"
+  HREF="node61.html">COM Komponenten</A>
+ &nbsp; <B>  <A NAME="tex2html1199"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html1201"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H4><A NAME="SECTION00633030000000000000"></A>
+<A NAME="637"></A>
+<BR>
+Registry
+</H4>
+Normalerweise, auch wenn das problemlos m&#246;glich w&#228;re, 
+wird eine <A NAME="638"></A>COM Bibliothek nicht direkt referenziert und geladen. 
+Stattdessen nutz man Funktionen der COM API um eine Instanz einer Komponente mit einer 
+bestimmten Schnittstelle zu erhalten. Dazu &#252;bergibt man der Funktion die GUID der 
+Schnittstelle welche man nutzen m&#246;chte. Diese Funktion bem&#252;ht die Windows Registry 
+um die Bibliothek zu finden in der die Komponente mit der Schnittstelle implementiert ist, 
+l&#228;dt diese, erzeugt die Komponente und gibt die Schnittstelle zur&#252;ck.
+Damit das funktioniert, ist jede COM Komponente vor ihrer Benutzung in der Registry einzutragen.
+
+<P>
+<BR><HR>
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

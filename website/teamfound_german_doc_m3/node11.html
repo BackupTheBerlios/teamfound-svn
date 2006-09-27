@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Komponenten</TITLE>
+<META NAME="description" CONTENT="Komponenten">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="previous" HREF="node10.html">
+<LINK REL="up" HREF="node10.html">
+<LINK REL="next" HREF="node12.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html200"
+  HREF="node12.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html196"
+  HREF="node10.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html192"
+  HREF="node10.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html198"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A>  
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html201"
+  HREF="node12.html">Firefox/Flock-Toolbar</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html197"
+  HREF="node10.html">Neuerungen am Web-Interface</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html193"
+  HREF="node10.html">Neuerungen am Web-Interface</A>
+ &nbsp; <B>  <A NAME="tex2html199"
+  HREF="node1.html">Inhalt</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00321000000000000000">
+Komponenten</A>
+</H2>
+Das gesamte Web-Interface besteht aus 3 Dateien:
+<DL>
+<DT><STRONG>transform.xsl</STRONG></DT>
+<DD>Transformiert unseren XML-Baum in HTML.
+</DD>
+<DT><STRONG>stylesheet.css</STRONG></DT>
+<DD>Legt das Layout des erstellten HTMLs fest.
+</DD>
+<DT><STRONG>ui.js</STRONG></DT>
+<DD>Enth&#228;lt eine einzige JavaScript Funktion (<TT>showhide(layer_ref)</TT>) zum Anzeigen/Verstecken einzelner Bereiche der Webseite.
+</DD>
+</DL>
+
+<P>
+Die <TT>transform.xsl</TT> ist die einzige dieser Dateien die ich hier genauer beschreiben will. Sie besteht, wie jede XSLT Datei aus verschiedenen Templates, die jeweils bestimmte XML Unterb&#228;ume in HTML umwandeln. Als erstes kommt das template <TT>match=/response</TT> zum Tragen, da unsere XML-B&#228;ume alle von dem tag <TT>response</TT> umschlossen werden. Es erstellt zuerst die allgemeinen HTML-Header, ruft dann der Reihe nach die 3 templates <TT>menu</TT>, <TT>showcommandresults</TT> und <TT>pageselector</TT> auf, und beendet seine Arbeit mit dem Ende der HTML-Seite incl. einem Link zur teamfound Webseite und einem Copyright Hinweis.
+
+<P>
+<DL>
+<DT><STRONG>menu</STRONG></DT>
+<DD>Erzeugt nur das Men&#252; der Seite entsprechend dem Parameter <TT>xsltpassthrough</TT>. 
+</DD>
+<DT><STRONG>showcommandresults</STRONG></DT>
+<DD>Durchsucht den XML-Baum nach den verschiedenen Antworten der m&#246;glichen Befehle und zeigt die Ergebnisse entsprechend an. 
+</DD>
+<DT><STRONG>pageselector</STRONG></DT>
+<DD>Ruft entsprechend den <TT>xsltpassthrough</TT>-Parametern spezialisierte templates auf, die jeweils Seiten f&#252;r die Bedienung der verschiedene Server-Befehle mittels HTML-Formularen erzeugen. 
+</DD>
+</DL>
+
+<P>
+
+<DIV ALIGN="CENTER"><A NAME="82"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Abbildung 2.3:</STRONG>
+Web-Interface Suchergebnisse und Projekt-Menu</CAPTION>
+<TR><TD></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+Unterst&#252;tzt werden alle im Interface Milestone 3 festgelegten Befehle. Den genauen Aufbau der Webseite schaut sich am besten jeder selber auf unserem Testserver <TT>http://teamfound.dyndns.org:8080/tf/tf</TT> an.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html200"
+  HREF="node12.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html196"
+  HREF="node10.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html192"
+  HREF="node10.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html198"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A>  
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html201"
+  HREF="node12.html">Firefox/Flock-Toolbar</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html197"
+  HREF="node10.html">Neuerungen am Web-Interface</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html193"
+  HREF="node10.html">Neuerungen am Web-Interface</A>
+ &nbsp; <B>  <A NAME="tex2html199"
+  HREF="node1.html">Inhalt</A></B> </DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Jan Kechel
+2006-09-27
+</ADDRESS>
+</BODY>
+</HTML>

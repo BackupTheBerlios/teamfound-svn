@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Fazit &amp; Ausblick</TITLE>
+<META NAME="description" CONTENT="Fazit &amp; Ausblick">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="next" HREF="node88.html">
+<LINK REL="previous" HREF="node78.html">
+<LINK REL="up" HREF="teamfound.html">
+<LINK REL="next" HREF="node88.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html1563"
+  HREF="node88.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html1557"
+  HREF="teamfound.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html1551"
+  HREF="node86.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html1559"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html1561"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html1564"
+  HREF="node88.html">Interface</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html1558"
+  HREF="teamfound.html">TeamFound Infrastrukturen zur Open</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html1552"
+  HREF="node86.html">Ideen f&#252;r zuk&#252;nftige Versionen</A>
+ &nbsp; <B>  <A NAME="tex2html1560"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html1562"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00800000000000000000">
+Fazit &amp; Ausblick</A>
+</H1>
+
+<P>
+Mit dem Abschluss des zweiten Milestones w&#228;hrend des Projektes hat TeamFound die wichtigsten Basisfeatures erreicht, der Einsatz als Teamsuchmaschine ist bereits m&#246;glich. Platz f&#252;r weitere Entwicklungen ist nat&#252;rlich reichlich vorhanden, seien dies eine Benutzerverwaltung, Indexierung anderer Dokumenttypen wie PDF oder PostScript oder auch die Generierung eines Kataloges der eingetragenen Links. TeamFound hat aber schon im bestehenden Umfang gezeigt das sich eine derartige Suchmaschine mit freier Software ohne weiteres Umsetzen l&#228;sst. Die n&#246;tige Planung und Recherchearbeit vorrausgesetzt, haben sich die richtigen Komponenten gefunden um alle Teile der Implementierung abzudecken, seien das die - wirklich aufw&#228;ndige - Anforderung an einen Volltext-Index, viele kleinere Bibliotheken f&#252;r XML, Datenbankzugriff oder eine Java-Servlet-Container-Implementierung um TeamFound schliesslich ins Internet zu bringen. Es wurde sehr genau darauf geachtet m&#246;glichst nur vorhandene Komponenten zu verbinden, nur dort eigenen Code zu schreiben wo er wirklich Applikationsspezifisch ist. Dies war auf der Serverseite nur notwenbdig um die einzelnen Komponenten wie Lucene und HSQLDB zu verbinden. Ein weiterer Teil bestand darin, ein entsprechendes Servlet und einen Controller zu implementieren, welcher die Anfragen an die darunterliegende Technik weiterleitet.
+
+<P>
+Auf der Clientseite gab es zumindest mit dem Firefox-Browser ein klares Heimspiel, TeamFound ist hier nur eine von warscheinlich tausenden Erweiterungen, welche die offene Architektur des Browsers m&#246;glich macht. Aber auch der erkl&#228;rte Feind der Firefox-Entwicklung, der Internet Explorer, l&#228;sst sich Erweitern, so war es unserem Team m&#246;glich auch f&#252;r diesen Browser eine Client-Integration zu erstellen. Dies d&#252;rfte unter gleichartigen Projekten wohl nicht besonders h&#228;ufig vorkommen und stellt somit einen Beleg dar, das auch Entwickler propriet&#228;rer Systeme das Ph&#228;nomen der freien Software immer mehr beachten und eine Lehrveranstaltung an einer Universit&#228;t eine gute M&#246;glichkeit bietet dieses Arbeitsprinzip genauer kennenzulernen. 
+
+<P>
+Das TeamFound-Projekt an sich, hat in den ersten Monaten wenig mit einem 'verteilten'm Entwicklungsmuster zu k&#228;mpfen, ann&#228;hernd die komplette Planungsphase k&#246;nnte mit w&#246;chentlichen Treffen effektiv gestaltet werden, erst gegen Ende des Semesters, als der 'Implementierungsdruck' zu steigen begann, wurde st&#228;rker auf klassische Techniken wie die Projekt-Mailingliste oder den Internet-Relay-Chat (IRC) zur&#252;ckgegriffen. Dies hat der Produktivit&#228;t allerdings nur wenig geschadet, was auch bedeutet das die bestehende Infrastruktur die von Anbietern wie Berlios oder Sourceforge bereitgestellt wird, viele technische Probleme von OpenSource-Projekten l&#246;sen kann. So kann zumindest ein kleines Projekt wie dieses sofort auf Infrastruktur wie Quellcodeverwaltung, Mailinglisten und viele andere Dinge zur&#252;ckgreifen. Das TeamFound-Projekt versteht sich selber als einen Beitrag um auch die Planungs- und Recherchephasen von OS-Projekten technisch zu unterst&#252;tzen oder wenigstens einen Beitrag zur Diskussion um technische Verfahren f&#252;r derartige Probleme zu leisten.
+
+<P>
+Von Seiten der Teammitglieder wurde im Rahmen des Abschlusskolloquiums bereits das Interesse an einer Fortsetzung des Projektes, auch im universit&#228;ren Rahmen, erkl&#228;rt. Somit scheint es durchaus m&#246;glich, das es einen dritten TeamFound-Milestone geben wird und das Projekt auch l&#228;ngere Zeit ohne universit&#228;re Unterst&#252;tzung am Leben bleibt.
+
+<P>
+Das TeamFound-Projekt m&#246;chte sich zum Abschluss dieser Ausarbeitung vorallem bei Steffen Evers f&#252;r die Organisation dieser Lehrveranstaltung, sowie dem Berlios-Projekt f&#252;r die technische Unterst&#252;tzung, allen Entwicklern der von uns verwendeten freien Bibliotheken und nat&#252;rlich auch allen anderen freiwilligen Mitarbeiten an freier Software bedanken.
+
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html1563"
+  HREF="node88.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html1557"
+  HREF="teamfound.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html1551"
+  HREF="node86.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html1559"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html1561"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html1564"
+  HREF="node88.html">Interface</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html1558"
+  HREF="teamfound.html">TeamFound Infrastrukturen zur Open</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html1552"
+  HREF="node86.html">Ideen f&#252;r zuk&#252;nftige Versionen</A>
+ &nbsp; <B>  <A NAME="tex2html1560"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html1562"
+  HREF="node176.html">Index</A></B> </DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

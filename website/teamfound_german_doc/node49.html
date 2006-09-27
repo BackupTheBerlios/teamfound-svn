@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Implementation</TITLE>
+<META NAME="description" CONTENT="Implementation">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="previous" HREF="node48.html">
+<LINK REL="up" HREF="node48.html">
+<LINK REL="next" HREF="node50.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html996"
+  HREF="node50.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html990"
+  HREF="node48.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html986"
+  HREF="node48.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html992"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html994"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html997"
+  HREF="node50.html">Firefox-Toolbar</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html991"
+  HREF="node48.html">Web-Client</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html987"
+  HREF="node48.html">Web-Client</A>
+ &nbsp; <B>  <A NAME="tex2html993"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html995"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00611000000000000000">
+Implementation</A>
+</H2>
+Die <SPAN  CLASS="textit">extrem einfache</SPAN> Implementation des Web-Clients f&#252;r eine <A NAME="519"></A>Suchanfrage entsprechend Milestone 2 sieht wie folgt aus:
+<PRE>
+&lt;form action="serverurl"&gt;
+	search: &lt;input type="text" name="keyword"&gt;
+	&lt;input type="hidden" name="want" value="html"&gt;
+	&lt;input type="hidden" name="version" value="2"&gt;
+	&lt;input type="hidden" name="command" value="search"&gt;
+	&lt;input type="submit"&gt;
+&lt;/form&gt;
+</PRE>
+Bei dem Design der <A NAME="522"></A>TeamFound-Interfaces war diese M&#246;glichkeit der <A NAME="523"></A>HTML-Formulare die entscheidende Grundlage. Alle Anfragen an den Server k&#246;nnen mit HTML-Formularen ohne Zus&#228;tze (wie <A NAME="524"></A>Javascript, <A NAME="525"></A>Applets, <A NAME="526"></A>Extensions, etc.) generiert werden.
+
+<P>
+<BR><HR>
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

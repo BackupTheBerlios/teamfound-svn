@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Query und QueryParser</TITLE>
+<META NAME="description" CONTENT="Query und QueryParser">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="previous" HREF="node19.html">
+<LINK REL="up" HREF="node17.html">
+<LINK REL="next" HREF="node21.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html555"
+  HREF="node21.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html549"
+  HREF="node17.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html545"
+  HREF="node19.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html551"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html553"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html556"
+  HREF="node21.html">HSQLDB</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html550"
+  HREF="node17.html">Wichtige Komponenten</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html546"
+  HREF="node19.html">Analyzer</A>
+ &nbsp; <B>  <A NAME="tex2html552"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html554"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H4><A NAME="SECTION00421230000000000000">
+Query und QueryParser</A>
+</H4>
+
+<P>
+Um nun <A NAME="187"></A>indizierte Felder zu durchsuchen ist die
+Grundeinheit die <A NAME="188"></A><TT>Query</TT>. Der Name ist etwas irref&#252;hrend, da es sich hierbei noch
+nicht um wirkliche Anfragen handelt. Eine <TT>Query</TT> besteht erstmal nur aus einem 
+einzelnen <A NAME="191"></A>Token. Nach diesem k&#246;nnte gesucht werden. <A NAME="192"></A>Lucene bietet nun verschiedenste
+M&#246;glichkeiten solche Grundsteine in vielf&#228;ltiger Art zu kombinieren um komplexere
+Anfragen zu bilden. Dies ist vorallem sinnvoll f&#252;r Anfragen, die sich oft wiederholen und
+automatisiert gestellt werden.
+
+<P>
+Um allerdings nach von Menschen formulierten Anfragen zu suchen,
+bietet Lucene eine Erleichterung. Der <A NAME="193"></A><TT>QuerryParser</TT> stellt eine einfache <A NAME="195"></A>Syntax zur
+Verf&#252;gung. Diese wird ausgewertet und liefert die komplexe Anfrage f&#252;r den <A NAME="196"></A>Index.
+Die Syntax ist &#228;hnlich der von Google oder anderer Suchseiten.
+( siehe Literaturverzeichnis LucQS )
+
+<P>
+<BR><HR>
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

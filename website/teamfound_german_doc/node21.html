@@ -1,0 +1,126 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>HSQLDB</TITLE>
+<META NAME="description" CONTENT="HSQLDB">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="next" HREF="node22.html">
+<LINK REL="previous" HREF="node15.html">
+<LINK REL="up" HREF="node14.html">
+<LINK REL="next" HREF="node22.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html569"
+  HREF="node22.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html563"
+  HREF="node14.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html557"
+  HREF="node20.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html565"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html567"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html570"
+  HREF="node22.html">Weitere Bibliotheken</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html564"
+  HREF="node14.html">Bibliotheken</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html558"
+  HREF="node20.html">Query und QueryParser</A>
+ &nbsp; <B>  <A NAME="tex2html566"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html568"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00422000000000000000">
+HSQLDB</A>
+</H2>
+Die Entscheidung keine f&#252;r <A NAME="198"></A>Webapplikationen typische <A NAME="199"></A>Datenbank wie <A NAME="200"></A>MySQL einzusetzen 
+ist leicht erkl&#228;rt. Wie schon in Kapitel <A HREF="node13.html#platform">2.1.2</A> beschrieben, sollte eine 
+Java-Umgebung eingesetzt werden.
+Das schr&#228;nkt erstmal nur auf Datenbanken ein, die <A NAME="202"></A>JDBC kompatibel sind.
+Deshalb ist der Server auch leicht um einen weiteren <A NAME="203"></A>Datenbanklayer zu erweitern, falls andere Datenbanken erw&#252;nscht sind.
+
+<P>
+<A NAME="204"></A>HSQLDB wurde von uns ausgew&#228;hlt, weil wir sie als kleine <A NAME="205"></A>Java-Bibliothek einbinden k&#246;nnen
+und es damit den Nutzern unseres Servers ersparen sich extra um einen <A NAME="206"></A>Datenbankserver zu k&#252;mmern.
+HSQLDB kann als Server oder in Programme eingebettet laufen.
+In der derzeitigen Version nutzen wir den eingebetteten Modus, und haben somit eine
+kleine Datenbank f&#252;r den TeamFound-Server allein.
+Die &#252;blichen Riten wie Datenbanknutzer anlegen usw. k&#246;nnen wir dadurch im Server selbst automatisiert regeln.
+HSQLDB hat sehr gute Ergebnisse in dem <A NAME="207"></A>PolePosition benchmark (siehe Literaturverzeichnis PolPos) geliefert und unterst&#252;tzt einen grossteil der <A NAME="208"></A>ANSI-92 <A NAME="209"></A>SQL, SQL 99 und 2003 Standards bis hin zu Transaktionen.
+Ausserdem wird HSQLDB in einigen bekannten Projekten(z.b. JBoss, Mathematica, OpenOffice)  erfolgereich eingesetzt, was uns ausreichend von der Zuverl&#228;ssigkeit &#252;berzeugt hat.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html569"
+  HREF="node22.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html563"
+  HREF="node14.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html557"
+  HREF="node20.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html565"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html567"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html570"
+  HREF="node22.html">Weitere Bibliotheken</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html564"
+  HREF="node14.html">Bibliotheken</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html558"
+  HREF="node20.html">Query und QueryParser</A>
+ &nbsp; <B>  <A NAME="tex2html566"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html568"
+  HREF="node176.html">Index</A></B> </DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

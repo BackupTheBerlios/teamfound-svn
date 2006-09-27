@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>SearchRequest</TITLE>
+<META NAME="description" CONTENT="SearchRequest">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="next" HREF="node35.html">
+<LINK REL="previous" HREF="node33.html">
+<LINK REL="up" HREF="node32.html">
+<LINK REL="next" HREF="node35.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html755"
+  HREF="node35.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html749"
+  HREF="node32.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html743"
+  HREF="node33.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html751"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html753"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html756"
+  HREF="node35.html">GetCategoriesRequest</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html750"
+  HREF="node32.html">Abl&#228;ufe im Server</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html744"
+  HREF="node33.html">AddpageRequest</A>
+ &nbsp; <B>  <A NAME="tex2html752"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html754"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00452000000000000000"></A>
+<A NAME="searchrequest"></A><A NAME="385"></A>
+<BR>
+SearchRequest
+</H2>
+
+<DIV ALIGN="CENTER"><A NAME="search"></A><A NAME="388"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Abbildung 2.5:</STRONG>
+Suchanfrage an den Server</CAPTION>
+<TR><TD><IMG
+ WIDTH="632" HEIGHT="464" ALIGN="BOTTOM" BORDER="0"
+ SRC="img16.png"
+ ALT="\includegraphics[width=14cm]{bilder/search.eps}"></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+Der am h&#228;ufigsten ben&#246;tigte Dienst des Servers ist die <A NAME="391"></A>Suche nach Dokumenten.
+Wie ein Request grunds&#228;tzlich entgegengenommen wird ist bereits in Kapitel
+<A HREF="node33.html#addpagerequest">2.5.1</A> beschrieben.
+Das Servlet (siehe Kapitel <A HREF="node24.html#servlet">2.3.1</A>) erhellt den Request und ruft die entsprechende 
+Funktion des <A NAME="394"></A>Controllers (siehe <A HREF="node25.html#controller">2.3.2</A>) auf.
+
+<P>
+Eine &#220;bersicht zum Ablauf einer <A NAME="396"></A>Suchanfrage biete die Abbildung <A HREF="#search">2.5</A>.
+Die Suchanfrage enth&#228;lt zuerst einen vom User eingegebenen Text, der in der
+<A NAME="398"></A>Lucene <SPAN CLASS="MATH"><IMG
+ WIDTH="119" HEIGHT="35" ALIGN="MIDDLE" BORDER="0"
+ SRC="img17.png"
+ ALT="$QuerySyntax$"></SPAN> formuliert ist. 
+(siehe <TT>QueryParser</TT> in Kapitel <A HREF="node17.html#luckomponenten">2.2.1</A>)
+Zus&#228;tzlich wird ein Array von <A NAME="401"></A>Kategorie-IDs &#252;bergeben. Die <A NAME="402"></A>Kategorien wurden vom
+Nutzer am Client ausgew&#228;hlt. Da alle Clients immer ihre <A NAME="403"></A>Kategorieb&#228;ume 
+aktuell halten, sind die IDs direkt verwendbar.
+Es gibt zur Zeit keine serverseitige &#220;berpr&#252;fung der &#252;bergebenen Kategorien.
+Das bedeutet, wenn veraltete und somit ''falsche'' IDs in der Anfrage stehen, werden 
+entweder falsche oder keine Dokumente gefunden.
+
+<P>
+Die weitere Bearbeitung ben&#246;tigt nur eine Anfrage an den Index. Hierzu wird ein
+<A NAME="404"></A>Indexer (siehe Kapitel <A HREF="node26.html#indexer">2.3.3</A>) erstellt. Dieser baut anhand der <A NAME="406"></A>Parameter
+eine <SPAN CLASS="MATH"><IMG
+ WIDTH="58" HEIGHT="35" ALIGN="MIDDLE" BORDER="0"
+ SRC="img18.png"
+ ALT="$Query$"></SPAN> (Kapitel <A HREF="node17.html#luckomponenten">2.2.1</A>), die dann durch <A NAME="408"></A>Lucene bearbeitet wird.
+Genauere Informationen zum Erstellen der <SPAN CLASS="MATH"><IMG
+ WIDTH="58" HEIGHT="35" ALIGN="MIDDLE" BORDER="0"
+ SRC="img18.png"
+ ALT="$Query$"></SPAN> befinden sich in Kapitel <A HREF="node30.html#docstruktur">2.4.2</A>.
+Die Dokumente (Kapitel <A HREF="node17.html#luckomponenten">2.2.1</A>) , die der Index als Antwort generiert, werden
+durch den <A NAME="411"></A>Controller ausgewertet und eine <SPAN CLASS="MATH"><IMG
+ WIDTH="84" HEIGHT="35" ALIGN="MIDDLE" BORDER="0"
+ SRC="img19.png"
+ ALT="$Response$"></SPAN> wird erstellt. 
+Diese kann dann die <A NAME="412"></A>HTML- oder <A NAME="413"></A>XML-Antwort generieren, welche an den Client gesendet wird.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html755"
+  HREF="node35.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html749"
+  HREF="node32.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html743"
+  HREF="node33.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html751"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html753"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html756"
+  HREF="node35.html">GetCategoriesRequest</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html750"
+  HREF="node32.html">Abl&#228;ufe im Server</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html744"
+  HREF="node33.html">AddpageRequest</A>
+ &nbsp; <B>  <A NAME="tex2html752"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html754"
+  HREF="node176.html">Index</A></B> </DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

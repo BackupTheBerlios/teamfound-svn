@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Document und Field</TITLE>
+<META NAME="description" CONTENT="Document und Field">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="next" HREF="node19.html">
+<LINK REL="previous" HREF="node17.html">
+<LINK REL="up" HREF="node17.html">
+<LINK REL="next" HREF="node19.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html529"
+  HREF="node19.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html523"
+  HREF="node17.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html517"
+  HREF="node17.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html525"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html527"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html530"
+  HREF="node19.html">Analyzer</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html524"
+  HREF="node17.html">Wichtige Komponenten</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html518"
+  HREF="node17.html">Wichtige Komponenten</A>
+ &nbsp; <B>  <A NAME="tex2html526"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html528"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H4><A NAME="SECTION00421210000000000000">
+Document und Field</A>
+</H4>
+
+<P>
+Ein Lucene-<TT>Document</TT> ist die <A NAME="172"></A>Basisspeichereinheit in einem von <A NAME="173"></A>Lucene erstellten Index. Die Argumente bzw. Ergebnisse beim Einf&#252;gen und Suchen sind immer Lucene-<TT>Documents</TT>. 
+
+<P>
+Diese Dokumente bestehen aus einer variablen Anzahl von Feldern (<TT>Field</TT>).
+Um ein Dokument zu erstellen kann man beliebig Felder definieren. Sinnvollerweise ist 
+mindestens ein <A NAME="176"></A>Inhaltsfeld definiert. Dieses wird in <A NAME="177"></A>Token zerlegt und indiziert.
+Au&#223;erdem ist es zweckm&#228;&#223;ig weitere Felder zu definieren, die nicht indiziert oder zerlegt,
+sondern als zus&#228;tzliche Information gespeichert werden. Ein eindeutiges Schl&#252;sselwort
+oder eine URL sind typisch, da nur so eine Unterscheidung von Dokumenten m&#246;glich wird.
+Es k&#246;nnen beliebig weitere Felder angelegt werden z.B. Author, Adresse, Zusammenfassung
+oder Kategorie. 
+
+<P>
+Allerdings werden Felder generell uninterpretiert als Text abgelegt.
+Ausser Felder (wie das Inhaltsfeld), die zerlegt und indiziert werden. Diese sind 
+textuell nicht wiederherstellbar, aber jetzt mithilfe von Anfragen durchsuchbar. 
+
+<P>
+<BR><HR>
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

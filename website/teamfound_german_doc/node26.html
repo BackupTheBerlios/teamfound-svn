@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Indexer</TITLE>
+<META NAME="description" CONTENT="Indexer">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="next" HREF="node27.html">
+<LINK REL="previous" HREF="node25.html">
+<LINK REL="up" HREF="node23.html">
+<LINK REL="next" HREF="node27.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html641"
+  HREF="node27.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html635"
+  HREF="node23.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html629"
+  HREF="node25.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html637"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html639"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html642"
+  HREF="node27.html">Response</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html636"
+  HREF="node23.html">Architektur</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html630"
+  HREF="node25.html">Controller</A>
+ &nbsp; <B>  <A NAME="tex2html638"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html640"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00433000000000000000"></A>
+<A NAME="indexer"></A>
+<BR>
+Indexer
+</H2>
+Der <A NAME="249"></A>Indexer ist f&#252;r die Arbeit direkt am <A NAME="250"></A>Lucene-Index verantwortlich. Er f&#252;gt 
+Dokumente (siehe <A HREF="node15.html#lucene">2.2.1</A>) in den Index ein oder entfernt sie wieder. 
+Ausserdem f&#252;hrt er Suchanfragen auf dem Index aus.
+Die von uns definierte <A NAME="252"></A>Dokumentenstruktur (siehe <A HREF="node30.html#docstruktur">2.4.2</A>) ist bereits im <A NAME="254"></A>Controller bekannt, 
+somit kann der Indexer vorgefertigte Dokument erhalten und als Ergebnis liefern. 
+Zur Indizierung und zur Suche benutzt der Indexer 
+einen eigenen Analyzer (siehe <A HREF="node15.html#lucene">2.2.1</A>), 
+der wird haupts&#228;chlich ben&#246;tigt um das <A NAME="256"></A>Kategorienfeld (siehe <A HREF="node30.html#docstruktur">2.4.2</A>) korrekt zu zerlegen.
+Ausserdem geh&#246;rt ein einfacher <A NAME="258"></A>HTML-Parser zum Indexer, dieser soll den Text und
+einige zus&#228;tzliche Informationen (z.b. context-type) aus den HTML-Seiten extrahieren.
+Weitere Parser z.b. f&#252;r <A NAME="259"></A>Postscript oder <A NAME="260"></A>PDF-Dateien sind in zuk&#252;nftigen Versionen denkbar.
+
+<P>
+Die Anfragen werden zu einem Teil durch den <A NAME="261"></A>QueryParser (siehe <A HREF="node15.html#lucene">2.2.1</A>) und zum 
+anderen vom <A NAME="263"></A>Indexer generiert. Der Indexer erstellt dabei die Einschr&#228;nkung
+welche Kategorien in der Anfrage g&#252;ltig sind.
+Aus beiden Teilen wird die gesammte Anfrage gebildet und an den Index gestellt.
+Die Verarbeitung der Ergebnisse &#252;bernimmt der Controller.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html641"
+  HREF="node27.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html635"
+  HREF="node23.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html629"
+  HREF="node25.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html637"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html639"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html642"
+  HREF="node27.html">Response</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html636"
+  HREF="node23.html">Architektur</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html630"
+  HREF="node25.html">Controller</A>
+ &nbsp; <B>  <A NAME="tex2html638"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html640"
+  HREF="node176.html">Index</A></B> </DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

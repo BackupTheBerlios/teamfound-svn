@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Web-Crawler</TITLE>
+<META NAME="description" CONTENT="Web-Crawler">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="next" HREF="node6.html">
+<LINK REL="previous" HREF="node4.html">
+<LINK REL="up" HREF="node4.html">
+<LINK REL="next" HREF="node6.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html131"
+  HREF="node6.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html127"
+  HREF="node4.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html121"
+  HREF="node4.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html129"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A>  
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html132"
+  HREF="node6.html">Index-Updates</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html128"
+  HREF="node4.html">Neuerungen am Server</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html122"
+  HREF="node4.html">Neuerungen am Server</A>
+ &nbsp; <B>  <A NAME="tex2html130"
+  HREF="node1.html">Inhalt</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00311000000000000000">
+Web-Crawler</A>
+</H2>
+
+<P>
+Eine wichtige Komponente in einer Suchmaschine ist der Crawler, welcher die zu indexierenden Dokumente herunterl&#228;dt. Die bisherige recht einfache Implementierung hat diesen Job nur teilweise gut erledigt. So war es bisher nicht m&#246;glich die Codierung der heruntergeladenen Daten korrekt zu bestimmen. Au&#223;erdem konnte Teamfound nicht mit Framesets umgehen, bzw. hat versucht die Datei mit dem Frameset zu indexieren, nicht den Inhalt der eigentlichen Frames.
+
+<P>
+Um diese Probleme zu l&#246;sen wurde der Teamfound-Crawler komplett neu implementiert. Eine dreistufige Suche nach einer Codierungsangabe, n&#228;mlich in der Verbindung an sich, im HTTP-Header sowie im HTML-Header. Letzterer Ort ist der warscheinlichste Fundort f&#252;r ein solches Encoding. Es ist daf&#252;r also notwendig den kompletten HTML-Code herunterzuladen und dann nach einer entsprechenden Angabe zu suchen. Die Suche nach Angaben zum Encoding sieht die M&#246;glichkeit vor, das Teamfound in der Zukunft mehrere Arten von Dokumenten indexieren kann. Da die Suche nach einem Encoding in PDF-Dateien zB. ganz anders ablaufen wird, muss diese vom Inhaltstyp abh&#228;ngen. Der neue Crawler l&#228;sst sich bequem um solche erweitern.
+
+<P>
+Die Behandlung von Framesets ist eine zentrale Anforderung, die auf verschiedene Arten gel&#246;st werden kann. So ist die Frage, ob einfach alle Frames in der Reihenfolge ihrer Definition in der Quelldatei heruntergeladen und zu einem langen Dokument zusammengef&#252;gt werden, oder ob mehr Aufwand betrieben werden soll, um zB. den Hauptinhaltsframe zu finden und an den Anfang des Ergebnisdokumentes zu stellen. Die neue Implementierung des Crawler verfolgt erstes Schema, alle Frames werden in einfacher Definitionsreihenfolge hintereinander kopiert und dann an den Indexer &#252;bergeben, welcher das HTML entfernt und den Text indexiert. So steht aber nat&#252;rlich nicht immer der Anfang des Inhaltes in der Teamfound-Ergebnisanzeige. Da es aber nicht einfach ist, den Hauptinhaltsframe innerhalb eines Framesets herauszufinden haben wir uns entschieden dieses auch nicht zu versuchen.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html131"
+  HREF="node6.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html127"
+  HREF="node4.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html121"
+  HREF="node4.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html129"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A>  
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html132"
+  HREF="node6.html">Index-Updates</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html128"
+  HREF="node4.html">Neuerungen am Server</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html122"
+  HREF="node4.html">Neuerungen am Server</A>
+ &nbsp; <B>  <A NAME="tex2html130"
+  HREF="node1.html">Inhalt</A></B> </DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Jan Kechel
+2006-09-27
+</ADDRESS>
+</BODY>
+</HTML>

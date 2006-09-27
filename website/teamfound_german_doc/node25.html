@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Controller</TITLE>
+<META NAME="description" CONTENT="Controller">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="next" HREF="node26.html">
+<LINK REL="previous" HREF="node24.html">
+<LINK REL="up" HREF="node23.html">
+<LINK REL="next" HREF="node26.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html627"
+  HREF="node26.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html621"
+  HREF="node23.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html615"
+  HREF="node24.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html623"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html625"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html628"
+  HREF="node26.html">Indexer</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html622"
+  HREF="node23.html">Architektur</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html616"
+  HREF="node24.html">Servlet</A>
+ &nbsp; <B>  <A NAME="tex2html624"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html626"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00432000000000000000"></A>
+<A NAME="controller"></A>
+<BR>
+Controller
+</H2>
+Die Hauptaufgabe des <A NAME="238"></A>Controllers besteht darin die Teilaufgaben, die sich aus einer 
+Anfrage ergeben, koordiniert an Datenbank und Index zu stellen.
+Ausserdem sorgt er f&#252;r den Download der zu indizierenden Dokumente.
+
+<P>
+Die Zugriffe auf den <A NAME="239"></A>Index werden dabei durch eine Instanz eines <A NAME="240"></A>Indexers erledigt.
+Um die Zugriffe der Indexer auf den Index zu steuern, besitzt der Controller ein
+Semaphorobjekt. Dieses realisiert eine Leser-Schreiber-Kooperation der beauftragten
+Indexer.
+
+<P>
+Der Zugriff auf die Datenbank erfolgt &#252;ber den <A NAME="241"></A>DBLayer. Dieser stellt
+s&#228;mtliche Funktionalit&#228;t zum lesen und schreiben der <A NAME="242"></A>Datenbank zur
+Verf&#252;gung.
+
+<P>
+Wenn alle Teilaufgaben erf&#252;llt sind (siehe Abl&#228;ufe <A HREF="node32.html#request">2.5</A>), generiert der <A NAME="244"></A>Controller aus den 
+erhaltenen Informationen eine <A NAME="245"></A>Response und &#252;bergibt diese dem <A NAME="246"></A>Servlet.
+
+<P>
+<BR><HR>
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

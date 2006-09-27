@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>AddpageRequest</TITLE>
+<META NAME="description" CONTENT="AddpageRequest">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="next" HREF="node34.html">
+<LINK REL="previous" HREF="node32.html">
+<LINK REL="up" HREF="node32.html">
+<LINK REL="next" HREF="node34.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html741"
+  HREF="node34.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html735"
+  HREF="node32.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html729"
+  HREF="node32.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html737"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html739"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html742"
+  HREF="node34.html">SearchRequest</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html736"
+  HREF="node32.html">Abl&#228;ufe im Server</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html730"
+  HREF="node32.html">Abl&#228;ufe im Server</A>
+ &nbsp; <B>  <A NAME="tex2html738"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html740"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00451000000000000000"></A>
+<A NAME="addpagerequest"></A><A NAME="355"></A>
+<BR>
+AddpageRequest
+</H2>
+
+<DIV ALIGN="CENTER"><A NAME="addpage"></A><A NAME="358"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Abbildung 2.4:</STRONG>
+Indizieren einer neuen URL</CAPTION>
+<TR><TD><IMG
+ WIDTH="723" HEIGHT="634" ALIGN="BOTTOM" BORDER="0"
+ SRC="img14.png"
+ ALT="\includegraphics[width=16cm]{bilder/ablaufaddpage1.eps}"></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+Die wichtigsten Funktionen von Teamfound sind ohne Zweifel, dass hinzuf&#252;gen und
+das Suchen. Deshalb soll als erstes ein Einblick in das Hinzuf&#252;gen von Urls 
+gegeben werden. Hierzu liefert die Abbildung <A HREF="#addpage">2.4</A> einen &#220;berblick.
+
+<P>
+Der Aufruf des Clients wird in <SPAN CLASS="MATH"><IMG
+ WIDTH="35" HEIGHT="16" ALIGN="BOTTOM" BORDER="0"
+ SRC="img15.png"
+ ALT="$Get$"></SPAN>-Variablen in der Url codiert (siehe <A HREF="node89.html#interface2">A.1</A>)
+und vom Servlet (siehe Kapitel <A HREF="node24.html#servlet">2.3.1</A>) entgegengenommen. 
+Ist der Aufruf korekt, d.h. er enth&#228;lt die hinzuzuf&#252;gende Url und mindestens 
+eine Kategorie, wird der Controller (siehe <A HREF="node25.html#controller">2.3.2</A>) mit entsprechendem 
+Auftrag angestossen.
+Bei nicht korekten Aufrufen wird eine <A NAME="365"></A><TT>ErrorResponse</TT> erstellt.
+
+<P>
+Der <A NAME="367"></A>Controller erstellt nun eine Verbindung zur <A NAME="368"></A>Datenbank 
+und einen Indexer (siehe Kapitel <A HREF="node26.html#indexer">2.3.3</A>).
+Als n&#228;chstes &#252;berpr&#252;ft er anhand der <A NAME="370"></A>Datenbank ob die Url schon existiert.
+An dieser Stelle ergeben sich zwei M&#246;glichkeiten.
+Sollte die Url noch nicht indiziert sein, so muss sie als erstes runtergeladen werden.
+Danach wird ein Dokument erstellt und durch den <A NAME="371"></A>Indexer dem <A NAME="372"></A>Index hinzugef&#252;gt.
+(siehe hierzu Kapitel <A HREF="node30.html#docstruktur">2.4.2</A>)
+Als letztes muss noch die <A NAME="374"></A>Datenbank angeglichen werden. (siehe Kapitel <A HREF="node29.html#datenbank">2.4.1</A>)
+
+<P>
+Die zweite M&#246;glichkeit ist, dass die Url bereits indiziert wurde.
+Um ein Update der Url im Index durchzuf&#252;hren, muss zuerst das entsprechende Dokument
+aus dem Index gel&#246;scht werden. Dabei wird eine Kopie des Dokuments an den <A NAME="376"></A>Controller
+geliefert. Dieser ersetzt nun das Kategorienfeld (siehe Kapitel <A HREF="node30.html#docstruktur">2.4.2</A>), damit
+die neuen Kategorien auch enthalten sind.
+Danach wird das Dokument dem Index wieder hinzugef&#252;gt und die entsprechenden neuen
+Assoziationen zwischen Url und <A NAME="378"></A>Kategorien werden in der <A NAME="379"></A>Datenbank gesetzt.
+
+<P>
+Es gibt noch eine dritte M&#246;glichkeit, die allerdings in Abbildung <A HREF="#addpage">2.4</A> nicht
+dargestellt ist. Die Url ist bereits hinzugef&#252;gt und es ver&#228;ndert sich auch bei
+den Kategorien nichts. Auch diese M&#246;glichkeit wird anahnd der <A NAME="381"></A>Datenbank &#252;berpr&#252;ft.
+Sollte der Fall eintreten passiert gar nichts und die Erfolgsmeldung wird 
+sofort an den <A NAME="382"></A>Client gesendet. Es ist einfach vorstellbar, dass ein Benutzer ausversehen
+mehrmals das Hinzuf&#252;gen ausl&#246;st. In solch einem Fall wollen wir nicht unn&#246;tig den
+Index blockieren.
+Allerdings gibt es auch hier eine Aussnahme. Sollte die Url ein gewisses ''Alter'' 
+&#252;berschreiten wird sie auf jeden Fall erneut heruntergeladen.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html741"
+  HREF="node34.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html735"
+  HREF="node32.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html729"
+  HREF="node32.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html737"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html739"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html742"
+  HREF="node34.html">SearchRequest</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html736"
+  HREF="node32.html">Abl&#228;ufe im Server</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html730"
+  HREF="node32.html">Abl&#228;ufe im Server</A>
+ &nbsp; <B>  <A NAME="tex2html738"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html740"
+  HREF="node176.html">Index</A></B> </DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

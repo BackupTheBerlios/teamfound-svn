@@ -1,0 +1,118 @@
+<html>
+<head>
+	<title>TeamFound Web-Client</title>
+
+<style>
+	body { margin-left: 40; margin-right: 40;}
+	html { background-color: white; color: #000000; font-family: Arial, Lucida Grande, sans-serif; font-size: 0.9em; line-height: 1.25em; }
+
+	a:link { font-family:Arial,sans-serif; font-style:normal; text-decoration:none; line-height:1.5em; color:#0000FF; margin:0; padding:0; }
+	a:visited { font-family:Arial,sans-serif; font-style:normal; text-decoration:none; line-height:1.5em; color:#0000FF; margin:0; padding:0; }
+	a:hover { font-family:Arial,sans-serif; font-style:normal; text-decoration:underline; line-height:1.5em; color:#0000FF; margin:0; padding:0; }
+	a:active { font-family:Arial,sans-serif; font-style:normal; text-decoration:none; line-height:1.5em; color:#0000FF; margin:0; padding:0; }
+	a:focus { font-family:Arial,sans-serif; font-style:normal; text-decoration:none; line-height:1.5em; color:#0000FF; margin:0; padding:0; }
+
+	h1 { font-size: 20px; padding-top:25px; color:#333366;}
+	h2 { font-size: 16px; padding-top:20px; color:#333366;}
+	h3 { font-size: 14px; padding-top:5px; color:#333366;}
+
+	div { padding:10px; border-style:solid; border-width:1px; border-color:#CCCCCC;}
+	td { font-size:0.9em;}
+
+</style>
+
+
+<script language="JavaScript"><!--
+
+function sendForm(form) 
+{
+    document.getElementById(form).action = document.getElementById("tfbaseurl").value;
+    return true;
+}
+//--></script>
+</head>
+
+<body style="font-family:sans-serif">
+
+<h1>TeamFound - interface milestone 2 requests</h1>
+These forms generate interface milestone 2 conform requests to test the server.<br>
+<br>
+All requests are directed to <input size="50" type="text" name="tfbaseurl" id="tfbaseurl" value="http://teamfound.dyndns.org:8080/tf/tf">
+
+<h2>search</h2>
+<div>
+<form 	id="search1" 
+	onSubmit="return sendForm('search1');"
+>
+<table>
+<tr><td>keyword =</td><td><input size="50" type="text" name="keyword"></td><td></td></tr>
+<tr><td>category =</td><td><input size="50" type="text" name="category" value="0"></td><td>the category-id (0 = no special category / top-category)</td></tr>
+<tr><td>want =</td><td><input size="50" type="text" name="want" value="xml"></td><td>xml | html</td></tr>
+<tr><td>version =</td><td><input size="50" type="text" name="version" value="2"></td><td>interface version (Milestone 2 = 2)</td></tr>
+<tr><td>command =</td><td><input size="50" type="text" name="command" value="search"></td><td>server-command</td></tr>
+</table>
+<br>
+<input size="50" type="submit">
+</form>
+</div>
+
+<h2>add page</h2>
+<div>
+<form 	id="add1" 
+	onSubmit="return sendForm('add1');"
+>
+<table>
+<tr><td>url =</td><td><input size="50" type="text" name="url" value="http://teamfound.berlios.de"></td><td>a complete url</td></tr>
+<tr><td>category =</td><td><input size="50" type="text" name="category" value="0"></td><td>the category-id (0 = no special category / top-category)</td></tr>
+<tr><td>want =</td><td><input size="50" type="text" name="want" value="xml"></td><td>xml | html</td></tr>
+<tr><td>version =</td><td><input size="50" type="text" name="version" value="2"></td><td>interface version (Milestone 2 = 2)</td></tr>
+<tr><td>command =</td><td><input size="50" type="text" name="command" value="addpage"></td><td>server-command</td></tr>
+</table>
+<br>
+<input size="50" type="submit">
+</form>
+</div>
+
+<h2>get categories</h2>
+<div>
+<form 	id="getc1" 
+	onSubmit="return sendForm('getc1');"
+>
+<table>
+<tr><td>want =</td><td><input size="50" type="text" name="want" value="xml"></td><td>xml | html</td></tr>
+<tr><td>version =</td><td><input size="50" type="text" name="version" value="2"></td><td>interface version (Milestone 2 = 2)</td></tr>
+<tr><td>command =</td><td><input size="50" type="text" name="command" value="getcategories"></td><td>server-command</td></tr>
+</table>
+<br>
+<input size="50" type="submit">
+</form>
+</div>
+
+
+<h2>add category</h2>
+<div>
+<form 	id="add2" 
+	onSubmit="return sendForm('add2');"
+>
+<table>
+<tr><td>name =</td><td><input size="50" type="text" name="name" value="neue Kategorie"></td><td>the name of the new category</td></tr>
+<tr><td>description =</td><td><input size="50" type="text" name="description" value="Meine erste Kategorie"></td><td>the description of the new category (optional)</td></tr>
+<tr><td>subcategoryof=</td><td><input size="50" type="text" name="subcategoryof" value="0"></td><td>the parent-category-id (0 = top-category)</td></tr>
+<tr><td>want =</td><td><input size="50" type="text" name="want" value="xml"></td><td>xml | html</td></tr>
+<tr><td>version =</td><td><input size="50" type="text" name="version" value="2"></td><td>interface version (Milestone 2 = 2)</td></tr>
+<tr><td>command =</td><td><input size="50" type="text" name="command" value="addcategory"></td><td>server-command</td></tr>
+</table>
+<br>
+<input size="50" type="submit">
+</form>
+</div>
+
+
+<br>
+<br>
+Copyright (c) 2005 - <a href="http://teamfound.berlios.de">http://teamfound.berlios.de</a>
+<br>
+<br>
+</body>
+</html>
+

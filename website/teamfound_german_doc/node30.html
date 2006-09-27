@@ -1,0 +1,177 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Index und Dokumentstruktur</TITLE>
+<META NAME="description" CONTENT="Index und Dokumentstruktur">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="next" HREF="node31.html">
+<LINK REL="previous" HREF="node29.html">
+<LINK REL="up" HREF="node28.html">
+<LINK REL="next" HREF="node31.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html698"
+  HREF="node31.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html692"
+  HREF="node28.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html686"
+  HREF="node29.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html694"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html696"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html699"
+  HREF="node31.html">Repr&#228;sentation der Kategorien</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html693"
+  HREF="node28.html">Datenmodell</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html687"
+  HREF="node29.html">Datenbank</A>
+ &nbsp; <B>  <A NAME="tex2html695"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html697"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00442000000000000000"></A>
+<A NAME="docstruktur"></A>
+<BR>
+Index und Dokumentstruktur
+</H2>
+
+<P>
+Die <A NAME="310"></A>Bibliothek <A NAME="311"></A>Lucene macht bestimmte Vorgaben wie die Textdokumente, die von Lucene
+<A NAME="312"></A>indiziert werden sollen, zu erstellen sind. (siehe <A HREF="node17.html#luckomponenten">2.2.1</A>)
+
+<P>
+In diesem Abschnitt soll kurz der Aufbau eines von Teamfound erstelltem Dokuments
+beschrieben werden. Zur Hilfestellung lohnt es sich Abbildung <A HREF="node31.html#katstruktur">2.3</A> 
+anzuschauen.
+
+<P>
+Jede Html-Seite, die dem <A NAME="315"></A>Index hinzugef&#252;gt werden soll, muss erstmal serverseitig heruntergeladen werden.
+Danach wird der Text und weitere Informationen extrahiert.
+Dies alles, sowie die Kategorien zu denen die Seite zugeordnet wurde, wird nun in 
+ein <A NAME="316"></A>Lucene-Dokument verpackt.
+
+<P>
+Das erste Feld (siehe <A HREF="node17.html#luckomponenten">2.2.1</A>), welches ein Teamfounddokument 
+enth&#228;lt, ist
+ein <A NAME="318"></A>Schl&#252;sselwortfeld. In diesem wird die Url zu der dieses Dokument geh&#246;rt
+gespeichert. Dieses Feld wird nicht durch den Teamfound-<SPAN CLASS="MATH"><IMG
+ WIDTH="82" HEIGHT="35" ALIGN="MIDDLE" BORDER="0"
+ SRC="img12.png"
+ ALT="$Analyser$"></SPAN> (siehe <A HREF="node17.html#luckomponenten">2.2.1</A>) zerlegt, aber durchsuchbar im Index abgespeichert. 
+Die Url wird also zur eindeutigen Identifikation eines Dokumentes ben&#246;tigt. 
+Zus&#228;tzlich ist es m&#246;glich den Index nach Urls zu durchsuchen.
+
+<P>
+Als n&#228;chstes speichern wir eine sehr kurze Zusammenfassung. 
+Diese wird weder zerlegt noch indiziert. 
+Sie dient ausschlie&#223;lich als n&#228;here Beschreibung eines <A NAME="320"></A>Suchergebnisses einer Anfrage.
+
+<P>
+Ein weiteres Feld ist der Titel der Seite. Er wird zerlegt und indiziert.
+Anfragen die Schl&#252;sselw&#246;rter enthalten, die im Titel vorkommen, erhalten
+dadurch eine h&#246;here Wertigkeit.
+
+<P>
+Das wichtigste Feld neben der Url enth&#228;lt den textuellen Inhalt der Seite.
+Dieser wird in Token zerlegt und indiziert.
+Anfragen an den Index durchsuchen grunds&#228;tzlich dieses Feld und das Titelfeld.
+
+<P>
+Die Ergebnisse solcher Anfragen sollen nun durch Kategoriezugeh&#246;rigkeit
+eingeschr&#228;nkt werden. Daf&#252;r umfassen Teamfounddokumente ein weiteres Feld, dass
+die Kategorien enth&#228;lt denen das Dokument zugeordnet wurde. 
+
+<P>
+Die Anfrage &#252;ber Inhalt und Titel wird also
+mit einer zweiten Suchanfrage &#252;ber dem Kategorienfeld verkn&#252;pft und eingeschr&#228;nkt.
+Um solche Anfragen zu erm&#246;glichen muss jedes Token in einem Kategoriefeld eindeutig
+einer Kategorie zuzuordnen sein.
+
+<P>
+Die einfachste L&#246;sung war die ID einer <A NAME="321"></A>Kategorie aus der Datenbank als <A NAME="322"></A>Token 
+zu benutzen, und diese in dem Kategoriefeld zu speichern.
+Damit es m&#246;glich ist die verschiedenen IDs zu unterscheiden, trennen wir diese mit 
+einem eindeutigen Charakter voneinander ab.
+Den Teamfound-<SPAN CLASS="MATH"><IMG
+ WIDTH="82" HEIGHT="35" ALIGN="MIDDLE" BORDER="0"
+ SRC="img12.png"
+ ALT="$Analyser$"></SPAN> haben wir dementsprechend angepasst,
+so dass er die <A NAME="323"></A>Tokens dieses Feldes einfach anhand des Trenncharakters generiert.
+Auf diese Weise k&#246;nnen wir die <A NAME="324"></A>Anfragen leicht so erweitern, dass sie mithilfe von <A NAME="325"></A>Kategorien eingeschr&#228;nkt werden k&#246;nnen.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html698"
+  HREF="node31.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html692"
+  HREF="node28.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html686"
+  HREF="node29.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html694"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html696"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html699"
+  HREF="node31.html">Repr&#228;sentation der Kategorien</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html693"
+  HREF="node28.html">Datenmodell</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html687"
+  HREF="node29.html">Datenbank</A>
+ &nbsp; <B>  <A NAME="tex2html695"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html697"
+  HREF="node176.html">Index</A></B> </DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

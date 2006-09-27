@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Logging</TITLE>
+<META NAME="description" CONTENT="Logging">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="next" HREF="node8.html">
+<LINK REL="previous" HREF="node6.html">
+<LINK REL="up" HREF="node4.html">
+<LINK REL="next" HREF="node8.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html155"
+  HREF="node8.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html151"
+  HREF="node4.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html145"
+  HREF="node6.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html153"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A>  
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html156"
+  HREF="node8.html">Usermanagement</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html152"
+  HREF="node4.html">Neuerungen am Server</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html146"
+  HREF="node6.html">Index-Updates</A>
+ &nbsp; <B>  <A NAME="tex2html154"
+  HREF="node1.html">Inhalt</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00313000000000000000">
+Logging</A>
+</H2>
+
+<P>
+Da der Funktionsumfang des Teamfound-Servers stark angewachsen ist, wurde die Nutzung eines echten Logging-Systems notwendig, einerseits vereinfacht dies die Entwicklung, da Debug-Ausgaben ordentlich ausgegeben werden k&#246;nnen, andererseits ist es f&#252;r einen sp&#228;teren Produktiven Einsatz evtl. wichtig Fehler bei Zugriffen auf den Teamfound-Server oder fehlgeschlagene Logins zu protokollieren.
+Da w&#228;hrend eines produktiven Einsatzes keine oder nur wenige Debug-Nachrichten protokolliert werden sollen, ist ein Logging-System notwendig, das einerseits zwischen der Art von Nachrichten unterscheiden kann, andererseits aber auch Komponenten, welche Nachrichten einliefern, trennen kann. log4j aus dem Apache-Projekt erf&#252;llt alle diese Aufgaben und wurde daher f&#252;r die Integration in Teamfound ausgew&#228;hlt. Einzelne Komponenten benutzen unterschiedliche sogenannte 'Logger' und trennen ihre Nachrichten in mehrere Kategorien zwischen Debug, Info sowie Warning und Error auf. Einzelne oder alle Logger k&#246;nnen auf die Konsole oder in eine Datei umgeleitet werden.  
+
+<P>
+<BR><HR>
+<ADDRESS>
+Jan Kechel
+2006-09-27
+</ADDRESS>
+</BODY>
+</HTML>

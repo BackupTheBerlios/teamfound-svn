@@ -1,10 +1,20 @@
 
-to make the build.xml work, create the following two links here:
+to make the build.xml work, create the following link here:
 
-linktohsqldb -> /home/jan/hsqldb
-linktotomcat -> /home/jan/apache-tomcat-5.5.17/
+linktotomcat -> /home/xyz/apache-tomcat-5.5.17/
 
-replace /home/jan with the appropriate directories on your system
+replace /home/xyz with the appropriate directories on your system
 
-go to current/conf and copy teamfound.properties.svn to teamfound.properties and
+go to current/conf to teamfound.properties and
 edit the configuration to fit your needs
+
+ant
+
+compiles the teamfoundserver
+
+after compilation create a link to the build directory in you tomcat/webapps directory
+
+ln -s /xyz/build /xzy/tomcat/webapps/MYNAME
+
+replace MYNAME with your desired http adress-directory (http://yoursite/MYNAME/tf)
+

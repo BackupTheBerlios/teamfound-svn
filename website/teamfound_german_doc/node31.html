@@ -1,0 +1,186 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Repr&#228;sentation der Kategorien</TITLE>
+<META NAME="description" CONTENT="Repr&#228;sentation der Kategorien">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="previous" HREF="node30.html">
+<LINK REL="up" HREF="node28.html">
+<LINK REL="next" HREF="node32.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html710"
+  HREF="node32.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html704"
+  HREF="node28.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html700"
+  HREF="node30.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html706"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html708"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html711"
+  HREF="node32.html">Abl&#228;ufe im Server</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html705"
+  HREF="node28.html">Datenmodell</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html701"
+  HREF="node30.html">Index und Dokumentstruktur</A>
+ &nbsp; <B>  <A NAME="tex2html707"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html709"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00443000000000000000"></A>
+<A NAME="katrep"></A>
+<BR>
+Repr&#228;sentation der Kategorien
+</H2>
+
+<P>
+
+<DIV ALIGN="CENTER"><A NAME="katstruktur"></A><A NAME="330"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Abbildung:</STRONG>
+Repr&#228;sentation der Kategorien in DB und Index</CAPTION>
+<TR><TD><IMG
+ WIDTH="723" HEIGHT="497" ALIGN="BOTTOM" BORDER="0"
+ SRC="img13.png"
+ ALT="\includegraphics[width=16cm]{bilder/katstruktur.eps}"></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+Da ein wichtiger Teil des derzeitigen Servers die Verwaltung der <A NAME="333"></A>Kategorien 
+betrifft, soll hier noch einmal etwas genauer auf diese eingegangen werden.
+
+<P>
+Wie schon in Kapitel <A HREF="node29.html#datenbank">2.4.1</A> erw&#228;hnt wurde sind die Kategorien 
+<A NAME="335"></A>baumstrukturiert und werden in Form von <A NAME="336"></A>verschachtelten Mengen in der
+<A NAME="337"></A>Datenbank abgelegt.
+Die grafische Darstellung eines solchen Baumes und einer solchen Menge
+kann man in Abbildung <A HREF="#katstruktur">2.3</A> sehen. 
+Es ist leicht zu erkennen, dass alle Knoten des Baumes einen linken und
+einen rechten Wert aufweisen. 
+Anhand dieser Werte kann die <A NAME="339"></A>Mengen-Baumstruktur in der Datenbank nachgebaut und 
+der Baum durchlaufen werden.
+Es ist leicht zu erkennen, dass der rechte Wert eines Knotens gr&#246;&#223;er ist als
+alle Werte der <A NAME="340"></A>Kindknoten und genauso ist der linke Wert kleiner.
+Es gelten noch einige andere n&#252;tzliche Dinge, z.b.  
+k&#246;nnen alle Bl&#228;tter des Baumes sehr leicht indentifiziert werden, da
+bei diesen die Differenz von linkem und rechtem Wert einfach 1 betr&#228;gt.
+
+<P>
+Wir haben diese Struktur ausgew&#228;hlt, weil das durchsuchen 
+sehr einfach und schnell geht. 
+Der grosse Nachteil ist das Ver&#228;ndern eines solchen Baumes. Damit die Struktur
+in Takt bleibt muss prinzipiell jeder Knoten der ''rechts'' des bearbeiteten Knotens
+liegt angepasst werden. Dies wird bei sehr tiefen B&#228;umen entsprechend aufwendig.
+
+<P>
+Das sollte f&#252;r unseren Anwendungsfall aber kein Problem sein. Die Kategorien  
+werden von Nutzern der &#220;bersichtlichkeit halber angelegt und sollten deshalb 
+wohl nicht so tief und stark verzweigen.
+Ausserdem gehen wir davon aus, dass das ver&#228;ndern der Kategorien 
+eher selten vorkommen wird. Wenn ein neues Projekt beginnt werden in der Anfangsphase 
+von den Mitgliedern sicher einige Kategorien angelegt, diese 
+werden danach aber auch nahezu unver&#228;ndert bleiben.
+
+<P>
+Auf der anderen Seite muss bei sehr vielen Anfragen der <A NAME="341"></A>Baum durchsucht werden.
+Allein das Anlegen einer neuen <A NAME="342"></A>Kategorie hat zur Folge, das jeder Client den
+neuen <A NAME="343"></A>Kategorienbaum vom Server erfragt.
+Da wir also den Baum sehr oft auslesen m&#252;ssen ist diese Art der Speicherung vorteilhaft.
+Hinzukommt, das es sehr aufwendig ist einen solchen Baum oder Pfade 
+eines Baumes in einem <A NAME="344"></A>Index abzulegen.
+Deshalb speichern wir im Index auch nur eine einfache Aufz&#228;hlung 
+von Kategorien ab. (siehe Abbildung <A HREF="#katstruktur">2.3</A> und Kapitel <A HREF="node30.html#docstruktur">2.4.2</A>)
+Diese enth&#228;lt zwar den ganzen Pfad, dennoch l&#228;sst sich dieser nicht
+wiederherstellen, da ja mehrere Pfade in der Aufz&#228;hlung enthalten sein k&#246;nnen.
+Es entsteht dadurch aber kein Problem. Eine Suchanfrage an den Server ben&#246;tigt trozdem keinen
+Datenbankzugriff, sondern kann mit einer Anfrage an den Index bearbeitet werden.
+(siehe Kapitel <A HREF="node34.html#searchrequest">2.5.2</A>) 
+Das l&#228;sst sich mit dem Zweck unserer Anwendung erkl&#228;ren. 
+Wir stellen eine Suche anhand von Suchbegriffen bereit. Die Kategorien sind nur
+eine Einschr&#228;nkung der Suchergebnisse. 
+Je allgemeiner die Kategorie in einer Suchanfrage gew&#228;hlt wird,
+desto mehr Ergebnisse werden gefunden.
+Das erkl&#228;rt sich darin, das alle Dokumente, die einer <A NAME="348"></A>Unterkategorie 
+angeh&#246;ren, auch allen Elternkategorien zugeordnet wurden.
+Dieser einfache Trick erreicht genau unseren Zweck.
+Bei einer Suchanfrage wird ein Dokument in jeder Kategorie, die auf dem Pfad 
+durch den Baum liegt gefunden und sie kann schnell ausgef&#252;hrt werden.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html710"
+  HREF="node32.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html704"
+  HREF="node28.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html700"
+  HREF="node30.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html706"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html708"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html711"
+  HREF="node32.html">Abl&#228;ufe im Server</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html705"
+  HREF="node28.html">Datenmodell</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html701"
+  HREF="node30.html">Index und Dokumentstruktur</A>
+ &nbsp; <B>  <A NAME="tex2html707"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html709"
+  HREF="node176.html">Index</A></B> </DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

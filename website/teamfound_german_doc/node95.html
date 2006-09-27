@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Return Codes</TITLE>
+<META NAME="description" CONTENT="Return Codes">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="previous" HREF="node94.html">
+<LINK REL="up" HREF="node94.html">
+<LINK REL="next" HREF="node96.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html1730"
+  HREF="node96.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html1724"
+  HREF="node94.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html1720"
+  HREF="node94.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html1726"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html1728"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html1731"
+  HREF="node96.html">Seite hinzufügen</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html1725"
+  HREF="node94.html">XML-Antwort</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html1721"
+  HREF="node94.html">XML-Antwort</A>
+ &nbsp; <B>  <A NAME="tex2html1727"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html1729"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H4><A NAME="SECTION00911410000000000000">
+Return Codes</A>
+</H4>
+
+<P>
+Die Return-Codes stehen immer in den Tags <SPAN CLASS="MATH"><IMG
+ WIDTH="19" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img21.png"
+ ALT="$&lt;$"></SPAN>return-value<SPAN CLASS="MATH"><IMG
+ WIDTH="19" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img22.png"
+ ALT="$&gt;$"></SPAN>xx<SPAN CLASS="MATH"><IMG
+ WIDTH="19" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img21.png"
+ ALT="$&lt;$"></SPAN>/return-value<SPAN CLASS="MATH"><IMG
+ WIDTH="19" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img22.png"
+ ALT="$&gt;$"></SPAN>. Die Description ist optional.
+
+<P>
+<DL>
+<DT><STRONG>0</STRONG></DT>
+<DD>Alles ok 
+
+<P>
+</DD>
+<DT><STRONG>1</STRONG></DT>
+<DD>Fehler, konnte URL nicht finden 
+
+<P>
+</DD>
+<DT><STRONG>2</STRONG></DT>
+<DD>Ung&#252;ltige Anfrage (Pflicht-Parameter fehlen oder haben die L&#228;nge null) 
+
+<P>
+</DD>
+<DT><STRONG>3</STRONG></DT>
+<DD>Inkompatible Interface-Version (die Anfrage hat eine Interface-Version benutzt die der Server nicht unterst&#252;tzt) 
+
+<P>
+</DD>
+<DT><STRONG>4</STRONG></DT>
+<DD>Kategorie existiert schon (beim hinzufuegen einer neuen Kategorie) 
+
+<P>
+</DD>
+<DT><STRONG>5</STRONG></DT>
+<DD>Kategorie nicht gefunden (beim suchen nach einer bestimmten Kategorie) 
+
+<P>
+</DD>
+<DT><STRONG>-1</STRONG></DT>
+<DD>Anderer Fehler 
+</DD>
+</DL>
+
+<P>
+Die Return-Descriptions sind frei w&#228;hlbar, sollten aber dem Return-Code semantisch entsprechen ;-)
+
+<P>
+<BR><HR>
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>

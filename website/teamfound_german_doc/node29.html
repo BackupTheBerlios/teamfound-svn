@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Datenbank</TITLE>
+<META NAME="description" CONTENT="Datenbank">
+<META NAME="keywords" CONTENT="teamfound">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="teamfound.css">
+
+<LINK REL="next" HREF="node30.html">
+<LINK REL="previous" HREF="node28.html">
+<LINK REL="up" HREF="node28.html">
+<LINK REL="next" HREF="node30.html">
+</HEAD>
+
+<BODY >
+
+<DIV CLASS="navigation"><!--Navigation Panel-->
+<A NAME="tex2html684"
+  HREF="node30.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html678"
+  HREF="node28.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html672"
+  HREF="node28.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html680"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html682"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html685"
+  HREF="node30.html">Index und Dokumentstruktur</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html679"
+  HREF="node28.html">Datenmodell</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html673"
+  HREF="node28.html">Datenmodell</A>
+ &nbsp; <B>  <A NAME="tex2html681"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html683"
+  HREF="node176.html">Index</A></B> 
+<BR>
+<BR></DIV>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00441000000000000000"></A>
+<A NAME="datenbank"></A>
+<BR>
+Datenbank
+</H2>
+
+<P>
+
+<DIV ALIGN="CENTER"><A NAME="dberd"></A><A NAME="277"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Abbildung 2.2:</STRONG>
+Datenbank-ERD</CAPTION>
+<TR><TD><IMG
+ WIDTH="723" HEIGHT="434" ALIGN="BOTTOM" BORDER="0"
+ SRC="img8.png"
+ ALT="\includegraphics[width=16cm]{bilder/db.eps}"></TD></TR>
+</TABLE>
+</DIV>
+
+<P>
+Die <A NAME="280"></A>Datenbank besteht zur Zeit aus 4 Tabellen (siehe Abbildung <A HREF="#dberd">2.2</A>).
+Die wichtigste <A NAME="282"></A>Tabelle des derzeitigen Standes ist die <SPAN CLASS="MATH"><IMG
+ WIDTH="76" HEIGHT="33" ALIGN="MIDDLE" BORDER="0"
+ SRC="img9.png"
+ ALT="$category$"></SPAN>-Tabelle.
+Sie beinhaltet die <A NAME="283"></A>Kategorieb&#228;ume der Projekte eines Servers.
+
+<P>
+Um die<A NAME="284"></A>B&#228;ume in der <A NAME="285"></A>Datenbank zu repr&#228;sentieren haben wir
+<A NAME="286"></A>Verschachtelte Mengen (<A NAME="287"></A>nested sets) eingesetzt. 
+Dadurch k&#246;nnen wir mit einfachen <TT>select</TT>-statements den
+Baum durchsuchen, allerdings ist das einf&#252;gen oder edititeren des Baumes aufwendig.
+Da wir Serverseitig haupts&#228;chlich Suchvorg&#228;nge zu bedienen haben, wollten wir
+eine <A NAME="289"></A>rekursive Tabellenstruktur in der Datenbank vermeiden.
+Die <A NAME="290"></A>Verschachtelten Mengen boten uns eine gute Variante dies zu umgehen.
+Genauere Informationen hierzu befinden sich im Kapitel <A HREF="node31.html#katrep">2.4.3</A> .
+
+<P>
+Die <A NAME="292"></A>Tabelle <!-- MATH
+ $categoryversion$
+ -->
+<SPAN CLASS="MATH"><IMG
+ WIDTH="138" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img10.png"
+ ALT="$categoryversion$"></SPAN> k&#246;nnte prinzipiell zu jeder Kategorie eine
+<A NAME="293"></A>Versionsnummer mitf&#252;hren. Derzeit wird dies nur f&#252;r <A NAME="294"></A>Wurzelknoten getan.
+Damit hat jeder vom Server verwaltete <A NAME="295"></A>Kategoriebaum eine Versionsnummer. Diese
+wird benutzt um die Aktualit&#228;t der B&#228;ume zwischen den Clients untereinander 
+und mit dem Server sicherzustellen.
+Es ist durchaus vorstellbar Versionsnummern bei gro&#223;en Projekten
+auch f&#252;r Teilb&#228;ume zu verteilen, was derzeit aber nicht geplant ist.
+
+<P>
+Zu jeder Kategorie k&#246;nnen beliebig viele Urls zugeordnet werden. Diese
+werden in der <SPAN CLASS="MATH"><IMG
+ WIDTH="95" HEIGHT="20" ALIGN="BOTTOM" BORDER="0"
+ SRC="img11.png"
+ ALT="$indexedurl$"></SPAN> <A NAME="296"></A>Tabelle gehalten. Jede Url, die <A NAME="297"></A>indiziert wurde, wird
+mit Datum in dieser Tabelle gespeichert. Somit kann schnell festgestellt werden,
+ob eine <A NAME="298"></A>URL schon einmal hinzugef&#252;gt wurde und zu welchen Kategorien sie bisher
+zugeordnet war.
+Da der <A NAME="299"></A>Index selbst auch doppelte Eintr&#228;ge zul&#228;sst, 
+ist es wichtig vor dem Einf&#252;gen das vorhandensein &#252;berpr&#252;fen zu k&#246;nnen. 
+
+<P>
+Jede Url kann auch beliebig zu Kategorien zugeordnet werden,
+da wir dieselbe Url in verschiedenen Kategorieb&#228;umen oder 
+auch in verschiedenen <A NAME="300"></A>Kategorien in ein und demselben <A NAME="301"></A>Baum zulassen m&#246;chten.
+Die Nutzer von Teamfound entscheiden in welche Kategorie ein Document 
+geh&#246;rt. Unabh&#228;ngig davon w&#228;re eine &#220;berpr&#252;fung, ob solch eine Zuordnung sinnvoll 
+ist, auch kaum umzusetzbar.
+
+<P>
+Im <A NAME="302"></A>Index wird allerdings zu jeder <A NAME="303"></A>URL nur ein einziges Dokument (siehe <A HREF="node17.html#luckomponenten">2.2.1</A>) abgelegt.
+Wichtig ist dabei, dass eine Url, die einer Kategorie hinzugef&#252;gt wird, 
+auch allen zugeh&#246;rigen Elternkategorien zugeordnet wird.
+Das passiert in der <A NAME="305"></A>Datenbank als auch im Dokument des Indexes.
+Dadurch werden bei einer <A NAME="306"></A>Suchanfrage innerhalb einer Kategorie automatisch 
+auch alle Urls geliefert, die <A NAME="307"></A>Kindkategorien dieser Kategorie zugeordnet wurden.
+
+<P>
+Das Datum in der <SPAN CLASS="MATH"><IMG
+ WIDTH="95" HEIGHT="20" ALIGN="BOTTOM" BORDER="0"
+ SRC="img11.png"
+ ALT="$indexedurl$"></SPAN> Tabelle wird genutzt um Urls zu erkennen, welche
+schon lange im Index liegen. Diese werden dementsprechend neu indiziert.
+
+<P>
+
+<DIV CLASS="navigation"><HR>
+<!--Navigation Panel-->
+<A NAME="tex2html684"
+  HREF="node30.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="/usr/share/latex2html/icons/next.png"></A> 
+<A NAME="tex2html678"
+  HREF="node28.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up.png"></A> 
+<A NAME="tex2html672"
+  HREF="node28.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev.png"></A> 
+<A NAME="tex2html680"
+  HREF="node1.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="contents"
+ SRC="/usr/share/latex2html/icons/contents.png"></A> 
+<A NAME="tex2html682"
+  HREF="node176.html">
+<IMG WIDTH="43" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="index"
+ SRC="/usr/share/latex2html/icons/index.png"></A> 
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html685"
+  HREF="node30.html">Index und Dokumentstruktur</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html679"
+  HREF="node28.html">Datenmodell</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html673"
+  HREF="node28.html">Datenmodell</A>
+ &nbsp; <B>  <A NAME="tex2html681"
+  HREF="node1.html">Inhalt</A></B> 
+ &nbsp; <B>  <A NAME="tex2html683"
+  HREF="node176.html">Index</A></B> </DIV>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Jan Kechel
+2006-04-28
+</ADDRESS>
+</BODY>
+</HTML>
